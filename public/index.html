@@ -586,9 +586,8 @@
       .then(function(res){
         var d=null; try{ d=JSON.parse(res.txt); }catch(e){}
         if(d){ finish(d,t0,err); return; }
-        finish(null,t0,err,'Der Rechen-Server antwortete unerwartet (Status '+res.status+'). '
-          +(res.status===404?'Die Analyse-Funktion wurde nicht gefunden – bitte Deployment prüfen.'
-            :'Bitte lade die Seite neu und versuch es nochmal.'));
+        var snippet=(res.txt||'').replace(/<[^>]+>/g,' ').replace(/\s+/g,' ').trim().slice(0,240);
+        finish(null,t0,err,'Server-Fehler (Status '+res.status+'): '+(snippet||'keine Details'));
       })
       .catch(function(){ finish(null,t0,err,'Keine Verbindung zum Rechen-Server. Läuft das Backend? Bitte gleich nochmal versuchen.'); });
   });
