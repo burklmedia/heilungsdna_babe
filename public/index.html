@@ -582,9 +582,15 @@
     show('step2'); runRitual();
     var t0=Date.now();
     fetch(API+'/api/analyze',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)})
-      .then(function(r){return r.json();})
-      .then(function(d){ finish(d,t0,err); })
-      .catch(function(){ finish(null,t0,err,'Verbindung fehlgeschlagen. Bitte versuch es gleich nochmal.'); });
+      .then(function(r){ return r.text().then(function(txt){ return {status:r.status, txt:txt}; }); })
+      .then(function(res){
+        var d=null; try{ d=JSON.parse(res.txt); }catch(e){}
+        if(d){ finish(d,t0,err); return; }
+        finish(null,t0,err,'Der Rechen-Server antwortete unerwartet (Status '+res.status+'). '
+          +(res.status===404?'Die Analyse-Funktion wurde nicht gefunden – bitte Deployment prüfen.'
+            :'Bitte lade die Seite neu und versuch es nochmal.'));
+      })
+      .catch(function(){ finish(null,t0,err,'Keine Verbindung zum Rechen-Server. Läuft das Backend? Bitte gleich nochmal versuchen.'); });
   });
   function finish(d,t0,err,netMsg){
     var wait=Math.max(0, MIN_RITUAL-(Date.now()-t0));
