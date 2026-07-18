@@ -14,9 +14,16 @@ Body (JSON):
 from http.server import BaseHTTPRequestHandler
 import json
 
-from _engine import compute_chart
-from _interpret import teaser, full_analysis
-from _geo import resolve_place, tz_for
+# Import-Schutz: Scheitert ein Import (z. B. pyswisseph laedt nicht), stuerzt
+# die Funktion nicht hart ab, sondern meldet den echten Fehler als JSON.
+_IMPORT_ERROR = None
+try:
+    from _engine import compute_chart
+    from _interpret import teaser, full_analysis
+    from _geo import resolve_place, tz_for
+except Exception:  # noqa
+    import traceback
+    _IMPORT_ERROR = traceback.format_exc()
 
 
 def _parse_date(s):
@@ -90,9 +97,15 @@ class handler(BaseHTTPRequestHandler):
         self._send(204, {})
 
     def do_GET(self):
+        if _IMPORT_ERROR:
+            return self._send(500, {"ok": False, "error": "Import fehlgeschlagen.",
+                                    "detail": _IMPORT_ERROR})
         self._send(200, {"ok": True, "service": "Intuition mit Herz – Analyse-API"})
 
     def do_POST(self):
+        if _IMPORT_ERROR:
+            return self._send(500, {"ok": False, "error": "Import fehlgeschlagen.",
+                                    "detail": _IMPORT_ERROR})
         try:
             length = int(self.headers.get("content-length", 0))
             body = json.loads(self.rfile.read(length) or b"{}")
