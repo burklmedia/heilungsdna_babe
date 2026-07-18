@@ -88,18 +88,53 @@ def profile_name(profile):
         PROFILE_LINES.get(int(x), "") for x in profile.split("/")))
 
 
+PROFILE_DESC = {
+    "1/3": "Du brauchst festen Boden unter den Füßen – und lernst zugleich durch Ausprobieren, was trägt.",
+    "1/4": "Du gräbst in die Tiefe und teilst dein Wissen mit den Menschen, die dir nahe sind.",
+    "2/4": "Du hast ein natürliches Talent, das erst durch andere gerufen wird – dein Netzwerk trägt dich.",
+    "2/5": "Du bist die stille Begabte, die immer wieder für Lösungen nach vorn geholt wird.",
+    "3/5": "Du lernst durch Erfahrung und wirst zur Person, die für andere Probleme löst.",
+    "3/6": "Erst probierst du dich durchs Leben, dann wirst du zum lebenden Vorbild.",
+    "4/6": "Du baust auf Beziehungen und reifst mit den Jahren zu einem Menschen, dem man vertraut.",
+    "4/1": "Du stehst auf festem Fundament und wirkst über deine engen Verbindungen.",
+    "5/1": "Man projiziert Erwartungen auf dich – dein solides Wissen macht dich zur Retterin in der Not.",
+    "5/2": "Du wirst für praktische Lösungen gerufen und ziehst dich danach wieder gern zurück.",
+    "6/2": "Du bist ein natürliches Vorbild mit einer Gabe, die andere in dir sehen.",
+    "6/3": "Du reifst über drei Lebensphasen zu einem weisen, geerdeten Vorbild.",
+}
+
+
 def teaser(chart):
-    """Der kleine kostenlose Funke – ein Fingerzeig, kein volles Bild."""
+    """Der kostenlose Funke – jetzt ausführlicher, aber ohne das volle Bild."""
     hd = chart["hd"]
     t = TYPE_INFO.get(hd["type"], {})
+    sun = chart["natal"]["Sonne"]
+    moon = chart["natal"]["Mond"]
+    defined = hd.get("defined_centers", [])
     return {
         "type": hd["type"],
+        "type_short": t.get("short", ""),
         "profile": hd["profile"],
         "profile_name": profile_name(hd["profile"]),
+        "profile_desc": PROFILE_DESC.get(hd["profile"], ""),
         "authority": hd["authority"],
+        "authority_desc": AUTHORITY_INFO.get(hd["authority"], ""),
         "strategy": t.get("strategy", ""),
+        "signature": t.get("signature", ""),
+        "not_self": t.get("not_self", ""),
+        "aura": t.get("aura", ""),
         "hook": t.get("short", ""),
-        "sun_sign": chart["natal"]["Sonne"]["sign"],
+        "sun_sign": sun["sign"],
+        "moon_sign": moon["sign"],
+        "defined_centers": defined,
+        "definition": hd.get("definition", ""),
+        # Was hinter dem E-Mail-Gate wartet (Appetitmacher, ohne Inhalt):
+        "locked_preview": [
+            "Dein vollständiges Geburtshoroskop – alle Planeten auf die Bogenminute",
+            "Dein Aszendent & Medium Coeli – wie du wirkst und wohin dein Weg zeigt",
+            "Deine definierten & offenen Zentren – wo du Kraft schöpfst, wo du dich verlierst",
+            "Deine persönliche Deutung in Klartext – dein roter Faden fürs Leben",
+        ],
     }
 
 
