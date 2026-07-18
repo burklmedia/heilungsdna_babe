@@ -1,7 +1,8 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "builds": [
-    { "src": "api/*.py", "use": "@vercel/python" },
+    { "src": "api/analyze.py", "use": "@vercel/python", "config": { "includeFiles": "api/**" } },
+    { "src": "api/subscribe.py", "use": "@vercel/python", "config": { "includeFiles": "api/**" } },
     { "src": "public/**", "use": "@vercel/static" }
   ],
   "routes": [
