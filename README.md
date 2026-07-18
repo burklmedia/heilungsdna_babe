@@ -72,12 +72,25 @@ MailerLite/Mailchimp lassen sich analog anbinden (eine Funktion, ein API-Call).
   ursprünglichen Denise×Tobias-Artefakt, als Premium (19–29 €).
 - **Bezahlung** via Stripe Payment Link, wenn die Nachfrage da ist.
 
-## Lokal testen
+## Lokal starten (auf dem eigenen Rechner ansehen)
 
 ```bash
-pip install -r requirements.txt
-# kleiner Dev-Server siehe Projekt-Notizen; auf Vercel läuft es ohne Zusatz.
+# 1. Projekt holen (einmalig)
+git clone -b claude/astrology-analysis-tool-4c2brg https://github.com/burklmedia/heilungsdna_babe.git
+cd heilungsdna_babe
+
+# 2. Abhängigkeiten installieren
+pip install -r requirements.txt         # oder: pip3 install -r requirements.txt
+
+# 3. Server starten
+python3 dev.py                          # Windows: python dev.py
 ```
+
+Dann im Browser öffnen: **http://localhost:8000**
+
+Der lokale Server bedient Frontend + API genau wie Vercel. Beenden mit `Strg+C`.
+(Mindestens nötig ist `pip install pyswisseph`; für den getippten Städte-Fallback
+zusätzlich `timezonefinder` und `geonamescache`.)
 
 ---
 
