@@ -13,6 +13,12 @@ Body (JSON):
 """
 from http.server import BaseHTTPRequestHandler
 import json
+import os
+import sys
+
+# Auf Vercel liegt diese Datei in /var/task/api/, aber der Ordner steht nicht im
+# Python-Suchpfad -> Nachbar-Module (_engine etc.) werden sonst nicht gefunden.
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 # Import-Schutz: Scheitert ein Import (z. B. pyswisseph laedt nicht), stuerzt
 # die Funktion nicht hart ab, sondern meldet den echten Fehler als JSON.
