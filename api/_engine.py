@@ -9,12 +9,17 @@ Validiert gegen reale, handkorrigierte Charts (Denise & Tobias): alle
 Planeten, Aszendent, MC und das komplette Human Design stimmen auf die
 Bogenminute.
 """
+import os
 import swisseph as swe
 from datetime import datetime
 from zoneinfo import ZoneInfo
 
-swe.set_ephe_path(None)
+# Planeten laufen weiter im Moshier-Modus (keine Datendateien). Nur Chiron
+# braucht die kleine Asteroiden-Datei seas_18.se1 in api/ephe/.
+_EPHE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "ephe")
+swe.set_ephe_path(_EPHE if os.path.isdir(_EPHE) else None)
 FLAGS = swe.FLG_MOSEPH | swe.FLG_SPEED
+CHIRON_FLAGS = swe.FLG_SWIEPH | swe.FLG_SPEED
 
 # ── Human-Design-Rad: 64 Tore ab Gate 41 @ 302.0° ekliptikaler Länge ──
 GATE_ORDER = [41, 19, 13, 49, 30, 55, 37, 63, 22, 36, 25, 17, 21, 51, 42, 3,
@@ -63,7 +68,7 @@ BODIES = [
 ]
 SYMS = {"Sonne": "☉", "Mond": "☽", "Merkur": "☿", "Venus": "♀", "Mars": "♂",
         "Jupiter": "♃", "Saturn": "♄", "Uranus": "♅", "Neptun": "♆", "Pluto": "♇",
-        "Nordknoten": "☊", "Südknoten": "☋", "Erde": "⊕"}
+        "Nordknoten": "☊", "Südknoten": "☋", "Erde": "⊕", "Chiron": "⚷"}
 SIGNS = ["Widder", "Stier", "Zwillinge", "Krebs", "Löwe", "Jungfrau", "Waage",
          "Skorpion", "Schütze", "Steinbock", "Wassermann", "Fische"]
 SIGN_SYMS = ["♈", "♉", "♊", "♋", "♌", "♍", "♎", "♏", "♐", "♑", "♒", "♓"]
@@ -228,6 +233,17 @@ def compute_chart(name, year, month, day, hour, minute, lat, lon, tz_name,
             s["house"] = _whole_house(l, asc_lon)
         s["sym_body"] = SYMS.get(b, "")
         natal[b] = s
+
+    # Chiron (nur astrologisch, nicht Teil des Human Design) – braucht seas_18.se1
+    try:
+        ch_lon = swe.calc_ut(jd, swe.CHIRON, CHIRON_FLAGS)[0][0]
+        ch = _sign(ch_lon)
+        ch["sym_body"] = "⚷"
+        if time_known and asc_lon is not None:
+            ch["house"] = _whole_house(ch_lon, asc_lon)
+        natal["Chiron"] = ch
+    except Exception:
+        pass  # ohne Ephemeriden-Datei bleibt Chiron einfach weg
 
     result = {
         "name": name,

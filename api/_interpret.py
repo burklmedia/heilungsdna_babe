@@ -82,6 +82,34 @@ CENTER_MEANING = {
     "Wurzel": "Antrieb, Stress & Druck",
 }
 
+# Chiron – „die Urwunde und zugleich der Ort deiner größten Heilkraft" – nach Zeichen
+CHIRON_SIGN = {
+    "Widder": "Deine Wunde berührt das schlichte Recht, dazusein und zu wollen. Deine Heilung: "
+              "deinen Platz einnehmen, ohne dich dafür zu entschuldigen – und andere darin bestärken.",
+    "Stier": "Deine Wunde dreht sich um Wert und Sicherheit. Deine Heilung: zu spüren, dass dein "
+             "Wert nicht an Besitz oder Leistung hängt – du bist wertvoll, einfach so.",
+    "Zwillinge": "Deine Wunde sitzt in Stimme und Gehörtwerden. Deine Heilung: dein eigenes Wort "
+                 "ernst zu nehmen und auszusprechen – auch wenn es zittert.",
+    "Krebs": "Deine Wunde berührt Zugehörigkeit und Geborgenheit. Deine Heilung: dir selbst zur "
+             "Heimat zu werden, statt sie nur im Außen zu suchen.",
+    "Löwe": "Deine Wunde liegt im Gesehenwerden und im schöpferischen Ausdruck. Deine Heilung: "
+            "dich zu zeigen, weil es dich freut – nicht, weil du Applaus brauchst.",
+    "Jungfrau": "Deine Wunde flüstert, du seist nicht gut genug. Deine Heilung: das Unvollkommene "
+                "anzunehmen und zu erkennen, dass du schon jetzt genügst.",
+    "Waage": "Deine Wunde zeigt sich in Beziehungen und im Ringen um Fairness. Deine Heilung: "
+             "in Verbindung bei dir zu bleiben, statt dich selbst zu verlieren.",
+    "Skorpion": "Deine Wunde berührt Ohnmacht und Tiefe. Deine Heilung: dem Wandel zu vertrauen – "
+                "was zerbricht, macht Platz für das, was echter ist.",
+    "Schütze": "Deine Wunde sitzt im Sinn und im Glauben. Deine Heilung: deiner eigenen Wahrheit "
+               "zu folgen statt geliehener Überzeugungen.",
+    "Steinbock": "Deine Wunde dreht sich um Autorität und Leistung. Deine Heilung: deinen Wert "
+                 "jenseits von Erfolg und Anerkennung zu fühlen.",
+    "Wassermann": "Deine Wunde ist das Gefühl, anders und außen vor zu sein. Deine Heilung: dein "
+                  "Anderssein als Geschenk zu feiern – genau da gehörst du hin.",
+    "Fische": "Deine Wunde berührt Grenzen und eine große Sehnsucht. Deine Heilung: Mitgefühl "
+              "zuerst dir selbst zu schenken und deine Weichheit als Stärke zu sehen.",
+}
+
 
 def profile_name(profile):
     return PROFILE_NAMES.get(profile, " / ".join(
@@ -132,6 +160,7 @@ def teaser(chart):
         "locked_preview": [
             "Dein vollständiges Geburtshoroskop – alle Planeten auf die Bogenminute",
             "Dein Aszendent & Medium Coeli – wie du wirkst und wohin dein Weg zeigt",
+            "Dein Chiron – deine Urwunde und der Ort deiner größten Heilkraft",
             "Deine definierten & offenen Zentren – wo du Kraft schöpfst, wo du dich verlierst",
             "Deine persönliche Deutung in Klartext – dein roter Faden fürs Leben",
         ],
@@ -174,10 +203,38 @@ def full_analysis(chart):
                   ("Definierte Zentren", ", ".join(hd["defined_centers"]) or "keine")],
     })
 
+    defined = hd.get("defined_centers", [])
+    open_c = hd.get("open_centers", [])
+    sections.append({
+        "title": "Deine Zentren",
+        "headline": f"{len(defined)} definiert · {len(open_c)} offen",
+        "body": "Definierte Zentren sind deine verlässliche, gleichbleibende Energie – hier bist "
+                "du dir treu und kannst dich auf dich verlassen. Offene Zentren sind deine "
+                "Weisheits- und Lernräume: Hier nimmst du andere feinfühlig auf und bist formbar – "
+                "und genau hier entsteht Druck, wenn du dich verbiegst, um dazuzugehören.",
+        "facts": [("Definiert", ", ".join(defined) or "keine"),
+                  ("Offen", ", ".join(open_c) or "keine")],
+    })
+
+    chi = chart["natal"].get("Chiron")
+    if chi:
+        facts = [("Stellung", f"{chi['sym']} {chi['sign']} {chi['text']}")]
+        if chi.get("house"):
+            facts.append(("Haus", f"H{chi['house']}"))
+        sections.append({
+            "title": "Dein Chiron – Wunde & Heilung",
+            "headline": f"Chiron in {chi['sign']} {chi['text']}",
+            "body": CHIRON_SIGN.get(chi["sign"], "Chiron zeigt die Stelle, an der du verletzlich "
+                    "bist – und genau dort liegt deine besondere Kraft, andere zu heilen."),
+            "facts": facts,
+        })
+
     natal_rows = []
     for b in ["Sonne", "Mond", "Merkur", "Venus", "Mars", "Jupiter", "Saturn",
-              "Uranus", "Neptun", "Pluto"]:
-        p = chart["natal"][b]
+              "Uranus", "Neptun", "Pluto", "Chiron", "Nordknoten", "Südknoten"]:
+        p = chart["natal"].get(b)
+        if not p:
+            continue
         natal_rows.append({
             "sym": p.get("sym_body", ""), "body": b,
             "pos": f"{p['sym']} {p['sign']} {p['text']}",
