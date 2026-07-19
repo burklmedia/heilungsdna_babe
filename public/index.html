@@ -265,7 +265,7 @@
   .glimpse .type-sub { font-size: 13px; letter-spacing: .05em; color: var(--ink-mute); text-transform: uppercase; }
   .glimpse .type-desc { color: var(--ink-soft); font-size: 18px; line-height: 1.7; max-width: 52ch; margin: 20px auto 0; }
   .facts3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin: 30px auto; max-width: 560px; }
-  .fact { background: rgba(38,24,72,.5); border: 1px solid var(--line); border-radius: 14px; padding: 16px 12px; }
+  .fact { background: rgba(38,24,72,.5); border: 1px solid rgba(245,197,107,.45); border-radius: 14px; padding: 16px 12px; box-shadow: 0 0 22px -14px var(--glow); }
   .fact .fk { font-size: 10.5px; letter-spacing: .12em; text-transform: uppercase; color: var(--ink-mute); margin-bottom: 6px; }
   .fact .fv { font-family: var(--serif); color: var(--ink); font-size: 18px; line-height: 1.2; }
   .glimpse .authority-note { color: var(--ink-soft); font-size: 17px; line-height: 1.7; max-width: 52ch; margin: 0 auto; padding: 20px 24px; border-left: 2px solid var(--gold); text-align: left; background: rgba(245,197,107,0.06); border-radius: 0 12px 12px 0; }
@@ -667,13 +667,13 @@
       <p class="authority-note" id="g-authority">—</p>
 
       <div class="locked-wrap">
-        <div class="lbl">🔒 Das wartet in deiner kompletten Analyse</div>
+        <div class="lbl">🔒 Das steckt in deinem kompletten kosmischen Bauplan</div>
         <div id="g-locked"></div>
       </div>
 
       <div class="mailcard">
-        <h3>Deine <span class="accent">komplette</span> Analyse, kostenlos</h3>
-        <p>Dein vollständiges Human-Design-Chart, dein Geburtshoroskop mit Aszendent und was das alles für dich bedeutet. Trag dich ein, ich sende dir die Analyse sofort zu.</p>
+        <h3>Dein <span class="accent">kompletter</span> kosmischer Bauplan, kostenlos</h3>
+        <p>Dein vollständiges Human-Design-Chart, dein Geburtshoroskop mit Aszendent und was das alles für dich bedeutet. Trag dich ein, ich sende dir deinen Bauplan sofort zu.</p>
         <div class="field">
           <label for="g-name">Dein Vorname</label>
           <input id="g-name" type="text" placeholder="Vorname" autocomplete="given-name">
@@ -682,7 +682,7 @@
           <label for="g-mail">Deine E-Mail</label>
           <input id="g-mail" type="email" placeholder="du@beispiel.de" autocomplete="email">
         </div>
-        <button class="btn" id="go2" type="button">Meine komplette Analyse ✦</button>
+        <button class="btn" id="go2" type="button">Meinen kosmischen Bauplan zeigen ✦</button>
         <div class="err" id="err2"></div>
         <p class="form-note">Mit dem Absenden meldest du dich zu meinem kostenlosen Newsletter an und erhältst deine Analyse. Jederzeit mit einem Klick abbestellbar. Es gilt meine <a href="/datenschutz.html" style="color:var(--gold)">Datenschutzerklärung</a>.</p>
       </div>
@@ -916,7 +916,7 @@
     var btn=this; btn.disabled=true; btn.textContent='Einen Moment…';
     fetch(API+'/api/subscribe',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name:name,email:email})})
       .then(function(r){return r.json();}).catch(function(){return {ok:true};})
-      .then(function(){ renderFull(state.result); show('step3'); btn.disabled=false; btn.textContent='Meine komplette Analyse ✦'; });
+      .then(function(){ renderFull(state.result); show('step3'); btn.disabled=false; btn.textContent='Meinen kosmischen Bauplan zeigen ✦'; });
   });
 
   function pcard(sym,klabel,vmain,meta,meaning,desc){
