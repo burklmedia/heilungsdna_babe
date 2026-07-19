@@ -103,16 +103,16 @@ AUTHORITY_INFO = {
 }
 
 PROFILE_LINES = {
-    1: "Forscherin", 2: "Eremitin", 3: "Märtyrerin",
-    4: "Netzwerkerin", 5: "Häretikerin", 6: "Vorbild",
+    1: "Fundament", 2: "Rückzug", 3: "Erfahrung",
+    4: "Netzwerk", 5: "Lösung", 6: "Vorbild",
 }
 PROFILE_NAMES = {
-    "1/3": "Forscherin / Märtyrerin", "1/4": "Forscherin / Netzwerkerin",
-    "2/4": "Eremitin / Netzwerkerin", "2/5": "Eremitin / Häretikerin",
-    "3/5": "Märtyrerin / Häretikerin", "3/6": "Märtyrerin / Vorbild",
-    "4/6": "Netzwerkerin / Vorbild", "4/1": "Netzwerkerin / Forscherin",
-    "5/1": "Häretikerin / Forscherin", "5/2": "Häretikerin / Eremitin",
-    "6/2": "Vorbild / Eremitin", "6/3": "Vorbild / Märtyrerin",
+    "1/3": "Fundament / Erfahrung", "1/4": "Fundament / Netzwerk",
+    "2/4": "Rückzug / Netzwerk", "2/5": "Rückzug / Lösung",
+    "3/5": "Erfahrung / Lösung", "3/6": "Erfahrung / Vorbild",
+    "4/6": "Netzwerk / Vorbild", "4/1": "Netzwerk / Fundament",
+    "5/1": "Lösung / Fundament", "5/2": "Lösung / Rückzug",
+    "6/2": "Vorbild / Rückzug", "6/3": "Vorbild / Erfahrung",
 }
 PROFILE_DESC = {
     "1/3": "Du brauchst festen Boden unter den Füßen und ein sicheres Fundament aus Wissen. "
@@ -122,7 +122,7 @@ PROFILE_DESC = {
            "dein Wissen dann mit den Menschen, die dir nahe sind. Über sie öffnen sich dir Wege.",
     "2/4": "Du trägst ein natürliches Talent in dir, das oft im Verborgenen ruht, bis andere es "
            "in dir sehen und dich rufen. Dein Netzwerk trägt dich, wenn du dich rufen lässt.",
-    "2/5": "Du bist die stille Begabte, die sich gern zurückzieht und doch immer wieder nach vorn "
+    "2/5": "Du bist das stille Talent, das sich gern zurückzieht und doch immer wieder nach vorn "
            "geholt wird, um eine Lösung zu bringen.",
     "3/5": "Du lernst durch eigene Erfahrung, mit allen Umwegen, und wirst zu der Person, die für "
            "andere praktische Lösungen findet, weil sie selbst durch vieles gegangen ist.",
@@ -133,7 +133,7 @@ PROFILE_DESC = {
     "4/1": "Du stehst auf einem festen Fundament und wirkst vor allem über deine engen, "
            "verlässlichen Verbindungen in die Welt.",
     "5/1": "Menschen projizieren viel auf dich und erwarten Lösungen, oft mehr, als dir bewusst "
-           "ist. Dein solides, tiefes Wissen macht dich zu der, die in der Not wirklich hilft.",
+           "ist. Dein solides, tiefes Wissen macht dich zu dem Menschen, der in der Not wirklich hilft.",
     "5/2": "Du wirst für praktische Lösungen gerufen und ziehst dich danach gern wieder in deinen "
            "eigenen, ruhigen Raum zurück.",
     "6/2": "Du bist ein natürliches Vorbild mit einer Gabe, die andere oft früher in dir sehen als "
@@ -336,9 +336,9 @@ NODE_AXIS = {
         "tools": ["Triff eine Entscheidung und bleib eine Weile dran, statt neu zu sammeln.", "Frag nach dem Warum hinter den Fakten, nicht nur nach mehr Fakten.", "Vertrau deiner inneren Richtung, auch ohne alle Informationen."],
     },
     "Steinbock": {
-        "higher": "Du wächst über Verantwortung und Struktur. Du darfst erwachsen werden, dir sichtbare Ziele setzen und für dich sorgen wie ein guter, verlässlicher Erwachsener. Du darfst dein Leben in die Hand nehmen.",
+        "higher": "Du wächst über Verantwortung und Struktur. Du darfst erwachsen werden, dir sichtbare Ziele setzen und erwachsen und verlässlich für dich selbst sorgen. Du darfst dein Leben in die Hand nehmen.",
         "lower": "Dein vertrautes Muster macht dich klein und abhängig. Du verkriechst dich im Vertrauten und wartest leise, dass jemand kommt und es für dich löst. Vielleicht fühlt sich Verantwortung wie eine zu große Last an. Aber im Warten bleibst du in einer Rolle, die dir längst zu eng ist.",
-        "task": "Deine Lebensaufgabe: selbst die Erwachsene in deinem Leben sein und deine Ziele ernst nehmen.",
+        "task": "Deine Lebensaufgabe: selbst die verantwortliche, erwachsene Person in deinem Leben sein und deine Ziele ernst nehmen.",
         "tools": ["Setz dir ein konkretes Ziel und geh es in kleinen, festen Schritten an.", "Übernimm Verantwortung für deine Lage, statt zu warten.", "Tröste dich selbst und mach dann den nächsten Schritt."],
     },
     "Wassermann": {
@@ -483,7 +483,7 @@ PLANET_HOUSE = {
         6: "du findest Sinn in deiner Arbeit, im Dienst an anderen und in einem gesunden Alltag",
         7: "du findest dich selbst vor allem in und durch deine engen Beziehungen",
         8: "du wächst über Krisen, über Tiefe und über echte, radikale Wandlung",
-        9: "du bist im Kern eine Sinnsucherin, eine Reisende und eine Lehrerin",
+        9: "du bist im Kern sinnsuchend, gern unterwegs und teilst dein Wissen von Herzen gern",
         10: "deine Berufung und deine öffentliche Rolle prägen, wer du bist",
         11: "du gehst auf in Gruppen, in Idealen und in großen Zukunftsvisionen",
         12: "deine Kraft wirkt im Stillen, im Rückzug und im Spirituellen",
@@ -523,7 +523,7 @@ PLANET_HOUSE = {
         4: "du brauchst Harmonie und Schönheit in deinem Zuhause",
         5: "Romantik, Kunst und Flirt gehören ganz selbstverständlich zu deiner Lebensfreude",
         6: "du brauchst ein harmonisches Arbeitsklima und Freude im Alltag",
-        7: "Partnerschaft ist dir ein hoher Wert, du bist ein echter Beziehungsmensch",
+        7: "Partnerschaft ist dir ein hoher Wert, echte, verbindliche Beziehungen bedeuten dir viel",
         8: "du liebst tief und intensiv und fühlst dich zum Verborgenen hingezogen",
         9: "dich zieht das Fremde und die Ferne an, auch in der Liebe",
         10: "du bist im Beruf beliebt, oft in ästhetischen oder gestalterischen Feldern",
@@ -540,7 +540,7 @@ PLANET_HOUSE = {
         7: "deine Beziehungen sind lebendig und dürfen auch mal Funken schlagen",
         8: "du hast eine starke Willenskraft und meisterst Krisen und Machtthemen",
         9: "du kämpfst für deine Überzeugungen und liebst das Abenteuer",
-        10: "dein Ehrgeiz treibt deine Karriere, du gehst gern als Erste voran",
+        10: "dein Ehrgeiz treibt deine Karriere, du gehst gern ganz vorne voran",
         11: "du bist aktiv in Gruppen und kämpfst mit Feuer für deine Ideale",
         12: "deine Kraft wirkt oft im Verborgenen, gestaute Wut ist dein Lernthema",
     },
@@ -583,7 +583,7 @@ PLANET_HOUSE = {
         8: "du erlebst plötzliche Wandlungen und gehst frei und offen mit Tabus um",
         9: "dein Weltbild ist rebellisch, und Erkenntnisse treffen dich blitzartig",
         10: "dein Karriereweg ist ungewöhnlich, Berufungen dürfen sich bei dir wandeln",
-        11: "du bist eine Reformerin mit ganz besonderen Freundeskreisen",
+        11: "du bringst echten Reformgeist mit und hast ganz besondere Freundeskreise",
         12: "in dir reifen plötzliche innere Durchbrüche und eine verborgene Genialität",
     },
     "Neptun": {
@@ -608,7 +608,7 @@ PLANET_HOUSE = {
         5: "dein Selbstausdruck ist intensiv, und deine Lieben verwandeln dich",
         6: "du wandelst zwanghafte Alltagsmuster und regenerierst dich aus der Tiefe",
         7: "deine Beziehungen sind intensiv, Macht und Kontrolle sind ein echtes Thema",
-        8: "du bist eine Krisenmeisterin mit großer Tiefe und Erneuerungskraft",
+        8: "du meisterst Krisen mit großer Tiefe und Erneuerungskraft",
         9: "dein Weltbild wandelt sich radikal, du suchst kompromisslos die Wahrheit",
         10: "deine öffentliche Rolle ist machtvoll, du steigst oft gerade durch Krisen auf",
         11: "du hast Einfluss in Gruppen und erlebst tief verwandelnde Freundschaften",
