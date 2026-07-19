@@ -763,10 +763,12 @@ def build_intuition(chart):
         "all": [{"key": e, "archetype": INTUITION[e]["archetype"],
                  "tagline": INTUITION[e]["tagline"], "oneliner": INTUITION[e]["oneliner"]}
                 for e in order],
-        "note": "Dein Intuitionstyp entsteht aus deinem Mond, aus Neptun und Pluto und aus deinen "
-                "Wasserhäusern (4, 8 und 12), dort, wo sich Wissenschaft und Astrologie begegnen. "
-                "Verstehe ihn als ein Bild zur Selbstreflexion, das dich an deine eigene innere "
-                "Stimme erinnert.",
+        "note": "Der Intuitionstyp ist kein klassisches Human-Design- oder Astrologie-System, "
+                "sondern ein eigenes Deutungsbild von Intuition mit Herz. Er entsteht aus deinem "
+                "Mond, aus Neptun und Pluto und aus deinen Wasserhäusern (4, 8 und 12), also aus den "
+                "Stellen im Chart, die in der Astrologie traditionell mit Gefühl, Tiefe und "
+                "Wahrnehmung verbunden sind. Verstehe ihn als ein Bild zur Selbstreflexion, das dich "
+                "an deine eigene innere Stimme erinnert.",
         "depth": None,
     }
 
