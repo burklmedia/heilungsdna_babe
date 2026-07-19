@@ -158,6 +158,86 @@ CHIRON_SIGN = {
               "Weichheit als Stärke begreifst.",
 }
 
+# Mondknoten-Achse (nach Nordknoten-Zeichen):
+#   higher = Higher Self (Nordknoten, wohin du wächst)
+#   lower  = Lower Self (Südknoten, dein vertrautes Rückfall-Muster)
+#   task   = Lebensaufgabe in einem Satz
+#   tools  = konkrete Impulse für den Alltag
+NODE_AXIS = {
+    "Widder": {
+        "higher": "Dein Higher Self wächst über Mut und Eigenständigkeit. Du bist hier, um für dich einzustehen, deine eigenen Impulse ernst zu nehmen und den Schritt nach vorn zu wagen, auch wenn niemand ihn dir abnimmt.",
+        "lower": "Dein vertrautes Muster (Südknoten Waage) ist Anpassung. Du willst gefallen, glättest Konflikte und definierst dich über andere. Das fühlt sich sicher an, kostet dich aber deine eigene Richtung.",
+        "task": "Deine Lebensaufgabe: dich selbst an die erste Stelle setzen, ohne schlechtes Gewissen.",
+        "tools": ["Frag dich bei Entscheidungen zuerst: Was will eigentlich ich?", "Übe kleine, klare Ansagen im Alltag, statt dich anzupassen und später innerlich zu grollen.", "Mach den ersten Schritt bewusst allein. Mut wächst im Tun."],
+    },
+    "Stier": {
+        "higher": "Dein Higher Self wächst über Ruhe, Beständigkeit und Selbstwert. Du darfst dem eigenen Tempo vertrauen, das Einfache genießen und Dinge bauen, die bleiben.",
+        "lower": "Dein vertrautes Muster (Südknoten Skorpion) sucht Intensität, Krise und Kontrolle. Du hinterfragst alles bis auf den Grund und misstraust dem Ruhigen. Das hält dich in Anspannung.",
+        "task": "Deine Lebensaufgabe: spüren, dass Sicherheit und Genuss erlaubt sind und nicht erkämpft werden müssen.",
+        "tools": ["Bau dir feste kleine Routinen, die dir guttun.", "Wenn du ins Grübeln kippst, komm zurück in den Körper: Natur, Essen, Berührung.", "Vertrau darauf, dass etwas auch dann bleibt, wenn du es nicht kontrollierst."],
+    },
+    "Zwillinge": {
+        "higher": "Dein Higher Self wächst über Neugier und Nähe im Alltag. Du bist hier, um Fragen zu stellen, zuzuhören und in den vielen kleinen Verbindungen präsent zu sein.",
+        "lower": "Dein vertrautes Muster (Südknoten Schütze) will recht haben und große Wahrheiten verkünden. Du belehrst und überspringst das Detail. Das entfernt dich vom echten Gegenüber.",
+        "task": "Deine Lebensaufgabe: mehr fragen als dozieren und im Nahen ankommen.",
+        "tools": ["Stell echte Fragen und hör zu Ende zu, bevor du deine Meinung sagst.", "Sammle konkrete Fakten statt fertiger Überzeugungen.", "Pflege die kleinen Kontakte in deinem Alltag, dort liegt gerade dein Wachstum."],
+    },
+    "Krebs": {
+        "higher": "Dein Higher Self wächst über Gefühl und Nähe. Du darfst dich selbst nähren, verletzlich sein und dich anlehnen.",
+        "lower": "Dein vertrautes Muster (Südknoten Steinbock) greift zu Kontrolle, Pflicht und Härte gegen dich selbst. Du trägst alles allein und organisierst Gefühle weg.",
+        "task": "Deine Lebensaufgabe: dich lehnen und fühlen dürfen, ohne die Kontrolle zu verlieren.",
+        "tools": ["Frag dich öfter: Wie geht es mir gerade? statt: Was muss ich noch leisten?", "Lass Nähe zu und bitte um Hilfe, auch wenn es ungewohnt ist.", "Gönn dir Fürsorge, ohne sie dir erst zu verdienen."],
+    },
+    "Löwe": {
+        "higher": "Dein Higher Self wächst über Sichtbarkeit und Herz. Du bist hier, um aus dir heraus zu schaffen, Freude auszudrücken und deine eigene Bühne einzunehmen.",
+        "lower": "Dein vertrautes Muster (Südknoten Wassermann) versteckt dich in der Gruppe. Du bleibst cool, distanziert und willst bloß nicht auffallen.",
+        "task": "Deine Lebensaufgabe: dich zeigen und dein Herz sprechen lassen, auch wenn es sich exponiert anfühlt.",
+        "tools": ["Erlaub dir, im Mittelpunkt zu stehen, statt dich hinter dem Wir zu verstecken.", "Schaff etwas, das wirklich von dir kommt, und zeig es.", "Sag öfter ich statt man, vor allem bei deinen Wünschen."],
+    },
+    "Jungfrau": {
+        "higher": "Dein Higher Self wächst über Struktur und geerdete Fürsorge. Du darfst im Alltag ankommen, dir mit klaren Schritten helfen und im Konkreten wirken.",
+        "lower": "Dein vertrautes Muster (Südknoten Fische) verliert sich, flüchtet oder lässt sich treiben. Grenzen verschwimmen, und du kippst schnell in die Opferrolle.",
+        "task": "Deine Lebensaufgabe: im Alltag ankommen und dir mit klaren Schritten selbst helfen.",
+        "tools": ["Bring Ordnung in eine kleine Ecke deines Lebens, das erdet dich sofort.", "Setz klare Grenzen, statt in allem zu verschwimmen.", "Kümmere dich konkret um deinen Körper und deinen Alltag, Schritt für Schritt."],
+    },
+    "Waage": {
+        "higher": "Dein Higher Self wächst über Beziehung und Ausgleich. Du bist hier, um andere einzubeziehen, fair zu handeln und gemeinsam statt allein.",
+        "lower": "Dein vertrautes Muster (Südknoten Widder) zieht alles im Alleingang durch. Du bist ungeduldig, übergehst andere und stellst dich zuerst.",
+        "task": "Deine Lebensaufgabe: den anderen wirklich mitdenken und gemeinsam statt gegeneinander handeln.",
+        "tools": ["Hol dir vor Entscheidungen bewusst die Sicht des anderen ein.", "Übe Geduld, wenn dich der Impuls packt, sofort allein loszurennen.", "Such Kompromisse aktiv, statt sie als Niederlage zu sehen."],
+    },
+    "Skorpion": {
+        "higher": "Dein Higher Self wächst über Tiefe und echte Verbindung. Du darfst dich einlassen, teilen, Kontrolle loslassen und dich wandeln.",
+        "lower": "Dein vertrautes Muster (Südknoten Stier) hält fest, sucht Bequemlichkeit und Besitz und bleibt beim Vertrauten. Veränderung wirkt teuer.",
+        "task": "Deine Lebensaufgabe: dich einlassen und loslassen, auch wenn es unbequem wird.",
+        "tools": ["Lass bewusst etwas los, an dem du aus Gewohnheit festhältst.", "Wag echte Tiefe, statt an der Oberfläche sicher zu bleiben.", "Frag dich: Halte ich das, weil es stimmt, oder nur, weil es vertraut ist?"],
+    },
+    "Schütze": {
+        "higher": "Dein Higher Self wächst über Sinn, Weite und Vertrauen. Du bist hier, um für deine eigene Wahrheit einzustehen und das große Bild zu sehen.",
+        "lower": "Dein vertrautes Muster (Südknoten Zwillinge) verzettelt sich. Du sammelst alle Meinungen, bleibst an der Oberfläche und legst dich nie fest.",
+        "task": "Deine Lebensaufgabe: dich auf deine eigene Wahrheit festlegen und ihr folgen.",
+        "tools": ["Triff eine Entscheidung und bleib eine Weile dran, statt neu zu sammeln.", "Frag nach dem Warum hinter den Fakten, nicht nur nach mehr Fakten.", "Vertrau deiner inneren Richtung, auch ohne alle Informationen."],
+    },
+    "Steinbock": {
+        "higher": "Dein Higher Self wächst über Verantwortung und Struktur. Du darfst erwachsen werden, sichtbare Ziele bauen und für dich sorgen wie ein guter Erwachsener.",
+        "lower": "Dein vertrautes Muster (Südknoten Krebs) macht dich klein und abhängig. Du verkriechst dich im Vertrauten und wartest, dass jemand es löst.",
+        "task": "Deine Lebensaufgabe: selbst die Erwachsene in deinem Leben sein und deine Ziele ernst nehmen.",
+        "tools": ["Setz dir ein konkretes Ziel und geh es in kleinen, festen Schritten an.", "Übernimm Verantwortung für deine Lage, statt zu warten.", "Tröste dich selbst und mach dann den nächsten Schritt."],
+    },
+    "Wassermann": {
+        "higher": "Dein Higher Self wächst über Gemeinschaft und Freiheit. Du bist hier, um mit deinem Anderssein zum großen Ganzen beizutragen.",
+        "lower": "Dein vertrautes Muster (Südknoten Löwe) braucht Anerkennung und Mittelpunkt. Stolz und das Alles-auf-mich-Beziehen halten dich fest.",
+        "task": "Deine Lebensaufgabe: Teil von etwas Größerem sein, ohne ständig gesehen werden zu müssen.",
+        "tools": ["Trag zu einer Sache bei, ohne auf Applaus zu warten.", "Freu dich am Erfolg anderer, statt ihn mit deinem zu vergleichen.", "Steh zu deinem Anderssein, es ist dein Beitrag, nicht dein Makel."],
+    },
+    "Fische": {
+        "higher": "Dein Higher Self wächst über Vertrauen und Mitgefühl. Du darfst loslassen, weich werden und dich mit etwas Größerem verbinden.",
+        "lower": "Dein vertrautes Muster (Südknoten Jungfrau) perfektioniert und kontrolliert. Du verlierst dich in Kritik und Sorge und analysierst alles.",
+        "task": "Deine Lebensaufgabe: vertrauen und loslassen, statt alles kontrollieren zu wollen.",
+        "tools": ["Lass bewusst etwas unperfekt und schau, dass die Welt trotzdem trägt.", "Nimm dir Momente der Stille, in denen du nichts optimieren musst.", "Sei so sanft mit dir, wie du es mit einem lieben Menschen wärst."],
+    },
+}
+
 SIGN_ELEMENT = {
     "Widder": "Feuer", "Stier": "Erde", "Zwillinge": "Luft", "Krebs": "Wasser",
     "Löwe": "Feuer", "Jungfrau": "Erde", "Waage": "Luft", "Skorpion": "Wasser",
@@ -359,6 +439,44 @@ def full_analysis(chart):
                   ("Offen", ", ".join(open_c) or "keine")],
     })
 
+    nat = chart["natal"]
+    nk = nat.get("Nordknoten")
+    sk = nat.get("Südknoten")
+    axis = NODE_AXIS.get(nk["sign"], {}) if nk else {}
+    if nk and axis:
+        f = [("Nordknoten", f"{nk['sym']} {nk['sign']} {nk['text']}")]
+        if nk.get("house"):
+            f.append(("Haus", f"H{nk['house']}"))
+        sections.append({
+            "title": "Dein Higher Self",
+            "subtitle": f"Nordknoten in {nk['sign']}, wohin du wächst",
+            "headline": f"Dein Wachstum zeigt Richtung {nk['sign']}",
+            "body": axis.get("higher", ""),
+            "takeaway": axis.get("task", ""),
+            "facts": f,
+        })
+    if sk and axis:
+        sections.append({
+            "title": "Dein Lower Self",
+            "subtitle": f"Südknoten in {sk['sign']}, dein vertrautes Muster",
+            "headline": f"Deine Komfortzone liegt im {sk['sign']}",
+            "body": axis.get("lower", ""),
+            "facts": [("Südknoten", f"{sk['sym']} {sk['sign']} {sk['text']}")],
+        })
+    if nk and sk and axis:
+        sections.append({
+            "title": "Deine Lebensaufgabe",
+            "subtitle": f"Deine Mondknoten-Achse: {sk['sign']} zu {nk['sign']}",
+            "headline": f"Von {sk['sign']} nach {nk['sign']}",
+            "body": (f"Deine Mondknoten-Achse ist der rote Faden deines Lebens. Sie zeigt, woher du "
+                     f"kommst und wohin du wächst. Vertraut und leicht ist dir das {sk['sign']}-Muster, "
+                     f"dort fühlst du dich sicher. Dein eigentliches Wachstum liegt auf der anderen "
+                     f"Seite, im {nk['sign']}. Du kommst dorthin, indem du das alte Muster immer öfter "
+                     f"bewusst hinter dir lässt und den neuen Weg wählst, Schritt für Schritt."),
+            "takeaway": axis.get("task", ""),
+            "facts": [],
+        })
+
     chi = chart["natal"].get("Chiron")
     if chi:
         facts = [("Stellung", f"{chi['sym']} {chi['sign']} {chi['text']}")]
@@ -370,6 +488,20 @@ def full_analysis(chart):
             "body": CHIRON_SIGN.get(chi["sign"], "Chiron zeigt die Stelle, an der du verletzlich "
                     "bist, und genau dort liegt deine besondere Kraft, andere zu heilen."),
             "facts": facts,
+        })
+
+    if axis.get("tools"):
+        tool_lines = "\n\n".join("• " + x for x in axis["tools"])
+        sections.append({
+            "title": "Deine Tools und Impulse",
+            "subtitle": "Wie du gut mit dir und deiner Umwelt umgehst",
+            "headline": "Kleine Schritte, große Wirkung",
+            "body": ("Ein paar konkrete Impulse, wie du dein Higher Self stärkst und dein altes Muster "
+                     "früh erkennst:\n\n" + tool_lines + "\n\nUnd im Umgang mit anderen: Lebe deine "
+                     "Strategie, " + t.get("strategy", "").lower() + ", und triff wichtige "
+                     "Entscheidungen über deine " + hd["authority"].lower() + ". So bleibst du bei "
+                     "dir, auch wenn es um dich herum laut wird."),
+            "facts": [],
         })
 
     # Reihenfolge Natal: Sonne, Mond, dann die Achsen (AC/DC/MC/IC), dann die Planeten.
