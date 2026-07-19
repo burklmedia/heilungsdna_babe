@@ -162,6 +162,43 @@
   .photo span { font-family: var(--script); font-size: 22px; color: var(--ink); background: rgba(38,24,72,.7); padding: 10px 18px; border-radius: 999px; }
   .midcta { margin-top: 34px; }
 
+  /* hero copy V2 */
+  .promise { font-family: var(--serif); font-size: clamp(19px,2.4vw,23px); font-style: italic; line-height: 1.42; color: var(--ink); margin: 0 0 20px; max-width: 24em; }
+  .promise b { font-style: normal; color: var(--gold); font-weight: 600; }
+  .herolead { display: flex; flex-direction: column; gap: 12px; max-width: 33em; }
+  .herolead p { font-size: 16px; line-height: 1.58; color: var(--ink-soft); }
+  .herolead p.strong { color: var(--ink); }
+
+  /* centered section intro */
+  .intro { max-width: 42em; margin: 0 auto; color: var(--ink-soft); }
+  .intro p { margin-bottom: 10px; font-size: 17px; line-height: 1.6; }
+  .intro p:last-child { margin-bottom: 0; }
+
+  /* example / mockup section */
+  .example-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: center; }
+  .mockup { border-radius: 24px; border: 1px solid var(--line-strong); background: rgba(38,24,72,.55); padding: 28px; box-shadow: 0 30px 70px -34px rgba(10,4,30,.7), 0 0 60px -22px var(--glow-purple); }
+  .mockup .mock-h { font-family: var(--serif); font-size: 23px; color: var(--ink); margin-bottom: 3px; }
+  .mockup .mock-sub { font-size: 11.5px; color: var(--ink-mute); text-transform: uppercase; letter-spacing: .14em; margin-bottom: 20px; }
+  .mockup .mline { height: 10px; border-radius: 6px; background: linear-gradient(90deg, rgba(201,164,255,.32), rgba(201,164,255,.06)); margin-bottom: 11px; }
+  .mockup .mline.s { width: 60%; } .mockup .mline.m { width: 85%; }
+  .mockup .mbadge { display: inline-block; margin-top: 10px; font-family: var(--script); font-size: 24px; color: var(--gold); text-shadow: 0 0 24px var(--glow); }
+  .cards { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .mcard { display: flex; align-items: center; gap: 11px; background: rgba(38,24,72,.5); border: 1px solid var(--line); border-radius: 14px; padding: 14px 15px; font-size: 14.5px; color: var(--ink); }
+  .mcard .ic { font-size: 18px; flex: none; }
+
+  /* faq */
+  .faq { max-width: 780px; margin: 0 auto; display: flex; flex-direction: column; gap: 14px; }
+  .faq-item { background: rgba(38,24,72,.5); border: 1px solid var(--line); border-radius: 16px; padding: 22px 26px; }
+  .faq-q { font-family: var(--serif); font-size: 21px; color: var(--ink); margin-bottom: 8px; }
+  .faq-a { color: var(--ink-soft); font-size: 16px; line-height: 1.6; }
+
+  /* final cta */
+  .finalcta { max-width: 780px; margin: 0 auto; text-align: center; background: linear-gradient(135deg, #2a1a52 0%, #4a2f8a 100%);
+    border-radius: 30px; padding: 58px 44px; box-shadow: 0 0 80px -20px rgba(160,110,255,.6), inset 0 0 0 1px rgba(201,164,255,.2); }
+  .finalcta h2 { font-size: clamp(26px,4vw,38px); line-height: 1.18; color: #fff; margin-bottom: 18px; }
+  .finalcta p { color: rgba(255,255,255,.9); font-size: 18px; line-height: 1.6; margin-bottom: 26px; }
+  .finalcta .btn { width: auto; }
+
   /* about */
   .about-box { background: linear-gradient(135deg, #2a1a52 0%, #4a2f8a 100%); border-radius: 30px; padding: 52px 54px;
     display: grid; grid-template-columns: .8fr 1.2fr; gap: 48px; align-items: center;
@@ -266,6 +303,7 @@
     .pain-grid { grid-template-columns: 1fr; }
     .benefits-grid { grid-template-columns: 1fr; gap: 34px; }
     .photo { max-width: 360px; }
+    .example-grid { grid-template-columns: 1fr; gap: 30px; }
     .about-box { grid-template-columns: 1fr; gap: 28px; padding: 40px 30px; }
     .about-portrait { max-width: 220px; }
     .grid2 { grid-template-columns: 1fr; }
@@ -275,6 +313,8 @@
     section.band { padding: 62px 0; }
     .facts3 { grid-template-columns: 1fr; }
     .card, .mailcard { padding: 26px 22px; }
+    .cards { grid-template-columns: 1fr; }
+    .finalcta { padding: 44px 26px; }
   }
 </style>
 </head>
@@ -295,10 +335,15 @@
     <div class="wrap">
       <div class="hero-grid">
         <div>
-          <div class="chip"><span class="sp">✦</span> <span class="sp">Human Design × Natalchart</span> · für feinfühlige Menschen</div>
+          <div class="chip"><span class="sp">✨</span> <span class="sp">Human Design • Astrologie • Numerologie</span> · verständlich für dich verbunden</div>
           <h1>Entdecke, wer du <span class="script">wirklich</span> bist,<br>exakt aus deinem Geburtshimmel.</h1>
-          <p class="sub">Vier Angaben genügen. Wir lesen deinen Himmel auf die Bogenminute genau – und übersetzen ihn in eine Sprache, die dein Herz versteht.</p>
-          <div class="traits"><span>Kein Sternzeichen nötig</span><span>Exakt berechnet</span><span>Kostenlos</span></div>
+          <p class="promise">Du musst nicht jemand anderes werden. Du musst nur verstehen, <b>wer du schon immer warst.</b></p>
+          <div class="herolead">
+            <p>Vielleicht hast du dein Leben lang versucht herauszufinden, warum sich manche Entscheidungen leicht anfühlen – und andere dich immer wieder Kraft kosten.</p>
+            <p>Nicht, weil mit dir etwas nicht stimmt. Sondern weil du deinen eigenen Bauplan nie kennenlernen konntest.</p>
+            <p class="strong">Dein kosmischer Bauplan zeigt dir, wie du wirklich gemeint bist – klar, verständlich und exakt aus deinen Geburtsdaten berechnet.</p>
+          </div>
+          <div class="traits"><span>Kein Persönlichkeitstest</span><span>Exakt berechnet</span><span>Kostenlos starten</span></div>
         </div>
 
         <div class="card">
@@ -325,7 +370,7 @@
           </div>
           <button class="btn" id="go1" type="button">Meinen Himmel lesen ✦</button>
           <div class="err" id="err1"></div>
-          <p class="microcopy">Kostenlos · keine E-Mail für den ersten Funken nötig</p>
+          <p class="microcopy">Keine Vermutungen. Keine Schubladen. Sondern dein persönlicher kosmischer Bauplan – individuell aus deinen Geburtsdaten berechnet.</p>
         </div>
       </div>
     </div>
@@ -336,13 +381,17 @@
     <div class="wrap">
       <div class="sec-head center">
         <div class="script-eyebrow">Kommt dir das bekannt vor?</div>
-        <h2>Du funktionierst, aber du lebst nicht deine <span class="script">eigene Natur.</span></h2>
+        <h2>Du funktionierst. Aber tief in dir spürst du, dass da noch <span class="script">mehr ist.</span></h2>
+        <div class="intro" style="margin-top:20px">
+          <p>Von außen scheint alles in Ordnung.</p>
+          <p>Doch innerlich begleitet dich immer wieder das Gefühl, dass du dich selbst noch gar nicht wirklich kennst. Nicht oberflächlich – sondern auf einer tieferen Ebene.</p>
+        </div>
       </div>
       <div class="pain-grid">
-        <div class="pain"><div class="dot">✦</div><p>Du funktionierst nach Regeln, die sich nie ganz richtig angefühlt haben – und weißt nicht, warum.</p></div>
-        <div class="pain"><div class="dot">✦</div><p>Du spürst ein großes Potenzial in dir – kommst aber einfach nicht wirklich dran.</p></div>
-        <div class="pain"><div class="dot">✦</div><p>Ständig passt du dich an und fragst dich abends: Wer bin ich eigentlich, wenn ich nicht funktioniere?</p></div>
-        <div class="pain"><div class="dot">✦</div><p>Persönlichkeitstests hast du viele gemacht – hängengeblieben ist am Ende nichts Konkretes.</p></div>
+        <div class="pain"><div class="dot">✦</div><p>Du triffst Entscheidungen oft mit dem Kopf – und fragst dich später, warum sie sich trotzdem nicht richtig anfühlen.</p></div>
+        <div class="pain"><div class="dot">✦</div><p>Du passt dich häufig an andere an und hast manchmal das Gefühl, dich selbst dabei zu verlieren.</p></div>
+        <div class="pain"><div class="dot">✦</div><p>Du spürst, dass mehr in dir steckt – weißt aber nicht, wie du Zugang dazu findest.</p></div>
+        <div class="pain"><div class="dot">✦</div><p>Du hast Bücher gelesen und Tests gemacht – und trotzdem fehlt das Gefühl: „Jetzt verstehe ich mich wirklich."</p></div>
       </div>
     </div>
   </section>
@@ -350,8 +399,14 @@
   <!-- BRÜCKE -->
   <section class="band">
     <div class="wrap bridge">
-      <h2>Genau dafür habe ich <span class="script">deinen kosmischen Bauplan</span> gemacht.</h2>
-      <p>Statt vager Ratschläge bekommst du eine exakt berechnete Landkarte deiner Natur. Du hörst auf, gegen dich selbst zu arbeiten – und fängst an, Entscheidungen so zu treffen, wie sie für <em>dich</em> stimmig sind. Klar, in deiner Sprache, ohne Eso-Fachchinesisch.</p>
+      <div class="intro" style="margin-bottom:28px">
+        <p>Die meisten Menschen verbringen Jahre damit, Antworten im Außen zu suchen. Sie lesen Bücher, machen Tests, besuchen Seminare.</p>
+        <p>Dabei tragen sie ihren persönlichen Bauplan bereits seit dem Moment ihrer Geburt in sich. Man muss ihn nur lesen können.</p>
+      </div>
+      <h2>Genau dafür habe ich <span class="script">deinen kosmischen Bauplan</span> entwickelt.</h2>
+      <p>Du erhältst keine allgemeinen Aussagen, sondern eine präzise berechnete Landkarte deiner Persönlichkeit.</p>
+      <p>Du erkennst, warum du Entscheidungen auf deine eigene Weise treffen solltest, welche Stärken bereits in dir angelegt sind, welche Herausforderungen immer wieder auftauchen – und wie du aufhören kannst, gegen deine eigene Natur zu arbeiten.</p>
+      <p><em>Alles leicht verständlich erklärt – ohne komplizierte Fachbegriffe.</em></p>
     </div>
   </section>
 
@@ -360,8 +415,9 @@
     <div class="wrap">
       <div class="benefits-grid">
         <div>
-          <div class="script-eyebrow">Was in deinem Bauplan steckt</div>
-          <h2 style="font-size:clamp(28px,4vw,38px);line-height:1.14;margin:6px 0 34px">Kein vages Bauchgefühl. Sondern das hier: schwarz auf weiß.</h2>
+          <div class="script-eyebrow">Was in deinem kosmischen Bauplan steckt</div>
+          <h2 style="font-size:clamp(28px,4vw,38px);line-height:1.14;margin:6px 0 16px">Jeder Mensch ist einzigartig – dein Bauplan besteht aus vielen Ebenen.</h2>
+          <p style="color:var(--ink-soft);font-size:16.5px;line-height:1.6;margin:0 0 28px">Erst zusammen ergeben sie ein vollständiges Bild. Du erhältst unter anderem:</p>
           <div class="contents">
             <div class="item"><span class="check">✓</span><p><b>Dein Human-Design-Typ</b> <span>· endlich verstehen, wie du Entscheidungen richtig triffst.</span></p></div>
             <div class="item"><span class="check">✓</span><p><b>Deine innere Autorität</b> <span>· worauf du hören darfst, statt dich vom Kopf treiben zu lassen.</span></p></div>
@@ -370,10 +426,44 @@
             <div class="item"><span class="check">✓</span><p><b>Dein Chiron &amp; deine Zentren</b> <span>· deine Urwunde, deine Heilkraft und wo du Kraft schöpfst.</span></p></div>
             <div class="item"><span class="check">✓</span><p><b>Deutung in Klartext</b> <span>· liebevoll, konkret und sofort für dich anwendbar.</span></p></div>
           </div>
-          <div class="midcta"><a href="#start" class="btn" style="width:auto" data-scroll="start">Jetzt meinen Himmel lesen ✦</a></div>
+          <div class="midcta"><a href="#start" class="btn" style="width:auto" data-scroll="start">Jetzt meinen Bauplan entdecken ✦</a></div>
         </div>
         <div class="photo"><span>hier dein Foto</span></div>
       </div>
+    </div>
+  </section>
+
+  <!-- SO KÖNNTE DEIN BAUPLAN AUSSEHEN -->
+  <section class="band">
+    <div class="wrap">
+      <div class="sec-head center" style="margin-bottom:36px">
+        <div class="script-eyebrow">Ein erster Blick</div>
+        <h2>So könnte dein persönlicher <span class="script">Bauplan</span> aussehen</h2>
+      </div>
+      <div class="intro" style="text-align:center;margin-bottom:46px">
+        <p>Stell dir vor, jemand würde dir nicht sagen, wer du sein solltest – sondern dir zeigen, wer du schon immer warst.</p>
+        <p>Dein persönlicher Bauplan verbindet verschiedene Systeme zu einem verständlichen Gesamtbild. Keine Rätsel, keine komplizierten Symbole – sondern klare Erkenntnisse, die du direkt in deinem Alltag anwenden kannst.</p>
+      </div>
+      <div class="example-grid">
+        <div class="mockup">
+          <div class="mock-h">Dein kosmischer Bauplan</div>
+          <div class="mock-sub">Persönlicher Report · Beispiel</div>
+          <div class="mline m"></div><div class="mline"></div><div class="mline s"></div>
+          <div class="mline m"></div><div class="mline"></div><div class="mline s"></div>
+          <div class="mbadge">für dich berechnet</div>
+        </div>
+        <div class="cards">
+          <div class="mcard"><span class="ic">✨</span> Dein Human-Design-Typ</div>
+          <div class="mcard"><span class="ic">🌙</span> Deine innere Autorität</div>
+          <div class="mcard"><span class="ic">⭐</span> Deine Lebensaufgabe</div>
+          <div class="mcard"><span class="ic">💛</span> Deine größten Stärken</div>
+          <div class="mcard"><span class="ic">🌿</span> Deine Herausforderungen</div>
+          <div class="mcard"><span class="ic">🧭</span> Dein Entscheidungsweg</div>
+          <div class="mcard"><span class="ic">💫</span> Deine Energiezentren</div>
+          <div class="mcard"><span class="ic">🌞</span> Handlungsempfehlungen</div>
+        </div>
+      </div>
+      <div style="text-align:center;margin-top:42px"><a href="#start" class="btn" style="width:auto" data-scroll="start">Ich möchte meinen Bauplan sehen ✦</a></div>
     </div>
   </section>
 
@@ -384,9 +474,49 @@
         <div class="about-portrait"><span>Denise</span></div>
         <div class="about">
           <div class="abeyebrow">Wer hinter Intuition mit Herz steht</div>
-          <h2>Hallo, ich bin <span class="script" style="color:#fff;font-size:1.2em;text-shadow:none">Denise</span> 🤍</h2>
-          <p>Ich verbinde exakte Berechnung mit echtem Herz: Deine Zahlen kommen aus präziser Astronomie – die Deutung aus jahrelanger Arbeit mit Menschen, die sich selbst wiederfinden wollten. Ich glaube, dass du nichts „reparieren" musst, sondern nur wieder verstehen darfst, wie du gemeint bist. Genau dabei hilft dir dein kosmischer Bauplan.</p>
+          <h2>Hallo, ich bin <span class="script" style="color:#fff;font-size:1.2em;text-shadow:none">Denise</span>. 🤍</h2>
+          <p>Vor einigen Jahren begann ich selbst, nach Antworten zu suchen. Nicht, weil ich mehr leisten wollte – sondern weil ich verstehen wollte, warum sich manches in meinem Leben immer wieder schwer angefühlt hat.</p>
+          <p style="margin-top:14px">Je tiefer ich mich mit Human Design, Astrologie und weiteren Systemen beschäftigt habe, desto klarer wurde: Wir müssen uns nicht verändern, um richtig zu sein. Wir dürfen uns wieder erinnern, wer wir wirklich sind.</p>
+          <p style="margin-top:14px">Genau daraus ist dieser kosmische Bauplan entstanden – damit du nicht jahrelang suchen musst, sondern deine Antworten an einem Ort findest.</p>
         </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="band band-2">
+    <div class="wrap">
+      <div class="sec-head center">
+        <h2>Vielleicht fragst du dich <span class="script">gerade noch …</span></h2>
+      </div>
+      <div class="faq">
+        <div class="faq-item">
+          <div class="faq-q">Brauche ich meine Geburtszeit?</div>
+          <div class="faq-a">Je genauer deine Angaben sind, desto präziser kann dein Bauplan berechnet werden.</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q">Ist das ein Persönlichkeitstest?</div>
+          <div class="faq-a">Nein. Dein Bauplan basiert auf deinen Geburtsdaten und wird individuell berechnet – nicht anhand von Fragen oder Vermutungen.</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q">Was bekomme ich?</div>
+          <div class="faq-a">Einen verständlich erklärten Bauplan mit vielen persönlichen Erkenntnissen und konkreten Impulsen für deinen Alltag.</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q">Muss ich Vorkenntnisse haben?</div>
+          <div class="faq-a">Überhaupt nicht. Alles wird so erklärt, dass du deinen Bauplan direkt verstehen und anwenden kannst.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ABSCHLUSS-CTA -->
+  <section class="band">
+    <div class="wrap">
+      <div class="finalcta">
+        <h2>Vielleicht ist genau jetzt der richtige Moment, dich selbst <span class="script" style="color:#fff;text-shadow:none;font-size:1.12em">neu kennenzulernen.</span></h2>
+        <p>Dein Bauplan wartet bereits seit dem Tag deiner Geburt. Du musst ihn nur noch lesen.</p>
+        <a href="#start" class="btn" data-scroll="start">Jetzt kostenlos starten ✦</a>
       </div>
     </div>
   </section>
