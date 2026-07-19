@@ -209,21 +209,23 @@
   .about-box { background: linear-gradient(135deg, #2a1a52 0%, #4a2f8a 100%); border-radius: 30px; padding: 52px 54px;
     display: grid; grid-template-columns: .8fr 1.2fr; gap: 48px; align-items: center;
     box-shadow: 0 0 80px -20px rgba(160,110,255,.6), inset 0 0 0 1px rgba(201,164,255,.2); }
+  @property --frameAngle { syntax: "<angle>"; inherits: false; initial-value: 0deg; }
   .about-portrait { position: relative; aspect-ratio: 1; border-radius: 24px; }
   .about-portrait img { position: relative; z-index: 1; display: block; width: 100%; height: 100%;
     object-fit: cover; object-position: 55% 18%; border-radius: 24px; }
-  /* dezenter Gold-Rahmen mit sanft atmendem Glow (kein Drehen, Bild bleibt scharf) */
+  /* NUR ein goldener Gradient-Rahmen (dünner Ring direkt am Bild, nichts dahinter) */
   .about-portrait::after { content: ""; position: absolute; inset: 0; z-index: 2; border-radius: 24px; pointer-events: none;
-    box-shadow: 0 0 30px -6px rgba(245,197,107,.4), inset 0 0 0 2px rgba(245,197,107,.55);
-    animation: portraitGlow 6s ease-in-out infinite; }
+    padding: 3px;
+    background: conic-gradient(from var(--frameAngle), #eab24d, #f5d78c, #f5c56b, #d9a94e, #f5d78c, #eab24d);
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+            mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor; mask-composite: exclude;
+    animation: frameSpin 9s linear infinite; }
   .about-portrait .ph { display: none; }
   .about-portrait.noimg { border: 1px solid rgba(255,255,255,.25); overflow: hidden;
     background: repeating-linear-gradient(135deg, rgba(255,255,255,.35) 0 12px, rgba(255,255,255,.12) 12px 24px); display: grid; place-items: center; }
   .about-portrait.noimg .ph { display: block; position: relative; z-index: 3; font-family: var(--script); font-size: 26px; color: #fff; }
-  @keyframes portraitGlow {
-    0%, 100% { box-shadow: 0 0 22px -8px rgba(245,197,107,.30), inset 0 0 0 2px rgba(245,197,107,.42); }
-    50%      { box-shadow: 0 0 48px  0px rgba(245,197,107,.58), inset 0 0 0 2px rgba(245,197,107,.72); }
-  }
+  @keyframes frameSpin { to { --frameAngle: 360deg; } }
   .about .abeyebrow { font-family: var(--script); font-size: 24px; color: var(--gold); margin-bottom: 8px; }
   .about h2 { font-size: clamp(26px, 3.6vw, 38px); margin-bottom: 20px; color: #fff; }
   .about p { color: rgba(255,255,255,.9); font-size: 17px; line-height: 1.66; }
