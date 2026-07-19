@@ -51,7 +51,8 @@
     animation: glowPulse 5s ease-in-out infinite;
     background: radial-gradient(circle at 50% 50%, rgba(245,205,120,.55) 0%, rgba(245,197,107,.22) 32%, rgba(245,197,107,.06) 52%, transparent 68%); }
   @keyframes glowPulse { 0%,100% { opacity: .5; transform: translateX(-50%) scale(.92); } 50% { opacity: 1; transform: translateX(-50%) scale(1.08); } }
-  @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } #orb, .about-portrait::after { animation: none; } }
+  @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } #orb, .about-portrait::after { animation: none; }
+    .denise-name .sig path { animation: none; stroke-dashoffset: 0; } }
 
   h1,h2,h3,h4 { font-family: var(--serif); font-weight: 500; text-wrap: balance; margin: 0; letter-spacing: 0; }
   p { margin: 0; }
@@ -229,6 +230,12 @@
   .about .abeyebrow { font-family: var(--script); font-size: 24px; color: var(--gold); margin-bottom: 8px; }
   .about h2 { font-size: clamp(26px, 3.6vw, 38px); margin-bottom: 20px; color: #fff; }
   .about p { color: rgba(255,255,255,.9); font-size: 17px; line-height: 1.66; }
+  /* handgeschriebener Name mit goldener Schwung-Linie darunter */
+  .denise-name { position: relative; display: inline-block; font-family: var(--script); color: #fff; font-size: 1.2em; white-space: nowrap; padding-bottom: .14em; }
+  .denise-name .sig { position: absolute; left: -4%; bottom: -.16em; width: 108%; height: .5em; overflow: visible; }
+  .denise-name .sig path { fill: none; stroke: var(--gold); stroke-width: 3; stroke-linecap: round;
+    filter: drop-shadow(0 0 8px var(--glow)); stroke-dasharray: 260; stroke-dashoffset: 260; animation: signDraw 1.2s ease .3s forwards; }
+  @keyframes signDraw { to { stroke-dashoffset: 0; } }
 
   /* ---------------- RITUAL (magischer Moment) ---------------- */
   .ritual { min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 70px 20px; }
@@ -507,7 +514,7 @@
         </div>
         <div class="about">
           <div class="abeyebrow">Wer hinter Intuition mit Herz steht</div>
-          <h2>Hallo, ich bin <span class="script" style="color:#fff;font-size:1.2em;text-shadow:none">Denise</span>. 🤍</h2>
+          <h2>Hallo, ich bin <span class="denise-name">Denise<svg class="sig" viewBox="0 0 200 20" preserveAspectRatio="none" aria-hidden="true"><path d="M4 13 C 34 5, 66 19, 100 11 C 134 4, 168 17, 196 9"/></svg></span>. 🤍</h2>
           <p>Vor einigen Jahren begann ich selbst, nach Antworten zu suchen. Ich wollte verstehen, warum sich manches in meinem Leben immer wieder schwer angefühlt hat.</p>
           <p style="margin-top:14px">Je tiefer ich mich mit Human Design, Astrologie und weiteren Systemen beschäftigt habe, desto klarer wurde: Wir müssen uns nicht verändern, um richtig zu sein. Wir dürfen uns wieder daran erinnern, wer wir wirklich sind.</p>
           <p style="margin-top:14px">Genau daraus ist dieser kosmische Bauplan entstanden. Damit du deine Antworten an einem Ort findest, statt jahrelang danach zu suchen.</p>
