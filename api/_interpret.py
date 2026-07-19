@@ -296,40 +296,52 @@ SIGN_ELEMENT = {
 # Emotionale Zeichen-Essenz (2 Sätze), fließt hinter dem Planeten-Satz weiter.
 SIGN_EMOTION = {
     "Widder": "Du trägst ein Feuer in dir, das losgehen will, sobald es etwas spürt. Warten fällt "
-              "dir schwer, und genau diese mutige Direktheit bringt Bewegung in dein Leben und in "
-              "das der Menschen um dich herum.",
+              "dir schwer, und manchmal bist du schneller unterwegs, als dein Umfeld folgen kann. "
+              "Genau diese mutige Direktheit bringt Bewegung in dein Leben und erlaubt dir, für dich "
+              "einzustehen, wenn es darauf ankommt.",
     "Stier": "Du sehnst dich nach Ruhe, Sicherheit und Dingen, die bleiben. Du genießt mit allen "
-             "Sinnen und schenkst anderen ein Gefühl von Verlässlichkeit, auf das man sich wirklich "
-             "stützen kann.",
-    "Zwillinge": "Dein Geist ist immer in Bewegung, neugierig auf alles, was es zu entdecken und zu "
-                 "bereden gibt. Du kommst über Worte in Verbindung und bringst Leichtigkeit "
-                 "dorthin, wo es sonst schwer würde.",
+             "Sinnen und brauchst festen Boden unter den Füßen, um dich wirklich fallen zu lassen. "
+             "Menschen fühlen sich bei dir geborgen, weil du eine Verlässlichkeit ausstrahlst, auf "
+             "die man sich stützen kann.",
+    "Zwillinge": "Dein Geist ist ständig in Bewegung, neugierig auf alles, was es zu entdecken und "
+                 "zu bereden gibt. Du kommst über Worte in Verbindung und bringst Leichtigkeit "
+                 "dorthin, wo es sonst schwer würde. Manchmal springst du von Thema zu Thema, und "
+                 "genau diese wache Vielseitigkeit ist dein Geschenk.",
     "Krebs": "Du fühlst tiefer, als du es oft nach außen zeigst, und Nähe ist für dich wie ein "
-             "Zuhause. Du spürst feinfühlig, was andere brauchen, und schaffst Räume, in denen "
-             "Menschen sich geborgen fühlen.",
-    "Löwe": "In dir wohnt eine Wärme, die gesehen werden möchte und andere zum Leuchten bringt. "
-            "Wenn du aus dem Herzen heraus lebst, ziehst du Menschen an und schenkst ihnen Mut.",
+             "Zuhause. Du spürst feinfühlig, was andere brauchen, oft bevor sie es selbst wissen. In "
+             "deiner Gegenwart fühlen sich Menschen sicher und gehalten, weil du Räume schaffst, in "
+             "denen man einfach sein darf.",
+    "Löwe": "In dir wohnt eine Wärme, die gesehen werden will und andere zum Leuchten bringt. Wenn "
+            "du aus dem Herzen heraus lebst, ziehst du Menschen an und schenkst ihnen Mut. Du bist "
+            "am schönsten, wenn du dich traust, groß zu sein, ganz ohne dich dafür zu entschuldigen.",
     "Jungfrau": "Du hast ein feines Gespür für das, was noch besser werden kann, und einen echten "
                 "Wunsch zu helfen. Deine Liebe zeigt sich im Detail, in der Sorgfalt und in der "
-                "stillen Art, für andere da zu sein.",
+                "stillen Art, für andere da zu sein. Wenn du diese Güte auch dir selbst schenkst, "
+                "wird deine Gabe zur Quelle statt zur Last.",
     "Waage": "Du sehnst dich nach Harmonie, Schönheit und einem Miteinander auf Augenhöhe. Du "
-             "spürst Ungleichgewicht sofort und hast die Gabe, zwischen Menschen wieder Frieden "
-             "herzustellen.",
-    "Skorpion": "Du gehst dorthin in die Tiefe, wo es echt wird und andere lieber wegschauen. "
-                "Deine Intensität kann verwandeln, und du hast die Kraft, aus Krisen gestärkt "
-                "hervorzugehen.",
+             "spürst Ungleichgewicht sofort und hast die Gabe, zwischen Menschen wieder Frieden zu "
+             "stiften. Deine Aufgabe ist, dabei nie dich selbst zu vergessen, denn echte Harmonie "
+             "schließt dich mit ein.",
+    "Skorpion": "Du gehst dorthin in die Tiefe, wo es echt wird und andere lieber wegschauen. Deine "
+                "Intensität kann verwandeln, und du hast die Kraft, aus Krisen gestärkt "
+                "hervorzugehen. Menschen spüren, dass sie dir nichts vormachen können, und genau das "
+                "macht dich zu jemandem, dem man wirklich vertraut.",
     "Schütze": "In dir lebt eine Weite, die nach Sinn, Freiheit und dem großen Ganzen sucht. Du "
                "brauchst Horizont, um zu atmen, und steckst andere mit deinem Vertrauen ins Leben "
-               "an.",
+               "an. Wenn du deiner eigenen Wahrheit folgst, wirst du zu dem Menschen, der anderen "
+               "wieder Hoffnung gibt.",
     "Steinbock": "Du trägst eine stille Kraft und Ausdauer in dir, die über Jahre etwas Bleibendes "
                  "aufbaut. Verantwortung schreckt dich nicht, und auf dein Wort kann man sich "
-                 "verlassen.",
+                 "verlassen. Dein wichtiger Lernweg ist, dir zu erlauben, auch mal zu ruhen, ohne "
+                 "dich dafür schuldig zu fühlen.",
     "Wassermann": "Du bist auf eine schöne Weise anders und siehst die Welt von einem Punkt aus, "
                   "den sonst kaum jemand einnimmt. Deine Freiheit ist dir heilig, und dein eigener "
-                  "Weg macht auch anderen Mut, sie selbst zu sein.",
+                  "Weg macht auch anderen Mut, sie selbst zu sein. Genau da, wo du dich manchmal "
+                  "fremd gefühlt hast, liegt dein wertvollster Beitrag.",
     "Fische": "Du spürst mehr, als sich in Worte fassen lässt, und trägst ein großes Mitgefühl in "
               "dir. Deine Weichheit ist eine Stärke, und deine Fantasie öffnet Türen zu einer Welt "
-              "hinter der sichtbaren.",
+              "hinter der sichtbaren. Wenn du lernst, dich sanft abzugrenzen, wird dein tiefes "
+              "Fühlen zum Geschenk, ohne dich zu überfluten.",
 }
 
 PLANET_MEANING = {
