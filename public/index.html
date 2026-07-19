@@ -421,6 +421,31 @@
   .legend .li .t { font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: var(--gold); margin-bottom: 3px; }
   .legend .li .d { font-size: 13px; color: var(--ink-soft); line-height: 1.68; }
 
+  /* Intuitionstyp */
+  .intu { max-width: 640px; margin: 0 auto; text-align: center; }
+  .intu-sketch { display: flex; justify-content: center; margin: 6px 0 8px; }
+  .intu-sketch svg { width: 138px; height: 138px; }
+  .intu-eyebrow { font-size: 11px; letter-spacing: .3em; text-transform: uppercase; color: var(--accent-deep); font-weight: 700; margin-bottom: 2px; }
+  .intu-script { font-size: clamp(42px, 9vw, 64px); line-height: 1.05; margin: 2px 0; }
+  .intu-tag { font-family: var(--serif); font-style: italic; font-size: 18px; color: var(--ink-soft); margin-bottom: 20px; }
+  .intu-text { color: var(--ink-soft); font-size: 16px; line-height: 1.85; text-align: left; }
+  .intu-sci { margin-top: 14px; font-size: 12.5px; color: var(--ink-mute); }
+  .toolcard { margin-top: 24px; text-align: left; border-color: rgba(245,197,107,.38); background: rgba(245,197,107,.05); }
+  .toolcard .pv { font-family: var(--serif); }
+  .toollist { margin: 8px 0 2px; padding-left: 20px; }
+  .toollist li { color: var(--ink-soft); font-size: 14px; line-height: 1.72; margin-bottom: 11px; }
+  .intu-gallery { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; text-align: center; }
+  @media (max-width: 560px) { .intu-gallery { grid-template-columns: 1fr; } }
+  .itype { position: relative; border: 1px solid var(--line); border-radius: 14px; padding: 16px 14px 15px; background: rgba(255,255,255,.02); }
+  .itype.on { border-color: rgba(245,197,107,.5); background: rgba(245,197,107,.07); }
+  .itype-sk { display: flex; justify-content: center; }
+  .itype-sk svg { width: 66px; height: 66px; }
+  .itype-name { font-family: var(--serif); font-size: 16px; color: var(--ink); margin-top: 4px; }
+  .itype-tag { font-size: 10.5px; letter-spacing: .08em; color: var(--gold); text-transform: uppercase; margin: 2px 0 7px; }
+  .itype-one { font-size: 12.5px; color: var(--ink-soft); font-style: italic; line-height: 1.5; }
+  .itype-badge { position: absolute; top: 10px; right: 10px; font-size: 9px; letter-spacing: .1em; text-transform: uppercase; color: #3a2410; background: var(--gold); border-radius: 999px; padding: 3px 8px; font-weight: 700; }
+  .intu-note { margin-top: 24px; font-size: 12px; color: var(--ink-mute); line-height: 1.65; text-align: center; }
+
   /* footer */
   footer { border-top: 1px solid var(--line); padding: 40px 0; color: var(--ink-mute); font-size: 14px; margin-top: 40px; }
   .foot { display: flex; align-items: center; justify-content: space-between; gap: 20px; flex-wrap: wrap; }
@@ -796,11 +821,13 @@
         <button class="rtab active" data-rtab="ov" type="button">✦ Übersicht</button>
         <button class="rtab" data-rtab="hd" type="button">◈ Human Design</button>
         <button class="rtab" data-rtab="na" type="button">☉ Natalchart</button>
+        <button class="rtab" data-rtab="in" type="button">❋ Intuitionstyp</button>
         <button class="rtab" data-rtab="de" type="button">❂ Deutung</button>
       </nav>
       <div class="rpane active" id="pane-ov"></div>
       <div class="rpane" id="pane-hd"></div>
       <div class="rpane" id="pane-na"></div>
+      <div class="rpane" id="pane-in"></div>
       <div class="rpane" id="pane-de"></div>
       <p style="text-align:center;margin-top:26px;color:var(--ink-mute);font-size:12.5px" id="note"></p>
     </article>
@@ -1116,8 +1143,67 @@
         LEGEND.map(function(l){return '<div class="li"><div class="t">'+esc(l[0])+'</div><div class="d">'+esc(l[1])+'</div></div>';}).join('')+
       '</div>';
 
+    // ── INTUITIONSTYP ──
+    var it=f.intuition;
+    if(it){
+      document.getElementById('pane-in').innerHTML=
+        '<div class="intu">'+
+          '<div class="intu-sketch">'+intuSketch(it.key)+'</div>'+
+          '<div class="intu-eyebrow">Dein Intuitionstyp</div>'+
+          '<div class="intu-script script">'+esc(it.archetype)+'</div>'+
+          '<div class="intu-tag">'+esc(it.tagline)+' · Mond in '+esc(it.moon_sign)+'</div>'+
+          '<p class="intu-text">'+esc(it.text)+'</p>'+
+          '<div class="intu-sci">✦ '+esc(it.science)+'</div>'+
+          '<div class="pcard toolcard"><div class="ph">'+
+            '<div class="pico">✧</div>'+
+            '<div class="pmid"><div class="pk">Das sind deine Werkzeuge</div><div class="pv">Wie arbeitest du mit deiner Intuition?</div></div>'+
+            '<span class="pchev">▼</span></div>'+
+            '<div class="pbody"><div class="pin"><ul class="toollist">'+
+              (it.tools||[]).map(function(x){return '<li>'+esc(x)+'</li>';}).join('')+
+            '</ul></div></div></div>'+
+          '<div class="cap2" style="margin-top:28px">Die vier Intuitionstypen</div>'+
+          '<div class="intu-gallery">'+
+            (it.all||[]).map(function(a){var on=a.key===it.key;
+              return '<div class="itype'+(on?' on':'')+'">'+(on?'<div class="itype-badge">dein Typ</div>':'')+
+                '<div class="itype-sk">'+intuSketch(a.key)+'</div>'+
+                '<div class="itype-name">'+esc(a.archetype)+'</div>'+
+                '<div class="itype-tag">'+esc(a.tagline)+'</div>'+
+                '<div class="itype-one">'+esc(a.oneliner)+'</div></div>';
+            }).join('')+
+          '</div>'+
+          '<p class="intu-note">'+esc(it.note)+'</p>'+
+        '</div>';
+    }
+
     document.getElementById('note').textContent='✦ '+f.note;
     setRTab('ov');
+  }
+  /* ── Intuitionstyp-Skizzen (eine pro Element) ── */
+  function intuSketch(key){
+    var G='var(--gold)', A='var(--accent)', I='var(--ink-soft)';
+    var s='<svg viewBox="0 0 140 140" aria-hidden="true">';
+    if(key==='Wasser'){
+      s+='<path d="M96 28 a34 34 0 1 0 0 62 a26 26 0 1 1 0-62 z" fill="none" stroke="'+G+'" stroke-width="2"/>';
+      s+='<path d="M70 40 c-9 13 -13 19 -13 26 a13 13 0 0 0 26 0 c0 -7 -4 -13 -13 -26 z" fill="'+G+'" fill-opacity=".16" stroke="'+G+'" stroke-width="1.6"/>';
+      s+='<path d="M24 104 q10 -8 20 0 t20 0 t20 0 t20 0" fill="none" stroke="'+A+'" stroke-width="2"/>';
+      s+='<path d="M24 116 q10 -8 20 0 t20 0 t20 0 t20 0" fill="none" stroke="'+A+'" stroke-width="1.5" opacity=".6"/>';
+    } else if(key==='Feuer'){
+      s+='<path d="M70 18 c15 22 27 31 27 53 a27 27 0 0 1 -54 0 c0 -15 9 -23 15 -31 c2 8 8 11 8 11 c0 -13 -6 -21 4 -33 z" fill="'+G+'" fill-opacity=".16" stroke="'+G+'" stroke-width="2"/>';
+      ['30,32','112,40','24,74','116,80','70,116'].forEach(function(p){var xy=p.split(',');s+='<circle cx="'+xy[0]+'" cy="'+xy[1]+'" r="2.4" fill="'+A+'"/>';});
+    } else if(key==='Erde'){
+      s+='<path d="M18 104 L56 44 L80 78 L98 56 L122 104 Z" fill="'+G+'" fill-opacity=".14" stroke="'+G+'" stroke-width="2"/>';
+      s+='<line x1="14" y1="104" x2="126" y2="104" stroke="'+I+'" stroke-width="1.5"/>';
+      s+='<path d="M70 104 v-22" stroke="'+A+'" stroke-width="2"/>';
+      s+='<path d="M70 90 q-13 -2 -15 -15 q13 0 15 15z" fill="'+A+'" fill-opacity=".55"/>';
+      s+='<path d="M70 86 q13 -2 15 -15 q-13 0 -15 15z" fill="'+A+'" fill-opacity=".55"/>';
+    } else {
+      s+='<path d="M28 70 q42 -36 84 0 q-42 36 -84 0 z" fill="none" stroke="'+G+'" stroke-width="2"/>';
+      s+='<circle cx="70" cy="70" r="13" fill="none" stroke="'+A+'" stroke-width="2"/>';
+      s+='<circle cx="70" cy="70" r="4.5" fill="'+G+'"/>';
+      s+='<path d="M18 34 q22 -9 44 0" fill="none" stroke="'+A+'" stroke-width="1.5" opacity=".6"/>';
+      s+='<path d="M78 108 q22 -9 44 0" fill="none" stroke="'+A+'" stroke-width="1.5" opacity=".6"/>';
+    }
+    return s+'</svg>';
   }
   function kv(k,v){ return '<div class="kv"><span class="k">'+esc(k)+'</span><span class="v">'+esc(v)+'</span></div>'; }
   // Tab-Wechsel + aufklappbare Karten (einmalig, Delegation)
