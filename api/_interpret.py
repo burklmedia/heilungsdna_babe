@@ -431,14 +431,162 @@ HOUSE_TITLE = {
 ANGLE_HOUSE = {"AC": 1, "DC": 7, "MC": 10, "IC": 4}
 _ANGLES = ("AC", "DC", "MC", "IC")
 
+# Planet in Haus: was der Planet ganz konkret in diesem Lebensfeld bewirkt (aus deinem
+# Nachschlagewerk, in Du-Form, ohne Gedankenstriche).
+PLANET_HOUSE = {
+    "Sonne": {
+        1: "du verwirklichst dich am stärksten über deine Persönlichkeit und deine pure Präsenz",
+        2: "deine Identität hängt eng an deinen Werten, deinem Besitz und deinem Selbstwert",
+        3: "du findest zu dir selbst über Reden, Lernen und deine wache Neugier",
+        4: "deine tiefste Kraft liegt im Privaten, in Familie und in deinen Wurzeln",
+        5: "du blühst richtig auf, wenn du kreativ bist, liebst, spielst und dich zeigst",
+        6: "du findest Sinn in deiner Arbeit, im Dienst an anderen und in einem gesunden Alltag",
+        7: "du findest dich selbst vor allem in und durch deine engen Beziehungen",
+        8: "du wächst über Krisen, über Tiefe und über echte, radikale Wandlung",
+        9: "du bist im Kern eine Sinnsucherin, eine Reisende und eine Lehrerin",
+        10: "deine Berufung und deine öffentliche Rolle prägen, wer du bist",
+        11: "du gehst auf in Gruppen, in Idealen und in großen Zukunftsvisionen",
+        12: "deine Kraft wirkt im Stillen, im Rückzug und im Spirituellen",
+    },
+    "Mond": {
+        1: "deine Gefühle sind sichtbar, und deine Stimmung prägt dein ganzes Auftreten",
+        2: "du brauchst ein Stück materielle Sicherheit, um dich emotional geborgen zu fühlen",
+        3: "du denkst und sprichst gefühlvoll und bist deinen Geschwistern oft besonders nah",
+        4: "du hast eine tiefe Familienbindung, dein Zuhause ist dein sicherer Anker",
+        5: "du drückst deine Gefühle kreativ aus und hast ein inniges Verhältnis zu Kindern",
+        6: "deine Stimmung hängt stark an deinem Alltag, und du sorgst von Herzen gern für andere",
+        7: "du sehnst dich nach emotionaler Nähe und Anlehnung in der Partnerschaft",
+        8: "du fühlst tief und intensiv und sehnst dich nach echter Verschmelzung",
+        9: "du hast ein feines Gespür für Sinn und Ferne, deine Weltsicht ist emotional",
+        10: "du zeigst deine Fürsorge auch öffentlich, oft in helfenden oder nährenden Rollen",
+        11: "deine emotionale Heimat findest du in Freundschaften und in Gemeinschaft",
+        12: "deine Gefühlstiefe ist verborgen, du brauchst Rückzug und bist sehr empathisch",
+    },
+    "Merkur": {
+        1: "du wirkst wach, kommunikativ und neugierig, das Reden liegt dir",
+        2: "du denkst viel über Werte und Geld nach und verdienst gern über das Wort",
+        3: "dein Denken ist besonders stark, Lernen, Schreiben und Sprechen sind dein Element",
+        4: "deine Gedanken kreisen um Herkunft und Familie, du redest gern in vertrauter Runde",
+        5: "du denkst kreativ und spielst mit Sprache, Worte sind für dich Kunst",
+        6: "du denkst analytisch im Alltag und hast ein feines Auge fürs Detail",
+        7: "Austausch ist deine Beziehungsbasis, du redest dich mit anderen zueinander",
+        8: "dein Geist forscht gern in der Tiefe, dich ziehen Tabus und Psychologie an",
+        9: "du denkst philosophisch und liebst Sprachen, Sinn und das große Ganze",
+        10: "dein Denken zielt auf Beruf und Wirkung, Kommunikation ist dein Feld",
+        11: "du tauschst Ideen in Gruppen aus und denkst in Netzwerken",
+        12: "dein Denken ist leise und intuitiv, du führst viele innere Dialoge",
+    },
+    "Venus": {
+        1: "du hast Charme und eine ganz natürliche Anziehungskraft",
+        2: "du kannst tief genießen, liebst Schönes und hast klare eigene Werte",
+        3: "du kommunizierst liebenswürdig und findest fast immer die schönen Worte",
+        4: "du brauchst Harmonie und Schönheit in deinem Zuhause",
+        5: "Romantik, Kunst und Flirt gehören ganz selbstverständlich zu deiner Lebensfreude",
+        6: "du brauchst ein harmonisches Arbeitsklima und Freude im Alltag",
+        7: "Partnerschaft ist dir ein hoher Wert, du bist ein echter Beziehungsmensch",
+        8: "du liebst tief und intensiv und fühlst dich zum Verborgenen hingezogen",
+        9: "dich zieht das Fremde und die Ferne an, auch in der Liebe",
+        10: "du bist im Beruf beliebt, oft in ästhetischen oder gestalterischen Feldern",
+        11: "deine Liebe ist freundschaftlich, du magst harmonische Netzwerke",
+        12: "deine Liebe ist zart und still, oft hingebungsvoll und im Verborgenen",
+    },
+    "Mars": {
+        1: "du bist durchsetzungsstark, energiegeladen und manchmal ein wenig ungeduldig",
+        2: "du kämpfst für deine Werte und dein Geld und packst am liebsten selbst an",
+        3: "du hast eine scharfe Zunge, denkst schnell und diskutierst mit Leidenschaft",
+        4: "in deiner Familie steckt viel Energie, manchmal auch Reibung und Konflikt",
+        5: "du drückst dich leidenschaftlich aus, sportlich, mutig und kreativ",
+        6: "du bist arbeitsam und tatkräftig, achte nur gut auf die Gefahr von Überlastung",
+        7: "deine Beziehungen sind lebendig und dürfen auch mal Funken schlagen",
+        8: "du hast eine starke Willenskraft und meisterst Krisen und Machtthemen",
+        9: "du kämpfst für deine Überzeugungen und liebst das Abenteuer",
+        10: "dein Ehrgeiz treibt deine Karriere, du gehst gern als Erste voran",
+        11: "du bist aktiv in Gruppen und kämpfst mit Feuer für deine Ideale",
+        12: "deine Kraft wirkt oft im Verborgenen, gestaute Wut ist dein Lernthema",
+    },
+    "Jupiter": {
+        1: "du strahlst Optimismus und Großzügigkeit aus, fast wie ein Glückskind",
+        2: "du hast ein feines Gespür für Fülle und für finanzielles Wachstum",
+        3: "du lernst mit echter Freude und hast viele Interessen",
+        4: "dein Zuhause ist großzügig und gastfreundlich, dort liegt dein Glück",
+        5: "du erlebst Fülle in Kreativität, in der Liebe und mit Kindern",
+        6: "du findest Sinn in deiner Arbeit und brauchst gute Bedingungen, um zu wachsen",
+        7: "du wächst durch Partnerschaft, oft an der Seite großzügiger Menschen",
+        8: "du gewinnst durch geteilte Ressourcen und durch tiefes inneres Wachstum",
+        9: "Reisen, Weisheit und Lehren sind ein großes Geschenk in deinem Leben",
+        10: "beruflicher Erfolg und öffentliches Ansehen fallen dir eher leicht zu",
+        11: "förderliche Netzwerke und große Visionen tragen dich weit",
+        12: "in dir wohnt eine Art innerer Schutzengel und ein tiefes spirituelles Wachstum",
+    },
+    "Saturn": {
+        1: "du wirkst ernst und diszipliniert, dein Selbstvertrauen blüht erst spät richtig auf",
+        2: "Sorgen um Sicherheit sind dein Lernfeld, du baust langsam, aber dauerhaft auf",
+        3: "du denkst gründlich, und aus frühen Lernhürden wird mit der Zeit echte Expertise",
+        4: "in deiner Herkunft lag viel Verantwortung, du kommst innerlich eher spät an",
+        5: "dein Selbstausdruck ist erst gehemmt, deine Kreativität reift zu etwas Ernstem",
+        6: "du bist sehr pflichtbewusst und brauchst Disziplin für deine Gesundheit",
+        7: "deine Bindungen sind ernst und dauerhaft, Beziehung ist für dich ein Reifeweg",
+        8: "du lernst die Meisterschaft im Loslassen und im Umgang mit Kontrolle",
+        9: "deine Sinnsuche ist skeptisch, dein Weltbild festigt sich durch Prüfungen",
+        10: "deine Berufung reift durch Ausdauer, im Alter wächst deine natürliche Autorität",
+        11: "du hast wenige, aber sehr loyale Freunde und trägst Verantwortung in Gruppen",
+        12: "du löst verborgene Ängste und übst dich in einer stillen, spirituellen Disziplin",
+    },
+    "Uranus": {
+        1: "du trittst unkonventionell auf und liebst deine Freiheit über alles",
+        2: "deine Finanzen schwanken, und du gehst beim Verdienen gern eigene Wege",
+        3: "du hast Geistesblitze und denkst sprunghaft, schnell und modern",
+        4: "deine Herkunft war unruhig oder auf ihre Art unkonventionell",
+        5: "deine Kreativität ist eigenwillig, und deine Lieben sind oft ungewöhnlich",
+        6: "du brauchst Freiheit im Job und magst es, wenn nicht alles nach Plan läuft",
+        7: "du liebst Freiheit in Beziehungen, Begegnungen kommen oft ganz plötzlich",
+        8: "du erlebst plötzliche Wandlungen und gehst frei und offen mit Tabus um",
+        9: "dein Weltbild ist rebellisch, und Erkenntnisse treffen dich blitzartig",
+        10: "dein Karriereweg ist ungewöhnlich, Berufungen dürfen sich bei dir wandeln",
+        11: "du bist eine Reformerin mit ganz besonderen Freundeskreisen",
+        12: "in dir reifen plötzliche innere Durchbrüche und eine verborgene Genialität",
+    },
+    "Neptun": {
+        1: "du hast eine feine, schwer greifbare und sehr empathische Ausstrahlung",
+        2: "beim Thema Geld ist manches unscharf, und deine Werte sind idealistisch",
+        3: "du denkst poetisch und fantasievoll, pass nur auf die Zerstreuung auf",
+        4: "dein Familienbild ist idealisiert, und dein Zuhause ist ein sehr sensibler Ort",
+        5: "du schöpfst künstlerische Inspiration und neigst dazu, die Liebe zu verklären",
+        6: "du bist feinfühlig im Alltag und fühlst dich zu helfenden Rollen hingezogen",
+        7: "du idealisierst Partner leicht und sehnst dich nach der einen Seelenverbindung",
+        8: "in dir liegt eine mystische Tiefe und eine feine, mediale Begabung",
+        9: "deine Sinnsuche ist spirituell, dich ziehen Mystik und Ferne an",
+        10: "deine Berufung ist künstlerisch, sozial oder spirituell gefärbt",
+        11: "du träumst gemeinsam mit anderen von einer besseren, sanfteren Welt",
+        12: "in dir wohnt eine tiefe Spiritualität und eine reiche, weite Traumwelt",
+    },
+    "Pluto": {
+        1: "du hast eine intensive, fast magnetische Präsenz",
+        2: "du wandelst deinen Selbstwert und findest Kraft über deine Ressourcen",
+        3: "dein Denken ist durchdringend, und deine Worte haben echtes Gewicht",
+        4: "in deiner Herkunft wirkten tiefe Kräfte, deine Familie durchläuft Wandlung",
+        5: "dein Selbstausdruck ist intensiv, und deine Lieben verwandeln dich",
+        6: "du wandelst zwanghafte Alltagsmuster und regenerierst dich aus der Tiefe",
+        7: "deine Beziehungen sind intensiv, Macht und Kontrolle sind ein echtes Thema",
+        8: "du bist eine Krisenmeisterin mit großer Tiefe und Erneuerungskraft",
+        9: "dein Weltbild wandelt sich radikal, du suchst kompromisslos die Wahrheit",
+        10: "deine öffentliche Rolle ist machtvoll, du steigst oft gerade durch Krisen auf",
+        11: "du hast Einfluss in Gruppen und erlebst tief verwandelnde Freundschaften",
+        12: "in dir wirken die tiefsten unbewussten Wandlungskräfte",
+    },
+}
+
 
 def _pos_desc(key, sign, house):
     if key == "Chiron":
-        base = CHIRON_SIGN.get(sign, "Chiron zeigt, wo du verletzlich bist, und genau dort liegt "
+        return CHIRON_SIGN.get(sign, "Chiron zeigt, wo du verletzlich bist, und genau dort liegt "
                                "deine besondere Kraft, andere zu heilen.")
-    else:
-        base = PLANET_INTRO.get(key, "") + " " + SIGN_EMOTION.get(sign, "")
-    if house and key not in _ANGLES:
+    base = PLANET_INTRO.get(key, "") + " " + SIGN_EMOTION.get(sign, "")
+    ph = PLANET_HOUSE.get(key, {}).get(house)
+    if ph:
+        base += (f" Weil das bei dir im {house}. Haus steht, dem Lebensfeld für "
+                 f"{HOUSE_MEANING.get(house, 'diesen Bereich')}, zeigt es sich ganz konkret so: {ph}.")
+    elif house and key not in _ANGLES:
         base += (f" In deinem Leben spielt sich das vor allem im {house}. Haus ab, deinem "
                  f"Lebensfeld für {HOUSE_MEANING.get(house, 'diesen Bereich')}.")
     return base.strip()
