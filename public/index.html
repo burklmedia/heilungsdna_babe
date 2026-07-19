@@ -248,7 +248,7 @@
   .wheel.draw .ring, .wheel.draw .ring2 { stroke-dashoffset: 0; }
   .wheel .tick { stroke: var(--line-strong); stroke-width: 1; opacity: 0; transition: opacity 1s ease .8s; }
   .wheel.draw .tick { opacity: .5; }
-  .glyph { font-family: var(--serif); fill: var(--ink-soft); font-size: 19px; text-anchor: middle; opacity: 0; transform-box: fill-box; transform-origin: center; transform: scale(.4); }
+  .glyph { font-family: "Segoe UI Symbol", "Apple Symbols", var(--sans); fill: var(--ink-soft); font-size: 15px; text-anchor: middle; opacity: 0; transform-box: fill-box; transform-origin: center; transform: scale(.4); }
   .wheel.draw .glyph { animation: ignite .8s cubic-bezier(.2,.9,.3,1.4) forwards; }
   @keyframes ignite { 0% { opacity: 0; transform: scale(.4); } 60% { opacity: 1; fill: var(--gold); } 100% { opacity: .9; transform: scale(1); fill: var(--ink-soft); } }
   .core { position: absolute; top: 50%; left: 50%; width: 14px; height: 14px; border-radius: 50%; transform: translate(-50%,-50%) scale(0); background: radial-gradient(circle,#fff,var(--gold)); box-shadow: 0 0 26px 8px var(--glow); transition: transform 1.2s ease .5s; }
@@ -373,6 +373,21 @@
   .foot a { color: var(--ink-soft); text-decoration: none; margin-right: 22px; }
   .foot a:hover { color: var(--gold); }
   .disclaimer { margin-top: 18px; font-size: 12.5px; color: var(--ink-mute); max-width: 70ch; line-height: 1.6; }
+
+  /* Cookie-Hinweis (nur technisch notwendig, kein Tracking) */
+  #cookie { position: fixed; z-index: 9999; left: 50%; bottom: 20px; transform: translateX(-50%);
+    width: min(680px, calc(100% - 32px)); background: rgba(27,19,56,.96); backdrop-filter: blur(10px);
+    border: 1px solid rgba(245,197,107,.4); border-radius: 18px; padding: 18px 22px;
+    box-shadow: 0 20px 50px -20px rgba(10,4,30,.85), 0 0 40px -18px var(--glow);
+    display: none; align-items: center; gap: 18px; flex-wrap: wrap; }
+  #cookie.show { display: flex; animation: rise .5s cubic-bezier(.2,.7,.2,1) both; }
+  #cookie p { flex: 1 1 320px; font-size: 13.5px; line-height: 1.55; color: var(--ink-soft); margin: 0; }
+  #cookie p a { color: var(--gold); text-decoration: underline; text-underline-offset: 2px; }
+  #cookie .cbtn { flex: none; font-family: var(--sans); font-size: 14px; font-weight: 700; color: #3a2410;
+    background: linear-gradient(135deg, var(--gold), var(--gold-deep)); border: none; border-radius: 999px;
+    padding: 11px 24px; cursor: pointer; box-shadow: 0 0 0 1px rgba(245,197,107,.4), 0 8px 24px -8px var(--glow); }
+  #cookie .cbtn:hover { filter: brightness(1.04); }
+  @media (max-width: 480px) { #cookie { flex-direction: column; align-items: stretch; text-align: center; } #cookie .cbtn { width: 100%; } }
 
   @media (max-width: 900px) {
     .hero-grid { grid-template-columns: 1fr; gap: 40px; }
@@ -699,9 +714,23 @@
   </footer>
 </section>
 
+<div id="cookie" role="dialog" aria-label="Cookie-Hinweis">
+  <p>Diese Seite verwendet nur technisch notwendige Cookies, damit alles reibungslos funktioniert. Kein Tracking, keine Werbung, keine Weitergabe an Dritte. Mehr dazu in der <a href="/datenschutz">Datenschutzerklärung</a>.</p>
+  <button class="cbtn" id="cookie-ok" type="button">Alles klar</button>
+</div>
+
 <script>
 (function(){
   var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* ── Cookie-Hinweis: nur einmal zeigen, kein Tracking ── */
+  (function(){
+    var ck=document.getElementById('cookie'); if(!ck) return;
+    var seen=false; try{ seen=localStorage.getItem('imh_cookie_ok')==='1'; }catch(e){}
+    if(!seen) ck.classList.add('show');
+    var ok=document.getElementById('cookie-ok');
+    if(ok) ok.addEventListener('click',function(){ try{ localStorage.setItem('imh_cookie_ok','1'); }catch(e){} ck.classList.remove('show'); });
+  })();
   var API = '';                                    // gleiche Domain (Vercel / dev.py)
   var GEO = 'https://geocoding-api.open-meteo.com/v1/search';
   var state = { result:null, city:null };
@@ -777,7 +806,7 @@
   document.addEventListener('click',function(e){ if(!e.target.closest('.field')) acBox.classList.remove('show'); });
 
   /* ── Sternenrad bauen ── */
-  var GLYPHS=['☉','☽','☿','♀','♂','♃','♄','♅','♆','♇'];
+  var GLYPHS=['✦','✧','✦','✧','✦','✧','✦','✧','✦','✧','✦','✧'];
   (function(){ var ticks=document.getElementById('ticks'),glyphs=document.getElementById('glyphs');
     for(var i=0;i<12;i++){ var a=i/12*2*Math.PI-Math.PI/2;
       var ln=document.createElementNS('http://www.w3.org/2000/svg','line'); ln.setAttribute('class','tick');
@@ -802,12 +831,12 @@
 
   /* Längerer magischer Moment: mehr Phasen, mehr Zeit */
   var STATUS=[
-    ['Wir öffnen deinen Himmel…','einen Moment'],
-    ['Der Geburtsmoment wird verankert…','Ort · Zeit · Datum'],
-    ['Deine Planeten finden ihren Platz…','Sonne · Mond · Venus'],
-    ['Dein Human Design formt sich…','Zentren · Tore · Kanäle'],
-    ['Deine Autorität tritt hervor…','wie du entscheidest'],
-    ['Dein Bauplan wird sichtbar…','fast geschafft']
+    ['Wir öffnen deinen Himmel','einen Moment noch'],
+    ['Wir verankern deinen Geburtsmoment','Ort, Zeit und Datum'],
+    ['Deine Planeten finden ihren Platz','Sonne, Mond und mehr'],
+    ['Dein inneres Design formt sich','alles ordnet sich'],
+    ['Deine innere Klarheit wird sichtbar','wie du Entscheidungen triffst'],
+    ['Dein kosmischer Bauplan entsteht','gleich ist es soweit']
   ];
   var MIN_RITUAL = reduce ? 700 : 7200;   // ← Dauer des magischen Moments (Millisekunden)
   function runRitual(){
