@@ -110,8 +110,9 @@
   .traits span::before { content: "✓"; color: var(--gold); }
 
   /* birth-data card (violette Glaskarte) */
-  .card { background: rgba(38,24,72,.66); backdrop-filter: blur(12px); border: 1px solid rgba(201,164,255,.28);
-    border-radius: 26px; padding: 34px 32px; box-shadow: 0 30px 70px -34px rgba(10,4,30,.7), 0 0 60px -18px var(--glow-purple); }
+  .card { background: rgba(38,24,72,.6); backdrop-filter: blur(12px); border: 1px solid rgba(245,197,107,.5);
+    border-radius: 26px; padding: 34px 32px;
+    box-shadow: 0 0 0 1px rgba(245,197,107,.18), 0 30px 70px -34px rgba(10,4,30,.7), 0 0 60px -14px var(--glow); }
   .card h3 { font-size: 27px; font-weight: 600; margin-bottom: 6px; }
   .card .hint { color: var(--ink-soft); font-size: 14.5px; margin-bottom: 22px; }
   .field { margin-bottom: 14px; position: relative; }
@@ -120,7 +121,7 @@
     border-radius: 13px; padding: 13px 15px; font-size: 15px; font-family: var(--sans);
     transition: border-color .18s ease, box-shadow .18s ease; }
   .field input::placeholder { color: var(--ink-mute); }
-  .field input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px rgba(201,164,255,.18); }
+  .field input:focus { outline: none; border-color: var(--gold); box-shadow: 0 0 0 3px rgba(245,197,107,.2); }
   .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
   .microcopy { font-size: 12px; color: var(--ink-soft); text-align: center; margin-top: 12px; }
   .err { color: var(--err); font-size: 14px; margin-top: 10px; text-align: center; min-height: 1em; }
@@ -387,21 +388,21 @@
           <p class="hint">Für die Berechnung brauchen wir deinen genauen Geburtsmoment.</p>
           <div class="field">
             <label for="f-name">Name</label>
-            <input id="f-name" type="text" placeholder="Wie dürfen wir dich nennen?" autocomplete="off">
+            <input id="f-name" type="text" placeholder="Wie dürfen wir dich nennen?" autocomplete="off" required>
           </div>
           <div class="row2">
             <div class="field">
               <label for="f-date">Geburtsdatum</label>
-              <input id="f-date" type="text" inputmode="numeric" placeholder="TT.MM.JJJJ" autocomplete="off">
+              <input id="f-date" type="text" inputmode="numeric" placeholder="TT.MM.JJJJ" autocomplete="off" required>
             </div>
             <div class="field">
               <label for="f-time">Geburtszeit</label>
-              <input id="f-time" type="text" inputmode="numeric" placeholder="HH:MM (optional)" autocomplete="off">
+              <input id="f-time" type="text" inputmode="numeric" placeholder="HH:MM" autocomplete="off" required>
             </div>
           </div>
           <div class="field">
             <label for="f-place">Geburtsort</label>
-            <input id="f-place" type="text" placeholder="Stadt eingeben…" autocomplete="off">
+            <input id="f-place" type="text" placeholder="Stadt eingeben…" autocomplete="off" required>
             <div class="ac" id="ac"></div>
           </div>
           <button class="btn" id="go1" type="button">Meinen Himmel lesen ✦</button>
@@ -783,10 +784,12 @@
   /* ── Flow: Schritt 1 → Ritual → Teaser ── */
   document.getElementById('go1').addEventListener('click',function(){
     var err=document.getElementById('err1'); err.textContent='';
-    var name=val('f-name'),date=val('f-date'),place=val('f-place');
+    var name=val('f-name'),date=val('f-date'),time=val('f-time'),place=val('f-place');
+    if(!name){ err.textContent='Bitte gib deinen Namen ein.'; return; }
     if(!date){ err.textContent='Bitte gib dein Geburtsdatum ein (TT.MM.JJJJ).'; return; }
+    if(!time){ err.textContent='Bitte gib deine Geburtszeit ein (HH:MM).'; return; }
     if(!place){ err.textContent='Bitte gib deinen Geburtsort ein.'; return; }
-    var body={name:name,date:date,time:val('f-time'),place:place};
+    var body={name:name,date:date,time:time,place:place};
     if(state.city){ body.lat=state.city.lat; body.lon=state.city.lon; body.tz=state.city.tz; }
     show('step2'); runRitual();
     var t0=Date.now();
