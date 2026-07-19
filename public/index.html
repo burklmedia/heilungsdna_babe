@@ -167,7 +167,7 @@
   .promise b { font-style: normal; color: var(--gold); font-weight: 600; }
   .herolead { display: flex; flex-direction: column; gap: 12px; max-width: 33em; }
   .herolead p { font-size: 16px; line-height: 1.58; color: var(--ink-soft); }
-  .herolead p.strong { color: var(--ink); }
+  .herolead p.strong { color: var(--gold); font-weight: 600; }
 
   /* centered section intro */
   .intro { max-width: 42em; margin: 0 auto; color: var(--ink-soft); }
@@ -188,9 +188,15 @@
 
   /* faq */
   .faq { max-width: 780px; margin: 0 auto; display: flex; flex-direction: column; gap: 14px; }
-  .faq-item { background: rgba(38,24,72,.5); border: 1px solid var(--line); border-radius: 16px; padding: 22px 26px; }
-  .faq-q { font-family: var(--serif); font-size: 21px; color: var(--ink); margin-bottom: 8px; }
-  .faq-a { color: var(--ink-soft); font-size: 16px; line-height: 1.6; }
+  .faq-item { background: rgba(38,24,72,.5); border: 1px solid var(--line); border-radius: 16px; padding: 6px 26px; transition: border-color .2s ease, background .2s ease; }
+  .faq-item[open] { border-color: var(--line-strong); background: rgba(38,24,72,.7); }
+  .faq-q { font-family: var(--serif); font-size: 21px; color: var(--ink); list-style: none; cursor: pointer;
+    display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 18px 0; }
+  .faq-q::-webkit-details-marker { display: none; }
+  .faq-q::after { content: "+"; font-family: var(--sans); font-size: 26px; font-weight: 400; color: var(--gold); line-height: 1; flex: none; transition: transform .22s ease; }
+  .faq-item[open] .faq-q::after { transform: rotate(45deg); }
+  .faq-q:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; border-radius: 8px; }
+  .faq-a { color: var(--ink-soft); font-size: 16px; line-height: 1.6; padding: 0 0 20px; margin-top: -4px; max-width: 60ch; }
 
   /* final cta */
   .finalcta { max-width: 780px; margin: 0 auto; text-align: center; background: linear-gradient(135deg, #2a1a52 0%, #4a2f8a 100%);
@@ -349,9 +355,9 @@
           <h1>Entdecke, wer du <span class="script">wirklich</span> bist,<br>exakt aus deinem Geburtshimmel.</h1>
           <p class="promise">Du musst nicht jemand anderes werden. Du musst nur verstehen, <b>wer du schon immer warst.</b></p>
           <div class="herolead">
-            <p>Vielleicht hast du dein Leben lang versucht herauszufinden, warum sich manche Entscheidungen leicht anfühlen – und andere dich immer wieder Kraft kosten.</p>
-            <p>Nicht, weil mit dir etwas nicht stimmt. Sondern weil du deinen eigenen Bauplan nie kennenlernen konntest.</p>
-            <p class="strong">Dein kosmischer Bauplan zeigt dir, wie du wirklich gemeint bist – klar, verständlich und exakt aus deinen Geburtsdaten berechnet.</p>
+            <p>Vielleicht hast du dein Leben lang versucht herauszufinden, warum sich manche Entscheidungen leicht anfühlen und andere dich immer wieder Kraft kosten.</p>
+            <p>Mit dir stimmt alles. Du hattest bisher nur nie die Möglichkeit, deinen eigenen Bauplan wirklich kennenzulernen.</p>
+            <p class="strong">Dein kosmischer Bauplan zeigt dir, wie du wirklich gemeint bist. Klar, verständlich und exakt aus deinen Geburtsdaten berechnet.</p>
           </div>
           <div class="traits"><span>Kein Persönlichkeitstest</span><span>Exakt berechnet</span><span>Kostenlos starten</span></div>
         </div>
@@ -380,7 +386,7 @@
           </div>
           <button class="btn" id="go1" type="button">Meinen Himmel lesen ✦</button>
           <div class="err" id="err1"></div>
-          <p class="microcopy">Keine Vermutungen. Keine Schubladen. Sondern dein persönlicher kosmischer Bauplan – individuell aus deinen Geburtsdaten berechnet.</p>
+          <p class="microcopy">Keine Vermutungen, keine Schubladen. Dein persönlicher kosmischer Bauplan, individuell aus deinen Geburtsdaten berechnet.</p>
         </div>
       </div>
     </div>
@@ -394,14 +400,14 @@
         <h2>Du funktionierst. Aber tief in dir spürst du, dass da noch <span class="script">mehr ist.</span></h2>
         <div class="intro" style="margin-top:20px">
           <p>Von außen scheint alles in Ordnung.</p>
-          <p>Doch innerlich begleitet dich immer wieder das Gefühl, dass du dich selbst noch gar nicht wirklich kennst. Nicht oberflächlich – sondern auf einer tieferen Ebene.</p>
+          <p>Doch innerlich spürst du immer wieder, dass du dich selbst noch gar nicht richtig kennst. Und zwar auf einer tiefen Ebene, weit unter der Oberfläche.</p>
         </div>
       </div>
       <div class="pain-grid">
-        <div class="pain"><div class="dot">✦</div><p>Du triffst Entscheidungen oft mit dem Kopf – und fragst dich später, warum sie sich trotzdem nicht richtig anfühlen.</p></div>
+        <div class="pain"><div class="dot">✦</div><p>Du triffst Entscheidungen oft mit dem Kopf und fragst dich später, warum sie sich trotzdem nicht richtig anfühlen.</p></div>
         <div class="pain"><div class="dot">✦</div><p>Du passt dich häufig an andere an und hast manchmal das Gefühl, dich selbst dabei zu verlieren.</p></div>
-        <div class="pain"><div class="dot">✦</div><p>Du spürst, dass mehr in dir steckt – weißt aber nicht, wie du Zugang dazu findest.</p></div>
-        <div class="pain"><div class="dot">✦</div><p>Du hast Bücher gelesen und Tests gemacht – und trotzdem fehlt das Gefühl: „Jetzt verstehe ich mich wirklich."</p></div>
+        <div class="pain"><div class="dot">✦</div><p>Du spürst, dass mehr in dir steckt, weißt aber nicht, wie du Zugang dazu findest.</p></div>
+        <div class="pain"><div class="dot">✦</div><p>Du hast Bücher gelesen und Tests gemacht. Trotzdem fehlt das Gefühl: „Jetzt verstehe ich mich wirklich."</p></div>
       </div>
     </div>
   </section>
@@ -414,9 +420,9 @@
         <p>Dabei tragen sie ihren persönlichen Bauplan bereits seit dem Moment ihrer Geburt in sich. Man muss ihn nur lesen können.</p>
       </div>
       <h2>Genau dafür habe ich <span class="script">deinen kosmischen Bauplan</span> entwickelt.</h2>
-      <p>Du erhältst keine allgemeinen Aussagen, sondern eine präzise berechnete Landkarte deiner Persönlichkeit.</p>
-      <p>Du erkennst, warum du Entscheidungen auf deine eigene Weise treffen solltest, welche Stärken bereits in dir angelegt sind, welche Herausforderungen immer wieder auftauchen – und wie du aufhören kannst, gegen deine eigene Natur zu arbeiten.</p>
-      <p><em>Alles leicht verständlich erklärt – ohne komplizierte Fachbegriffe.</em></p>
+      <p>Du bekommst eine präzise berechnete Landkarte deiner Persönlichkeit. Keine allgemeinen Aussagen, die auf jeden zutreffen.</p>
+      <p>Du erkennst, warum du Entscheidungen auf deine eigene Weise treffen solltest. Du siehst, welche Stärken bereits in dir angelegt sind und welche Herausforderungen immer wieder auftauchen. Und du verstehst, wie du aufhörst, gegen deine eigene Natur zu arbeiten.</p>
+      <p><em>Alles leicht verständlich erklärt, ganz ohne komplizierte Fachbegriffe.</em></p>
     </div>
   </section>
 
@@ -426,7 +432,7 @@
       <div class="benefits-grid">
         <div>
           <div class="script-eyebrow">Was in deinem kosmischen Bauplan steckt</div>
-          <h2 style="font-size:clamp(28px,4vw,38px);line-height:1.14;margin:6px 0 16px">Jeder Mensch ist einzigartig – dein Bauplan besteht aus vielen Ebenen.</h2>
+          <h2 style="font-size:clamp(28px,4vw,38px);line-height:1.14;margin:6px 0 16px">Jeder Mensch ist einzigartig. Dein Bauplan besteht aus vielen Ebenen.</h2>
           <p style="color:var(--ink-soft);font-size:16.5px;line-height:1.6;margin:0 0 28px">Erst zusammen ergeben sie ein vollständiges Bild. Du erhältst unter anderem:</p>
           <div class="contents">
             <div class="item"><span class="check">✓</span><p><b>Dein Human-Design-Typ</b> <span>· endlich verstehen, wie du Entscheidungen richtig triffst.</span></p></div>
@@ -451,8 +457,8 @@
         <h2>So könnte dein persönlicher <span class="script">Bauplan</span> aussehen</h2>
       </div>
       <div class="intro" style="text-align:center;margin-bottom:46px">
-        <p>Stell dir vor, jemand würde dir nicht sagen, wer du sein solltest – sondern dir zeigen, wer du schon immer warst.</p>
-        <p>Dein persönlicher Bauplan verbindet verschiedene Systeme zu einem verständlichen Gesamtbild. Keine Rätsel, keine komplizierten Symbole – sondern klare Erkenntnisse, die du direkt in deinem Alltag anwenden kannst.</p>
+        <p>Stell dir vor, du siehst endlich, wer du schon immer warst, statt dich weiter zu fragen, wer du sein solltest.</p>
+        <p>Dein persönlicher Bauplan verbindet verschiedene Systeme zu einem verständlichen Gesamtbild. Keine Rätsel, keine komplizierten Symbole. Nur klare Erkenntnisse, die du direkt in deinem Alltag anwenden kannst.</p>
       </div>
       <div class="example-grid">
         <div class="mockup">
@@ -485,9 +491,9 @@
         <div class="about">
           <div class="abeyebrow">Wer hinter Intuition mit Herz steht</div>
           <h2>Hallo, ich bin <span class="script" style="color:#fff;font-size:1.2em;text-shadow:none">Denise</span>. 🤍</h2>
-          <p>Vor einigen Jahren begann ich selbst, nach Antworten zu suchen. Nicht, weil ich mehr leisten wollte – sondern weil ich verstehen wollte, warum sich manches in meinem Leben immer wieder schwer angefühlt hat.</p>
-          <p style="margin-top:14px">Je tiefer ich mich mit Human Design, Astrologie und weiteren Systemen beschäftigt habe, desto klarer wurde: Wir müssen uns nicht verändern, um richtig zu sein. Wir dürfen uns wieder erinnern, wer wir wirklich sind.</p>
-          <p style="margin-top:14px">Genau daraus ist dieser kosmische Bauplan entstanden – damit du nicht jahrelang suchen musst, sondern deine Antworten an einem Ort findest.</p>
+          <p>Vor einigen Jahren begann ich selbst, nach Antworten zu suchen. Ich wollte verstehen, warum sich manches in meinem Leben immer wieder schwer angefühlt hat.</p>
+          <p style="margin-top:14px">Je tiefer ich mich mit Human Design, Astrologie und weiteren Systemen beschäftigt habe, desto klarer wurde: Wir müssen uns nicht verändern, um richtig zu sein. Wir dürfen uns wieder daran erinnern, wer wir wirklich sind.</p>
+          <p style="margin-top:14px">Genau daraus ist dieser kosmische Bauplan entstanden. Damit du deine Antworten an einem Ort findest, statt jahrelang danach zu suchen.</p>
         </div>
       </div>
     </div>
@@ -500,22 +506,22 @@
         <h2>Vielleicht fragst du dich <span class="script">gerade noch …</span></h2>
       </div>
       <div class="faq">
-        <div class="faq-item">
-          <div class="faq-q">Brauche ich meine Geburtszeit?</div>
-          <div class="faq-a">Je genauer deine Angaben sind, desto präziser kann dein Bauplan berechnet werden.</div>
-        </div>
-        <div class="faq-item">
-          <div class="faq-q">Ist das ein Persönlichkeitstest?</div>
-          <div class="faq-a">Nein. Dein Bauplan basiert auf deinen Geburtsdaten und wird individuell berechnet – nicht anhand von Fragen oder Vermutungen.</div>
-        </div>
-        <div class="faq-item">
-          <div class="faq-q">Was bekomme ich?</div>
+        <details class="faq-item">
+          <summary class="faq-q">Brauche ich meine Geburtszeit?</summary>
+          <div class="faq-a">Je genauer deine Angaben sind, desto präziser kann dein Bauplan berechnet werden. Ohne Uhrzeit geht es auch, einige Feinheiten wie dein Aszendent brauchen sie jedoch.</div>
+        </details>
+        <details class="faq-item">
+          <summary class="faq-q">Ist das ein Persönlichkeitstest?</summary>
+          <div class="faq-a">Nein. Dein Bauplan basiert auf deinen Geburtsdaten und wird individuell berechnet, ganz ohne Fragebögen oder Vermutungen.</div>
+        </details>
+        <details class="faq-item">
+          <summary class="faq-q">Was bekomme ich?</summary>
           <div class="faq-a">Einen verständlich erklärten Bauplan mit vielen persönlichen Erkenntnissen und konkreten Impulsen für deinen Alltag.</div>
-        </div>
-        <div class="faq-item">
-          <div class="faq-q">Muss ich Vorkenntnisse haben?</div>
+        </details>
+        <details class="faq-item">
+          <summary class="faq-q">Muss ich Vorkenntnisse haben?</summary>
           <div class="faq-a">Überhaupt nicht. Alles wird so erklärt, dass du deinen Bauplan direkt verstehen und anwenden kannst.</div>
-        </div>
+        </details>
       </div>
     </div>
   </section>
@@ -524,7 +530,7 @@
   <section class="band">
     <div class="wrap">
       <div class="finalcta">
-        <h2>Vielleicht ist genau jetzt der richtige Moment, dich selbst <span class="script" style="color:#fff;text-shadow:none;font-size:1.12em">neu kennenzulernen.</span></h2>
+        <h2>Vielleicht ist genau jetzt der richtige Moment, dich selbst <span class="script" style="font-size:1.15em">neu kennenzulernen.</span></h2>
         <p>Dein Bauplan wartet bereits seit dem Tag deiner Geburt. Du musst ihn nur noch lesen.</p>
         <a href="#start" class="btn" data-scroll="start">Jetzt kostenlos starten ✦</a>
       </div>
@@ -537,7 +543,7 @@
         <div class="fbrand"><span class="fs">Intuition</span> <span class="fc">mit Herz</span></div>
         <div><a href="/impressum">Impressum</a><a href="/datenschutz">Datenschutz</a><span>© 2026 Intuition mit Herz</span></div>
       </div>
-      <p class="disclaimer">Symbolische Deutung zur Selbstreflexion – kein Ersatz für Beratung, keine Diagnose. Alle Positionen werden exakt berechnet (tropischer Tierkreis, Ganzzeichen-Häuser).</p>
+      <p class="disclaimer">Symbolische Deutung zur Selbstreflexion. Kein Ersatz für Beratung und keine Diagnose. Alle Positionen werden exakt berechnet (tropischer Tierkreis, Ganzzeichen-Häuser).</p>
     </div>
   </footer>
 </section>
@@ -581,8 +587,8 @@
       </div>
 
       <div class="mailcard">
-        <h3>Deine <span class="accent">komplette</span> Analyse – kostenlos</h3>
-        <p>Dein vollständiges Human-Design-Chart, dein Geburtshoroskop mit Aszendent – und was das für dich bedeutet. Trag dich ein, ich sende sie dir sofort zu.</p>
+        <h3>Deine <span class="accent">komplette</span> Analyse, kostenlos</h3>
+        <p>Dein vollständiges Human-Design-Chart, dein Geburtshoroskop mit Aszendent und was das alles für dich bedeutet. Trag dich ein, ich sende dir die Analyse sofort zu.</p>
         <div class="field">
           <label for="g-name">Dein Vorname</label>
           <input id="g-name" type="text" placeholder="Vorname" autocomplete="given-name">
