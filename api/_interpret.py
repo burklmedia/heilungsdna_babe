@@ -111,6 +111,61 @@ CHIRON_SIGN = {
 }
 
 
+SIGN_ELEMENT = {
+    "Widder": "Feuer", "Stier": "Erde", "Zwillinge": "Luft", "Krebs": "Wasser",
+    "Löwe": "Feuer", "Jungfrau": "Erde", "Waage": "Luft", "Skorpion": "Wasser",
+    "Schütze": "Feuer", "Steinbock": "Erde", "Wassermann": "Luft", "Fische": "Wasser",
+}
+SIGN_TRAIT = {
+    "Widder": "impulsiv, mutig, direkt – du gehst voran und fackelst nicht lange.",
+    "Stier": "beständig, sinnlich, geerdet – du brauchst Sicherheit und echten Genuss.",
+    "Zwillinge": "neugierig, wortgewandt, beweglich – du lebst über Austausch, Witz und Ideen.",
+    "Krebs": "gefühlvoll, fürsorglich, verwurzelt – Nähe und Heimat sind dein Zuhause.",
+    "Löwe": "warm, schöpferisch, strahlend – du willst mit dem Herzen gesehen werden.",
+    "Jungfrau": "aufmerksam, hilfsbereit, feinsinnig – du wirkst mit Liebe zum Detail.",
+    "Waage": "harmoniesuchend, ästhetisch, beziehungsorientiert – du blühst im Gleichgewicht.",
+    "Skorpion": "tief, intensiv, kompromisslos – du gehst dorthin, wo andere umkehren.",
+    "Schütze": "weit, sinnsuchend, optimistisch – du brauchst Freiheit und einen Horizont.",
+    "Steinbock": "verantwortungsvoll, ausdauernd, strukturiert – du baust auf Dauer.",
+    "Wassermann": "frei, originell, vorausdenkend – du bist nicht gemacht, dich anzupassen.",
+    "Fische": "mitfühlend, träumerisch, grenzenlos – du spürst mehr, als du sagen kannst.",
+}
+PLANET_MEANING = {
+    "Sonne": "Wesenskern & Lebensenergie", "Mond": "Gefühlswelt & innerer Hafen",
+    "Merkur": "Denken & Sprache", "Venus": "Liebe & Werte",
+    "Mars": "Antrieb & Durchsetzung", "Jupiter": "Wachstum & Vertrauen",
+    "Saturn": "Reife & Struktur", "Uranus": "Freiheit & Erneuerung",
+    "Neptun": "Sehnsucht & Spiritualität", "Pluto": "Wandlung & Tiefe",
+    "Chiron": "Wunde & Heilkraft", "AC": "Deine Wirkung nach außen",
+    "DC": "Was du im Partner suchst", "MC": "Berufung & öffentliche Rolle",
+    "IC": "Wurzeln & innerstes Zuhause",
+}
+PLANET_SENTENCE = {
+    "Sonne": "Deine Sonne ist dein Wesenskern und deine Lebensenergie.",
+    "Mond": "Dein Mond ist deine Gefühlswelt und dein innerer Hafen.",
+    "Merkur": "Merkur zeigt, wie du denkst, sprichst und lernst.",
+    "Venus": "Venus zeigt, wie du liebst und was dir kostbar ist.",
+    "Mars": "Mars ist dein Antrieb und wie du dich durchsetzt.",
+    "Jupiter": "Jupiter zeigt, wo du wächst und Vertrauen schöpfst.",
+    "Saturn": "Saturn zeigt, wo du reifst und Struktur brauchst.",
+    "Uranus": "Uranus zeigt, wo du frei, eigenwillig und erneuernd bist.",
+    "Neptun": "Neptun zeigt deine Sehnsucht, Fantasie und Spiritualität.",
+    "Pluto": "Pluto zeigt deine Wandlungskraft und wo du in die Tiefe gehst.",
+    "AC": "Dein Aszendent ist dein Auftritt – wie du auf andere wirkst.",
+    "DC": "Dein Deszendent zeigt, was du im Partner suchst und anziehst.",
+    "MC": "Dein MC weist auf deine Berufung und deine öffentliche Rolle.",
+    "IC": "Dein IC ist deine Wurzel – dein innerstes Zuhause und deine Herkunft.",
+}
+ANGLE_HOUSE = {"AC": 1, "DC": 7, "MC": 10, "IC": 4}
+
+
+def _pos_desc(key, sign):
+    if key == "Chiron":
+        return CHIRON_SIGN.get(sign, "Chiron zeigt, wo du verletzlich bist – und genau dort "
+                               "liegt deine besondere Kraft, andere zu heilen.")
+    return f"{PLANET_SENTENCE.get(key, '')} In {sign} heißt das: {SIGN_TRAIT.get(sign, '')}"
+
+
 def profile_name(profile):
     return PROFILE_NAMES.get(profile, " / ".join(
         PROFILE_LINES.get(int(x), "") for x in profile.split("/")))
@@ -274,11 +329,40 @@ def full_analysis(chart):
         geo = {"asc": asc["lon"], "dc": dc["lon"], "mc": mc["lon"], "ic": ic["lon"],
                "planets": planets}
 
+    # Aufklappbare Positionskarten (Natal) + Zentren-Liste (Human Design)
+    positions = []
+    for k in ["Sonne", "Mond", "Merkur", "Venus", "Mars", "Jupiter", "Saturn",
+              "Uranus", "Neptun", "Pluto", "Chiron"]:
+        p = chart["natal"].get(k)
+        if not p:
+            continue
+        positions.append({
+            "key": k, "label": k, "sym": p.get("sym_body", ""), "signSymbol": p["sym"],
+            "sign": p["sign"], "deg": p["text"], "element": SIGN_ELEMENT.get(p["sign"], ""),
+            "house": p.get("house"), "meaning": PLANET_MEANING.get(k, ""),
+            "desc": _pos_desc(k, p["sign"]),
+        })
+    if asc:
+        for sym, label, pt in [("AC", "Aszendent", asc), ("DC", "Deszendent", dc),
+                               ("MC", "Medium Coeli", mc), ("IC", "Imum Coeli", ic)]:
+            positions.append({
+                "key": sym, "label": label, "sym": sym, "signSymbol": pt["sym"],
+                "sign": pt["sign"], "deg": pt["text"], "element": SIGN_ELEMENT.get(pt["sign"], ""),
+                "house": ANGLE_HOUSE[sym], "meaning": PLANET_MEANING.get(sym, ""),
+                "desc": _pos_desc(sym, pt["sign"]),
+            })
+    _defset = set(hd["defined_centers"])
+    hd_centers = [{"name": c, "defined": c in _defset, "meaning": CENTER_MEANING.get(c, "")}
+                  for c in ["Kopf", "Ajna", "Kehle", "G", "Herz", "Milz", "Sakral",
+                            "Solarplexus", "Wurzel"]]
+
     return {
         "name": name,
         "hd": hd,
         "sections": sections,
         "natal_rows": natal_rows + natal_extra,
+        "positions": positions,
+        "hd_centers": hd_centers,
         "ascendant": asc,
         "geo": geo,
         "closing": closing,
