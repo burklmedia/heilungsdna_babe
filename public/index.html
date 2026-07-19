@@ -1138,9 +1138,11 @@
       (f.geo?('<div class="graphic gwheel">'+buildNatalWheel(f.geo)+'</div>'):
         '<p style="color:var(--ink-mute);font-size:13px;text-align:center;margin-bottom:14px">Für das Horoskop-Rad brauchen wir deine Geburtszeit.</p>')+
       '<div class="cap2">Deine Positionen, tippe für die Bedeutung</div>'+
+      '<p style="color:var(--ink-mute);font-size:12.5px;line-height:1.55;margin:0 0 14px;max-width:62ch">Beim Haus zeigen wir dir beide gängigen Systeme: <b>Ganzzeichen</b> (moderne, klare Zählung) und <b>Placidus</b> (Standard vieler Chart-Rechner wie astro.com). Sie können sich um ein Haus unterscheiden, beide sind gültig. Die ausführliche Deutung folgt den Ganzzeichen-Häusern.</p>'+
       (f.positions||[]).map(function(p){
         var vmain='<span class="ps">'+tp(p.signSymbol)+'</span> '+esc(p.sign);
-        var meta=p.deg+', '+p.element+(p.house?(', Haus '+p.house):'');
+        var hs = p.house ? (p.house===p.house_pl ? ('Haus '+p.house) : ('Ganzzeichen H'+p.house+' · Placidus H'+p.house_pl)) : '';
+        var meta=p.deg+', '+p.element+(hs?(', '+hs):'');
         return pcard(p.sym, p.label, vmain, meta, p.meaning, p.desc);
       }).join('')+
       '<div class="cap2" style="margin-top:26px">Die zwölf Häuser, deine Lebensfelder</div>'+

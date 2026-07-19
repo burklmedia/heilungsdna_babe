@@ -140,6 +140,21 @@ def _whole_house(lon, asc_lon):
     return int((((lon - start) % 360) // 30)) + 1
 
 
+def _placidus_house(lon, cusps):
+    """Haus nach Placidus: cusps[0..11] sind die 12 Hausspitzen (cusps[0]=1. Haus)."""
+    lon = lon % 360.0
+    for i in range(12):
+        a = cusps[i] % 360.0
+        b = cusps[(i + 1) % 12] % 360.0
+        if a <= b:
+            if a <= lon < b:
+                return i + 1
+        else:  # Übergang über 0 Grad
+            if lon >= a or lon < b:
+                return i + 1
+    return 12
+
+
 def _graph(defined, active_ch):
     adj = {c: set() for c in defined}
     for a, b, ca, cb in active_ch:
@@ -250,14 +265,17 @@ def compute_chart(name, year, month, day, hour, minute, lat, lon, tz_name,
 
     # Natal
     asc_lon = mc_lon = None
+    pl_cusps = None
     natal = {}
     if time_known:
-        cusps, ascmc = swe.houses(jd, lat, lon, b'W')  # W = Whole Sign
+        cusps, ascmc = swe.houses(jd, lat, lon, b'W')  # W = Whole Sign (Aszendent/MC)
         asc_lon, mc_lon = ascmc[0], ascmc[1]
+        pl_cusps, _plac_ascmc = swe.houses(jd, lat, lon, b'P')  # P = Placidus (Häuserspitzen)
     for b, l in pers_lon.items():
         s = _sign(l)
         if time_known and asc_lon is not None:
-            s["house"] = _whole_house(l, asc_lon)
+            s["house"] = _whole_house(l, asc_lon)          # Ganzzeichen (Deutungsbasis)
+            s["house_pl"] = _placidus_house(l, pl_cusps)   # Placidus (zusätzlich)
         s["sym_body"] = SYMS.get(b, "")
         natal[b] = s
 
@@ -270,6 +288,7 @@ def compute_chart(name, year, month, day, hour, minute, lat, lon, tz_name,
         ch["sym_body"] = "⚷"
         if time_known and asc_lon is not None:
             ch["house"] = _whole_house(ch_lon, asc_lon)
+            ch["house_pl"] = _placidus_house(ch_lon, pl_cusps)
         natal["Chiron"] = ch
     except Exception:
         pass  # ohne Ephemeriden-Datei bleibt Chiron einfach weg

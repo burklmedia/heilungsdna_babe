@@ -1393,6 +1393,7 @@ def full_analysis(chart):
             "key": key, "label": label, "sym": p.get("sym_body", key) if key not in _ANGLES else key,
             "signSymbol": p["sym"], "sign": p["sign"], "deg": p["text"],
             "element": SIGN_ELEMENT.get(p["sign"], ""), "house": house,
+            "house_pl": p.get("house_pl", house),
             "house_meaning": HOUSE_MEANING.get(house, "") if house else "",
             "meaning": PLANET_MEANING.get(key, ""), "desc": _pos_desc(key, p["sign"], house),
         }
@@ -1436,5 +1437,6 @@ def full_analysis(chart):
         "geo": geo,
         "closing": closing,
         "note": "Symbolische Deutung zur Selbstreflexion. Kein Ersatz für Beratung, keine Diagnose. "
-                "Alle Positionen exakt berechnet (tropischer Tierkreis, Ganzzeichen-Häuser).",
+                "Alle Positionen exakt berechnet (tropischer Tierkreis). Häuser in Ganzzeichen und "
+                "Placidus angegeben; die ausführliche Deutung folgt den Ganzzeichen-Häusern.",
     }
