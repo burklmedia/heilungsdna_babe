@@ -310,6 +310,8 @@
   /* Chart-Grafiken (Rad + Bodygraph) */
   .graphic { display: flex; justify-content: center; margin: 2px 0 16px; }
   .graphic svg { width: 100%; height: auto; max-width: 330px; display: block; }
+  .graphic.gwheel svg { max-width: 460px; }
+  .graphic.gbody svg { max-width: 300px; }
   .glegend { display: flex; justify-content: center; gap: 18px; margin: -4px 0 16px; font-size: 12px; color: var(--ink-mute); }
   .glegend b { display: inline-block; width: 11px; height: 11px; border-radius: 3px; vertical-align: -1px; margin-right: 6px; }
   .glegend .on { background: var(--gold); }
@@ -341,24 +343,24 @@
   .factrow .f .l { font-size: 10px; letter-spacing: .14em; text-transform: uppercase; color: var(--ink-mute); margin-bottom: 5px; }
   .factrow .f .v { font-family: var(--serif); font-size: 18px; color: var(--gold); }
 
-  .pcard { border: 1px solid var(--line); border-radius: 14px; margin-bottom: 9px; overflow: hidden;
+  .pcard { border: 1px solid var(--line); border-radius: 12px; margin-bottom: 7px; overflow: hidden;
     background: rgba(255,255,255,.02); transition: border-color .2s, background .2s; }
   .pcard.open { border-color: rgba(201,164,255,.42); background: rgba(201,164,255,.06); }
-  .pcard .ph { display: flex; align-items: center; gap: 14px; padding: 14px 16px; cursor: pointer; }
-  .pcard .pico { width: 44px; height: 44px; border-radius: 12px; flex: none; display: flex; align-items: center;
-    justify-content: center; font-size: 18px; color: var(--gold); background: rgba(245,197,107,.12); border: 1px solid rgba(245,197,107,.3); }
+  .pcard .ph { display: flex; align-items: center; gap: 12px; padding: 9px 13px; cursor: pointer; }
+  .pcard .pico { width: 35px; height: 35px; border-radius: 10px; flex: none; display: flex; align-items: center;
+    justify-content: center; font-size: 15px; color: var(--gold); background: rgba(245,197,107,.12); border: 1px solid rgba(245,197,107,.3); }
   .pcard .pmid { flex: 1; min-width: 0; }
-  .pcard .pk { font-size: 10px; letter-spacing: .16em; text-transform: uppercase; color: var(--ink-mute); margin-bottom: 3px; }
-  .pcard .pv { font-family: var(--serif); font-size: 17px; color: var(--ink); display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; }
-  .pcard .pv .ps { font-size: 19px; color: var(--gold); }
-  .pcard .pv .pmeta { font-size: 12px; color: var(--ink-mute); font-family: var(--sans); }
-  .pcard .pchev { color: var(--ink-mute); font-size: 12px; transition: transform .3s; flex: none; }
+  .pcard .pk { font-size: 9.5px; letter-spacing: .16em; text-transform: uppercase; color: var(--ink-mute); margin-bottom: 2px; }
+  .pcard .pv { font-family: var(--serif); font-size: 15.5px; color: var(--ink); display: flex; align-items: baseline; gap: 7px; flex-wrap: wrap; line-height: 1.25; }
+  .pcard .pv .ps { font-size: 17px; color: var(--gold); }
+  .pcard .pv .pmeta { font-size: 11.5px; color: var(--ink-mute); font-family: var(--sans); }
+  .pcard .pchev { color: var(--ink-mute); font-size: 11px; transition: transform .3s; flex: none; }
   .pcard.open .pchev { transform: rotate(180deg); }
-  .pcard .pbody { max-height: 0; overflow: hidden; transition: max-height .35s ease; }
-  .pcard.open .pbody { max-height: 420px; }
-  .pcard .pin { padding: 2px 16px 16px; }
-  .pcard .pin .pm { font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: var(--gold); margin: 4px 0 8px; }
-  .pcard .pin .pd { font-size: 14px; color: var(--ink-soft); line-height: 1.78; }
+  .pcard .pbody { max-height: 0; overflow: hidden; transition: max-height .4s ease; }
+  .pcard.open .pbody { max-height: 700px; }
+  .pcard .pin { padding: 2px 15px 15px; }
+  .pcard .pin .pm { font-size: 10.5px; letter-spacing: .1em; text-transform: uppercase; color: var(--gold); margin: 4px 0 7px; }
+  .pcard .pin .pd { font-size: 14px; color: var(--ink-soft); line-height: 1.8; }
   .legend { margin-top: 26px; padding: 24px 22px; border-radius: 16px; background: rgba(255,255,255,.02); border: 1px solid var(--line); }
   .legend .lh { font-size: 11px; letter-spacing: .3em; text-transform: uppercase; color: var(--gold); margin-bottom: 16px; }
   .legend .li { margin-bottom: 12px; }
@@ -927,14 +929,14 @@
   }
   function shorten(s){ return String(s).replace(' Autorität','').replace('Emotionale','Emotional').replace(' (Splenisch)','').replace('Selbst-projizierte','Selbst-proj.').replace(' (Reflektor)','').replace(' (Umgebung)',''); }
   var LEGEND=[
-    ['Human-Design-Typ','Deine Energie-Bauart – wie du am stimmigsten handelst und Entscheidungen triffst.'],
-    ['Innere Autorität','Woher deine verlässliche Ja/Nein-Klarheit kommt – dein innerer Kompass.'],
-    ['Profil','Die Rolle, in der sich dein Weg entfaltet – bewusste und unbewusste Seite.'],
-    ['Zentren','Neun Energiefelder. Definiert = verlässlich & konstant, offen = lernend & formbar.'],
-    ['Sonne','Dein Wesenskern – wer du im tiefsten Sinn bist.'],
+    ['Human-Design-Typ','Deine Energie-Bauart. Sie zeigt, wie du am stimmigsten handelst und Entscheidungen triffst.'],
+    ['Innere Autorität','Woher deine verlässliche Ja-oder-Nein-Klarheit kommt, dein innerer Kompass.'],
+    ['Profil','Die Rolle, in der sich dein Weg entfaltet, mit einer bewussten und einer unbewussten Seite.'],
+    ['Zentren','Neun Energiefelder. Definiert heißt verlässlich und konstant, offen heißt lernend und formbar.'],
+    ['Sonne','Dein Wesenskern, wer du im tiefsten Sinn bist.'],
     ['Mond','Deine Gefühlswelt und was du brauchst, um dich sicher zu fühlen.'],
-    ['Aszendent (AC)','Wie du auf andere wirkst – dein Auftritt. Braucht die Geburtszeit.'],
-    ['Deszendent (DC)','Gegenüber vom AC – was du im Partner suchst und anziehst.'],
+    ['Aszendent (AC)','Wie du auf andere wirkst, dein Auftritt. Dafür braucht es deine Geburtszeit.'],
+    ['Deszendent (DC)','Er liegt genau gegenüber vom AC und zeigt, was du im Partner suchst und anziehst.'],
     ['MC / IC','Deine Berufung nach außen (MC) und deine Wurzel nach innen (IC).'],
   ];
   function setRTab(id){
@@ -953,7 +955,7 @@
     function q(k){ return by[k]?(tp(by[k].signSymbol)+' '+by[k].sign):'—'; }
     document.getElementById('pane-ov').innerHTML=
       '<p class="ov-intro">'+(b.name?('Schön, dass du da bist, '+esc(b.name)+'. '):'')+
-        'Hier ist dein kosmischer Bauplan – Human Design und Geburtshoroskop, exakt berechnet. Klick dich in Ruhe durch die vier Bereiche.</p>'+
+        'Hier ist dein kosmischer Bauplan mit Human Design und Geburtshoroskop, exakt berechnet. Klick dich in Ruhe durch die vier Bereiche.</p>'+
       '<div class="factrow">'+
         '<div class="f"><div class="l">Typ</div><div class="v">'+esc(hd.type)+'</div></div>'+
         '<div class="f"><div class="l">Autorität</div><div class="v">'+esc(shorten(hd.authority))+'</div></div>'+
@@ -961,31 +963,31 @@
       '</div>'+
       '<div class="grid2">'+
         '<div class="panel tight"><span class="cap">Natalchart</span>'+
-          (f.geo?'<div class="graphic">'+buildNatalWheel(f.geo)+'</div>':'')+
+          (f.geo?'<div class="graphic gwheel">'+buildNatalWheel(f.geo)+'</div>':'')+
           '<div class="cap2">☉ '+q('Sonne')+' · ☽ '+q('Mond')+' · AC '+q('AC')+'</div></div>'+
         '<div class="panel tight"><span class="cap">Human Design</span>'+
-          '<div class="graphic">'+buildBodygraph(hd)+'</div>'+glegend+'</div>'+
+          '<div class="graphic gbody">'+buildBodygraph(hd)+'</div>'+glegend+'</div>'+
       '</div>';
 
     // ── HUMAN DESIGN ──
     document.getElementById('pane-hd').innerHTML=
-      '<div class="graphic">'+buildBodygraph(hd)+'</div>'+glegend+
+      '<div class="graphic gbody">'+buildBodygraph(hd)+'</div>'+glegend+
       kv('Typ',hd.type)+(t.strategy?kv('Strategie',t.strategy):'')+kv('Autorität',hd.authority)+
       kv('Profil',hd.profile+(t.profile_name?(' · '+t.profile_name):''))+kv('Definition',hd.definition)+
       (cross?kv('Inkarnationskreuz',cross.pers_sun+'/'+cross.pers_earth+' · '+cross.des_sun+'/'+cross.des_earth):'')+
-      '<div class="cap2" style="margin-top:24px">Deine neun Zentren – tippe für die Bedeutung</div>'+
+      '<div class="cap2" style="margin-top:24px">Deine neun Zentren, tippe für die Bedeutung</div>'+
       (f.hd_centers||[]).map(function(c){
         return pcard(c.defined?'●':'○', c.name, (c.defined?'Definiert':'Offen'),
-          (c.defined?'verlässliche Energie':'Lern- & Weisheitsraum'), c.meaning,
-          c.defined?('Dieses Zentrum ist bei dir definiert – '+c.meaning+'. Hier bist du dir treu und kannst dich auf eine gleichbleibende Energie verlassen.')
-                   :('Dieses Zentrum ist bei dir offen – '+c.meaning+'. Hier nimmst du andere feinfühlig auf und lernst. Genau hier entsteht Druck, wenn du dich verbiegst, um dazuzugehören.'));
+          (c.defined?'verlässliche Energie':'Lern- und Weisheitsraum'), c.meaning,
+          c.defined?('Dieses Zentrum ist bei dir definiert. Es steht für '+c.meaning+'. Hier bist du dir treu und kannst dich auf eine gleichbleibende, verlässliche Energie stützen.')
+                   :('Dieses Zentrum ist bei dir offen. Es steht für '+c.meaning+'. Hier nimmst du andere feinfühlig auf und lernst viel. Genau hier entsteht Druck, wenn du dich verbiegst, um dazuzugehören.'));
       }).join('');
 
     // ── NATALCHART ──
     document.getElementById('pane-na').innerHTML=
-      (f.geo?('<div class="graphic">'+buildNatalWheel(f.geo)+'</div>'):
+      (f.geo?('<div class="graphic gwheel">'+buildNatalWheel(f.geo)+'</div>'):
         '<p style="color:var(--ink-mute);font-size:13px;text-align:center;margin-bottom:14px">Für das Horoskop-Rad brauchen wir deine Geburtszeit.</p>')+
-      '<div class="cap2">Deine Positionen – tippe für die Bedeutung</div>'+
+      '<div class="cap2">Deine Positionen, tippe für die Bedeutung</div>'+
       (f.positions||[]).map(function(p){
         var vmain='<span class="ps">'+tp(p.signSymbol)+'</span> '+esc(p.sign);
         var meta=p.deg+' · '+p.element+(p.house?(' · Haus '+p.house):'');
