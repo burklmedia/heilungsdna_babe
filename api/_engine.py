@@ -74,6 +74,21 @@ SIGNS = ["Widder", "Stier", "Zwillinge", "Krebs", "Löwe", "Jungfrau", "Waage",
 SIGN_SYMS = ["♈", "♉", "♊", "♋", "♌", "♍", "♎", "♏", "♐", "♑", "♒", "♓"]
 
 
+def ephe_status():
+    """Diagnose: Ist die Chiron-Ephemeride auffindbar und rechenbar?"""
+    info = {"ephe_dir": _EPHE, "isdir": os.path.isdir(_EPHE)}
+    try:
+        info["files"] = sorted(os.listdir(_EPHE))
+    except Exception as e:  # noqa
+        info["files_error"] = repr(e)
+    try:
+        jd = swe.julday(2000, 1, 1, 12.0)
+        info["chiron_lon"] = round(swe.calc_ut(jd, swe.CHIRON, CHIRON_FLAGS)[0][0], 4)
+    except Exception as e:  # noqa
+        info["chiron_error"] = repr(e)
+    return info
+
+
 def lon_to_gate_line(lon):
     off = (lon - GATE_START) % 360.0
     idx = int(off // GATE_SIZE)

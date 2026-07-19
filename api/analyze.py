@@ -106,7 +106,13 @@ class handler(BaseHTTPRequestHandler):
         if _IMPORT_ERROR:
             return self._send(500, {"ok": False, "error": "Import fehlgeschlagen.",
                                     "detail": _IMPORT_ERROR})
-        self._send(200, {"ok": True, "service": "Intuition mit Herz – Analyse-API"})
+        try:
+            from _engine import ephe_status
+            diag = ephe_status()
+        except Exception as e:  # noqa
+            diag = {"ephe_error": repr(e)}
+        self._send(200, {"ok": True, "service": "Intuition mit Herz – Analyse-API",
+                         "diag": diag})
 
     def do_POST(self):
         if _IMPORT_ERROR:
