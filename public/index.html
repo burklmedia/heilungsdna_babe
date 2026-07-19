@@ -374,20 +374,22 @@
   .foot a:hover { color: var(--gold); }
   .disclaimer { margin-top: 18px; font-size: 12.5px; color: var(--ink-mute); max-width: 70ch; line-height: 1.6; }
 
-  /* Cookie-Hinweis (nur technisch notwendig, kein Tracking) */
-  #cookie { position: fixed; z-index: 9999; left: 50%; bottom: 20px; transform: translateX(-50%);
-    width: min(680px, calc(100% - 32px)); background: rgba(27,19,56,.96); backdrop-filter: blur(10px);
-    border: 1px solid rgba(245,197,107,.4); border-radius: 18px; padding: 18px 22px;
-    box-shadow: 0 20px 50px -20px rgba(10,4,30,.85), 0 0 40px -18px var(--glow);
-    display: none; align-items: center; gap: 18px; flex-wrap: wrap; }
-  #cookie.show { display: flex; animation: rise .5s cubic-bezier(.2,.7,.2,1) both; }
-  #cookie p { flex: 1 1 320px; font-size: 13.5px; line-height: 1.55; color: var(--ink-soft); margin: 0; }
-  #cookie p a { color: var(--gold); text-decoration: underline; text-underline-offset: 2px; }
-  #cookie .cbtn { flex: none; font-family: var(--sans); font-size: 14px; font-weight: 700; color: #3a2410;
-    background: linear-gradient(135deg, var(--gold), var(--gold-deep)); border: none; border-radius: 999px;
-    padding: 11px 24px; cursor: pointer; box-shadow: 0 0 0 1px rgba(245,197,107,.4), 0 8px 24px -8px var(--glow); }
-  #cookie .cbtn:hover { filter: brightness(1.04); }
-  @media (max-width: 480px) { #cookie { flex-direction: column; align-items: stretch; text-align: center; } #cookie .cbtn { width: 100%; } }
+  /* Cookie-Hinweis (nur technisch notwendig, kein Tracking) – zentriertes Fenster */
+  #cookie { position: fixed; inset: 0; z-index: 9999; display: none; align-items: center; justify-content: center; padding: 20px;
+    background: rgba(10,4,30,.55); backdrop-filter: blur(3px); }
+  #cookie.show { display: flex; animation: cookieFade .3s ease both; }
+  @keyframes cookieFade { from { opacity: 0; } to { opacity: 1; } }
+  .cookie-card { width: min(500px, 100%); background: rgba(27,19,56,.98); border: 1px solid rgba(245,197,107,.4);
+    border-radius: 22px; padding: 32px 32px 28px; text-align: center;
+    box-shadow: 0 30px 80px -24px rgba(10,4,30,.9), 0 0 55px -16px var(--glow);
+    animation: rise .4s cubic-bezier(.2,.7,.2,1) both; }
+  .cookie-card .ct { font-family: var(--script); font-size: 30px; color: var(--gold); line-height: 1; margin-bottom: 12px; text-shadow: 0 0 26px var(--glow); }
+  .cookie-card p { font-size: 14.5px; line-height: 1.6; color: var(--ink-soft); margin: 0 0 22px; }
+  .cookie-card p a { color: var(--gold); text-decoration: underline; text-underline-offset: 2px; }
+  .cookie-card .cbtn { font-family: var(--sans); font-size: 15px; font-weight: 700; color: #3a2410;
+    background: linear-gradient(135deg, var(--gold), var(--gold-deep)); border: none; border-radius: 999px; padding: 13px 36px;
+    cursor: pointer; box-shadow: 0 0 0 1px rgba(245,197,107,.4), 0 10px 30px -8px var(--glow); }
+  .cookie-card .cbtn:hover { filter: brightness(1.04); }
 
   @media (max-width: 900px) {
     .hero-grid { grid-template-columns: 1fr; gap: 40px; }
@@ -621,7 +623,7 @@
     <div class="wrap">
       <div class="foot">
         <div class="fbrand"><span class="fs">Intuition</span> <span class="fc">mit Herz</span></div>
-        <div><a href="/impressum">Impressum</a><a href="/datenschutz">Datenschutz</a><span>© 2026 Intuition mit Herz</span></div>
+        <div><a href="/impressum.html">Impressum</a><a href="/datenschutz.html">Datenschutz</a><span>© 2026 Intuition mit Herz</span></div>
       </div>
       <p class="disclaimer">Symbolische Deutung zur Selbstreflexion. Kein Ersatz für Beratung und keine Diagnose. Alle Positionen werden exakt berechnet (tropischer Tierkreis, Ganzzeichen-Häuser).</p>
     </div>
@@ -679,7 +681,7 @@
         </div>
         <button class="btn" id="go2" type="button">Meine komplette Analyse ✦</button>
         <div class="err" id="err2"></div>
-        <p class="form-note">Mit dem Absenden meldest du dich zu meinem kostenlosen Newsletter an und erhältst deine Analyse. Jederzeit mit einem Klick abbestellbar. Es gilt meine <a href="/datenschutz" style="color:var(--gold)">Datenschutzerklärung</a>.</p>
+        <p class="form-note">Mit dem Absenden meldest du dich zu meinem kostenlosen Newsletter an und erhältst deine Analyse. Jederzeit mit einem Klick abbestellbar. Es gilt meine <a href="/datenschutz.html" style="color:var(--gold)">Datenschutzerklärung</a>.</p>
       </div>
     </div>
   </div>
@@ -708,15 +710,18 @@
     <div class="wrap">
       <div class="foot">
         <div class="fbrand"><span class="fs">Intuition</span> <span class="fc">mit Herz</span></div>
-        <div><a href="/impressum">Impressum</a><a href="/datenschutz">Datenschutz</a><span>© 2026 Intuition mit Herz</span></div>
+        <div><a href="/impressum.html">Impressum</a><a href="/datenschutz.html">Datenschutz</a><span>© 2026 Intuition mit Herz</span></div>
       </div>
     </div>
   </footer>
 </section>
 
-<div id="cookie" role="dialog" aria-label="Cookie-Hinweis">
-  <p>Diese Seite verwendet nur technisch notwendige Cookies, damit alles reibungslos funktioniert. Kein Tracking, keine Werbung, keine Weitergabe an Dritte. Mehr dazu in der <a href="/datenschutz">Datenschutzerklärung</a>.</p>
-  <button class="cbtn" id="cookie-ok" type="button">Alles klar</button>
+<div id="cookie" role="dialog" aria-modal="true" aria-label="Cookie-Hinweis">
+  <div class="cookie-card">
+    <div class="ct">Kurz vorab</div>
+    <p>Diese Seite verwendet nur technisch notwendige Cookies, damit alles reibungslos funktioniert. Kein Tracking, keine Werbung, keine Weitergabe an Dritte. Mehr dazu in der <a href="/datenschutz.html">Datenschutzerklärung</a>.</p>
+    <button class="cbtn" id="cookie-ok" type="button">Alles klar</button>
+  </div>
 </div>
 
 <script>
