@@ -51,7 +51,7 @@
     animation: glowPulse 5s ease-in-out infinite;
     background: radial-gradient(circle at 50% 50%, rgba(245,205,120,.55) 0%, rgba(245,197,107,.22) 32%, rgba(245,197,107,.06) 52%, transparent 68%); }
   @keyframes glowPulse { 0%,100% { opacity: .5; transform: translateX(-50%) scale(.92); } 50% { opacity: 1; transform: translateX(-50%) scale(1.08); } }
-  @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } #orb { animation: none; } }
+  @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } #orb, .about-portrait::before { animation: none; } }
 
   h1,h2,h3,h4 { font-family: var(--serif); font-weight: 500; text-wrap: balance; margin: 0; letter-spacing: 0; }
   p { margin: 0; }
@@ -209,10 +209,18 @@
   .about-box { background: linear-gradient(135deg, #2a1a52 0%, #4a2f8a 100%); border-radius: 30px; padding: 52px 54px;
     display: grid; grid-template-columns: .8fr 1.2fr; gap: 48px; align-items: center;
     box-shadow: 0 0 80px -20px rgba(160,110,255,.6), inset 0 0 0 1px rgba(201,164,255,.2); }
-  .about-portrait { aspect-ratio: 1; border-radius: 24px; border: 1px solid rgba(255,255,255,.25);
-    background: repeating-linear-gradient(135deg, rgba(255,255,255,.35) 0 12px, rgba(255,255,255,.12) 12px 24px);
-    display: grid; place-items: center; }
-  .about-portrait span { font-family: var(--script); font-size: 26px; color: #fff; }
+  .about-portrait { position: relative; aspect-ratio: 1; border-radius: 24px; }
+  .about-portrait::before { content: ""; position: absolute; inset: -9px; border-radius: 30px; z-index: 0;
+    background: conic-gradient(from 0deg, rgba(245,197,107,0), rgba(245,197,107,.55), rgba(245,205,120,.9), rgba(245,197,107,.55), rgba(245,197,107,0));
+    filter: blur(16px); opacity: .75; animation: portraitGlow 7s ease-in-out infinite; }
+  .about-portrait img { position: relative; z-index: 1; display: block; width: 100%; height: 100%;
+    object-fit: cover; object-position: 55% 18%; border-radius: 24px; border: 1px solid rgba(245,197,107,.5);
+    box-shadow: 0 0 0 1px rgba(245,197,107,.25), 0 24px 60px -24px rgba(10,4,30,.7); }
+  .about-portrait .ph { display: none; }
+  .about-portrait.noimg { border: 1px solid rgba(255,255,255,.25); overflow: hidden;
+    background: repeating-linear-gradient(135deg, rgba(255,255,255,.35) 0 12px, rgba(255,255,255,.12) 12px 24px); display: grid; place-items: center; }
+  .about-portrait.noimg .ph { display: block; position: relative; z-index: 1; font-family: var(--script); font-size: 26px; color: #fff; }
+  @keyframes portraitGlow { 0%,100% { transform: rotate(0deg) scale(1); opacity: .5; } 50% { transform: rotate(180deg) scale(1.06); opacity: .95; } }
   .about .abeyebrow { font-family: var(--script); font-size: 24px; color: var(--gold); margin-bottom: 8px; }
   .about h2 { font-size: clamp(26px, 3.6vw, 38px); margin-bottom: 20px; color: #fff; }
   .about p { color: rgba(255,255,255,.9); font-size: 17px; line-height: 1.66; }
@@ -487,7 +495,11 @@
   <section class="band">
     <div class="wrap">
       <div class="about-box">
-        <div class="about-portrait"><span>Denise</span></div>
+        <div class="about-portrait">
+          <img src="denise.jpg" alt="Denise, Gründerin von Intuition mit Herz" loading="lazy"
+               onerror="this.remove();this.parentNode.classList.add('noimg')">
+          <span class="ph">Denise</span>
+        </div>
         <div class="about">
           <div class="abeyebrow">Wer hinter Intuition mit Herz steht</div>
           <h2>Hallo, ich bin <span class="script" style="color:#fff;font-size:1.2em;text-shadow:none">Denise</span>. 🤍</h2>
