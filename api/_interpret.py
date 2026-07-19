@@ -405,17 +405,15 @@ def full_analysis(chart):
     sections.append({
         "title": "Dein Human-Design-Typ",
         "headline": hd["type"],
-        "body": ("Bevor du irgendetwas an dir verändern willst, darfst du zuerst verstehen, wie du "
-                 "überhaupt gebaut bist. Dein Typ ist so etwas wie die Grundmelodie, nach der deine "
-                 "Energie schwingt. Er entscheidet, wie du am leichtesten durchs Leben gehst und wo "
-                 "du dich immer wieder verausgabst.\n\n" + t.get("short", "") + "\n\n"
-                 "Vielleicht kennst du das: Du siehst Menschen, die scheinbar mühelos etwas anstoßen "
-                 "oder jahrelang durchhalten, und fragst dich, warum es bei dir an manchen Stellen so "
-                 "viel schwerer geht. Der Grund ist fast nie, dass mit dir etwas nicht stimmt. Der "
-                 "Grund ist, dass du versucht hast, nach einer Melodie zu leben, die gar nicht deine "
-                 "ist.\n\nWenn du anfängst, deiner eigenen Art zu vertrauen, verändert sich etwas "
-                 "Leises, aber Tiefes: Das Leben hört auf, sich wie ständiger Widerstand anzufühlen, "
-                 "und beginnt, dich zu tragen."),
+        "body": ("Bevor du irgendwas an dir ändern willst, darfst du erst mal verstehen, wie du gebaut "
+                 "bist. Dein Typ ist die Grundmelodie deiner Energie. Er zeigt dir, wie du am "
+                 "leichtesten durchs Leben gehst und wo du dich immer wieder verausgabst.\n\n"
+                 + t.get("short", "") + "\n\nVielleicht kennst du das. Du siehst Menschen, denen "
+                 "vieles leicht fällt. Und du fragst dich, warum es bei dir an manchen Stellen so viel "
+                 "schwerer geht. Meistens ist der Grund ganz einfach. Du hast versucht, nach einer "
+                 "Melodie zu leben, die gar nicht deine ist.\n\nWenn du deiner eigenen Art vertraust, "
+                 "ändert sich etwas Leises, aber Tiefes. Das Leben fühlt sich weniger nach Widerstand "
+                 "an. Es fängt an, dich zu tragen."),
         "facts": [
             ("Strategie", t.get("strategy", "")),
             ("Innere Autorität", hd["authority"]),
@@ -426,28 +424,26 @@ def full_analysis(chart):
     sections.append({
         "title": "Deine innere Autorität",
         "headline": hd["authority"],
-        "body": ("Deine innere Autorität ist vielleicht die wichtigste Information über dich, denn "
-                 "sie beantwortet die Frage, an der so viele hängenbleiben: Wie treffe ich eine "
-                 "Entscheidung, die wirklich zu mir gehört?\n\n" + AUTHORITY_INFO.get(hd["authority"], "")
-                 + "\n\nErinnerst du dich an eine Entscheidung, die auf dem Papier völlig richtig war "
-                 "und sich trotzdem falsch angefühlt hat? Dieses leise Ziehen, dieses Zögern, das du "
-                 "weggedacht hast, war nicht Feigheit. Es war deine eigentliche Führung, die versucht "
-                 "hat, mit dir zu sprechen.\n\nDein Kopf ist ein kluger Berater, aber er sollte nicht "
-                 "der sein, der am Ende entscheidet. In dem Moment, in dem du dieser tieferen Stimme "
-                 "wieder traust, hörst du auf, gegen dich selbst zu leben."),
+        "body": ("Deine innere Autorität ist vielleicht das Wichtigste über dich. Sie beantwortet eine "
+                 "Frage, an der viele hängenbleiben. Wie treffe ich eine Entscheidung, die wirklich zu "
+                 "mir passt?\n\n" + AUTHORITY_INFO.get(hd["authority"], "") + "\n\nErinnerst du dich an "
+                 "eine Entscheidung, die auf dem Papier richtig war und sich trotzdem falsch angefühlt "
+                 "hat? Dieses leise Ziehen im Bauch war keine Feigheit. Das war deine echte Führung. "
+                 "Sie hat versucht, mit dir zu reden.\n\nDein Kopf ist ein guter Berater. Aber er "
+                 "sollte nicht am Ende entscheiden. Wenn du dieser tieferen Stimme wieder traust, "
+                 "hörst du auf, gegen dich selbst zu leben."),
         "facts": [],
     })
     sections.append({
         "title": "Dein Profil",
         "headline": f"{hd['profile']}, {profile_name(hd['profile'])}",
-        "body": ("Dein Profil beschreibt die Rolle, in der sich dein Weg entfaltet, fast wie ein "
-                 "Kostüm, das deine Seele für dieses Leben gewählt hat. Die erste Zahl lebst du "
-                 "bewusst, sie ist dir vertraut. Die zweite wirkt eher aus dem Verborgenen und wird "
-                 "oft von anderen zuerst in dir gesehen, bevor du sie selbst bemerkst.\n\n"
-                 + PROFILE_DESC.get(hd["profile"], "") + "\n\nVielleicht erkennst du dich in beiden "
-                 "Seiten wieder und hast dich manchmal gefragt, warum du so widersprüchlich sein "
-                 "kannst. Das ist kein Widerspruch, das ist dein Design. Wenn du beide Seiten in dir "
-                 "sein lässt, statt dich für eine zu entscheiden, wirst du ganz."),
+        "body": ("Dein Profil beschreibt die Rolle, in der sich dein Weg entfaltet. Stell es dir wie "
+                 "ein Kostüm vor, das deine Seele für dieses Leben gewählt hat. Die erste Zahl lebst "
+                 "du bewusst. Sie ist dir vertraut. Die zweite wirkt eher aus dem Verborgenen. Andere "
+                 "sehen sie oft früher in dir als du selbst.\n\n" + PROFILE_DESC.get(hd["profile"], "")
+                 + "\n\nVielleicht erkennst du dich in beiden Seiten wieder. Und du hast dich manchmal "
+                 "gefragt, warum du so widersprüchlich sein kannst. Das ist kein Widerspruch. Das ist "
+                 "dein Design. Wenn du beide Seiten in dir sein lässt, wirst du ganz."),
         "facts": [("Definition", hd["definition"]),
                   ("Definierte Zentren", ", ".join(hd["defined_centers"]) or "keine")],
     })
@@ -457,17 +453,16 @@ def full_analysis(chart):
     sections.append({
         "title": "Deine Zentren",
         "headline": f"{len(defined)} definiert, {len(open_c)} offen",
-        "body": ("Stell dir deine Zentren wie neun Räume in dir vor. Manche sind fest eingerichtet "
-                 "und immer gleich, andere stehen offen und füllen sich mit dem, was gerade um dich "
-                 "herum ist.\n\nDeine definierten Zentren sind deine verlässliche, gleichbleibende "
-                 "Energie. Hier bist du dir treu, hier kannst du dich auf dich verlassen, und andere "
-                 "spüren diese Beständigkeit an dir.\n\nDeine offenen Zentren sind deine Weisheits- "
-                 "und Lernräume. Hier nimmst du andere fein auf, hier bist du beweglich und "
-                 "empfänglich, und genau hier entsteht der Druck, dich zu verbiegen, um dazuzugehören. "
-                 "Vielleicht kennst du das Gefühl, in bestimmter Gesellschaft plötzlich jemand anderes "
-                 "zu sein. Das passiert genau in diesen offenen Räumen.\n\nDer Moment, in dem du "
-                 "verstehst, welche Räume bei dir offen sind, ist oft ein echter Befreiungsmoment: Du "
-                 "erkennst, dass vieles, was du für dein Problem gehalten hast, nie deins war, sondern "
+        "body": ("Stell dir deine Zentren wie neun Räume in dir vor. Manche sind fest eingerichtet und "
+                 "immer gleich. Andere stehen offen und füllen sich mit dem, was gerade um dich herum "
+                 "ist.\n\nDeine definierten Zentren sind deine feste, verlässliche Energie. Hier bist "
+                 "du dir treu. Hier kannst du dich auf dich verlassen. Andere spüren diese Ruhe an "
+                 "dir.\n\nDeine offenen Zentren sind deine Lernräume. Hier nimmst du andere fein auf. "
+                 "Hier bist du beweglich. Und genau hier entsteht der Druck, dich zu verbiegen, um "
+                 "dazuzugehören. Vielleicht kennst du das Gefühl, in bestimmter Gesellschaft plötzlich "
+                 "ein anderer Mensch zu sein. Das passiert genau in diesen offenen Räumen.\n\nWenn du "
+                 "verstehst, welche Räume bei dir offen sind, ist das oft ein echter Befreiungsmoment. "
+                 "Du merkst: Vieles, was du für dein Problem gehalten hast, war nie deins. Du hast es "
                  "nur aufgenommen."),
         "facts": [("Definiert", ", ".join(defined) or "keine"),
                   ("Offen", ", ".join(open_c) or "keine")],
@@ -485,14 +480,13 @@ def full_analysis(chart):
             "title": "Dein Higher Self",
             "subtitle": f"Nordknoten in {nk['sign']}, wohin du wächst",
             "headline": f"Dein Wachstum zeigt Richtung {nk['sign']}",
-            "body": ("Dein Higher Self ist nicht jemand, der du erst noch mühsam werden musst. Es ist "
-                     "die Version von dir, die längst in dir angelegt ist und nur darauf wartet, "
-                     "gelebt zu werden.\n\n" + axis.get("higher", "") + "\n\nVielleicht spürst du ab "
-                     "und zu eine leise Sehnsucht genau in diese Richtung, ein Ziehen zu etwas, das "
-                     "sich größer, freier oder echter anfühlt. Das ist kein Zufall und keine "
-                     "Spinnerei, das ist dein innerer Kompass. Jedes Mal, wenn du diesem Ziehen "
-                     "folgst, auch wenn es dir zuerst fremd und unbequem vorkommt, kommst du ein "
-                     "Stück mehr bei dir selbst an."),
+            "body": ("Dein Higher Self ist niemand, der du erst noch werden musst. Es ist die Version "
+                     "von dir, die längst in dir steckt. Sie wartet nur darauf, gelebt zu werden.\n\n"
+                     + axis.get("higher", "") + "\n\nVielleicht spürst du ab und zu eine leise "
+                     "Sehnsucht in diese Richtung. Ein Ziehen zu etwas, das sich größer und freier "
+                     "anfühlt. Das ist kein Zufall. Das ist dein innerer Kompass. Jedes Mal, wenn du "
+                     "diesem Ziehen folgst, kommst du ein Stück mehr bei dir an. Auch wenn es sich "
+                     "zuerst fremd anfühlt."),
             "takeaway": axis.get("task", ""),
             "facts": f,
         })
@@ -501,13 +495,13 @@ def full_analysis(chart):
             "title": "Dein Lower Self",
             "subtitle": f"Südknoten in {sk['sign']}, dein vertrautes Muster",
             "headline": f"Deine Komfortzone liegt im {sk['sign']}",
-            "body": ("Dein Lower Self ist kein Feind und kein Makel. Es ist der Teil von dir, der "
-                     "sich am sichersten anfühlt, weil du ihn schon so lange kennst, oft seit deiner "
-                     "Kindheit.\n\n" + axis.get("lower", "") + "\n\nKennst du diese Momente, in denen "
-                     "du unter Druck ganz automatisch in ein altes Muster zurückrutschst, obwohl ein "
-                     "Teil von dir es besser weiß? Genau das ist gemeint. Es ist nichts, wofür du "
-                     "dich schämen musst. Wichtig ist nur, dass du es erkennst, denn ein Muster, das "
-                     "du klar siehst, verliert seine heimliche Macht über dich."),
+            "body": ("Dein Lower Self ist kein Feind. Es ist der Teil von dir, der sich am sichersten "
+                     "anfühlt. Du kennst ihn schon lange, oft seit deiner Kindheit.\n\n"
+                     + axis.get("lower", "") + "\n\nKennst du diese Momente, in denen du unter Druck "
+                     "automatisch in ein altes Muster zurückrutschst? Obwohl ein Teil von dir es "
+                     "besser weiß? Genau das ist gemeint. Du musst dich dafür nicht schämen. Wichtig "
+                     "ist nur, dass du es siehst. Ein Muster, das du klar erkennst, verliert seine "
+                     "heimliche Macht über dich."),
             "facts": [("Südknoten", f"{sk['sym']} {sk['sign']} {sk['text']}")],
         })
     if nk and sk and axis:
@@ -516,10 +510,10 @@ def full_analysis(chart):
             "subtitle": f"Deine Mondknoten-Achse: {sk['sign']} zu {nk['sign']}",
             "headline": f"Von {sk['sign']} nach {nk['sign']}",
             "body": (f"Deine Mondknoten-Achse ist der rote Faden deines Lebens. Sie zeigt, woher du "
-                     f"kommst und wohin du wächst. Vertraut und leicht ist dir das {sk['sign']}-Muster, "
-                     f"dort fühlst du dich sicher. Dein eigentliches Wachstum liegt auf der anderen "
-                     f"Seite, im {nk['sign']}. Du kommst dorthin, indem du das alte Muster immer öfter "
-                     f"bewusst hinter dir lässt und den neuen Weg wählst, Schritt für Schritt."),
+                     f"kommst und wohin du wächst. Das {sk['sign']}-Muster ist dir vertraut und leicht. "
+                     f"Dort fühlst du dich sicher. Dein Wachstum liegt auf der anderen Seite, im "
+                     f"{nk['sign']}. Du kommst dorthin in kleinen Schritten. Immer dann, wenn du das "
+                     f"alte Muster bewusst hinter dir lässt und den neuen Weg wählst."),
             "takeaway": axis.get("task", ""),
             "facts": [],
         })
@@ -534,16 +528,14 @@ def full_analysis(chart):
             "headline": f"Chiron in {chi['sign']} {chi['text']}",
             "body": (CHIRON_SIGN.get(chi["sign"], "Chiron zeigt die Stelle, an der du verletzlich "
                      "bist, und genau dort liegt deine besondere Kraft, andere zu heilen.")
-                     + "\n\nDiese Wunde ist wahrscheinlich so alt, dass du sie kaum noch als Wunde "
-                     "erkennst, sondern eher als ein „so bin ich halt“. Vielleicht hast du gelernt, "
-                     "sie zu überspielen, sie wegzuarbeiten oder besonders stark an genau dieser "
-                     "Stelle zu sein. Und doch meldet sie sich immer wieder, meist dann, wenn du dich "
-                     "ungeschützt fühlst.\n\nHier kommt der zärtliche Teil: Genau weil du diesen "
-                     "Schmerz so gut kennst, kannst du ihn bei anderen sofort sehen. Du bist der "
-                     "Mensch, der jemandem glaubhaft sagen kann, dass es reicht, weil du selbst "
-                     "weißt, wie viel das kostet. Deine Wunde und deine Gabe sind dieselbe Stelle. "
-                     "Du musst die Wunde nicht erst wegmachen, um zu heilen. Du heilst genau durch "
-                     "sie."),
+                     + "\n\nDiese Wunde ist wahrscheinlich sehr alt. Du erkennst sie kaum noch als "
+                     "Wunde. Sie fühlt sich eher an wie ein „so bin ich halt“. Vielleicht hast du "
+                     "gelernt, sie zu überspielen oder besonders stark an dieser Stelle zu sein. Und "
+                     "trotzdem meldet sie sich immer wieder. Meistens dann, wenn du dich ungeschützt "
+                     "fühlst.\n\nJetzt kommt der schöne Teil. Genau weil du diesen Schmerz so gut "
+                     "kennst, siehst du ihn bei anderen sofort. Du kannst einem Menschen glaubhaft "
+                     "sagen: Es reicht so. Weil du selbst weißt, wie viel das kostet. Deine Wunde und "
+                     "deine Gabe sind dieselbe Stelle. Du heilst genau durch sie."),
             "facts": facts,
         })
 
