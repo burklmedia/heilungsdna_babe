@@ -150,6 +150,46 @@ CENTER_MEANING = {
     "Wurzel": "Antrieb, Druck und Stress",
 }
 
+# Was definiert und offen wirklich bedeuten, je Zentrum.
+CENTER_DEEP = {
+    "Kopf": {
+        "def": "Dein Kopf ist definiert. Du hast eine feste, eigene Art, dich inspirieren zu lassen und über Dinge nachzudenken. Deine Fragen und Ideen kommen wirklich aus dir. Verlass dich darauf, statt dir ständig neue Fragen von außen aufdrücken zu lassen.",
+        "open": "Dein Kopf ist offen. Du zerdenkst oft Fragen und Probleme, die gar nicht deine sind. Der Druck, alles verstehen und beantworten zu müssen, kommt von außen. Was du tun kannst: Nicht jede Frage, die auftaucht, musst du lösen. Lass die meisten einfach ziehen.",
+    },
+    "Ajna": {
+        "def": "Deine Ajna ist definiert. Du hast eine feste, verlässliche Art zu denken und dir eine Meinung zu bilden. Deine Sicht auf die Dinge ist stabil. Das gibt dir Sicherheit, kann aber auch stur machen. Bleib bewusst offen für neue Blickwinkel.",
+        "open": "Deine Ajna ist offen. Deine Meinungen sind beweglich und passen sich der Lage an. Vielleicht tust du manchmal sicherer, als du bist. Das ist keine Schwäche. Du darfst sagen: Ich bin mir noch nicht sicher. Genau diese Offenheit macht dich mit der Zeit weise.",
+    },
+    "Kehle": {
+        "def": "Deine Kehle ist definiert. Du hast eine feste, verlässliche Art, dich auszudrücken und Dinge in die Welt zu bringen. Wenn du sprichst, hat es Gewicht. Vertrau darauf und red nicht lange drumherum.",
+        "open": "Deine Kehle ist offen. Wie und wann du dich ausdrückst, hängt stark von der Umgebung ab. Vielleicht spürst du manchmal Druck, unbedingt etwas sagen zu müssen, um dazuzugehören. Warte, bis du wirklich angesprochen oder eingeladen wirst. Dann werden deine Worte gehört.",
+    },
+    "G": {
+        "def": "Dein G-Zentrum ist definiert. Du trägst einen festen inneren Kompass für deine Identität und deine Richtung im Leben. Im Kern weißt du, wer du bist, auch wenn der Weg mal unklar ist. Vertrau dieser inneren Konstante.",
+        "open": "Dein G-Zentrum ist offen. Wer du bist und wohin du willst, fühlt sich je nach Umgebung anders an. Das kann verunsichern. Der Schlüssel ist der richtige Ort: An den falschen Orten verlierst du dich, an den richtigen findest du dich. Achte sehr genau darauf, wo und mit wem du dich aufhältst.",
+    },
+    "Herz": {
+        "def": "Dein Herzzentrum ist definiert. Du hast eine verlässliche Willenskraft. Du kannst dir etwas vornehmen und es durchziehen, und Versprechen kannst du halten. Achte nur darauf, dich nicht ständig zu überfordern.",
+        "open": "Dein Herzzentrum ist offen. Du musst dir und anderen nichts beweisen, auch wenn du es oft trotzdem versuchst. Vielleicht kennst du das Gefühl, ständig zeigen zu müssen, dass du genug wert bist. Du bist es längst. Du musst deinen Wert nicht erkämpfen.",
+    },
+    "Milz": {
+        "def": "Deine Milz ist definiert. Du hast einen verlässlichen Instinkt für Sicherheit und Gesundheit, ein festes, leises Bauchgefühl im Hier und Jetzt. Vertrau dieser ruhigen, konstanten Ahnung.",
+        "open": "Deine Milz ist offen. Du hältst manchmal an Dingen, Menschen oder Gewohnheiten fest, die dir nicht guttun, aus Angst vor dem Loslassen. Diese Angst kennst du vielleicht gut. Was du tun kannst: Nicht jede Angst ist deine eigene, vieles nimmst du nur auf. Trau dich, loszulassen, was dich klein hält.",
+    },
+    "Sakral": {
+        "def": "Dein Sakral ist definiert. Du hast eine kraftvolle, erneuerbare Lebens- und Arbeitsenergie. Wenn du tust, was dich wirklich anzieht, ist sie fast unerschöpflich. Wichtig ist nur, dass du auf dein klares Ja und Nein aus dem Bauch hörst und dich nicht zu Dingen zwingst.",
+        "open": "Dein Sakral ist offen. Du hast keine gleichbleibende Arbeitsenergie, und das ist völlig in Ordnung. Vielleicht hast du dich oft gehetzt und über deine Grenzen hinaus gearbeitet, um mitzuhalten. Das musst du nicht. Lerne, rechtzeitig aufzuhören, statt bis zur Erschöpfung weiterzumachen.",
+    },
+    "Solarplexus": {
+        "def": "Dein Solarplexus ist definiert. Du erlebst Gefühle in Wellen, mal hoch, mal tief, und das ist deine ganz normale Art zu fühlen. Triff wichtige Entscheidungen nie mitten im Hoch oder Tief. Warte, bis die Welle sich gelegt hat.",
+        "open": "Dein Solarplexus ist offen. Du nimmst die Stimmungen anderer stark auf und hältst sie schnell für deine eigenen. Vielleicht meidest du Streit, um bloß die Harmonie zu wahren. Was du tun kannst: Frag dich, wessen Gefühl das gerade ist. Und trau dich, auch unangenehme Wahrheiten auszusprechen.",
+    },
+    "Wurzel": {
+        "def": "Deine Wurzel ist definiert. Du hast einen festen, verlässlichen Umgang mit Druck und Antrieb. Stress kannst du in Bewegung umsetzen, ohne dich davon jagen zu lassen.",
+        "open": "Deine Wurzel ist offen. Du spürst oft einen Druck, Dinge schnell erledigen zu müssen, nur um den Stress endlich loszuwerden. Dieser Druck ist meist geliehen, er gehört gar nicht dir. Was du tun kannst: Nichts muss sofort. Nimm dir den Druck bewusst raus und mach eins nach dem anderen.",
+    },
+}
+
 # Chiron: die tiefe Wunde und zugleich der Ort deiner größten Heilkraft, nach Zeichen.
 CHIRON_SIGN = {
     "Widder": "Tief in dir sitzt die Frage, ob du überhaupt wollen darfst. Vielleicht hast du früh "
@@ -1117,6 +1157,71 @@ def full_analysis(chart):
                   ("Offen", ", ".join(open_c) or "keine")],
     })
 
+    # ---- Kombi-Sektionen aus Human Design und Geburtshoroskop ----
+    _natk = chart["natal"]
+    sun_sign = _natk["Sonne"]["sign"] if _natk.get("Sonne") else ""
+    strat = t.get("strategy", "")
+    auth = hd["authority"]
+    sig = t.get("signature", "")
+    nots = t.get("not_self", "")
+    dcs = hd["defined_centers"]
+    ocs = hd["open_centers"]
+
+    sections.append({
+        "title": "Dein Entscheidungsweg",
+        "subtitle": "Wie du Entscheidungen triffst, die halten",
+        "headline": f"{strat}, dann auf deine {auth} hören",
+        "body": ("Zwei Dinge zusammen ergeben deinen sichersten Weg zu jeder Entscheidung.\n\n"
+                 f"Der erste Schritt ist deine Strategie: {strat.lower()}. So kommst du überhaupt "
+                 "erst mit dem Richtigen in Berührung.\n\n"
+                 f"Der zweite Schritt ist deine innere Autorität, deine {auth.lower()}. Sie sagt dir, "
+                 "ob ein Ja auch wirklich deins ist.\n\n"
+                 "Vielleicht hast du dich oft schnell über den Kopf entschieden und dich danach "
+                 "gefragt, warum sich alles falsch anfühlt. Dein Kopf ist einfach zu schnell für "
+                 "dich. Wenn du diesen zwei Schritten folgst, triffst du Entscheidungen, die du "
+                 "nicht mehr bereust."),
+        "takeaway": f"Kurz gesagt: {strat}. Und dann ehrlich auf deine {auth} hören.",
+        "facts": [("Strategie", strat), ("Autorität", auth)],
+    })
+
+    staerken_ext = (" Und aus deinem Geburtshoroskop: " + SIGN_EMOTION.get(sun_sign, "")) if sun_sign else ""
+    staerken_basis = ((" Diese Zentren geben dir eine feste, verlässliche Kraft: " + ", ".join(dcs)
+                       + ". Hier kannst du dich immer auf dich verlassen, egal was um dich herum "
+                       "passiert.") if dcs else " Deine Kraft liegt gerade darin, offen und "
+                      "beweglich zu bleiben und andere fein zu spüren.")
+    sections.append({
+        "title": "Deine größten Stärken",
+        "subtitle": "Kräfte, die schon lange in dir stecken",
+        "headline": "Das kannst du, auch wenn du es für selbstverständlich hältst",
+        "body": ("Oft sind die eigenen Stärken genau die Dinge, die einem so leicht fallen, dass man "
+                 "sie gar nicht für besonders hält. Dabei sind das deine Geschenke.\n\n"
+                 "Aus deinem Human Design: Deine Signatur im Flow ist " + sig.lower() + ". Immer wenn "
+                 "du die in dir spürst, bist du genau richtig unterwegs." + staerken_ext + "\n\n"
+                 "Deine feste Basis:" + staerken_basis),
+        "facts": [("Sonne", sun_sign), ("Signatur", sig)],
+    })
+
+    heraus_open = ((" Dazu kommen deine offenen Zentren: " + ", ".join(ocs) + ". Hier nimmst du den "
+                    "Druck und die Energie anderer auf und hältst sie schnell für deine eigenen. Das "
+                    "erschöpft dich, oft ohne dass du weißt, warum.") if ocs else "")
+    sections.append({
+        "title": "Deine größte Herausforderung",
+        "subtitle": "Und wie du sie meisterst",
+        "headline": "Deine wunde Stelle, ehrlich benannt",
+        "body": ("Jeder Mensch hat eine Stelle, an der es immer wieder schwer wird. Sie zu kennen, "
+                 "nimmt ihr schon die halbe Macht.\n\n"
+                 "Dein deutlichstes Warnsignal heißt " + nots + ". Immer wenn du das in dir spürst, "
+                 "lebst du gerade nicht deine eigene Natur. Du lebst die Erwartungen anderer."
+                 + heraus_open + "\n\n"
+                 "Und wie du sie meisterst: Frag dich immer wieder ehrlich, ob ein Gefühl gerade "
+                 "wirklich deins ist oder nur aufgenommen. Geh raus aus Räumen und Gesprächen, die "
+                 "dich leer machen. Und entscheide über deine " + auth.lower() + ", nicht über deinen "
+                 "Kopf. So findest du jedes Mal zu dir zurück."),
+        "takeaway": "Dein Frühwarnsystem: Sobald sich " + nots.lower() + " meldet, halt inne und komm "
+                    "zu deiner eigenen Natur zurück.",
+        "facts": [("Nicht-Selbst-Thema", nots)],
+    })
+
     nat = chart["natal"]
     if asc:
         sections.append(_element_section(nat, asc, chart.get("mc")))
@@ -1173,11 +1278,19 @@ def full_analysis(chart):
             "title": "Deine Lebensaufgabe",
             "subtitle": f"Deine Mondknoten-Achse: {sk['sign']} zu {nk['sign']}",
             "headline": f"Von {sk['sign']} nach {nk['sign']}",
-            "body": (f"Deine Mondknoten-Achse ist der rote Faden deines Lebens. Sie zeigt, woher du "
-                     f"kommst und wohin du wächst. Das {sk['sign']}-Muster ist dir vertraut und leicht. "
-                     f"Dort fühlst du dich sicher. Dein Wachstum liegt auf der anderen Seite, im "
-                     f"{nk['sign']}. Du kommst dorthin in kleinen Schritten. Immer dann, wenn du das "
-                     f"alte Muster bewusst hinter dir lässt und den neuen Weg wählst."),
+            "body": (f"Das hier ist vielleicht die wichtigste Sektion deines ganzen Bauplans. Deine "
+                     f"Mondknoten-Achse ist der rote Faden deines Lebens. Sie zeigt schonungslos, "
+                     f"woran du wachsen sollst.\n\nDas {sk['sign']}-Muster ist deine Komfortzone. Es "
+                     f"fühlt sich sicher an, weil du es seit deiner Kindheit kennst. Aber sei ehrlich "
+                     f"zu dir: Genau hier bleibst du stehen. Genau hier wiederholst du immer wieder "
+                     f"dieselben Situationen, dieselben Enttäuschungen, dieselben Gedanken über dich "
+                     f"selbst.\n\nDein eigentliches Leben wartet auf der anderen Seite, im "
+                     f"{nk['sign']}. Am Anfang fühlt es sich fremd und unbequem an, fast falsch. Das "
+                     f"ist normal. Wachstum fühlt sich immer zuerst unsicher an.\n\nUnd jetzt der "
+                     f"Punkt, der wehtut und gleichzeitig befreit: Niemand zieht dich da rüber. Du "
+                     f"bist die einzige Person, die diesen Schritt gehen kann. Jedes Mal, wenn du "
+                     f"dich zwischen dem alten, sicheren Weg und dem neuen, echten entscheidest, "
+                     f"entscheidest du über dein ganzes Leben. Fang klein an. Aber fang an."),
             "takeaway": axis.get("task", ""),
             "facts": [],
         })
@@ -1298,7 +1411,8 @@ def full_analysis(chart):
             positions.append(_pos(k, k, p, p.get("house")))
 
     _defset = set(hd["defined_centers"])
-    hd_centers = [{"name": c, "defined": c in _defset, "meaning": CENTER_MEANING.get(c, "")}
+    hd_centers = [{"name": c, "defined": c in _defset, "meaning": CENTER_MEANING.get(c, ""),
+                   "desc": CENTER_DEEP.get(c, {}).get("def" if c in _defset else "open", "")}
                   for c in ["Kopf", "Ajna", "Kehle", "G", "Herz", "Milz", "Sakral",
                             "Solarplexus", "Wurzel"]]
 

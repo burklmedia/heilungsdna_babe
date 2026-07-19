@@ -1110,11 +1110,11 @@
       '</div>'+
       '<div class="grid2">'+
         '<div class="panel tight"><span class="cap">Natalchart</span>'+
+          (f.geo?'<div class="graphic gwheel wheelframe">'+buildNatalWheel(f.geo)+'</div>':'')+
           '<div class="natkey">'+
             natrow('☉','Sonne','Sonne')+natrow('☽','Mond','Mond')+
             natrow('AC','Aszendent','AC')+natrow('DC','Deszendent','DC')+
           '</div>'+
-          (f.geo?'<div class="graphic gwheel wheelframe">'+buildNatalWheel(f.geo)+'</div>':'')+
         '</div>'+
         '<div class="panel tight glowpanel"><span class="cap">Human Design</span>'+
           '<div class="graphic gbody">'+buildBodygraph(hd)+'</div>'+glegend+'</div>'+
@@ -1130,8 +1130,7 @@
       (f.hd_centers||[]).map(function(c){
         return pcard(c.defined?'●':'○', c.name, (c.defined?'Definiert':'Offen'),
           (c.defined?'verlässliche Energie':'Lern- und Weisheitsraum'), c.meaning,
-          c.defined?('Dieses Zentrum ist bei dir definiert. Es steht für '+c.meaning+'. Hier bist du dir treu und kannst dich auf eine gleichbleibende, verlässliche Energie stützen.')
-                   :('Dieses Zentrum ist bei dir offen. Es steht für '+c.meaning+'. Hier nimmst du andere feinfühlig auf und lernst viel. Genau hier entsteht Druck, wenn du dich verbiegst, um dazuzugehören.'));
+          c.desc||('Dieses Zentrum ist bei dir '+(c.defined?'definiert':'offen')+'. Es steht für '+c.meaning+'.'));
       }).join('');
 
     // ── NATALCHART ──
@@ -1152,6 +1151,9 @@
 
     // ── DEUTUNG ──
     document.getElementById('pane-de').innerHTML=
+      '<div class="legend"><div class="lh">Was bedeutet was?</div>'+
+        LEGEND.map(function(l){return '<div class="li"><div class="t">'+esc(l[0])+'</div><div class="d">'+esc(l[1])+'</div></div>';}).join('')+
+      '</div>'+
       '<div class="story">'+
       (f.sections||[]).map(function(s,i){
         var nr=('0'+(i+1)).slice(-2);
@@ -1164,10 +1166,7 @@
           '<summary class="acc-h"><span class="acc-nr">'+nr+'</span><span class="acc-t">'+esc(s.title)+sub+'</span><span class="acc-x">+</span></summary>'+
           '<div class="acc-b">'+lead+paras+take+facts+'</div></details>';
       }).join('')+'</div>'+
-      '<div class="closing">'+esc(f.closing)+'</div>'+
-      '<div class="legend"><div class="lh">Was bedeutet was?</div>'+
-        LEGEND.map(function(l){return '<div class="li"><div class="t">'+esc(l[0])+'</div><div class="d">'+esc(l[1])+'</div></div>';}).join('')+
-      '</div>';
+      '<div class="closing">'+esc(f.closing)+'</div>';
 
     // ── INTUITIONSTYP ──
     var it=f.intuition;
@@ -1249,7 +1248,18 @@
   function kv(k,v){ return '<div class="kv"><span class="k">'+esc(k)+'</span><span class="v">'+esc(v)+'</span></div>'; }
   // Tab-Wechsel + aufklappbare Karten (einmalig, Delegation)
   document.getElementById('rtabs').addEventListener('click',function(e){ var t=e.target.closest('.rtab'); if(t) setRTab(t.getAttribute('data-rtab')); });
-  document.getElementById('step3').addEventListener('click',function(e){ var h=e.target.closest('.pcard .ph'); if(h) h.parentNode.classList.toggle('open'); });
+  document.getElementById('step3').addEventListener('click',function(e){
+    var h=e.target.closest('.pcard .ph'); if(!h) return;
+    var card=h.parentNode, pane=card.closest('.rpane')||document.getElementById('step3');
+    pane.querySelectorAll('.pcard.open').forEach(function(c){ if(c!==card) c.classList.remove('open'); });
+    card.classList.toggle('open');
+  });
+  // Deutungs-Sektionen: nur eine offen (toggle bubbelt nicht -> capture)
+  document.getElementById('step3').addEventListener('toggle',function(e){
+    var d=e.target; if(d.tagName==='DETAILS' && d.classList.contains('acc') && d.open){
+      d.parentNode.querySelectorAll('details.acc[open]').forEach(function(o){ if(o!==d) o.open=false; });
+    }
+  }, true);
 
   /* ── Bodygraph (Human-Design-Zentren, datengenau offen/definiert) ── */
   function buildBodygraph(hd){
