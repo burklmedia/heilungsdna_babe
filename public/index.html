@@ -190,7 +190,17 @@
   .mockup .mock-sub { font-size: 11.5px; color: var(--ink-mute); text-transform: uppercase; letter-spacing: .14em; margin-bottom: 20px; }
   .mockup .mline { height: 10px; border-radius: 6px; background: linear-gradient(90deg, rgba(201,164,255,.32), rgba(201,164,255,.06)); margin-bottom: 11px; }
   .mockup .mline.s { width: 60%; } .mockup .mline.m { width: 85%; }
-  .mockup .mbadge { display: inline-block; margin-top: 10px; font-family: var(--script); font-size: 24px; color: var(--gold); text-shadow: 0 0 24px var(--glow); }
+  .mockup .mock-top { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+  .mockup .mock-tag { flex: none; font-size: 9.5px; letter-spacing: .16em; text-transform: uppercase; color: var(--gold); border: 1px solid rgba(245,197,107,.4); border-radius: 999px; padding: 4px 10px; }
+  .mockup .mock-sub { margin-bottom: 18px; }
+  .mockup .mrows { display: flex; flex-direction: column; gap: 9px; }
+  .mockup .mrow { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 11px 14px; border-radius: 12px; background: rgba(201,164,255,.08); border: 1px solid var(--line); }
+  .mockup .mrow span { font-size: 13px; color: var(--ink-soft); }
+  .mockup .mrow b { font-size: 14px; font-weight: 700; color: var(--ink); text-align: right; }
+  .mockup .mrow.gold { background: rgba(245,197,107,.1); border-color: rgba(245,197,107,.28); }
+  .mockup .mrow.gold b { color: var(--gold); }
+  .mockup .mock-strat { font-size: 12.5px; line-height: 1.55; color: var(--ink-soft); margin: 16px 0 0; }
+  .mockup .mbadge { display: inline-block; margin-top: 14px; font-family: var(--script); font-size: 24px; color: var(--gold); text-shadow: 0 0 24px var(--glow); }
   .cards { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
   .mcard { display: flex; align-items: center; gap: 11px; background: rgba(38,24,72,.5); border: 1px solid var(--line); border-radius: 14px; padding: 14px 15px; font-size: 14.5px; color: var(--ink); }
   .mcard .ic { font-size: 18px; flex: none; }
@@ -628,34 +638,42 @@
         <div class="solar" aria-hidden="true">
           <div style="position:absolute;inset:0;background-repeat:repeat;background-size:90px 90px,130px 130px;opacity:.5;background-image:radial-gradient(1px 1px at 20px 30px,rgba(255,255,255,.9),transparent),radial-gradient(1px 1px at 80px 100px,rgba(210,190,255,.8),transparent);"></div>
           <div style="position:absolute;inset:0;display:grid;place-items:center;">
-            <div style="position:relative;width:288px;height:288px;animation:floatY 9s ease-in-out infinite;">
-              <div style="position:absolute;inset:0;margin:auto;width:104px;height:104px;border-radius:50%;border:1px solid rgba(201,164,255,.2);"></div>
-              <div style="position:absolute;inset:0;margin:auto;width:156px;height:156px;border-radius:50%;border:1px solid rgba(201,164,255,.15);"></div>
-              <div style="position:absolute;inset:0;margin:auto;width:208px;height:208px;border-radius:50%;border:1px solid rgba(201,164,255,.12);"></div>
-              <div style="position:absolute;inset:0;margin:auto;width:212px;height:212px;border-radius:50%;border:1px solid rgba(201,164,255,.09);"></div>
-              <div style="position:absolute;top:50%;left:50%;width:74px;height:74px;margin:-37px 0 0 -37px;border-radius:50%;background:radial-gradient(circle at 42% 38%,#fff7e0 0%,#ffe19a 30%,#f5c56b 60%,#d98d28 100%);box-shadow:0 0 44px 8px rgba(245,205,120,.7),0 0 104px 28px rgba(245,197,107,.4);animation:sunBreath 4s ease-in-out infinite;z-index:6;"></div>
-              <div style="position:absolute;inset:0;margin:auto;width:104px;height:104px;border-radius:50%;animation:spin 34s linear infinite;animation-delay:-2s;">
-                <div style="position:absolute;top:50%;left:50%;height:1px;width:52px;transform-origin:left center;transform:rotate(-90deg);background:linear-gradient(90deg,rgba(245,197,107,.45),rgba(201,164,255,.15));"></div>
-                <div style="position:absolute;top:-9px;left:50%;margin-left:-9px;width:18px;height:18px;border-radius:50%;animation:spin 34s linear infinite reverse;animation-delay:-2s;background:radial-gradient(circle at 32% 28%,#f3ead0 0%,#c0af92 42%,#5f5140 100%);box-shadow:inset -5px -6px 9px rgba(0,0,0,.6),inset 3px 3px 6px rgba(255,255,255,.4);"></div>
+            <div style="position:relative;width:300px;height:300px;animation:floatY 9s ease-in-out infinite;">
+              <div style="position:absolute;top:50%;left:50%;width:62px;height:62px;margin:-31px 0 0 -31px;border-radius:50%;background:radial-gradient(circle at 42% 38%,#fff7e0 0%,#ffe19a 30%,#f5c56b 60%,#d98d28 100%);box-shadow:0 0 40px 7px rgba(245,205,120,.7),0 0 96px 26px rgba(245,197,107,.4);animation:sunBreath 4s ease-in-out infinite;z-index:6;"></div>
+              <div style="position:absolute;inset:0;margin:auto;width:80px;height:80px;border-radius:50%;border:1px solid rgba(201,164,255,.11);animation:spin 30s linear infinite;animation-delay:-4s;">
+                <div style="position:absolute;top:50%;left:50%;height:1px;width:40px;transform-origin:left center;transform:rotate(-90deg);background:linear-gradient(90deg,rgba(245,197,107,.4),rgba(201,164,255,.12));"></div>
+                <div style="position:absolute;top:-6px;left:50%;margin-left:-6px;width:12px;height:12px;border-radius:50%;animation:spin 30s linear infinite reverse;animation-delay:-4s;background:radial-gradient(circle at 32% 28%,#f3ead0 0%,#c0af92 42%,#5f5140 100%);box-shadow:inset -3px -4px 6px rgba(0,0,0,.6),inset 2px 2px 4px rgba(255,255,255,.45);"></div>
               </div>
-              <div style="position:absolute;inset:0;margin:auto;width:156px;height:156px;border-radius:50%;animation:spin 52s linear infinite;animation-delay:-22s;">
-                <div style="position:absolute;top:50%;left:50%;height:1px;width:78px;transform-origin:left center;transform:rotate(-90deg);background:linear-gradient(90deg,rgba(245,197,107,.4),rgba(201,164,255,.12));"></div>
-                <div style="position:absolute;top:-15px;left:50%;margin-left:-15px;width:30px;height:30px;border-radius:50%;animation:spin 52s linear infinite reverse;animation-delay:-22s;background:radial-gradient(circle at 32% 28%,#dcefff 0%,#6f97d6 46%,#1c3c68 100%);box-shadow:inset -8px -9px 14px rgba(0,0,0,.6),inset 4px 4px 9px rgba(255,255,255,.45);"></div>
+              <div style="position:absolute;inset:0;margin:auto;width:108px;height:108px;border-radius:50%;border:1px solid rgba(201,164,255,.11);animation:spin 40s linear infinite;animation-delay:-18s;">
+                <div style="position:absolute;top:50%;left:50%;height:1px;width:54px;transform-origin:left center;transform:rotate(-90deg);background:linear-gradient(90deg,rgba(245,197,107,.4),rgba(201,164,255,.12));"></div>
+                <div style="position:absolute;top:-8px;left:50%;margin-left:-8px;width:16px;height:16px;border-radius:50%;animation:spin 40s linear infinite reverse;animation-delay:-18s;background:radial-gradient(circle at 32% 28%,#ffeccb 0%,#e0b878 46%,#9c7838 100%);box-shadow:inset -4px -5px 8px rgba(0,0,0,.6),inset 2px 2px 5px rgba(255,255,255,.45);"></div>
               </div>
-              <div style="position:absolute;inset:0;margin:auto;width:208px;height:208px;border-radius:50%;animation:spin 68s linear infinite;animation-delay:-47s;">
-                <div style="position:absolute;top:50%;left:50%;height:1px;width:104px;transform-origin:left center;transform:rotate(-90deg);background:linear-gradient(90deg,rgba(245,197,107,.4),rgba(201,164,255,.1));"></div>
-                <div style="position:absolute;top:-12px;left:50%;margin-left:-12px;width:24px;height:24px;border-radius:50%;animation:spin 68s linear infinite reverse;animation-delay:-47s;background:radial-gradient(circle at 32% 28%,#f9d0b4 0%,#cf6b45 48%,#77300f 100%);box-shadow:inset -7px -8px 12px rgba(0,0,0,.6),inset 3px 3px 8px rgba(255,255,255,.4);"></div>
+              <div style="position:absolute;inset:0;margin:auto;width:136px;height:136px;border-radius:50%;border:1px solid rgba(201,164,255,.11);animation:spin 52s linear infinite;animation-delay:-30s;">
+                <div style="position:absolute;top:50%;left:50%;height:1px;width:68px;transform-origin:left center;transform:rotate(-90deg);background:linear-gradient(90deg,rgba(245,197,107,.4),rgba(201,164,255,.12));"></div>
+                <div style="position:absolute;top:-9px;left:50%;margin-left:-9px;width:18px;height:18px;border-radius:50%;animation:spin 52s linear infinite reverse;animation-delay:-30s;background:radial-gradient(circle at 32% 28%,#dcefff 0%,#6f97d6 46%,#1c3c68 100%);box-shadow:inset -5px -6px 9px rgba(0,0,0,.6),inset 3px 3px 5px rgba(255,255,255,.45);"></div>
               </div>
-              <div style="position:absolute;inset:0;margin:auto;width:212px;height:212px;border-radius:50%;animation:spin 96s linear infinite;animation-delay:-16s;">
-                <div style="position:absolute;top:50%;left:50%;height:1px;width:106px;transform-origin:left center;transform:rotate(-90deg);background:linear-gradient(90deg,rgba(245,197,107,.4),rgba(201,164,255,.1));"></div>
-                <div style="position:absolute;top:-22px;left:50%;margin-left:-22px;width:44px;height:44px;border-radius:50%;animation:spin 96s linear infinite reverse;animation-delay:-16s;background:repeating-linear-gradient(28deg,#e6c9a3 0 5px,#cfa470 5px 10px,#c2915f 10px 15px),radial-gradient(circle at 30% 26%,rgba(255,245,225,.95),transparent 52%);box-shadow:inset -12px -13px 22px rgba(45,25,6,.7),inset 5px 5px 11px rgba(255,240,215,.45);"></div>
+              <div style="position:absolute;inset:0;margin:auto;width:164px;height:164px;border-radius:50%;border:1px solid rgba(201,164,255,.11);animation:spin 64s linear infinite;animation-delay:-48s;">
+                <div style="position:absolute;top:50%;left:50%;height:1px;width:82px;transform-origin:left center;transform:rotate(-90deg);background:linear-gradient(90deg,rgba(245,197,107,.4),rgba(201,164,255,.12));"></div>
+                <div style="position:absolute;top:-7px;left:50%;margin-left:-7px;width:14px;height:14px;border-radius:50%;animation:spin 64s linear infinite reverse;animation-delay:-48s;background:radial-gradient(circle at 32% 28%,#f9d0b4 0%,#cf6b45 48%,#77300f 100%);box-shadow:inset -4px -5px 7px rgba(0,0,0,.6),inset 2px 2px 4px rgba(255,255,255,.45);"></div>
               </div>
-              <div style="position:absolute;inset:0;margin:auto;width:212px;height:212px;border-radius:50%;animation:spin 120s linear infinite;animation-delay:-100s;">
-                <div style="position:absolute;top:50%;left:50%;height:1px;width:106px;transform-origin:left center;transform:rotate(-90deg);background:linear-gradient(90deg,rgba(245,197,107,.4),rgba(201,164,255,.1));"></div>
-                <div style="position:absolute;top:-30px;left:50%;margin-left:-30px;width:60px;height:60px;animation:spin 120s linear infinite reverse;animation-delay:-100s;">
-                  <div style="position:absolute;top:50%;left:50%;width:60px;height:20px;margin:-10px 0 0 -30px;border-radius:50%;border:3px solid rgba(230,205,160,.65);transform:rotate(-18deg);"></div>
-                  <div style="position:absolute;top:50%;left:50%;width:34px;height:34px;margin:-17px 0 0 -17px;border-radius:50%;background:radial-gradient(circle at 32% 28%,#f9edcb 0%,#cdad6f 52%,#765528 100%);box-shadow:inset -9px -10px 16px rgba(45,28,6,.66),inset 4px 4px 10px rgba(255,245,220,.45);"></div>
+              <div style="position:absolute;inset:0;margin:auto;width:196px;height:196px;border-radius:50%;border:1px solid rgba(201,164,255,.11);animation:spin 80s linear infinite;animation-delay:-12s;">
+                <div style="position:absolute;top:50%;left:50%;height:1px;width:98px;transform-origin:left center;transform:rotate(-90deg);background:linear-gradient(90deg,rgba(245,197,107,.4),rgba(201,164,255,.12));"></div>
+                <div style="position:absolute;top:-14px;left:50%;margin-left:-14px;width:28px;height:28px;border-radius:50%;animation:spin 80s linear infinite reverse;animation-delay:-12s;background:repeating-linear-gradient(26deg,#e6c9a3 0 4px,#cfa470 4px 8px,#c2915f 8px 12px),radial-gradient(circle at 30% 26%,rgba(255,245,225,.95),transparent 52%);box-shadow:inset -8px -9px 14px rgba(0,0,0,.6),inset 4px 4px 8px rgba(255,255,255,.45);"></div>
+              </div>
+              <div style="position:absolute;inset:0;margin:auto;width:228px;height:228px;border-radius:50%;border:1px solid rgba(201,164,255,.11);animation:spin 96s linear infinite;animation-delay:-70s;">
+                <div style="position:absolute;top:50%;left:50%;height:1px;width:114px;transform-origin:left center;transform:rotate(-90deg);background:linear-gradient(90deg,rgba(245,197,107,.4),rgba(201,164,255,.12));"></div>
+                <div style="position:absolute;top:-30px;left:50%;margin-left:-30px;width:60px;height:60px;animation:spin 96s linear infinite reverse;animation-delay:-70s;">
+                  <div style="position:absolute;top:50%;left:50%;width:52.8px;height:19px;margin:-10px 0 0 -26.4px;border-radius:50%;border:2px solid rgba(230,205,160,.6);transform:rotate(-18deg);"></div>
+                  <div style="position:absolute;top:50%;left:50%;width:24px;height:24px;margin:-12px 0 0 -12px;border-radius:50%;background:radial-gradient(circle at 32% 28%,#f9edcb 0%,#cdad6f 52%,#765528 100%);box-shadow:inset -7px -8px 12px rgba(0,0,0,.6),inset 3px 3px 7px rgba(255,255,255,.45);"></div>
                 </div>
+              </div>
+              <div style="position:absolute;inset:0;margin:auto;width:256px;height:256px;border-radius:50%;border:1px solid rgba(201,164,255,.11);animation:spin 110s linear infinite;animation-delay:-95s;">
+                <div style="position:absolute;top:50%;left:50%;height:1px;width:128px;transform-origin:left center;transform:rotate(-90deg);background:linear-gradient(90deg,rgba(245,197,107,.4),rgba(201,164,255,.12));"></div>
+                <div style="position:absolute;top:-8px;left:50%;margin-left:-8px;width:16px;height:16px;border-radius:50%;animation:spin 110s linear infinite reverse;animation-delay:-95s;background:radial-gradient(circle at 32% 28%,#d6f5f2 0%,#7fd0cf 48%,#3a8f8c 100%);box-shadow:inset -4px -5px 8px rgba(0,0,0,.6),inset 2px 2px 5px rgba(255,255,255,.45);"></div>
+              </div>
+              <div style="position:absolute;inset:0;margin:auto;width:280px;height:280px;border-radius:50%;border:1px solid rgba(201,164,255,.11);animation:spin 124s linear infinite;animation-delay:-55s;">
+                <div style="position:absolute;top:50%;left:50%;height:1px;width:140px;transform-origin:left center;transform:rotate(-90deg);background:linear-gradient(90deg,rgba(245,197,107,.4),rgba(201,164,255,.12));"></div>
+                <div style="position:absolute;top:-8px;left:50%;margin-left:-8px;width:16px;height:16px;border-radius:50%;animation:spin 124s linear infinite reverse;animation-delay:-55s;background:radial-gradient(circle at 32% 28%,#cdd9ff 0%,#5a6fd0 48%,#28306e 100%);box-shadow:inset -4px -5px 8px rgba(0,0,0,.6),inset 2px 2px 5px rgba(255,255,255,.45);"></div>
               </div>
             </div>
           </div>
@@ -677,10 +695,18 @@
       </div>
       <div class="example-grid">
         <div class="mockup">
-          <div class="mock-h">Dein kosmischer Bauplan</div>
-          <div class="mock-sub">Persönlicher Report, Beispiel</div>
-          <div class="mline m"></div><div class="mline"></div><div class="mline s"></div>
-          <div class="mline m"></div><div class="mline"></div><div class="mline s"></div>
+          <div class="mock-top">
+            <div class="mock-h">Dein kosmischer Bauplan</div>
+            <span class="mock-tag">Beispiel</span>
+          </div>
+          <div class="mock-sub">für Marie, 14.06.1994, 08:42, Köln</div>
+          <div class="mrows">
+            <div class="mrow"><span>Typ</span><b>Generator</b></div>
+            <div class="mrow"><span>Innere Autorität</span><b>Sakral</b></div>
+            <div class="mrow gold"><span>Profil</span><b>3/5, Erfahrung &amp; Lösung</b></div>
+            <div class="mrow"><span>Sonne, Mond, Aszendent</span><b>♊ ♓ ♌</b></div>
+          </div>
+          <p class="mock-strat">Deine Strategie: auf eine Reaktion warten, statt dich zu etwas zu drängen. So triffst du Entscheidungen, die sich von innen heraus stimmig anfühlen.</p>
           <div class="mbadge">für dich berechnet</div>
         </div>
         <div class="cards">
