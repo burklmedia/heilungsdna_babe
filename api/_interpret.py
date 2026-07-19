@@ -241,17 +241,38 @@ def full_analysis(chart):
             "house": p.get("house"),
         })
     natal_extra = []
+    mc = dc = ic = None
     if asc:
+        mc = chart["mc"]
+        dc = chart.get("descendant")
+        ic = chart.get("ic")
         natal_extra.append({"sym": "AC", "body": "Aszendent",
                             "pos": f"{asc['sym']} {asc['sign']} {asc['text']}", "house": 1})
-        mc = chart["mc"]
+        natal_extra.append({"sym": "DC", "body": "Deszendent",
+                            "pos": f"{dc['sym']} {dc['sign']} {dc['text']}", "house": 7})
         natal_extra.append({"sym": "MC", "body": "Medium Coeli",
                            "pos": f"{mc['sym']} {mc['sign']} {mc['text']}", "house": 10})
+        natal_extra.append({"sym": "IC", "body": "Imum Coeli",
+                           "pos": f"{ic['sym']} {ic['sign']} {ic['text']}", "house": 4})
 
     closing = (f"{name}, dein roter Faden: Lebe deine Strategie – "
                f"{t.get('strategy','').lower()} – und vertraue deiner {hd['authority']}. "
                f"Wenn sich etwas stimmig anfühlt, ist es dein Weg, auch wenn er "
                f"nicht der geradlinige ist. 🤍")
+
+    # Geometrie für das Horoskop-Rad (exakte ekliptikale Längen)
+    geo = None
+    if asc:
+        wheel_bodies = ["Sonne", "Mond", "Merkur", "Venus", "Mars", "Jupiter",
+                        "Saturn", "Uranus", "Neptun", "Pluto", "Chiron", "Nordknoten"]
+        planets = []
+        for wb in wheel_bodies:
+            p = chart["natal"].get(wb)
+            if p and "lon" in p:
+                planets.append({"name": wb, "sym": p.get("sym_body", ""),
+                                "lon": p["lon"], "house": p.get("house")})
+        geo = {"asc": asc["lon"], "dc": dc["lon"], "mc": mc["lon"], "ic": ic["lon"],
+               "planets": planets}
 
     return {
         "name": name,
@@ -259,6 +280,7 @@ def full_analysis(chart):
         "sections": sections,
         "natal_rows": natal_rows + natal_extra,
         "ascendant": asc,
+        "geo": geo,
         "closing": closing,
         "note": "Symbolische Deutung zur Selbstreflexion – kein Ersatz für Beratung, "
                 "keine Diagnose. Alle Positionen exakt berechnet (tropisch, Ganzzeichen-Häuser).",

@@ -278,6 +278,16 @@
   table.chart .body { color: var(--ink-soft); }
   table.chart .pos { text-align: right; font-family: var(--serif); }
   table.chart .hs { text-align: right; color: var(--ink-mute); font-size: 13px; width: 2.4em; }
+
+  /* Chart-Grafiken (Rad + Bodygraph) */
+  .graphic { display: flex; justify-content: center; margin: 2px 0 16px; }
+  .graphic svg { width: 100%; height: auto; max-width: 330px; display: block; }
+  .glegend { display: flex; justify-content: center; gap: 18px; margin: -4px 0 16px; font-size: 12px; color: var(--ink-mute); }
+  .glegend b { display: inline-block; width: 11px; height: 11px; border-radius: 3px; vertical-align: -1px; margin-right: 6px; }
+  .glegend .on { background: var(--gold); }
+  .glegend .off { background: transparent; border: 1px solid var(--ink-mute); }
+  .panel.tight .kv { padding: 8px 0; }
+  .panel.tight table.chart td { padding: 6px 4px; font-size: 14px; }
   .story { margin-top: 22px; }
   .story .blk { padding: 20px 0; border-top: 1px solid var(--line); }
   .story .blk:first-of-type { border-top: none; }
@@ -625,6 +635,9 @@
     document.getElementById(id).classList.add('active'); scrollTo({top:0,behavior:'smooth'}); }
   function val(id){ var e=document.getElementById(id); return e?e.value.trim():''; }
   function esc(s){ return String(s==null?'':s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];}); }
+  // Astro-Glyphen einfarbig statt bunt-Emoji erzwingen (Variation Selector 15)
+  function tp(s){ var set='☉☽☿♀♂♃♄♅♆♇⚷☊☋♈♉♊♋♌♍♎♏♐♑♒♓'; var o=''; s=String(s);
+    for(var i=0;i<s.length;i++){ o+=s[i]; if(set.indexOf(s[i])>=0) o+='\uFE0E'; } return o; }
 
   document.querySelectorAll('[data-scroll]').forEach(function(b){
     b.addEventListener('click',function(e){ e.preventDefault(); var t=document.getElementById(b.getAttribute('data-scroll')); if(t) t.scrollIntoView({behavior:'smooth'}); });
@@ -794,20 +807,27 @@
 
   function renderFull(d){
     var f=d.full,b=d.birth;
-    document.getElementById('a-title').textContent=b.name?('Der kosmische Bauplan von '+b.name):'Dein kosmischer Bauplan';
+    document.getElementById('a-title').textContent=b.name?('Dein kosmischer Bauplan, '+b.name):'Dein kosmischer Bauplan';
     document.getElementById('a-birth').textContent=[b.date,b.time,b.place].filter(function(x){return x&&x!=='unbekannt';}).join(' · ');
     var hd=f.hd, cross=hd.incarnation_cross;
-    document.getElementById('hd-panel').innerHTML=
+    var hdp=document.getElementById('hd-panel'); hdp.className='panel tight';
+    hdp.innerHTML=
       '<span class="cap">Human Design</span>'+
-      kv('Typ',hd.type)+kv('Innere Autorität',hd.authority)+kv('Profil',hd.profile)+kv('Definition',hd.definition)+
+      '<div class="graphic">'+buildBodygraph(hd)+'</div>'+
+      '<div class="glegend"><span><b class="on"></b>definiert</span><span><b class="off"></b>offen</span></div>'+
+      kv('Typ',hd.type)+kv('Autorität',hd.authority)+kv('Profil',hd.profile)+kv('Definition',hd.definition)+
       (cross?kv('Inkarnationskreuz',cross.pers_sun+'/'+cross.pers_earth+' · '+cross.des_sun+'/'+cross.des_earth):'')+
-      '<div style="margin-top:16px"><div class="k" style="font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-mute);margin-bottom:9px">Definierte &amp; offene Zentren</div><div class="chips">'+
+      '<div style="margin-top:14px"><div class="k" style="font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-mute);margin-bottom:9px">Definierte &amp; offene Zentren</div><div class="chips">'+
       (hd.defined_centers||[]).map(function(c){return '<span class="chip tag">'+esc(c)+'</span>';}).join('')+
       (hd.open_centers||[]).map(function(c){return '<span class="chip tag open">'+esc(c)+'</span>';}).join('')+'</div></div>';
-    document.getElementById('natal-panel').innerHTML=
-      '<span class="cap">Natalchart</span><table class="chart">'+
-      f.natal_rows.map(function(r){return '<tr><td class="sym">'+esc(r.sym)+'</td><td class="body">'+esc(r.body)+
-        '</td><td class="pos">'+esc(r.pos)+'</td><td class="hs">'+(r.house?('H'+r.house):'')+'</td></tr>';}).join('')+'</table>';
+    var ntp=document.getElementById('natal-panel'); ntp.className='panel tight';
+    ntp.innerHTML=
+      '<span class="cap">Natalchart</span>'+
+      (f.geo?('<div class="graphic">'+buildNatalWheel(f.geo)+'</div>'):
+        '<p style="color:var(--ink-mute);font-size:13px;margin-bottom:12px">Für das Horoskop-Rad brauchen wir deine Geburtszeit.</p>')+
+      '<table class="chart">'+
+      f.natal_rows.map(function(r){return '<tr><td class="sym">'+esc(tp(r.sym))+'</td><td class="body">'+esc(r.body)+
+        '</td><td class="pos">'+esc(tp(r.pos))+'</td><td class="hs">'+(r.house?('H'+r.house):'')+'</td></tr>';}).join('')+'</table>';
     document.getElementById('story-panel').innerHTML=
       '<span class="cap">Was das für dich bedeutet</span>'+
       f.sections.map(function(s){return '<div class="blk"><span class="eyebrow">'+esc(s.title)+'</span>'+
@@ -818,6 +838,85 @@
     document.getElementById('note').textContent='✦ '+f.note;
   }
   function kv(k,v){ return '<div class="kv"><span class="k">'+esc(k)+'</span><span class="v">'+esc(v)+'</span></div>'; }
+
+  /* ── Bodygraph (Human-Design-Zentren, datengenau offen/definiert) ── */
+  function buildBodygraph(hd){
+    var C={ Kopf:[130,36], Ajna:[130,110], Kehle:[130,186], G:[130,262],
+      Herz:[196,230], Milz:[40,300], Solarplexus:[220,300], Sakral:[130,340], Wurzel:[130,416] };
+    var SIZE={ Kopf:16, Ajna:16, Kehle:17, G:18, Herz:12, Milz:16, Solarplexus:16, Sakral:17, Wurzel:17 };
+    var SHAPE={ Kopf:'td', Ajna:'tu', Kehle:'sq', G:'di', Herz:'td', Milz:'tr', Solarplexus:'tl', Sakral:'sq', Wurzel:'sq' };
+    var LABEL={ Kopf:'Kopf', Ajna:'Ajna', Kehle:'Kehle', G:'G', Herz:'Herz', Milz:'Milz', Solarplexus:'Solar', Sakral:'Sakral', Wurzel:'Wurzel' };
+    var GOLD='var(--gold)', MUTE='var(--ink-mute)', LINE='var(--line)', HALO='var(--ground)';
+    var def={}; (hd.defined_centers||[]).forEach(function(c){def[c]=1;});
+    var SKEL=[['Kopf','Ajna'],['Ajna','Kehle'],['Kehle','G'],['Kehle','Herz'],['Kehle','Sakral'],
+      ['Kehle','Milz'],['Kehle','Solarplexus'],['G','Sakral'],['G','Herz'],['G','Milz'],
+      ['Herz','Milz'],['Herz','Solarplexus'],['Sakral','Milz'],['Sakral','Solarplexus'],
+      ['Sakral','Wurzel'],['Milz','Wurzel'],['Solarplexus','Wurzel']];
+    function ln(a,b,col,w){ var p=C[a],q=C[b];
+      return '<line x1="'+p[0]+'" y1="'+p[1]+'" x2="'+q[0]+'" y2="'+q[1]+'" stroke="'+col+'" stroke-width="'+w+'" stroke-linecap="round"/>'; }
+    function poly(t,cx,cy,s){ var p;
+      if(t==='sq') p=[[cx-s,cy-s],[cx+s,cy-s],[cx+s,cy+s],[cx-s,cy+s]];
+      else if(t==='di') p=[[cx,cy-s],[cx+s,cy],[cx,cy+s],[cx-s,cy]];
+      else if(t==='tu') p=[[cx,cy-s],[cx+s,cy+s],[cx-s,cy+s]];
+      else if(t==='td') p=[[cx,cy+s],[cx+s,cy-s],[cx-s,cy-s]];
+      else if(t==='tr') p=[[cx-s,cy-s],[cx+s,cy],[cx-s,cy+s]];
+      else p=[[cx+s,cy-s],[cx-s,cy],[cx+s,cy+s]];
+      return p.map(function(q){return q[0]+','+q[1];}).join(' '); }
+    var s='<svg viewBox="0 0 260 452" aria-hidden="true"><g>';
+    SKEL.forEach(function(e){ s+=ln(e[0],e[1],LINE,2); });
+    (hd.center_links||[]).forEach(function(e){ if(C[e[0]]&&C[e[1]]) s+=ln(e[0],e[1],GOLD,4.5); });
+    Object.keys(C).forEach(function(c){
+      var p=C[c], on=def[c], sz=SIZE[c];
+      s+='<polygon points="'+poly(SHAPE[c],p[0],p[1],sz)+'" fill="'+(on?GOLD:'none')+'" stroke="'+(on?GOLD:MUTE)+'" stroke-width="'+(on?1:1.4)+'" '+(on?'':'stroke-opacity=".8"')+'/>';
+      s+='<text x="'+p[0]+'" y="'+(p[1]+sz+13)+'" text-anchor="middle" font-size="10" stroke="'+HALO+'" stroke-width="3.2" paint-order="stroke" fill="'+(on?GOLD:MUTE)+'">'+LABEL[c]+'</text>';
+    });
+    return s+'</g></svg>';
+  }
+
+  /* ── Natal-Rad (Horoskop-Kreis mit Häusern & Planeten, exakt aus den Längen) ── */
+  function buildNatalWheel(geo){
+    if(!geo) return '';
+    var C=180, asc=geo.asc, R1=160, R2=131, R4=52;
+    var GOLD='var(--gold)', ACC='var(--accent)', INK='var(--ink)', SOFT='var(--ink-soft)', MUTE='var(--ink-mute)', LINE='var(--line-strong)';
+    var SS=['♈','♉','♊','♋','♌','♍','♎','♏','♐','♑','♒','♓'];
+    function pt(r,L){ var a=(180+(L-asc))*Math.PI/180; return [C+r*Math.cos(a), C-r*Math.sin(a)]; }
+    var s='<svg viewBox="0 0 360 360" aria-hidden="true">';
+    s+='<circle cx="180" cy="180" r="'+R1+'" fill="none" stroke="'+GOLD+'" stroke-width="1" opacity=".6"/>';
+    s+='<circle cx="180" cy="180" r="'+R2+'" fill="none" stroke="'+GOLD+'" stroke-width="1" opacity=".3"/>';
+    s+='<circle cx="180" cy="180" r="'+R4+'" fill="none" stroke="'+LINE+'" stroke-width="1"/>';
+    var signStart=Math.floor(asc/30)*30;
+    for(var k=0;k<12;k++){
+      var Lc=signStart+30*k, a=pt(R4,Lc), b=pt(R1,Lc);
+      s+='<line x1="'+a[0].toFixed(1)+'" y1="'+a[1].toFixed(1)+'" x2="'+b[0].toFixed(1)+'" y2="'+b[1].toFixed(1)+'" stroke="'+LINE+'" stroke-width="1"/>';
+      var si=(Math.round(signStart/30)+k)%12, gp=pt((R1+R2)/2, Lc+15);
+      s+='<text x="'+gp[0].toFixed(1)+'" y="'+(gp[1]+4).toFixed(1)+'" text-anchor="middle" font-size="13" fill="'+GOLD+'">'+tp(SS[si])+'</text>';
+      var hn=pt(R4+13, Lc+15);
+      s+='<text x="'+hn[0].toFixed(1)+'" y="'+(hn[1]+3).toFixed(1)+'" text-anchor="middle" font-size="9" fill="'+MUTE+'">'+(k+1)+'</text>';
+    }
+    function axis(L1,L2,l1,l2,col){
+      var a=pt(R1,L1), b=pt(R1,L2);
+      s+='<line x1="'+a[0].toFixed(1)+'" y1="'+a[1].toFixed(1)+'" x2="'+b[0].toFixed(1)+'" y2="'+b[1].toFixed(1)+'" stroke="'+col+'" stroke-width="1.3" opacity=".85"/>';
+      var t1=pt(R1+11,L1), t2=pt(R1+11,L2);
+      s+='<text x="'+t1[0].toFixed(1)+'" y="'+(t1[1]+3).toFixed(1)+'" text-anchor="middle" font-size="10" fill="'+col+'" font-weight="600">'+l1+'</text>';
+      s+='<text x="'+t2[0].toFixed(1)+'" y="'+(t2[1]+3).toFixed(1)+'" text-anchor="middle" font-size="10" fill="'+col+'" font-weight="600">'+l2+'</text>';
+    }
+    axis(geo.asc,geo.dc,'AC','DC',ACC);
+    axis(geo.mc,geo.ic,'MC','IC',GOLD);
+    var placed=[], ps=geo.planets.slice().sort(function(x,y){return x.lon-y.lon;});
+    ps.forEach(function(p){
+      var r=98, guard=0;
+      while(guard<8){ var clash=false;
+        for(var i=0;i<placed.length;i++){ var dl=Math.abs(((p.lon-placed[i].lon+180)%360)-180);
+          if(dl<8 && Math.abs(placed[i].r-r)<12){clash=true;break;} }
+        if(!clash) break; r-=13; guard++; }
+      placed.push({lon:p.lon,r:r});
+      var t1=pt(R2,p.lon), t2=pt(R2-6,p.lon);
+      s+='<line x1="'+t1[0].toFixed(1)+'" y1="'+t1[1].toFixed(1)+'" x2="'+t2[0].toFixed(1)+'" y2="'+t2[1].toFixed(1)+'" stroke="'+SOFT+'" stroke-width="1"/>';
+      var g=pt(r,p.lon);
+      s+='<text x="'+g[0].toFixed(1)+'" y="'+(g[1]+5).toFixed(1)+'" text-anchor="middle" font-size="15" fill="'+INK+'">'+tp(p.sym)+'</text>';
+    });
+    return s+'</svg>';
+  }
   document.querySelectorAll('[data-goto]').forEach(function(b){ b.addEventListener('click',function(){show(b.getAttribute('data-goto'));}); });
 
   /* ── Hintergrund-Sterne (Canvas, dezentes Funkeln) ── */

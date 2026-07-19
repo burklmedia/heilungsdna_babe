@@ -234,6 +234,16 @@ def compute_chart(name, year, month, day, hour, minute, lat, lon, tz_name,
         defined.add(ca)
         defined.add(cb)
 
+    # Verbindungen zwischen Zentren (für die Bodygraph-Grafik), pro Zentrenpaar einmal
+    _seen, center_links = set(), []
+    for a, b, ca, cb in active_ch:
+        if ca == cb:
+            continue
+        key = tuple(sorted((ca, cb)))
+        if key not in _seen:
+            _seen.add(key)
+            center_links.append([ca, cb])
+
     hd_type = _hd_type(defined, active_ch)
     authority = _authority(defined)
     profile = f"{pers['Sonne'][1]}/{des['Sonne'][1]}"
@@ -279,6 +289,7 @@ def compute_chart(name, year, month, day, hour, minute, lat, lon, tz_name,
             },
             "gates": sorted(gates_active),
             "channels": [f"{a}-{b}" for a, b, _, _ in active_ch],
+            "center_links": center_links,
             "personality": {b: {"gate": g, "line": ln} for b, (g, ln) in pers.items()},
             "design": {b: {"gate": g, "line": ln} for b, (g, ln) in des.items()},
         },
@@ -288,4 +299,6 @@ def compute_chart(name, year, month, day, hour, minute, lat, lon, tz_name,
     if time_known:
         result["ascendant"] = _sign(asc_lon)
         result["mc"] = _sign(mc_lon)
+        result["descendant"] = _sign((asc_lon + 180) % 360)
+        result["ic"] = _sign((mc_lon + 180) % 360)
     return result
