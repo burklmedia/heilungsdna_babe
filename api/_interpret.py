@@ -439,7 +439,7 @@ def full_analysis(chart):
     })
     sections.append({
         "title": "Dein Profil",
-        "headline": f"{hd['profile']} · {profile_name(hd['profile'])}",
+        "headline": f"{hd['profile']}, {profile_name(hd['profile'])}",
         "body": ("Dein Profil beschreibt die Rolle, in der sich dein Weg entfaltet, fast wie ein "
                  "Kostüm, das deine Seele für dieses Leben gewählt hat. Die erste Zahl lebst du "
                  "bewusst, sie ist dir vertraut. Die zweite wirkt eher aus dem Verborgenen und wird "
@@ -456,7 +456,7 @@ def full_analysis(chart):
     open_c = hd.get("open_centers", [])
     sections.append({
         "title": "Deine Zentren",
-        "headline": f"{len(defined)} definiert · {len(open_c)} offen",
+        "headline": f"{len(defined)} definiert, {len(open_c)} offen",
         "body": ("Stell dir deine Zentren wie neun Räume in dir vor. Manche sind fest eingerichtet "
                  "und immer gleich, andere stehen offen und füllen sich mit dem, was gerade um dich "
                  "herum ist.\n\nDeine definierten Zentren sind deine verlässliche, gleichbleibende "
