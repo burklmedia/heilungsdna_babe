@@ -105,6 +105,15 @@ class handler(BaseHTTPRequestHandler):
     def do_OPTIONS(self):
         self._send(204, {})
 
+    def do_GET(self):
+        # Diagnose: sind die Env-Variablen bei der Funktion angekommen? (nur ja/nein)
+        self._send(200, {
+            "ok": True,
+            "mailerlite_key_present": bool(os.environ.get("MAILERLITE_API_KEY")),
+            "mailerlite_group_present": bool(os.environ.get("MAILERLITE_GROUP_ID")),
+            "brevo_key_present": bool(os.environ.get("BREVO_API_KEY")),
+        })
+
     def do_POST(self):
         try:
             length = int(self.headers.get("content-length", 0))
