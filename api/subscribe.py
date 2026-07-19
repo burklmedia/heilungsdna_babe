@@ -24,6 +24,8 @@ import json
 import os
 import urllib.request
 
+# (redeploy-trigger, damit Vercel die MailerLite-Env-Variablen zieht)
+
 
 def _mailerlite(name, email):
     key = os.environ.get("MAILERLITE_API_KEY")
