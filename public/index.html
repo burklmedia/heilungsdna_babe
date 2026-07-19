@@ -1012,8 +1012,7 @@
     var by={}; (f.positions||[]).forEach(function(p){by[p.key]=p;});
     function q(k){ return by[k]?(tp(by[k].signSymbol)+' '+by[k].sign):'…'; }
     document.getElementById('pane-ov').innerHTML=
-      '<p class="ov-intro">'+(b.name?('Schön, dass du da bist, '+esc(b.name)+'. '):'')+
-        'Hier ist dein kosmischer Bauplan mit Human Design und Geburtshoroskop, exakt berechnet. Klick dich in Ruhe durch die vier Bereiche.</p>'+
+      '<p class="ov-intro">'+(b.name?(esc(b.name)+', '):'')+'was du gleich liest, ist kein Test und kein Urteil. Es ist ein Blick auf das, was in dir angelegt ist, seit dem ersten Moment deines Lebens. Vielleicht erkennst du dich an mancher Stelle so genau wieder, dass es kurz wehtut. Das ist gut so. Es heißt, du wirst gesehen. Nimm dir Zeit und lies in Ruhe.</p>'+
       '<div class="factrow">'+
         '<div class="f"><div class="l">Typ</div><div class="v">'+esc(hd.type)+'</div></div>'+
         '<div class="f"><div class="l">Autorität</div><div class="v">'+esc(shorten(hd.authority))+'</div></div>'+

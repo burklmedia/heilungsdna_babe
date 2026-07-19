@@ -483,10 +483,12 @@ def full_analysis(chart):
             "body": ("Dein Higher Self ist niemand, der du erst noch werden musst. Es ist die Version "
                      "von dir, die längst in dir steckt. Sie wartet nur darauf, gelebt zu werden.\n\n"
                      + axis.get("higher", "") + "\n\nVielleicht spürst du ab und zu eine leise "
-                     "Sehnsucht in diese Richtung. Ein Ziehen zu etwas, das sich größer und freier "
-                     "anfühlt. Das ist kein Zufall. Das ist dein innerer Kompass. Jedes Mal, wenn du "
-                     "diesem Ziehen folgst, kommst du ein Stück mehr bei dir an. Auch wenn es sich "
-                     "zuerst fremd anfühlt."),
+                     "Sehnsucht in diese Richtung. Ein Ziehen zu einem Leben, das sich freier "
+                     "anfühlt, echter, mehr nach dir. Meistens schiebst du es weg. Zu groß, zu "
+                     "unvernünftig, vielleicht später.\n\nAber dieses Ziehen geht nie ganz weg, oder? "
+                     "Das ist kein Zufall. Es ist der Teil in dir, der genau weiß, wozu du hier bist. "
+                     "Jedes Mal, wenn du ihm folgst, auch nur einen kleinen Schritt, kommst du ein "
+                     "Stück mehr nach Hause. Zu dir."),
             "takeaway": axis.get("task", ""),
             "facts": f,
         })
@@ -498,10 +500,14 @@ def full_analysis(chart):
             "body": ("Dein Lower Self ist kein Feind. Es ist der Teil von dir, der sich am sichersten "
                      "anfühlt. Du kennst ihn schon lange, oft seit deiner Kindheit.\n\n"
                      + axis.get("lower", "") + "\n\nKennst du diese Momente, in denen du unter Druck "
-                     "automatisch in ein altes Muster zurückrutschst? Obwohl ein Teil von dir es "
-                     "besser weiß? Genau das ist gemeint. Du musst dich dafür nicht schämen. Wichtig "
-                     "ist nur, dass du es siehst. Ein Muster, das du klar erkennst, verliert seine "
-                     "heimliche Macht über dich."),
+                     "automatisch in ein altes Muster zurückfällst? Obwohl ein Teil von dir es besser "
+                     "weiß? Manchmal liegst du abends wach und denkst: Warum mache ich das immer "
+                     "wieder? Genau das ist gemeint.\n\nHör mir kurz zu. Du bist nicht kaputt. Du hast "
+                     "als Kind einen Weg gefunden, dich sicher zu fühlen. Damals hat er dich "
+                     "beschützt. Heute hält er dich klein. Das ist kein Versagen. Das ist ein alter "
+                     "Schutz, der seine Zeit hatte.\n\nDu musst dich dafür nicht schämen. Du musst es "
+                     "nur sehen. Ein Muster, das du klar erkennst, verliert seine heimliche Macht "
+                     "über dich."),
             "facts": [("Südknoten", f"{sk['sym']} {sk['sign']} {sk['text']}")],
         })
     if nk and sk and axis:
@@ -528,14 +534,18 @@ def full_analysis(chart):
             "headline": f"Chiron in {chi['sign']} {chi['text']}",
             "body": (CHIRON_SIGN.get(chi["sign"], "Chiron zeigt die Stelle, an der du verletzlich "
                      "bist, und genau dort liegt deine besondere Kraft, andere zu heilen.")
-                     + "\n\nDiese Wunde ist wahrscheinlich sehr alt. Du erkennst sie kaum noch als "
-                     "Wunde. Sie fühlt sich eher an wie ein „so bin ich halt“. Vielleicht hast du "
-                     "gelernt, sie zu überspielen oder besonders stark an dieser Stelle zu sein. Und "
-                     "trotzdem meldet sie sich immer wieder. Meistens dann, wenn du dich ungeschützt "
-                     "fühlst.\n\nJetzt kommt der schöne Teil. Genau weil du diesen Schmerz so gut "
-                     "kennst, siehst du ihn bei anderen sofort. Du kannst einem Menschen glaubhaft "
-                     "sagen: Es reicht so. Weil du selbst weißt, wie viel das kostet. Deine Wunde und "
-                     "deine Gabe sind dieselbe Stelle. Du heilst genau durch sie."),
+                     + "\n\nDiese Wunde ist alt. Wahrscheinlich älter, als du denkst. Vielleicht warst "
+                     "du noch ein Kind, als sie entstanden ist. Du hast früh gelernt, sie zu "
+                     "verstecken. Also hast du gelächelt, funktioniert, dich zusammengerissen. Und "
+                     "tief in dir blieb dieser eine wunde Punkt, den kaum jemand je gesehen hat.\n\n"
+                     "Vielleicht spürst du ihn genau in diesem Moment, während du das hier liest. "
+                     "Dieses Ziehen in der Brust. Das ist in Ordnung. Es heißt, dass diese Stelle "
+                     "endlich gesehen wird. Von dir.\n\nUnd jetzt der Satz, den du dir vielleicht dein "
+                     "ganzes Leben gewünscht hast: Mit dir war nie etwas falsch. Diese Wunde macht "
+                     "dich nicht kaputt. Sie macht dich weich. Weil du diesen Schmerz so gut kennst, "
+                     "spürst du ihn bei anderen sofort. Du bist der Mensch, der einem anderen sagen "
+                     "kann: Du bist genug. Und der es auch so meint. Deine Wunde und deine Gabe sind "
+                     "dieselbe Stelle. Du heilst genau durch sie."),
             "facts": facts,
         })
 
@@ -581,11 +591,13 @@ def full_analysis(chart):
         if p:
             natal_rows.append(_row(p.get("sym_body", ""), b, p, p.get("house")))
 
-    closing = (f"{name}, wenn du nur eine Sache aus all dem mitnimmst, dann diese: Du darfst deiner "
-               f"eigenen Art vertrauen. Lebe deine Strategie, {t.get('strategy','').lower()}, und "
-               f"hör auf deine {hd['authority'].lower()}. Immer wenn sich etwas von innen stimmig "
-               f"anfühlt, bist du auf deinem Weg, auch wenn er kurviger verläuft als der von "
-               f"anderen. 🤍")
+    closing = (f"{name}, wenn du nur einen Satz aus all dem mitnimmst, dann diesen: Mit dir war nie "
+               f"etwas falsch. Du hast dich nur lange an einen Ort angepasst, der nicht für dich "
+               f"gebaut war. Kein Wunder, dass du müde bist. Du darfst deiner eigenen Art wieder "
+               f"vertrauen. Lebe deine Strategie, {t.get('strategy','').lower()}, und hör auf deine "
+               f"{hd['authority'].lower()}. Immer wenn sich etwas von innen richtig anfühlt, geh da "
+               f"hin. Auch wenn dein Weg kurviger ist als der von anderen. Er ist deiner. Und er war "
+               f"die ganze Zeit schon in dir. 🤍")
 
     # Geometrie für das Horoskop-Rad (exakte ekliptikale Längen)
     geo = None
