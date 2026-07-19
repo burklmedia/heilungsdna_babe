@@ -82,6 +82,8 @@ def ephe_status():
     except Exception as e:  # noqa
         info["files_error"] = repr(e)
     try:
+        if os.path.isdir(_EPHE):
+            swe.set_ephe_path(_EPHE)
         jd = swe.julday(2000, 1, 1, 12.0)
         info["chiron_lon"] = round(swe.calc_ut(jd, swe.CHIRON, CHIRON_FLAGS)[0][0], 4)
     except Exception as e:  # noqa
@@ -251,6 +253,8 @@ def compute_chart(name, year, month, day, hour, minute, lat, lon, tz_name,
 
     # Chiron (nur astrologisch, nicht Teil des Human Design) – braucht seas_18.se1
     try:
+        if os.path.isdir(_EPHE):
+            swe.set_ephe_path(_EPHE)   # direkt vor der Nutzung setzen (Vercel-sicher)
         ch_lon = swe.calc_ut(jd, swe.CHIRON, CHIRON_FLAGS)[0][0]
         ch = _sign(ch_lon)
         ch["sym_body"] = "⚷"
