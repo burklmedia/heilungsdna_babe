@@ -695,6 +695,202 @@ def teaser(chart):
     }
 
 
+SIGN_CORE = {
+    "Widder": "Mut, Initiative und der Drang, voranzugehen",
+    "Stier": "Ruhe, Genuss und der Wunsch nach echter Sicherheit",
+    "Zwillinge": "Neugier, Worte und eine wache geistige Beweglichkeit",
+    "Krebs": "Gefühl, Fürsorge und das Bedürfnis nach Geborgenheit",
+    "Löwe": "Herz, Ausdruck und der Wunsch, mit Wärme zu strahlen",
+    "Jungfrau": "Klarheit, Hingabe und ein feiner Blick fürs Detail",
+    "Waage": "Harmonie, Schönheit und das echte Miteinander",
+    "Skorpion": "Tiefe, Leidenschaft und der Mut zur Wandlung",
+    "Schütze": "Weite, Sinn und die Sehnsucht nach Freiheit",
+    "Steinbock": "Struktur, Ausdauer und eine stille Verantwortung",
+    "Wassermann": "Freiheit, eigene Ideen und der Blick nach vorn",
+    "Fische": "Mitgefühl, Fantasie und eine tiefe Durchlässigkeit",
+}
+ELEMENT_STRONG = {
+    "Feuer": "Begeisterung, Tatkraft und der Mut, Dinge einfach anzufangen",
+    "Erde": "Bodenständigkeit, Ausdauer und ein sicheres Gespür fürs Praktische",
+    "Luft": "Denken, Austausch und die Gabe, den Überblick zu behalten",
+    "Wasser": "Fühlen, Tiefe und ein feines Gespür für Zwischentöne",
+}
+ELEMENT_WEAK = {
+    "Feuer": "der spontane Antrieb fällt dir manchmal schwer. Du holst ihn dir am besten über "
+             "Bewegung und den Mut zum ersten Schritt, auch wenn er klein ist",
+    "Erde": "das Praktische und Beständige kostet dich mehr Kraft. Kleine, feste Routinen erden "
+            "dich und geben dir Halt im Alltag",
+    "Luft": "das sachliche Draufschauen aus Distanz fällt dir schwerer. Reden und Schreiben helfen "
+            "dir, deine Gedanken zu ordnen",
+    "Wasser": "an dein eigenes Fühlen heranzukommen ist nicht immer leicht. Nimm dir bewusst Zeit "
+              "für Stille, für Nähe und für alles, was dein Herz wirklich berührt",
+}
+_ELEMENT_ADJ = {"Feuer": "lebendig und tatkräftig", "Erde": "geerdet und verlässlich",
+                "Luft": "wach und verbindend", "Wasser": "tief und feinfühlig"}
+_ASPECTS = [(0, 7, "Konjunktion"), (60, 5, "Sextil"), (90, 6, "Quadrat"),
+            (120, 7, "Trigon"), (180, 7, "Opposition"), (150, 3, "Quinkunx")]
+_ASPECT_QUAL = {
+    "Konjunktion": "Diese beiden Kräfte verschmelzen in dir zu einer einzigen, sie sind fast untrennbar.",
+    "Sextil": "Hier liegt ein leichtes Talent bereit, das du aktiv nutzen darfst.",
+    "Trigon": "Das ist eine angeborene Begabung, die dir fast mühelos zufällt.",
+    "Quadrat": "Das ist eine echte innere Reibung, und genau an ihr wächst du am meisten.",
+    "Opposition": "Zwei Pole in dir, die nach Ausgleich suchen, oft spielst du sie über deine Beziehungen aus.",
+    "Quinkunx": "Zwei fremde Kräfte, die ständig feine Justierung brauchen, bis sie zusammenfinden.",
+}
+_PLANETS10 = ["Sonne", "Mond", "Merkur", "Venus", "Mars", "Jupiter", "Saturn",
+              "Uranus", "Neptun", "Pluto"]
+
+
+def _kern_synthese(se, me, ae):
+    if se == me == ae:
+        return (f"Und jetzt kommt das Besondere. Diese drei Kräfte ziehen bei dir alle an einem "
+                f"Strang, alle im Element {se}. Das macht dich unverkennbar {_ELEMENT_ADJ.get(se, '')}. "
+                f"Menschen spüren diese Klarheit sofort, und du wirkst wie aus einem Guss.")
+    if se == me:
+        return (f"Innen ziehen dein Wesen und dein Gefühl an einem Strang, beide im Element {se}. "
+                f"Nach außen aber zeigst du eine andere Farbe. So bist du dir innerlich sicherer, als "
+                f"du nach außen wirkst, und überraschst andere mit einer Seite, die sie nicht "
+                f"erwartet hätten.")
+    return (f"In dir wohnen mehrere Stimmen. {se} in deinem Kern, {me} in deinem Gefühl, {ae} in "
+            f"deinem Auftreten. Das kann sich manchmal widersprüchlich anfühlen, so als wärst du "
+            f"mehrere Menschen zugleich. In Wahrheit ist genau das dein Reichtum. Du kannst vieles "
+            f"in dir verbinden, was bei anderen getrennt bleibt.")
+
+
+def _kern_section(sun, moon, asc):
+    se = SIGN_ELEMENT.get(sun["sign"], "")
+    me = SIGN_ELEMENT.get(moon["sign"], "")
+    ae = SIGN_ELEMENT.get(asc["sign"], "")
+    body = (
+        "Bevor wir in die Einzelteile gehen, hier das Bild, das sich aus deinen drei wichtigsten "
+        "Punkten ergibt. Sonne, Mond und Aszendent sind das Herzstück von allem.\n\n"
+        f"In deinem tiefsten Wesen bist du {sun['sign']}. In dir wirkt {SIGN_CORE.get(sun['sign'], '')}. "
+        "Das ist die Kraft, die dich morgens trägt und die zeigt, wer du im Grunde bist.\n\n"
+        f"Dein Gefühl, dein innerer Hafen, ist {moon['sign']}. Hier lebt {SIGN_CORE.get(moon['sign'], '')}. "
+        "So fühlst du wirklich, und das brauchst du, um dich sicher und geborgen zu fühlen. Diese "
+        "Seite zeigst du oft nur den Menschen, denen du vertraust.\n\n"
+        f"Nach außen aber zeigst du dich als {asc['sign']}. Der erste Eindruck, den du hinterlässt, "
+        f"trägt {SIGN_CORE.get(asc['sign'], '')}. Vielleicht ist das gar nicht das Erste, was du "
+        "selbst an dir spürst, und trotzdem ist es das, was andere zuerst sehen.\n\n"
+        + _kern_synthese(se, me, ae))
+    return {
+        "title": "Dein innerster Kern",
+        "subtitle": "Sonne, Mond und Aszendent, das Herzstück deines Charts",
+        "headline": f"{sun['sign']}-Sonne, {moon['sign']}-Mond, {asc['sign']}-Aszendent",
+        "body": body,
+        "takeaway": "Diese drei sind kein Widerspruch. Sie sind die drei Stimmen, aus denen dein "
+                    "ganz eigener Klang entsteht.",
+        "facts": [("Sonne", f"{sun['sym']} {sun['sign']} {sun['text']}"),
+                  ("Mond", f"{moon['sym']} {moon['sign']} {moon['text']}"),
+                  ("Aszendent", f"{asc['sym']} {asc['sign']} {asc['text']}")],
+    }
+
+
+def _element_section(nat, asc, mc):
+    counts = {"Feuer": 0, "Erde": 0, "Luft": 0, "Wasser": 0}
+    for k in _PLANETS10:
+        p = nat.get(k)
+        if p:
+            el = SIGN_ELEMENT.get(p["sign"])
+            if el:
+                counts[el] += 1
+    for pt in (asc, mc):
+        if pt:
+            el = SIGN_ELEMENT.get(pt["sign"])
+            if el:
+                counts[el] += 1
+    dom = max(counts, key=counts.get)
+    low = min(counts, key=counts.get)
+    lack = ("Das Element " + low + " fehlt in deinem Chart fast ganz. Das heißt: " + ELEMENT_WEAK[low]
+            if counts[low] == 0 else
+            "Am wenigsten ausgeprägt ist bei dir das Element " + low + ". Das heißt: " + ELEMENT_WEAK[low])
+    body = (
+        "Wenn man deine Planeten nach den vier Elementen ordnet, wird ein Muster sichtbar, das viel "
+        "über dich erzählt.\n\n"
+        f"Am stärksten ist bei dir das Element {dom}. In dir wirkt vor allem {ELEMENT_STRONG[dom]}. "
+        "Das ist deine natürliche Sprache, die Art, wie du am liebsten durchs Leben gehst und dich "
+        "am lebendigsten fühlst.\n\n"
+        + lack + ".\n\n"
+        "So eine Verteilung ist kein Mangel. Sie zeigt nur, wo deine Gaben von ganz allein fließen "
+        "und wo du dir bewusst ein wenig dazuholen darfst. Oft ziehen wir genau die Menschen an, "
+        "die unser schwächstes Element stark leben. Vielleicht kennst du das.")
+    return {
+        "title": "Deine Elemente-Balance",
+        "subtitle": "Feuer, Erde, Luft und Wasser in deinem Chart",
+        "headline": f"Deine Stärke liegt im {dom}",
+        "body": body,
+        "facts": [("Feuer", str(counts["Feuer"])), ("Erde", str(counts["Erde"])),
+                  ("Luft", str(counts["Luft"])), ("Wasser", str(counts["Wasser"]))],
+    }
+
+
+def _stellium_section(nat):
+    groups = {}
+    for k in _PLANETS10:
+        p = nat.get(k)
+        if p:
+            groups.setdefault(p["sign"], []).append(k)
+    stelliums = [(s, ps) for s, ps in groups.items() if len(ps) >= 3]
+    if not stelliums:
+        return None
+    s, ps = max(stelliums, key=lambda x: len(x[1]))
+    liste = ", ".join(ps)
+    body = (
+        f"Etwas Seltenes fällt in deinem Chart sofort auf. In {s} stehen gleich mehrere deiner "
+        f"Planeten dicht beieinander: {liste}. Man nennt so eine Häufung ein Stellium.\n\n"
+        f"Das ist ein echter Lebensschwerpunkt. Ein großer Teil deiner Energie dreht sich um die "
+        f"Themen von {s}: {SIGN_CORE.get(s, '')}. Ob du willst oder nicht, dieses Thema zieht sich "
+        f"wie ein roter Faden durch dein ganzes Leben.\n\n"
+        f"Hier liegt eine deiner größten Gaben. Und zugleich das Feld, in dem du am meisten lernst "
+        f"und über dich hinauswächst. Menschen mit einem Stellium wirken auf diesem einen Gebiet oft "
+        f"wie Expertinnen von Geburt an. Wahrscheinlich kennst du dieses Gefühl an dir.")
+    return {
+        "title": "Ein Lebensschwerpunkt",
+        "subtitle": f"Dein {s}-Stellium, {len(ps)} Planeten in einem Zeichen",
+        "headline": f"Geballte {s}-Kraft",
+        "body": body,
+        "facts": [(f"Stellium in {s}", liste)],
+    }
+
+
+def _aspects_section(nat):
+    found = []
+    for i in range(len(_PLANETS10)):
+        for j in range(i + 1, len(_PLANETS10)):
+            a, b = nat.get(_PLANETS10[i]), nat.get(_PLANETS10[j])
+            if not (a and b and "lon" in a and "lon" in b):
+                continue
+            d = abs(((a["lon"] - b["lon"] + 180) % 360) - 180)
+            for ang, orb, nm in _ASPECTS:
+                if abs(d - ang) <= orb:
+                    found.append((abs(d - ang), _PLANETS10[i], _PLANETS10[j], nm))
+                    break
+    if not found:
+        return None
+    found.sort(key=lambda x: x[0])
+    lines = []
+    for o, a, b, nm in found[:4]:
+        lines.append(
+            f"Zwischen {a} und {b} liegt ein {nm}, fast auf den Punkt genau. {_ASPECT_QUAL[nm]} "
+            f"Dein Thema {PLANET_MEANING.get(a, '').lower()} und dein Thema "
+            f"{PLANET_MEANING.get(b, '').lower()} sind bei dir eng miteinander verwoben.")
+    body = (
+        "Deine Planeten stehen nicht für sich allein. Sie stehen in bestimmten Winkeln zueinander "
+        "und führen so etwas wie Gespräche miteinander. Diese Aspekte gehören zu den "
+        "persönlichsten Zügen deines ganzen Charts, kein anderer Mensch hat sie genau so.\n\n"
+        + "\n\n".join(lines) +
+        "\n\nManche dieser Verbindungen fühlen sich leicht an, andere fordern dich heraus. Beide "
+        "gehören zu dir. Die leichten sind deine Geschenke. Die fordernden sind die Stellen, an "
+        "denen du am meisten über dich hinauswächst.")
+    return {
+        "title": "Deine inneren Gespräche",
+        "subtitle": "Die stärksten Aspekte in deinem Chart",
+        "headline": "Wo sich deine Kräfte berühren",
+        "body": body,
+        "facts": [],
+    }
+
+
 def full_analysis(chart):
     """Die vollständige, liebevoll aufbereitete Analyse (nach der E-Mail)."""
     hd = chart["hd"]
@@ -703,6 +899,10 @@ def full_analysis(chart):
     asc = chart.get("ascendant")
 
     sections = []
+    _sun = chart["natal"].get("Sonne")
+    _moon = chart["natal"].get("Mond")
+    if _sun and _moon and asc:
+        sections.append(_kern_section(_sun, _moon, asc))
     sections.append({
         "title": "Dein Human-Design-Typ",
         "headline": hd["type"],
@@ -770,6 +970,15 @@ def full_analysis(chart):
     })
 
     nat = chart["natal"]
+    if asc:
+        sections.append(_element_section(nat, asc, chart.get("mc")))
+        _stell = _stellium_section(nat)
+        if _stell:
+            sections.append(_stell)
+        _asp = _aspects_section(nat)
+        if _asp:
+            sections.append(_asp)
+
     nk = nat.get("Nordknoten")
     sk = nat.get("Südknoten")
     axis = NODE_AXIS.get(nk["sign"], {}) if nk else {}
