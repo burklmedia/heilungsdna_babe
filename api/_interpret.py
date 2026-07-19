@@ -334,6 +334,11 @@ HOUSE_MEANING = {
     11: "deine Freundschaften, deine Visionen und deine Zukunft",
     12: "deinen Rückzug, deine Träume und das Verborgene in dir",
 }
+HOUSE_TITLE = {
+    1: "Das Selbst", 2: "Werte & Sicherheit", 3: "Denken & Austausch", 4: "Wurzeln & Zuhause",
+    5: "Ausdruck & Freude", 6: "Alltag & Gesundheit", 7: "Beziehung", 8: "Tiefe & Wandlung",
+    9: "Sinn & Weite", 10: "Berufung", 11: "Gemeinschaft & Zukunft", 12: "Rückzug & Verborgenes",
+}
 ANGLE_HOUSE = {"AC": 1, "DC": 7, "MC": 10, "IC": 4}
 _ANGLES = ("AC", "DC", "MC", "IC")
 
@@ -400,7 +405,17 @@ def full_analysis(chart):
     sections.append({
         "title": "Dein Human-Design-Typ",
         "headline": hd["type"],
-        "body": t.get("short", ""),
+        "body": ("Bevor du irgendetwas an dir verändern willst, darfst du zuerst verstehen, wie du "
+                 "überhaupt gebaut bist. Dein Typ ist so etwas wie die Grundmelodie, nach der deine "
+                 "Energie schwingt. Er entscheidet, wie du am leichtesten durchs Leben gehst und wo "
+                 "du dich immer wieder verausgabst.\n\n" + t.get("short", "") + "\n\n"
+                 "Vielleicht kennst du das: Du siehst Menschen, die scheinbar mühelos etwas anstoßen "
+                 "oder jahrelang durchhalten, und fragst dich, warum es bei dir an manchen Stellen so "
+                 "viel schwerer geht. Der Grund ist fast nie, dass mit dir etwas nicht stimmt. Der "
+                 "Grund ist, dass du versucht hast, nach einer Melodie zu leben, die gar nicht deine "
+                 "ist.\n\nWenn du anfängst, deiner eigenen Art zu vertrauen, verändert sich etwas "
+                 "Leises, aber Tiefes: Das Leben hört auf, sich wie ständiger Widerstand anzufühlen, "
+                 "und beginnt, dich zu tragen."),
         "facts": [
             ("Strategie", t.get("strategy", "")),
             ("Innere Autorität", hd["authority"]),
@@ -411,15 +426,28 @@ def full_analysis(chart):
     sections.append({
         "title": "Deine innere Autorität",
         "headline": hd["authority"],
-        "body": AUTHORITY_INFO.get(hd["authority"], ""),
+        "body": ("Deine innere Autorität ist vielleicht die wichtigste Information über dich, denn "
+                 "sie beantwortet die Frage, an der so viele hängenbleiben: Wie treffe ich eine "
+                 "Entscheidung, die wirklich zu mir gehört?\n\n" + AUTHORITY_INFO.get(hd["authority"], "")
+                 + "\n\nErinnerst du dich an eine Entscheidung, die auf dem Papier völlig richtig war "
+                 "und sich trotzdem falsch angefühlt hat? Dieses leise Ziehen, dieses Zögern, das du "
+                 "weggedacht hast, war nicht Feigheit. Es war deine eigentliche Führung, die versucht "
+                 "hat, mit dir zu sprechen.\n\nDein Kopf ist ein kluger Berater, aber er sollte nicht "
+                 "der sein, der am Ende entscheidet. In dem Moment, in dem du dieser tieferen Stimme "
+                 "wieder traust, hörst du auf, gegen dich selbst zu leben."),
         "facts": [],
     })
     sections.append({
         "title": "Dein Profil",
         "headline": f"{hd['profile']} · {profile_name(hd['profile'])}",
-        "body": ("Dein Profil beschreibt die Rolle, in der sich dein Weg entfaltet. Die erste Zahl "
-                 "lebst du bewusst, die zweite wirkt eher aus dem Verborgenen und wird oft von "
-                 "anderen zuerst in dir gesehen. " + PROFILE_DESC.get(hd["profile"], "")),
+        "body": ("Dein Profil beschreibt die Rolle, in der sich dein Weg entfaltet, fast wie ein "
+                 "Kostüm, das deine Seele für dieses Leben gewählt hat. Die erste Zahl lebst du "
+                 "bewusst, sie ist dir vertraut. Die zweite wirkt eher aus dem Verborgenen und wird "
+                 "oft von anderen zuerst in dir gesehen, bevor du sie selbst bemerkst.\n\n"
+                 + PROFILE_DESC.get(hd["profile"], "") + "\n\nVielleicht erkennst du dich in beiden "
+                 "Seiten wieder und hast dich manchmal gefragt, warum du so widersprüchlich sein "
+                 "kannst. Das ist kein Widerspruch, das ist dein Design. Wenn du beide Seiten in dir "
+                 "sein lässt, statt dich für eine zu entscheiden, wirst du ganz."),
         "facts": [("Definition", hd["definition"]),
                   ("Definierte Zentren", ", ".join(hd["defined_centers"]) or "keine")],
     })
@@ -429,12 +457,18 @@ def full_analysis(chart):
     sections.append({
         "title": "Deine Zentren",
         "headline": f"{len(defined)} definiert · {len(open_c)} offen",
-        "body": ("Deine definierten Zentren sind deine verlässliche, gleichbleibende Energie. Hier "
-                 "bist du dir treu und kannst dich auf dich verlassen. Deine offenen Zentren sind "
-                 "deine Weisheits- und Lernräume. Hier nimmst du andere fein auf und bleibst "
-                 "beweglich, und genau hier entsteht Druck, wenn du dich verbiegst, um "
-                 "dazuzugehören. Wenn du das erkennst, verlierst du dich seltener in fremden "
-                 "Erwartungen."),
+        "body": ("Stell dir deine Zentren wie neun Räume in dir vor. Manche sind fest eingerichtet "
+                 "und immer gleich, andere stehen offen und füllen sich mit dem, was gerade um dich "
+                 "herum ist.\n\nDeine definierten Zentren sind deine verlässliche, gleichbleibende "
+                 "Energie. Hier bist du dir treu, hier kannst du dich auf dich verlassen, und andere "
+                 "spüren diese Beständigkeit an dir.\n\nDeine offenen Zentren sind deine Weisheits- "
+                 "und Lernräume. Hier nimmst du andere fein auf, hier bist du beweglich und "
+                 "empfänglich, und genau hier entsteht der Druck, dich zu verbiegen, um dazuzugehören. "
+                 "Vielleicht kennst du das Gefühl, in bestimmter Gesellschaft plötzlich jemand anderes "
+                 "zu sein. Das passiert genau in diesen offenen Räumen.\n\nDer Moment, in dem du "
+                 "verstehst, welche Räume bei dir offen sind, ist oft ein echter Befreiungsmoment: Du "
+                 "erkennst, dass vieles, was du für dein Problem gehalten hast, nie deins war, sondern "
+                 "nur aufgenommen."),
         "facts": [("Definiert", ", ".join(defined) or "keine"),
                   ("Offen", ", ".join(open_c) or "keine")],
     })
@@ -451,7 +485,14 @@ def full_analysis(chart):
             "title": "Dein Higher Self",
             "subtitle": f"Nordknoten in {nk['sign']}, wohin du wächst",
             "headline": f"Dein Wachstum zeigt Richtung {nk['sign']}",
-            "body": axis.get("higher", ""),
+            "body": ("Dein Higher Self ist nicht jemand, der du erst noch mühsam werden musst. Es ist "
+                     "die Version von dir, die längst in dir angelegt ist und nur darauf wartet, "
+                     "gelebt zu werden.\n\n" + axis.get("higher", "") + "\n\nVielleicht spürst du ab "
+                     "und zu eine leise Sehnsucht genau in diese Richtung, ein Ziehen zu etwas, das "
+                     "sich größer, freier oder echter anfühlt. Das ist kein Zufall und keine "
+                     "Spinnerei, das ist dein innerer Kompass. Jedes Mal, wenn du diesem Ziehen "
+                     "folgst, auch wenn es dir zuerst fremd und unbequem vorkommt, kommst du ein "
+                     "Stück mehr bei dir selbst an."),
             "takeaway": axis.get("task", ""),
             "facts": f,
         })
@@ -460,7 +501,13 @@ def full_analysis(chart):
             "title": "Dein Lower Self",
             "subtitle": f"Südknoten in {sk['sign']}, dein vertrautes Muster",
             "headline": f"Deine Komfortzone liegt im {sk['sign']}",
-            "body": axis.get("lower", ""),
+            "body": ("Dein Lower Self ist kein Feind und kein Makel. Es ist der Teil von dir, der "
+                     "sich am sichersten anfühlt, weil du ihn schon so lange kennst, oft seit deiner "
+                     "Kindheit.\n\n" + axis.get("lower", "") + "\n\nKennst du diese Momente, in denen "
+                     "du unter Druck ganz automatisch in ein altes Muster zurückrutschst, obwohl ein "
+                     "Teil von dir es besser weiß? Genau das ist gemeint. Es ist nichts, wofür du "
+                     "dich schämen musst. Wichtig ist nur, dass du es erkennst, denn ein Muster, das "
+                     "du klar siehst, verliert seine heimliche Macht über dich."),
             "facts": [("Südknoten", f"{sk['sym']} {sk['sign']} {sk['text']}")],
         })
     if nk and sk and axis:
@@ -485,8 +532,18 @@ def full_analysis(chart):
         sections.append({
             "title": "Dein Chiron, Wunde und Heilung",
             "headline": f"Chiron in {chi['sign']} {chi['text']}",
-            "body": CHIRON_SIGN.get(chi["sign"], "Chiron zeigt die Stelle, an der du verletzlich "
-                    "bist, und genau dort liegt deine besondere Kraft, andere zu heilen."),
+            "body": (CHIRON_SIGN.get(chi["sign"], "Chiron zeigt die Stelle, an der du verletzlich "
+                     "bist, und genau dort liegt deine besondere Kraft, andere zu heilen.")
+                     + "\n\nDiese Wunde ist wahrscheinlich so alt, dass du sie kaum noch als Wunde "
+                     "erkennst, sondern eher als ein „so bin ich halt“. Vielleicht hast du gelernt, "
+                     "sie zu überspielen, sie wegzuarbeiten oder besonders stark an genau dieser "
+                     "Stelle zu sein. Und doch meldet sie sich immer wieder, meist dann, wenn du dich "
+                     "ungeschützt fühlst.\n\nHier kommt der zärtliche Teil: Genau weil du diesen "
+                     "Schmerz so gut kennst, kannst du ihn bei anderen sofort sehen. Du bist der "
+                     "Mensch, der jemandem glaubhaft sagen kann, dass es reicht, weil du selbst "
+                     "weißt, wie viel das kostet. Deine Wunde und deine Gabe sind dieselbe Stelle. "
+                     "Du musst die Wunde nicht erst wegmachen, um zu heilen. Du heilst genau durch "
+                     "sie."),
             "facts": facts,
         })
 
@@ -583,12 +640,16 @@ def full_analysis(chart):
                   for c in ["Kopf", "Ajna", "Kehle", "G", "Herz", "Milz", "Sakral",
                             "Solarplexus", "Wurzel"]]
 
+    houses = [{"nr": i, "title": HOUSE_TITLE[i], "meaning": HOUSE_MEANING.get(i, "")}
+              for i in range(1, 13)]
+
     return {
         "name": name,
         "hd": hd,
         "sections": sections,
         "natal_rows": natal_rows,
         "positions": positions,
+        "houses": houses,
         "hd_centers": hd_centers,
         "ascendant": asc,
         "geo": geo,
