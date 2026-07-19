@@ -276,8 +276,9 @@
   .lockrow:last-child { border-bottom: none; }
   .lockrow .lk { flex: none; width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center; background: rgba(245,197,107,.14); color: var(--gold); font-size: 14px; box-shadow: 0 0 16px -4px var(--glow); }
 
-  .mailcard { margin: 36px auto 0; max-width: 480px; background: rgba(38,24,72,.66); backdrop-filter: blur(12px);
-    border: 1px solid rgba(201,164,255,.28); border-radius: 26px; padding: 32px; box-shadow: 0 30px 70px -34px rgba(10,4,30,.7), 0 0 60px -18px var(--glow-purple); position: relative; overflow: hidden; }
+  .mailcard { margin: 36px auto 0; max-width: 480px; background: rgba(38,24,72,.6); backdrop-filter: blur(12px);
+    border: 1px solid rgba(245,197,107,.5); border-radius: 26px; padding: 32px;
+    box-shadow: 0 0 0 1px rgba(245,197,107,.18), 0 30px 70px -34px rgba(10,4,30,.7), 0 0 60px -14px var(--glow); position: relative; overflow: hidden; }
   .mailcard::before { content: ""; position: absolute; inset: 0; background: radial-gradient(circle at 50% -10%, rgba(245,197,107,0.14), transparent 60%); }
   .mailcard > * { position: relative; z-index: 1; }
   .mailcard h3 { font-size: 1.5rem; margin-bottom: 8px; }

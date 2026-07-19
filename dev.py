@@ -25,9 +25,9 @@ sys.path.insert(0, os.path.join(BASE, "api"))
 from analyze import build_result  # noqa: E402
 
 try:
-    from subscribe import _brevo  # noqa: E402
+    from subscribe import subscribe_contact  # noqa: E402
 except Exception:  # noqa
-    def _brevo(name, email):
+    def subscribe_contact(name, email):
         return False, "kein Dienst verbunden"
 
 PORT = int(os.environ.get("PORT", "8000"))
@@ -80,7 +80,7 @@ class Handler(BaseHTTPRequestHandler):
             email = (body.get("email") or "").strip()
             if "@" not in email or "." not in email:
                 return self._json(400, {"ok": False, "error": "Bitte gib eine gültige E-Mail an."})
-            ok, msg = _brevo((body.get("name") or "").strip(), email)
+            ok, msg = subscribe_contact((body.get("name") or "").strip(), email)
             print(f"  ✉  E-Mail erfasst: {email}  ({msg})")
             self._json(200, {"ok": True, "stored": ok, "message": msg})
         else:
