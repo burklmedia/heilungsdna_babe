@@ -530,11 +530,42 @@ INTUITION = {
 }
 
 
-def build_intuition(moon_sign):
+WATER_SIGNS = {"Krebs", "Skorpion", "Fische"}
+WATER_HOUSES = {4, 8, 12}
+
+DEPTH_SUMMARY = {
+    "außergewöhnlich stark": "Bei dir ist die intuitive Ader außergewöhnlich stark angelegt. "
+        "Gleich mehrere Kräfte deines Charts spielen hier zusammen. Dein Gespür gehört zu deinen "
+        "größten Talenten, also vertrau ihm.",
+    "stark ausgeprägt": "Bei dir ist die intuitive Ader stark ausgeprägt. Dein Gespür ist ein "
+        "verlässlicher Begleiter, sobald du ihm Raum und Ruhe gibst.",
+    "deutlich spürbar": "Deine intuitive Ader ist deutlich spürbar. Am klarsten meldet sie sich in "
+        "ruhigen Momenten, wenn der Alltag einmal leiser wird.",
+    "fein und leise": "Deine Intuition ist eher fein und leise. Sie spricht in stillen "
+        "Augenblicken, und je öfter du ihr zuhörst, desto deutlicher wird sie.",
+}
+
+
+def _aspect_name(a, b):
+    d = abs(((a - b + 180) % 360) - 180)
+    for ang, orb, name in [(0, 6, "Konjunktion"), (180, 6, "Opposition"),
+                           (120, 5, "Trigon"), (90, 5, "Quadrat"), (60, 4, "Sextil")]:
+        if abs(d - ang) <= orb:
+            return name
+    return None
+
+
+def build_intuition(chart):
+    nat = chart.get("natal", {})
+    moon = nat.get("Mond")
+    if not moon:
+        return None
+    moon_sign = moon["sign"]
     element = SIGN_ELEMENT.get(moon_sign, "Wasser")
     base = INTUITION[element]
     order = ["Feuer", "Erde", "Luft", "Wasser"]
-    return {
+
+    result = {
         "key": element,
         "archetype": base["archetype"],
         "tagline": base["tagline"],
@@ -544,10 +575,90 @@ def build_intuition(moon_sign):
         "all": [{"key": e, "archetype": INTUITION[e]["archetype"],
                  "tagline": INTUITION[e]["tagline"], "oneliner": INTUITION[e]["oneliner"]}
                 for e in order],
-        "note": "Dein Intuitionstyp entsteht aus deinem Mond und seinem Element, dort, wo sich "
-                "Wissenschaft und Astrologie begegnen. Verstehe ihn als ein Bild zur "
-                "Selbstreflexion, das dich an deine eigene innere Stimme erinnert.",
+        "note": "Dein Intuitionstyp entsteht aus deinem Mond, aus Neptun und Pluto und aus deinen "
+                "Wasserhäusern (4, 8 und 12), dort, wo sich Wissenschaft und Astrologie begegnen. "
+                "Verstehe ihn als ein Bild zur Selbstreflexion, das dich an deine eigene innere "
+                "Stimme erinnert.",
+        "depth": None,
     }
+
+    # Tiefenschicht nur mit Geburtszeit (dann sind die Häuser verlässlich)
+    if not chart.get("time_known"):
+        return result
+
+    mh = moon.get("house")
+    nep, plu = nat.get("Neptun"), nat.get("Pluto")
+    mn = _aspect_name(moon["lon"], nep["lon"]) if nep and "lon" in nep else None
+    mp = _aspect_name(moon["lon"], plu["lon"]) if plu and "lon" in plu else None
+
+    score = 0
+    if moon_sign in WATER_SIGNS:
+        score += 2
+    if mh in WATER_HOUSES:
+        score += 1
+    if nep and (nep.get("house") in WATER_HOUSES or nep["sign"] in WATER_SIGNS):
+        score += 1
+    if plu and (plu.get("house") in WATER_HOUSES or plu["sign"] in WATER_SIGNS):
+        score += 1
+    for b in ["Sonne", "Merkur", "Venus", "Mars"]:
+        p = nat.get(b)
+        if p and p.get("house") in WATER_HOUSES:
+            score += 1
+    if mn in ("Konjunktion", "Opposition", "Trigon", "Quadrat"):
+        score += 1
+    if mp in ("Konjunktion", "Opposition", "Trigon", "Quadrat"):
+        score += 1
+
+    facets = []
+    if mh:
+        facets.append({"title": "Wo deine Intuition am wachsten ist",
+            "text": f"Dein Mond steht in deinem {mh}. Lebensfeld. Hier, wo es um "
+                    f"{HOUSE_MEANING.get(mh, 'diesen Bereich')} geht, ist deine Intuition am "
+                    f"wachsten, und deinem Gefühl kannst du in diesen Themen besonders trauen."})
+    if (nep and (nep.get("house") == 12 or nep["sign"] == "Fische")) or \
+            mn in ("Konjunktion", "Opposition", "Trigon"):
+        facets.append({"title": "Deine feinfühlige, fast mediale Ader",
+            "text": "Neptun berührt deine Intuition und macht deine Antennen besonders fein. Du "
+                    "nimmst Stimmungen und das Unausgesprochene oft so klar wahr, dass du gar nicht "
+                    "sagen kannst, woher du es weißt. Diese Durchlässigkeit ist ein Geschenk. Erde "
+                    "dich immer wieder, damit du in fremden Wellen nicht verschwimmst."})
+    if (plu and (plu.get("house") == 8 or plu["sign"] == "Skorpion")) or \
+            mp in ("Konjunktion", "Opposition", "Trigon"):
+        facets.append({"title": "Dein Tiefenblick",
+            "text": "Pluto gibt deiner Wahrnehmung Tiefe. Du spürst, was unter der Oberfläche "
+                    "liegt, die wahren Beweggründe und das, was ein Mensch verbirgt. Andere fühlen "
+                    "sich von dir gesehen bis auf den Grund. Geh behutsam mit dieser starken Gabe "
+                    "um."})
+    occ = {}
+    for b in ["Sonne", "Mond", "Merkur", "Venus", "Mars", "Jupiter", "Saturn",
+              "Neptun", "Pluto", "Chiron"]:
+        p = nat.get(b)
+        if p and p.get("house") in WATER_HOUSES:
+            occ.setdefault(p["house"], True)
+    if 4 in occ:
+        facets.append({"title": "Deine familiäre Antenne",
+            "text": "In deinem vierten Lebensfeld, bei Zuhause, Familie und Wurzeln, sammelt sich "
+                    "viel Gespür. Du fühlst die Stimmung in deinem Zuhause, oft bevor ein Wort "
+                    "fällt, und trägst ein feines Erbe an emotionaler Wahrnehmung in dir."})
+    if 8 in occ:
+        facets.append({"title": "Dein Gespür fürs Verborgene",
+            "text": "In deinem achten Lebensfeld, bei Tiefe, Wandlung und echter Verbundenheit, "
+                    "liegt eine besondere Sensibilität. Du spürst Umbrüche im Voraus und ahnst, was "
+                    "Menschen im Innersten bewegt."})
+    if 12 in occ:
+        facets.append({"title": "Deine Traum- und Rückzugs-Wahrnehmung",
+            "text": "In deinem zwölften Lebensfeld, bei Rückzug, Träumen und dem Verborgenen, "
+                    "öffnet sich dir eine leisere Wirklichkeit. Deine Träume und deine stillen "
+                    "Stunden für dich allein sind echte Quellen der Erkenntnis."})
+
+    level = ("außergewöhnlich stark" if score >= 6 else
+             "stark ausgeprägt" if score >= 4 else
+             "deutlich spürbar" if score >= 2 else "fein und leise")
+    result["depth"] = {
+        "score": min(score, 8), "max": 8, "level": level,
+        "summary": DEPTH_SUMMARY[level], "facets": facets,
+    }
+    return result
 
 
 def teaser(chart):
@@ -837,8 +948,7 @@ def full_analysis(chart):
     houses = [{"nr": i, "title": HOUSE_TITLE[i], "meaning": HOUSE_MEANING.get(i, "")}
               for i in range(1, 13)]
 
-    moon_sign = nat["Mond"]["sign"] if nat.get("Mond") else None
-    intuition = build_intuition(moon_sign) if moon_sign else None
+    intuition = build_intuition(chart)
 
     return {
         "name": name,
