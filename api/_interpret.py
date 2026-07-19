@@ -12,66 +12,94 @@ TYPE_INFO = {
         "strategy": "Auf das Leben antworten",
         "signature": "Zufriedenheit", "not_self": "Frustration",
         "aura": "offen & umhüllend",
-        "short": "Du bist die schöpferische Lebenskraft dieser Welt. Wenn du auf das antwortest, "
-                 "was dich wirklich anzieht, wird deine Energie unerschöpflich und deine Arbeit "
-                 "zu etwas, das dich erfüllt statt auslaugt.",
+        "short": "Du bist die schöpferische Lebenskraft dieser Welt. In dir steckt eine Energie, die "
+                 "anpacken will, sobald sie das Richtige spürt. Vielleicht hast du dich oft "
+                 "gezwungen, Dinge zu tun, die dir eigentlich die Kraft rauben, und dich danach leer "
+                 "gefühlt. Wenn du nur noch auf das antwortest, was dich wirklich anzieht, wird deine "
+                 "Energie fast unerschöpflich. Dann wird Arbeit zu etwas, das dich erfüllt statt "
+                 "auslaugt.",
     },
     "Manifestierender Generator": {
         "strategy": "Antworten und dann informieren",
         "signature": "Zufriedenheit & Frieden", "not_self": "Frustration & Wut",
         "aura": "offen & umhüllend",
-        "short": "In dir vereinen sich die Ausdauer des Generators und die Schnelligkeit des "
-                 "Manifestors. Du gehst gern mehrere Schritte auf einmal, springst, probierst und "
-                 "findest Abkürzungen. Genau so bist du richtig, auch wenn andere kürzer treten.",
+        "short": "In dir vereinen sich zwei Kräfte: die Ausdauer des Generators und die "
+                 "Schnelligkeit des Manifestors. Du gehst gern mehrere Schritte auf einmal, springst, "
+                 "probierst, findest Abkürzungen. Vielleicht hat man dir früher gesagt, du seist zu "
+                 "sprunghaft oder zu ungeduldig. Aber genau so bist du richtig. Du darfst schnell "
+                 "sein, Umwege gehen und Dinge wieder abbrechen, die sich nicht mehr stimmig "
+                 "anfühlen.",
     },
     "Manifestor": {
         "strategy": "Informieren, bevor du handelst",
         "signature": "Frieden", "not_self": "Wut",
         "aura": "verschlossen & initiierend",
-        "short": "Du bist hier, um Dinge anzustoßen und in Bewegung zu bringen. Du brauchst keine "
-                 "Erlaubnis, um loszugehen. Du brauchst nur den Mut, dein Umfeld mitzunehmen, "
-                 "bevor du startest, dann öffnen sich dir die Türen.",
+        "short": "Du bist hier, um Dinge anzustoßen und in Bewegung zu bringen. In dir lebt eine "
+                 "Kraft, die nicht auf Erlaubnis wartet. Vielleicht bist du früh angeeckt, weil du "
+                 "gemacht hast, was du wolltest, und hast dann gelernt, dich zusammenzunehmen. Du "
+                 "brauchst keine Erlaubnis, um loszugehen. Du brauchst nur den Mut, dein Umfeld "
+                 "mitzunehmen, bevor du startest. Dann öffnen sich dir die Türen, statt sich dir in "
+                 "den Weg zu stellen.",
     },
     "Projektor": {
         "strategy": "Auf die Einladung warten",
         "signature": "Erfolg", "not_self": "Bitterkeit",
         "aura": "fokussiert & durchdringend",
-        "short": "Du siehst Menschen und Zusammenhänge klarer als die meisten. Deine Gabe entfaltet "
-                 "sich, sobald sie erkannt und eingeladen wird. Dann führst du mit einer Weisheit, "
-                 "die andere kaum aufbringen.",
+        "short": "Du siehst Menschen und Zusammenhänge klarer als die meisten. Oft weißt du, was "
+                 "jemand braucht, bevor er es selbst versteht. Vielleicht hast du dich trotzdem oft "
+                 "übersehen oder erschöpft gefühlt, weil du versucht hast, mitzuhalten wie alle "
+                 "anderen. Deine Gabe ist nicht das Dauerschuften. Sie entfaltet sich, sobald sie "
+                 "erkannt und eingeladen wird. Dann führst du mit einer Weisheit, die kaum jemand "
+                 "aufbringt.",
     },
     "Reflektor": {
         "strategy": "Einen Mondzyklus abwarten",
         "signature": "Überraschung", "not_self": "Enttäuschung",
         "aura": "widerspiegelnd & abtastend",
-        "short": "Du bist ein seltener Spiegel deiner Umgebung und fühlst, wie es einem Ort und den "
-                 "Menschen darin wirklich geht. Das ist eine kostbare, fast magische Gabe, die es "
-                 "nur bei ganz wenigen gibt.",
+        "short": "Du bist ein seltener Spiegel deiner Umgebung. Du fühlst, wie es einem Ort und den "
+                 "Menschen darin wirklich geht, oft stärker, als dir lieb ist. Vielleicht hast du "
+                 "dich manchmal wie ein Chamäleon gefühlt, mal so, mal so, je nachdem, wo du bist. "
+                 "Das ist keine Unbeständigkeit. Das ist deine kostbare, fast magische Gabe, die es "
+                 "nur bei ganz wenigen Menschen gibt. Du brauchst nur die richtigen Orte und "
+                 "Menschen um dich, dann blühst du auf.",
     },
 }
 
 AUTHORITY_INFO = {
-    "Emotionale Autorität": "Deine Klarheit reift über die Zeit. Warte bei allem Wichtigen eine "
-        "Gefühlswelle ab und schlaf ein paar Nächte darüber. Deine Wahrheit zeigt sich erst im "
-        "Verlauf, wenn sich das Auf und Ab gelegt hat und Ruhe einkehrt.",
+    "Emotionale Autorität": "Deine Klarheit reift über die Zeit. Vielleicht kennst du das: Heute "
+        "bist du Feuer und Flamme, morgen dagegen, und du weißt kaum noch, was jetzt stimmt. Das "
+        "ist kein Wankelmut. So funktionierst du. Warte bei allem Wichtigen eine Gefühlswelle ab "
+        "und schlaf ein paar Nächte darüber. Deine Wahrheit zeigt sich erst im Verlauf, wenn sich "
+        "das Auf und Ab gelegt hat und Ruhe einkehrt.",
     "Sakrale Autorität": "Dein Bauch weiß es sofort. Ein echtes Ja fühlt sich weit und lebendig an, "
-        "ein Nein zieht sich leise zusammen. Vertraue diesem Körperlaut noch vor dem Kopf, denn er "
-        "lügt dich nie an.",
+        "ein Nein zieht sich leise zusammen. Vielleicht hast du dir dieses klare Körpergefühl oft "
+        "ausgeredet, weil dein Kopf vernünftiger klang. Aber dein Bauch lügt dich nie an. Lerne "
+        "wieder, diesem Körperlaut zu trauen, noch bevor der Kopf anfängt zu rechnen.",
     "Milz-Autorität (Splenisch)": "Deine Wahrheit spricht leise und meist nur ein einziges Mal, als "
-        "feine Ahnung im Augenblick. Lerne, diesem ersten, stillen Impuls zu trauen. Er schützt "
-        "dich und führt dich sicherer, als jede lange Grübelei es könnte.",
-    "Ego-/Herz-Autorität": "Deine Wahrheit liegt in deinem echten Wollen. Frag dich bei jeder "
-        "Entscheidung, was dein Herz wirklich begehrt und wofür deine Kraft brennt, und geh von "
-        "dort aus los.",
-    "Selbst-projizierte Autorität": "Deine Wahrheit hörst du, wenn du sie aussprichst. Rede mit "
-        "einem vertrauten Menschen und lausche dabei vor allem deiner eigenen Stimme. In deinen "
-        "eigenen Worten liegt schon die Antwort.",
-    "Mond-Autorität (Reflektor)": "Lass große Entscheidungen einen ganzen Mondzyklus reifen. Sprich "
-        "mit vielen Menschen und schlaf viele Nächte darüber. Die Klarheit stellt sich von ganz "
-        "allein ein, wenn du ihr die Zeit gibst.",
-    "Mentale Autorität (Umgebung)": "Dein Umfeld ist dein Resonanzraum. Sprich alles laut aus und "
-        "spüre genau, an welchem Ort und mit welchen Menschen dein Weg sich stimmig anfühlt. Die "
-        "richtige Umgebung zeigt dir deine Richtung.",
+        "feine Ahnung im Augenblick. Kennst du dieses erste, stille Bauchgefühl, das du oft "
+        "weggedacht hast, um es später zu bereuen? Genau das ist deine Führung. Lerne, diesem "
+        "ersten Impuls zu trauen. Er schützt dich und führt dich sicherer, als jede lange Grübelei "
+        "es je könnte.",
+    "Ego-/Herz-Autorität": "Deine Wahrheit liegt in deinem echten Wollen. Vielleicht hast du oft "
+        "getan, was von dir erwartet wurde, und dich dabei selbst verloren. Frag dich bei jeder "
+        "Entscheidung ehrlich: Was will mein Herz wirklich, und wofür brennt meine Kraft? Nur was "
+        "du aus vollem Herzen willst, wirst du auch durchhalten. Alles andere kostet dich mehr, als "
+        "es dir gibt.",
+    "Selbst-projizierte Autorität": "Deine Wahrheit hörst du, wenn du sie aussprichst. Vielleicht "
+        "denkst du Entscheidungen endlos im Kopf durch und kommst doch nicht weiter. Rede mit einem "
+        "vertrauten Menschen und lausche dabei vor allem deiner eigenen Stimme. Achte weniger auf "
+        "den Rat, den du bekommst, und mehr auf das, was aus dir selbst herauskommt. Darin liegt "
+        "schon die Antwort.",
+    "Mond-Autorität (Reflektor)": "Lass große Entscheidungen einen ganzen Mondzyklus reifen, "
+        "ungefähr einen Monat. Vielleicht hast du dich oft unter Druck setzen lassen, schnell zu "
+        "entscheiden, und es später bereut. Du brauchst diese Zeit wirklich. Sprich mit vielen "
+        "Menschen und schlaf viele Nächte darüber. Die Klarheit stellt sich von ganz allein ein, "
+        "wenn du ihr den Raum gibst.",
+    "Mentale Autorität (Umgebung)": "Dein Umfeld ist dein Resonanzraum. Du hast keine feste innere "
+        "Stimme im Körper, die sofort Ja oder Nein sagt, und das hat dich vielleicht oft "
+        "verunsichert. Das ist völlig in Ordnung. Sprich alles laut aus und spüre genau, an welchem "
+        "Ort und mit welchen Menschen dein Weg sich stimmig anfühlt. Die richtige Umgebung zeigt "
+        "dir deine Richtung.",
 }
 
 PROFILE_LINES = {
