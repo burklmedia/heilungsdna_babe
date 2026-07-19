@@ -454,15 +454,13 @@ INTUITION = {
         "archetype": "Die Tiefenfühlende",
         "tagline": "Gefühls-Intuition",
         "oneliner": "Du fühlst, was andere nicht aussprechen.",
-        "science": "Somatische Marker und Empathie (Damasio), Wasserzeichen und Mond",
         "text": ("Deine Intuition spricht durch das Gefühl. Dein Mond steht in {moon}, einem "
                  "Wasserzeichen, und das macht dich zu einem feinen Empfänger für Stimmungen, die "
                  "andere gar nicht bemerken. Du spürst, wie es einem Menschen wirklich geht, oft "
-                 "schon, bevor ein Wort fällt. Die Neurowissenschaft nennt das somatische Marker: "
-                 "Dein Körper reagiert auf eine Situation, lange bevor dein Kopf sie versteht. "
-                 "Genau dieses feine Bauchgefühl ist bei dir besonders wach. Deine Gabe ist tiefe "
-                 "Empathie. Deine Aufgabe ist, dich liebevoll abzugrenzen, damit du in den Gefühlen "
-                 "der anderen nicht untergehst."),
+                 "schon, bevor ein Wort fällt. Dein Körper reagiert auf eine Situation, lange bevor "
+                 "dein Kopf sie versteht, und genau dieses feine Bauchgefühl ist bei dir besonders "
+                 "wach. Deine Gabe ist tiefe Empathie. Deine Aufgabe ist, dich liebevoll "
+                 "abzugrenzen, damit du in den Gefühlen der anderen nicht untergehst."),
         "tools": [
             "Frag dich bei starken Gefühlen zuerst: Ist das gerade meins, oder habe ich es von "
             "jemandem aufgenommen?",
@@ -476,14 +474,13 @@ INTUITION = {
         "archetype": "Die Impulsstarke",
         "tagline": "Instinkt-Intuition",
         "oneliner": "Du weißt es schon im ersten Funken.",
-        "science": "Der schnelle, automatische Denkmodus, System 1 (Kahneman), Feuerzeichen",
         "text": ("Deine Intuition kommt als Impuls, blitzschnell und mitten aus dem Bauch. Dein "
                  "Mond steht in {moon}, einem Feuerzeichen, und das gibt dir einen Instinkt, der "
                  "sofort weiß, wohin es geht. Du erkennst eine Gelegenheit im ersten Moment und "
-                 "bist schon in Bewegung, während andere noch überlegen. Die Forschung nennt das "
-                 "den schnellen, automatischen Denkmodus, das System 1: ein Wissen, das da ist, "
-                 "bevor du es begründen kannst. Deine Gabe sind Mut und Timing. Deine Aufgabe ist, "
-                 "einmal kurz durchzuatmen, bevor der Funke dich schon losreißt."),
+                 "bist schon in Bewegung, während andere noch überlegen. Dieses Wissen ist da, "
+                 "bevor du es begründen kannst, wie ein Funke, der schneller ist als jeder Gedanke. "
+                 "Deine Gabe sind Mut und Timing. Deine Aufgabe ist, einmal kurz durchzuatmen, "
+                 "bevor der Funke dich schon losreißt."),
         "tools": [
             "Vertrau deinem allerersten Impuls, bevor der Zweifel kommt. Deine erste Antwort ist "
             "meistens die wahre.",
@@ -496,15 +493,13 @@ INTUITION = {
         "archetype": "Die Spürsinnige",
         "tagline": "Körper-Intuition",
         "oneliner": "Dein Körper weiß es zuerst.",
-        "science": "Körperbasierte Entscheidung, somatische Marker (Damasio), Erdzeichen",
         "text": ("Deine Intuition wohnt im Körper. Dein Mond steht in {moon}, einem Erdzeichen, und "
                  "das erdet dein Gespür in etwas ganz Handfestes. Du fühlst im Bauch, in den "
-                 "Schultern, im ganzen Körper, ob etwas stimmt. Antonio Damasio hat gezeigt, dass "
-                 "gute Entscheidungen genau über solche Körpersignale entstehen, die eine Option "
-                 "als richtig oder gefährlich markieren, noch bevor der Verstand nachzieht. Bei dir "
-                 "ist dieser Kompass besonders verlässlich. Deine Gabe ist ein sicherer Instinkt "
-                 "für das Echte. Deine Aufgabe ist, wieder in den Körper zu hören, wenn der Kopf zu "
-                 "laut wird."),
+                 "Schultern, im ganzen Körper, ob etwas stimmt. Dein Körper sendet dir feine "
+                 "Signale und markiert eine Sache als richtig oder gefährlich, noch bevor der "
+                 "Verstand nachzieht. Bei dir ist dieser Kompass besonders verlässlich. Deine Gabe "
+                 "ist ein sicherer Instinkt für das Echte. Deine Aufgabe ist, wieder in den Körper "
+                 "zu hören, wenn der Kopf zu laut wird."),
         "tools": [
             "Mach einen kurzen Body-Scan. Geh in Gedanken durch deinen Körper und spür, wo sich "
             "eine Entscheidung eng oder weit anfühlt.",
@@ -517,13 +512,11 @@ INTUITION = {
         "archetype": "Die Klarsehende",
         "tagline": "Muster-Intuition",
         "oneliner": "Du erkennst das Muster im Nu.",
-        "science": "Holistische und soziale Intuition (Pretz, Jung), Luftzeichen",
         "text": ("Deine Intuition zeigt sich als plötzliche Klarheit. Dein Mond steht in {moon}, "
                  "einem Luftzeichen, und das lässt dich Muster und Zusammenhänge erkennen, lange "
                  "bevor du sie erklären kannst. Du liest Menschen, Stimmungen und Ideen in "
-                 "Sekunden, ein Blick, ein Tonfall, und du weißt Bescheid. Die Psychologie nennt "
-                 "das holistische und soziale Intuition, ein ganzheitliches Erfassen, das viele "
-                 "Signale auf einmal zu einem Bild zusammenzieht. Deine Intuition ist wandelbar und "
+                 "Sekunden, ein Blick, ein Tonfall, und du weißt Bescheid. Dein Gespür zieht viele "
+                 "feine Signale auf einmal zu einem klaren Bild zusammen. Es ist wandelbar und "
                  "spiegelt oft deine Stimmung. Deine wichtigste Lektion ist, dir selbst zu "
                  "vertrauen, auch wenn sich dein Gespür von Tag zu Tag verändert."),
         "tools": [
@@ -545,16 +538,15 @@ def build_intuition(moon_sign):
         "key": element,
         "archetype": base["archetype"],
         "tagline": base["tagline"],
-        "science": base["science"],
         "moon_sign": moon_sign,
         "text": base["text"].format(moon=moon_sign),
         "tools": base["tools"],
         "all": [{"key": e, "archetype": INTUITION[e]["archetype"],
                  "tagline": INTUITION[e]["tagline"], "oneliner": INTUITION[e]["oneliner"]}
                 for e in order],
-        "note": "Dein Intuitionstyp verbindet die Wissenschaft der Intuition (Damasio, Kahneman, "
-                "Pretz, Jung) mit der astrologischen Symbollehre über deinen Mond. Die Astrologie "
-                "ist dabei eine Sprache zur Selbstreflexion, kein naturwissenschaftlicher Beweis.",
+        "note": "Dein Intuitionstyp entsteht aus deinem Mond und seinem Element, dort, wo sich "
+                "Wissenschaft und Astrologie begegnen. Verstehe ihn als ein Bild zur "
+                "Selbstreflexion, das dich an deine eigene innere Stimme erinnert.",
     }
 
 
