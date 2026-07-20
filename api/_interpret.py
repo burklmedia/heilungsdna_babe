@@ -190,6 +190,111 @@ CENTER_DEEP = {
     },
 }
 
+# Tiefe Zentren-Deutung: Thema, was Definiert bedeutet, was Offen bedeutet, was du tun kannst,
+# plus eine kurze Gaben- und Schattenformel (für Stärke- und Herausforderungs-Analyse).
+CENTER_INFO = {
+    "Kopf": {
+        "theme": "Inspiration und mentaler Druck",
+        "defined": "Du hast eine eigene, verlässliche Quelle für Inspiration. Fragen und Ideen kommen "
+                   "bei dir von innen, in einem festen Rhythmus, und du inspirierst andere oft, ohne "
+                   "es selbst zu merken.",
+        "open": "Dein Kopf nimmt den Denkdruck der ganzen Welt auf. Du zerdenkst oft Fragen, die gar "
+                "nicht deine sind, und fühlst dich mental unter Druck gesetzt.",
+        "tip": "Frag dich immer wieder: Ist das gerade wirklich meine Frage, oder denke ich für "
+               "jemand anderen mit? Lass die los, die nicht zu dir gehört.",
+        "gift": "eine eigene, verlässliche Inspiration",
+        "shadow": "das Zerdenken von Fragen, die gar nicht deine sind",
+    },
+    "Ajna": {
+        "theme": "Denken und Verstehen",
+        "defined": "Du hast eine feste Art zu denken und stabile Überzeugungen. Deine Meinung steht, "
+                   "und genau das gibt anderen Halt.",
+        "open": "Du denkst flexibel und kannst dich in viele Sichtweisen hineinversetzen. Innerlich "
+                "fühlst du dich dabei oft unsicher und tust manchmal so, als wüsstest du es genau.",
+        "tip": "Du darfst offen sagen, dass du es noch nicht sicher weißt. Deine geistige Offenheit "
+               "ist Weisheit, kein Makel.",
+        "gift": "klare, verlässliche Überzeugungen",
+        "shadow": "die Unsicherheit hinter vorgespielter Sicherheit",
+    },
+    "Kehle": {
+        "theme": "Ausdruck und Manifestation",
+        "defined": "Du hast eine konsistente Stimme und eine klare Art, dich auszudrücken und Dinge "
+                   "in die Welt zu bringen.",
+        "open": "Du redest manchmal, um Aufmerksamkeit zu bekommen oder um die Stille zu füllen, und "
+                "fühlst dich danach oft unwohl.",
+        "tip": "Warte, bis du wirklich gefragt wirst oder etwas von selbst raus will. Dann hat dein "
+               "Wort echtes Gewicht.",
+        "gift": "eine klare, tragende Stimme",
+        "shadow": "das Reden aus Druck oder für Anerkennung",
+    },
+    "G": {
+        "theme": "Identität, Liebe und Richtung",
+        "defined": "Du hast ein stabiles Gefühl dafür, wer du bist und wohin du willst. Deine "
+                   "Richtung kommt von innen.",
+        "open": "Du suchst deine Identität und deine Richtung oft im Außen, in Menschen und an Orten. "
+                "Mal fühlst du dich so, mal ganz anders.",
+        "tip": "Der richtige Ort ist für dich entscheidend. Du musst nicht wissen, wer du bist, wähle "
+               "einfach die Umgebung, in der du dich am meisten nach dir selbst anfühlst.",
+        "gift": "ein festes Gefühl für dich und deine Richtung",
+        "shadow": "die Suche nach dir selbst im Außen",
+    },
+    "Herz": {
+        "theme": "Willenskraft und Selbstwert",
+        "defined": "Du hast eine verlässliche Willenskraft und ein natürliches Gespür für deinen "
+                   "Wert. Wenn du etwas versprichst, hältst du es auch.",
+        "open": "Du versuchst dich manchmal zu beweisen und versprichst mehr, als dir guttut, um "
+                "deinen Wert zu zeigen.",
+        "tip": "Du musst dir und niemandem etwas beweisen. Dein Wert steht nicht zur Debatte, er ist "
+               "einfach da.",
+        "gift": "eine echte, verlässliche Willenskraft",
+        "shadow": "das ständige Sich-beweisen-Müssen",
+    },
+    "Milz": {
+        "theme": "Intuition, Gesundheit und Instinkt",
+        "defined": "Du hast ein spontanes, verlässliches Körperwissen und einen guten Instinkt für "
+                   "das, was dir guttut.",
+        "open": "Du hältst manchmal aus Angst an Dingen, Menschen oder Gewohnheiten fest, die dir "
+                "längst nicht mehr guttun.",
+        "tip": "Frag dich ehrlich: Halte ich hier an etwas fest, das mir eigentlich schadet? Es ist "
+               "sicher, loszulassen.",
+        "gift": "ein feiner, gesunder Instinkt",
+        "shadow": "das Festhalten aus Angst",
+    },
+    "Sakral": {
+        "theme": "Lebenskraft und Arbeitsenergie",
+        "defined": "Du hast eine kraftvolle, nachhaltige Energie, sobald du das tust, was dich "
+                   "wirklich anspringt. Dann kennst du kaum Müdigkeit.",
+        "open": "Du spürst oft nicht, wann genug ist, und arbeitest über deine Grenze hinaus, bis du "
+                "ganz leer bist.",
+        "tip": "Lern zu fühlen, wann genug genug ist. Du musst dich nicht leeren, um wertvoll zu "
+               "sein.",
+        "gift": "eine tiefe, tragende Lebenskraft",
+        "shadow": "das Nicht-Spüren, wann genug ist",
+    },
+    "Solarplexus": {
+        "theme": "Emotionen und Gefühlswellen",
+        "defined": "Du hast einen eigenen emotionalen Rhythmus. Dein Auf und Ab gehört zu dir, und "
+                   "deine Klarheit kommt mit der Zeit.",
+        "open": "Du nimmst die Gefühle anderer auf und verstärkst sie, und du meidest gern Konflikte, "
+                "nur um die Stimmung zu halten.",
+        "tip": "Frag dich mitten im Gefühl: Ist das gerade meins, oder habe ich es aufgenommen? Geh "
+               "kurz auf Abstand, dann klärt es sich.",
+        "gift": "eine tiefe, echte Gefühlswelt",
+        "shadow": "das Aufnehmen fremder Emotionen und das Meiden von Konflikt",
+    },
+    "Wurzel": {
+        "theme": "Antrieb, Druck und Stress",
+        "defined": "Du hast einen eigenen, gleichmäßigen Druckrhythmus, der dich verlässlich "
+                   "antreibt, ohne dich zu hetzen.",
+        "open": "Du hetzt oft, um den Druck endlich loszuwerden, und tust Dinge übereilt, nur damit "
+                "sie vom Tisch sind.",
+        "tip": "Du musst dich nicht beeilen, um frei zu sein. Der Druck ist nicht deiner, du darfst "
+               "dir Zeit lassen.",
+        "gift": "ein ruhiger, tragender Antrieb",
+        "shadow": "das Hetzen, um den Druck loszuwerden",
+    },
+}
+
 # Chiron: die tiefe Wunde und zugleich der Ort deiner größten Heilkraft, nach Zeichen.
 CHIRON_SIGN = {
     "Widder": "Tief in dir sitzt die Frage, ob du überhaupt wollen darfst. Vielleicht hast du früh "
@@ -1081,6 +1186,29 @@ def _aspects_section(nat):
     }
 
 
+
+def _intuition_deutung_section(it):
+    body = (
+        f"Auch dein Intuitionstyp gehört mitten in deinen Bauplan. Über deinen Mond in "
+        f"{it['moon_sign']} spricht deine Intuition auf eine ganz bestimmte Art zu dir.\n\n"
+        f"Bei dir ist es die {it['tagline']}. {it['text']}")
+    dp = it.get("depth")
+    if dp:
+        body += f"\n\n{dp['summary']}"
+    body += ("\n\nWenn du lernst, dieser leisen inneren Stimme wieder zu trauen, hast du einen "
+             "Kompass in dir, der dich zuverlässiger führt als jeder Verstand.")
+    facts = [("Intuitionstyp", it["archetype"]), ("Mond", it["moon_sign"])]
+    if dp:
+        facts.append(("Ausprägung", dp["level"]))
+    return {
+        "title": "Dein Intuitionstyp",
+        "subtitle": f"{it['archetype']}, {it['tagline']}",
+        "headline": it["archetype"],
+        "body": body,
+        "facts": facts,
+    }
+
+
 def full_analysis(chart):
     """Die vollständige, liebevoll aufbereitete Analyse (nach der E-Mail)."""
     hd = chart["hd"]
@@ -1225,6 +1353,7 @@ def full_analysis(chart):
     })
 
     nat = chart["natal"]
+    intuition = build_intuition(chart)
     if asc:
         sections.append(_element_section(nat, asc, chart.get("mc")))
         _stell = _stellium_section(nat)
@@ -1233,6 +1362,8 @@ def full_analysis(chart):
         _asp = _aspects_section(nat)
         if _asp:
             sections.append(_asp)
+    if intuition:
+        sections.append(_intuition_deutung_section(intuition))
 
     nk = nat.get("Nordknoten")
     sk = nat.get("Südknoten")
@@ -1276,25 +1407,35 @@ def full_analysis(chart):
             "facts": [("Südknoten", f"{sk['sym']} {sk['sign']} {sk['text']}")],
         })
     if nk and sk and axis:
+        _lifebody = (
+            f"Jetzt wird es ernst. Denn hier geht es nicht mehr um einzelne Bausteine, sondern um den "
+            f"einen roten Faden, der sich durch dein ganzes Leben zieht. Deine Mondknoten-Achse zeigt, "
+            f"woher du kommst und wohin du eigentlich sollst.\n\n"
+            f"Ganz ehrlich: Das {sk['sign']}-Muster kennst du in- und auswendig. Es ist dein "
+            f"Sicherheitsmodus, dein Zuhause im Vertrauten. " + axis.get("lower", "") + " Und genau das "
+            f"ist die Falle. Weil es sich so sicher anfühlt, kehrst du immer wieder dorthin zurück, "
+            f"auch wenn du längst spürst, dass es dich nicht mehr wachsen lässt. Es hält dich klein und "
+            f"nennt es Schutz.\n\n"
+            f"Deine eigentliche Aufgabe liegt auf der anderen Seite, im {nk['sign']}. " + axis.get("higher", "")
+            + f"\n\nUnd hier kommt der Teil, den du nicht überspringen darfst: Du wächst da nicht rein, "
+            f"indem du darüber nachdenkst. Du wächst rein, indem du im echten Leben immer wieder anders "
+            f"handelst als sonst. Als {hd['type']} gelingt dir das, wenn du deiner Strategie folgst, "
+            f"also {t.get('strategy','').lower()}, und wichtige Entscheidungen über deine "
+            f"{hd['authority'].lower()} triffst, statt aus dem alten Reflex heraus. Jedes Mal, wenn du "
+            f"dich in einem dieser Momente für den ungewohnten, den {nk['sign']}-Weg entscheidest, "
+            f"erfüllst du ein Stück deiner Lebensaufgabe. Es sind keine großen Gesten. Es sind die "
+            f"kleinen, unbequemen Entscheidungen, in denen du dich für dich entscheidest.\n\n"
+            f"Und ja, das wird sich manchmal falsch anfühlen. Fremd, riskant, fast wie Verrat am alten "
+            f"Ich. Genau daran erkennst du, dass du auf dem richtigen Weg bist. Wachstum fühlt sich "
+            f"nie sicher an. Es fühlt sich echt an.")
         sections.append({
             "title": "Deine Lebensaufgabe",
             "subtitle": f"Deine Mondknoten-Achse: {sk['sign']} zu {nk['sign']}",
             "headline": f"Von {sk['sign']} nach {nk['sign']}",
-            "body": (f"Das hier ist vielleicht die wichtigste Sektion deines ganzen Bauplans. Deine "
-                     f"Mondknoten-Achse ist der rote Faden deines Lebens. Sie zeigt schonungslos, "
-                     f"woran du wachsen sollst.\n\nDas {sk['sign']}-Muster ist deine Komfortzone. Es "
-                     f"fühlt sich sicher an, weil du es seit deiner Kindheit kennst. Aber sei ehrlich "
-                     f"zu dir: Genau hier bleibst du stehen. Genau hier wiederholst du immer wieder "
-                     f"dieselben Situationen, dieselben Enttäuschungen, dieselben Gedanken über dich "
-                     f"selbst.\n\nDein eigentliches Leben wartet auf der anderen Seite, im "
-                     f"{nk['sign']}. Am Anfang fühlt es sich fremd und unbequem an, fast falsch. Das "
-                     f"ist normal. Wachstum fühlt sich immer zuerst unsicher an.\n\nUnd jetzt der "
-                     f"Punkt, der wehtut und gleichzeitig befreit: Niemand zieht dich da rüber. Du "
-                     f"bist die einzige Person, die diesen Schritt gehen kann. Jedes Mal, wenn du "
-                     f"dich zwischen dem alten, sicheren Weg und dem neuen, echten entscheidest, "
-                     f"entscheidest du über dein ganzes Leben. Fang klein an. Aber fang an."),
+            "body": _lifebody,
             "takeaway": axis.get("task", ""),
-            "facts": [],
+            "facts": [("Kommst du her von", f"{sk['sign']} {sk['text']}"),
+                      ("Wächst du hin zu", f"{nk['sign']} {nk['text']}")],
         })
 
     chi = chart["natal"].get("Chiron")
@@ -1414,15 +1555,25 @@ def full_analysis(chart):
             positions.append(_pos(k, k, p, p.get("house")))
 
     _defset = set(hd["defined_centers"])
-    hd_centers = [{"name": c, "defined": c in _defset, "meaning": CENTER_MEANING.get(c, ""),
-                   "desc": CENTER_DEEP.get(c, {}).get("def" if c in _defset else "open", "")}
-                  for c in ["Kopf", "Ajna", "Kehle", "G", "Herz", "Milz", "Sakral",
-                            "Solarplexus", "Wurzel"]]
+    hd_centers = []
+    for c in ["Kopf", "Ajna", "Kehle", "G", "Herz", "Milz", "Sakral",
+              "Solarplexus", "Wurzel"]:
+        info = CENTER_INFO.get(c, {})
+        is_def = c in _defset
+        hd_centers.append({
+            "name": c,
+            "defined": is_def,
+            "meaning": CENTER_MEANING.get(c, ""),
+            "desc": CENTER_DEEP.get(c, {}).get("def" if is_def else "open", ""),
+            "theme": info.get("theme", ""),
+            "detail": info.get("defined", "") if is_def else info.get("open", ""),
+            "tip": info.get("tip", ""),
+            "gift": info.get("gift", ""),
+            "shadow": info.get("shadow", ""),
+        })
 
     houses = [{"nr": i, "title": HOUSE_TITLE[i], "meaning": HOUSE_MEANING.get(i, "")}
               for i in range(1, 13)]
-
-    intuition = build_intuition(chart)
 
     return {
         "name": name,

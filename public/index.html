@@ -434,14 +434,24 @@
   .pcard.open .pchev { transform: rotate(180deg); }
   .pcard .pbody { max-height: 0; overflow: hidden; transition: max-height .4s ease; }
   .pcard.open .pbody { max-height: 700px; }
+  .pcard.big.open .pbody { max-height: 1800px; }
   .pcard .pin { padding: 2px 15px 15px; }
   .pcard .pin .pm { font-size: 10.5px; letter-spacing: .1em; text-transform: uppercase; color: var(--gold); margin: 4px 0 7px; }
   .pcard .pin .pd { font-size: 14px; color: var(--ink-soft); line-height: 1.8; }
+  .pcard .pin .pblk { margin: 12px 0 0; }
+  .pcard .pin .pblk:first-child { margin-top: 4px; }
+  .pcard .pin .plbl { font-size: 10px; letter-spacing: .12em; text-transform: uppercase; color: var(--gold); margin-bottom: 4px; display: block; }
+  .pcard .pin .ptxt { font-size: 14px; color: var(--ink-soft); line-height: 1.75; }
+  .pcard .pin .pstate { display:inline-block; font-size: 10.5px; letter-spacing:.1em; text-transform:uppercase; padding: 2px 9px; border-radius: 999px; margin-bottom: 8px; }
+  .pcard .pin .pstate.on { color: var(--gold); border:1px solid rgba(245,197,107,.5); background: rgba(245,197,107,.09); }
+  .pcard .pin .pstate.off { color: var(--accent); border:1px solid rgba(201,164,255,.42); background: rgba(201,164,255,.07); }
   .legend { margin-top: 26px; padding: 24px 22px; border-radius: 16px; background: rgba(255,255,255,.02); border: 1px solid var(--line); }
   .legend .lh { font-size: 11px; letter-spacing: .3em; text-transform: uppercase; color: var(--gold); margin-bottom: 16px; }
   .legend .li { margin-bottom: 12px; }
   .legend .li .t { font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: var(--gold); margin-bottom: 3px; }
   .legend .li .d { font-size: 13px; color: var(--ink-soft); line-height: 1.68; }
+  .legend.legend-top { margin-top: 0; margin-bottom: 26px; }
+  .legend .legend-intro { font-size: 13px; color: var(--ink-mute); line-height: 1.7; margin: -6px 0 18px; max-width: 62ch; }
 
   /* Intuitionstyp */
   .intu { max-width: 640px; margin: 0 auto; text-align: center; }
@@ -1098,6 +1108,27 @@
       '<div class="pbody"><div class="pin"><div class="pm">'+esc(meaning)+'</div><div class="pd">'+esc(desc)+'</div></div></div></div>';
   }
   function shorten(s){ return String(s).replace(' Autorität','').replace('Emotionale','Emotional').replace(' (Splenisch)','').replace('Selbst-projizierte','Selbst-proj.').replace(' (Reflektor)','').replace(' (Umgebung)',''); }
+  /* HD-Zentrum-Karte: geht in die Tiefe, was offen/definiert wirklich heißt */
+  function hdCenterCard(c){
+    var def=c.defined, theme=c.theme||c.meaning||'', detail=c.detail||'', tip=c.tip||'';
+    var gift=c.gift||'', shadow=c.shadow||'';
+    var blocks='';
+    blocks+='<div class="pblk"><span class="plbl">Was das bei dir bedeutet</span><div class="ptxt">'+esc(detail)+'</div></div>';
+    if(def){
+      blocks+='<div class="pblk"><span class="plbl">Was du damit machst</span><div class="ptxt">Vertrau dieser festen Energie und lebe sie sichtbar. Sie ist immer da, du musst sie nicht suchen. Andere dürfen sich an deiner Beständigkeit hier ausrichten.</div></div>';
+      if(gift) blocks+='<div class="pblk"><span class="plbl">Was es über dich aussagt</span><div class="ptxt">Das ist eine deiner verlässlichen Gaben: '+esc(gift)+'. Sie ist fest in dir verankert und trägt dich, auch wenn um dich herum alles wackelt.</div></div>';
+    } else {
+      if(tip) blocks+='<div class="pblk"><span class="plbl">Was du damit machst</span><div class="ptxt">'+esc(tip)+'</div></div>';
+      blocks+='<div class="pblk"><span class="plbl">Was es über dich aussagt</span><div class="ptxt">Offen heißt nicht schwach, offen heißt weise. Hier nimmst du feinfühlig wahr und lernst ein Leben lang dazu.'+(shadow?(' Pass nur auf '+esc(shadow)+'. Das ist nicht deins, das hast du nur aufgenommen.'):'')+'</div></div>';
+    }
+    var stateChip='<span class="pstate '+(def?'on':'off')+'">'+(def?'Definiert':'Offen')+'</span>';
+    return '<div class="pcard big"><div class="ph">'+
+      '<div class="pico">'+(def?'●':'○')+'</div>'+
+      '<div class="pmid"><div class="pk">'+esc(c.name)+'</div>'+
+      '<div class="pv">'+(def?'Definiert':'Offen')+' <span class="pmeta">'+esc(theme)+'</span></div></div>'+
+      '<span class="pchev">▼</span></div>'+
+      '<div class="pbody"><div class="pin">'+stateChip+blocks+'</div></div></div>';
+  }
   var LEGEND=[
     ['Human-Design-Typ','Deine Energie-Bauart. Sie zeigt, wie du am stimmigsten handelst und Entscheidungen triffst.'],
     ['Innere Autorität','Woher deine verlässliche Ja-oder-Nein-Klarheit kommt, dein innerer Kompass.'],
@@ -1108,6 +1139,15 @@
     ['Aszendent (AC)','Wie du auf andere wirkst, dein Auftritt. Dafür braucht es deine Geburtszeit.'],
     ['Deszendent (DC)','Er liegt genau gegenüber vom AC und zeigt, was du im Partner suchst und anziehst.'],
     ['MC / IC','Deine Berufung nach außen (MC) und deine Wurzel nach innen (IC).'],
+    ['Häuser','Zwölf Lebensfelder. Sie zeigen, in welchem Bereich deines Lebens ein Planet konkret wirkt.'],
+    ['Elemente-Balance','Wie sich Feuer, Erde, Luft und Wasser in dir verteilen. Dein stärkstes Element geht dir am leichtesten von der Hand.'],
+    ['Deine größte Stärke','Die Stelle, an der Human Design und Natalchart dasselbe sagen. Was dir mühelos gelingt.'],
+    ['Deine größte Herausforderung','Wo du am leichtesten von dir selbst abrutschst, aus Human Design und Chart gelesen, mit dem Weg, wie du sie meisterst.'],
+    ['Intuitionstyp','Über welchen Kanal deine innere Führung zu dir spricht, abgeleitet aus deinem Mond.'],
+    ['Chiron','Deine älteste Wunde und genau dort deine besondere Gabe, andere zu heilen.'],
+    ['Mondknoten-Achse','Dein roter Faden. Woher du kommst (Südknoten) und wohin du wächst (Nordknoten), deine Lebensaufgabe.'],
+    ['Stellium','Eine Häufung von Planeten in einem Zeichen oder Haus. Ein besonders betonter Lebensschwerpunkt.'],
+    ['Aspekte','Die Winkel zwischen deinen Planeten, die inneren Gespräche zwischen deinen Kräften.'],
   ];
   function setRTab(id){
     document.querySelectorAll('.rtab').forEach(function(t){ t.classList.toggle('active', t.getAttribute('data-rtab')===id); });
@@ -1152,12 +1192,9 @@
       kv('Typ',hd.type)+(t.strategy?kv('Strategie',t.strategy):'')+kv('Autorität',hd.authority)+
       kv('Profil',hd.profile+(t.profile_name?(', '+t.profile_name):''))+kv('Definition',hd.definition)+
       (cross?kv('Inkarnationskreuz',cross.pers_sun+'/'+cross.pers_earth+', '+cross.des_sun+'/'+cross.des_earth):'')+
-      '<div class="cap2" style="margin-top:24px">Deine neun Zentren, tippe für die Bedeutung</div>'+
-      (f.hd_centers||[]).map(function(c){
-        return pcard(c.defined?'●':'○', c.name, (c.defined?'Definiert':'Offen'),
-          (c.defined?'verlässliche Energie':'Lern- und Weisheitsraum'), c.meaning,
-          c.desc||('Dieses Zentrum ist bei dir '+(c.defined?'definiert':'offen')+'. Es steht für '+c.meaning+'.'));
-      }).join('');
+      '<div class="cap2" style="margin-top:24px">Deine neun Zentren, tippe für die Tiefe</div>'+
+      '<p style="color:var(--ink-mute);font-size:12.5px;line-height:1.6;margin:0 0 14px;max-width:60ch">Jedes Zentrum ist entweder definiert oder offen. Definiert heißt: hier bist du dir treu, diese Energie ist immer verlässlich da. Offen heißt: hier bist du feinfühlig, formbar und lernst ein Leben lang. Beides ist wertvoll. Tippe ein Zentrum an und du siehst, was es bei dir bedeutet, was du damit machst und was es über dich aussagt.</p>'+
+      (f.hd_centers||[]).map(function(c){ return hdCenterCard(c); }).join('');
 
     // ── NATALCHART ──
     document.getElementById('pane-na').innerHTML=
@@ -1179,7 +1216,8 @@
 
     // ── DEUTUNG ──
     document.getElementById('pane-de').innerHTML=
-      '<div class="legend"><div class="lh">Was bedeutet was?</div>'+
+      '<div class="legend legend-top"><div class="lh">Was bedeutet was?</div>'+
+        '<p class="legend-intro">Bevor du eintauchst, hier die wichtigsten Begriffe in einfachen Worten. So kannst du jederzeit nachschauen, während du deine Deutung liest.</p>'+
         LEGEND.map(function(l){return '<div class="li"><div class="t">'+esc(l[0])+'</div><div class="d">'+esc(l[1])+'</div></div>';}).join('')+
       '</div>'+
       '<div class="story">'+
@@ -1190,7 +1228,7 @@
         var take=s.takeaway?'<div class="acc-take">'+esc(s.takeaway)+'</div>':'';
         var facts=(s.facts&&s.facts.length)?'<div class="acc-facts">'+s.facts.map(function(ft){return '<span><strong>'+esc(ft[0])+':</strong> '+esc(ft[1])+'</span>';}).join('')+'</div>':'';
         var sub=s.subtitle?'<small>'+esc(s.subtitle)+'</small>':'';
-        return '<details class="acc"'+(i===0?' open':'')+'>'+
+        return '<details class="acc" name="deut"'+(i===0?' open':'')+'>'+
           '<summary class="acc-h"><span class="acc-nr">'+nr+'</span><span class="acc-t">'+esc(s.title)+sub+'</span><span class="acc-x">+</span></summary>'+
           '<div class="acc-b">'+lead+paras+take+facts+'</div></details>';
       }).join('')+'</div>'+
@@ -1278,15 +1316,15 @@
   document.getElementById('rtabs').addEventListener('click',function(e){ var t=e.target.closest('.rtab'); if(t) setRTab(t.getAttribute('data-rtab')); });
   document.getElementById('step3').addEventListener('click',function(e){
     var h=e.target.closest('.pcard .ph'); if(!h) return;
-    var card=h.parentNode, pane=card.closest('.rpane')||document.getElementById('step3');
-    pane.querySelectorAll('.pcard.open').forEach(function(c){ if(c!==card) c.classList.remove('open'); });
-    card.classList.toggle('open');
+    var card=h.parentNode, wasOpen=card.classList.contains('open');
+    var scope=card.closest('.rpane')||document;
+    scope.querySelectorAll('.pcard.open').forEach(function(o){ if(o!==card) o.classList.remove('open'); });
+    card.classList.toggle('open', !wasOpen);
   });
-  // Deutungs-Sektionen: nur eine offen (toggle bubbelt nicht -> capture)
-  document.getElementById('step3').addEventListener('toggle',function(e){
-    var d=e.target; if(d.tagName==='DETAILS' && d.classList.contains('acc') && d.open){
-      d.parentNode.querySelectorAll('details.acc[open]').forEach(function(o){ if(o!==d) o.open=false; });
-    }
+  // Deutung: nur ein Reiter offen (Fallback, falls das name-Attribut nicht greift)
+  document.getElementById('pane-de').addEventListener('toggle',function(e){
+    var d=e.target; if(!d||d.tagName!=='DETAILS'||!d.open||d.getAttribute('name')!=='deut') return;
+    document.querySelectorAll('#pane-de details.acc[name="deut"]').forEach(function(o){ if(o!==d) o.open=false; });
   }, true);
 
   /* ── Bodygraph (Human-Design-Zentren, datengenau offen/definiert) ── */
