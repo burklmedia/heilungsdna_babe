@@ -228,6 +228,18 @@
   .mockup .mrow.gold b { color: var(--gold); }
   .mockup .mock-strat { font-size: 12.5px; line-height: 1.55; color: var(--ink-soft); margin: 16px 0 0; }
   .mockup .mbadge { display: inline-block; margin-top: 14px; font-family: var(--script); font-size: 24px; color: var(--gold); text-shadow: 0 0 24px var(--glow); }
+  /* Animierte Bauplan-Vorschau: scrollt durch alle Systeme */
+  .mock-window { position: relative; height: 344px; overflow: hidden; margin-top: 4px;
+    -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 11%, #000 89%, transparent 100%);
+            mask-image: linear-gradient(to bottom, transparent 0, #000 11%, #000 89%, transparent 100%); }
+  .mock-reel { display: block; animation: reelscroll 32s linear infinite; will-change: transform; }
+  .mockup:hover .mock-reel { animation-play-state: paused; }
+  @keyframes reelscroll { from { transform: translateY(0); } to { transform: translateY(-50%); } }
+  .mock-group { display: flex; flex-direction: column; gap: 9px; margin-bottom: 9px; }
+  .mgh { font-size: 10px; letter-spacing: .18em; text-transform: uppercase; color: var(--gold); margin: 10px 0 1px; display: flex; align-items: center; gap: 8px; }
+  .mgh::before { content: "✦"; font-size: 9px; opacity: .85; }
+  .mock-hint { text-align: center; font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: var(--accent); margin-top: 10px; opacity: .85; }
+  @media (prefers-reduced-motion: reduce) { .mock-reel { animation: none; } }
   .cards { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
   .mcard { display: flex; align-items: center; gap: 11px; background: rgba(38,24,72,.5); border: 1px solid var(--line); border-radius: 14px; padding: 14px 15px; font-size: 14.5px; color: var(--ink); }
   .mcard .ic { font-size: 18px; flex: none; }
@@ -785,13 +797,46 @@
             <span class="mock-tag">Beispiel</span>
           </div>
           <div class="mock-sub">Fiktives Beispiel · Marie, 14.06.1994, 08:42, Köln</div>
-          <div class="mrows">
-            <div class="mrow"><span>Typ</span><b>Generator</b></div>
-            <div class="mrow"><span>Innere Autorität</span><b>Sakral</b></div>
-            <div class="mrow gold"><span>Profil</span><b>3/5, Erfahrung &amp; Lösung</b></div>
-            <div class="mrow"><span>Sonne, Mond, Aszendent</span><b>♊ ♓ ♌</b></div>
+          <div class="mock-window">
+            <div class="mock-reel" id="mock-reel">
+              <div class="mock-group">
+                <div class="mgh">Human Design</div>
+                <div class="mrow"><span>Typ</span><b>Generator</b></div>
+                <div class="mrow"><span>Innere Autorität</span><b>Sakral</b></div>
+                <div class="mrow gold"><span>Profil</span><b>3/5, Erfahrung &amp; Lösung</b></div>
+                <div class="mrow"><span>Definierte Zentren</span><b>4 von 9</b></div>
+                <div class="mrow"><span>Strategie</span><b>Auf das Leben antworten</b></div>
+              </div>
+              <div class="mock-group">
+                <div class="mgh">Astrologie · Natalchart</div>
+                <div class="mrow"><span>Sonne</span><b>♊ Zwillinge</b></div>
+                <div class="mrow"><span>Mond</span><b>♓ Fische</b></div>
+                <div class="mrow"><span>Aszendent</span><b>♌ Löwe</b></div>
+                <div class="mrow"><span>Deszendent</span><b>♒ Wassermann</b></div>
+                <div class="mrow gold"><span>Elemente-Balance</span><b>Luft &amp; Wasser betont</b></div>
+              </div>
+              <div class="mock-group">
+                <div class="mgh">Deine Häuser</div>
+                <div class="mrow"><span>Sonne im</span><b>11. Haus, Zukunft</b></div>
+                <div class="mrow"><span>Mond im</span><b>8. Haus, Tiefe</b></div>
+                <div class="mrow"><span>Venus im</span><b>10. Haus, Berufung</b></div>
+              </div>
+              <div class="mock-group">
+                <div class="mgh">Intuitionstyp</div>
+                <div class="mrow gold"><span>Dein Typ</span><b>Die Spürsinnige</b></div>
+                <div class="mrow"><span>Dein Kanal</span><b>Körper-Intuition</b></div>
+              </div>
+              <div class="mock-group">
+                <div class="mgh">Deine persönliche Deutung</div>
+                <div class="mrow"><span>Lebensaufgabe</span><b>von Jungfrau zu Fische</b></div>
+                <div class="mrow"><span>Größte Stärke</span><b>dein Gespür für Menschen</b></div>
+                <div class="mrow"><span>Herausforderung</span><b>dich nicht zu verlieren</b></div>
+                <div class="mrow"><span>Entscheidungsweg</span><b>aus dem Bauch heraus</b></div>
+                <div class="mrow"><span>Chiron</span><b>Wunde &amp; Heilkraft</b></div>
+              </div>
+            </div>
           </div>
-          <p class="mock-strat">Deine Strategie: auf eine Reaktion warten, statt dich zu etwas zu drängen. So triffst du Entscheidungen, die sich von innen heraus stimmig anfühlen.</p>
+          <div class="mock-hint">↕ und da ist noch so viel mehr</div>
           <div class="mbadge">So genau wird auch deiner berechnet</div>
         </div>
         <div class="cards">
@@ -1125,6 +1170,9 @@
       t.setAttribute('x',160+Math.cos(a)*113); t.setAttribute('y',160+Math.sin(a)*113+6);
       t.style.animationDelay=(0.8+i*0.18)+'s'; t.textContent=g; glyphs.appendChild(t); });
   })();
+  /* Bauplan-Vorschau verdoppeln, damit die Scroll-Animation nahtlos läuft */
+  (function(){ var reel=document.getElementById('mock-reel'); if(reel && !reduce) reel.innerHTML+=reel.innerHTML; })();
+
   var rcv=document.getElementById('ritualcv'),rcx=rcv.getContext('2d'),parts=[],ritualOn=false;
   function seed(){ var w=rcv.width=rcv.offsetWidth,h=rcv.height=rcv.offsetHeight; parts=[];
     for(var i=0;i<100;i++){ var a=Math.random()*2*Math.PI,d=Math.max(w,h)*(0.35+Math.random()*0.35);
