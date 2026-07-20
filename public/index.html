@@ -268,7 +268,11 @@
 
   /* ---------------- RITUAL (magischer Moment) ---------------- */
   .ritual { min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 70px 20px; }
-  .stage { position: relative; width: min(88vw, 440px); height: min(88vw, 440px); margin: 0 auto; }
+  .stage { position: relative; width: min(88vw, 440px); height: min(88vw, 440px); margin: 0 auto;
+    border-radius: 50%; border: 1px solid rgba(245,197,107,.34);
+    box-shadow: 0 0 70px -12px var(--glow), inset 0 0 70px -34px var(--glow); }
+  .stage::before { content: ""; position: absolute; inset: 10px; border-radius: 50%;
+    border: 1px solid rgba(201,164,255,.22); pointer-events: none; }
   #ritualcv { position: absolute; inset: 0; width: 100%; height: 100%; }
   .wheel { position: absolute; inset: 0; width: 100%; height: 100%; }
   .wheel .ring { fill: none; stroke: var(--gold); stroke-width: 1; opacity: .6; stroke-dasharray: 942; stroke-dashoffset: 942; transition: stroke-dashoffset 3.4s ease; }
@@ -290,7 +294,6 @@
   .glimpse .spark { font-size: 1.5rem; color: var(--gold); }
   .glimpse h2 { font-size: clamp(28px,4.4vw,42px); margin: 12px 0 6px; }
   .glimpse .type-big { font-family: var(--script); color: var(--gold); font-size: clamp(38px,6vw,58px); display: block; margin: 14px 0 6px; line-height: 1; text-shadow: 0 0 30px var(--glow); }
-  .glimpse .type-sub { font-size: 13px; letter-spacing: .05em; color: var(--ink-mute); text-transform: uppercase; }
   .glimpse .type-desc { color: var(--ink-soft); font-size: 18px; line-height: 1.7; max-width: 52ch; margin: 20px auto 0; }
   .glimpse .type-mini { font-size: 15.5px; color: var(--ink-soft); display: flex; align-items: center; justify-content: center;
     gap: 12px; flex-wrap: wrap; margin: 4px 0 2px; letter-spacing: .01em; }
@@ -320,8 +323,6 @@
 
   /* ---------------- RESULT ---------------- */
   .result-head { padding-top: 20px; }
-  .backlink { background: none; border: none; color: var(--ink-mute); cursor: pointer; font-size: 14px; font-family: var(--sans); padding: 0; margin-bottom: 22px; }
-  .backlink:hover { color: var(--gold); }
   .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; margin-top: 26px; }
   .panel { background: rgba(38,24,72,.5); border: 1px solid var(--line); border-radius: 20px; padding: 26px; }
   .panel .cap { font-size: 11px; letter-spacing: .22em; text-transform: uppercase; color: var(--gold); margin-bottom: 16px; display: block; }
