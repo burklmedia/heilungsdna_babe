@@ -529,6 +529,13 @@
     background: linear-gradient(135deg, var(--gold), var(--gold-deep)); border: none; border-radius: 999px; padding: 13px 36px;
     cursor: pointer; box-shadow: 0 0 0 1px rgba(245,197,107,.4), 0 10px 30px -8px var(--glow); }
   .cookie-card .cbtn:hover { filter: brightness(1.04); }
+  #calm { position: fixed; inset: 0; z-index: 9998; display: none; align-items: center; justify-content: center; padding: 20px;
+    background: rgba(10,4,30,.6); backdrop-filter: blur(4px); }
+  #calm.show { display: flex; animation: cookieFade .35s ease both; }
+  #calm .cookie-card { width: min(520px, 100%); }
+  #calm .cookie-card .spark { font-size: 22px; color: var(--gold); display: block; margin-bottom: 6px; }
+  #calm .cookie-card p { font-size: 15.5px; line-height: 1.72; margin-bottom: 24px; }
+  #calm .cookie-card .cbtn { line-height: 1.35; padding: 14px 30px; }
 
   @media (max-width: 900px) {
     .hero-grid { grid-template-columns: 1fr; gap: 40px; }
@@ -952,6 +959,15 @@
   </div>
 </div>
 
+<div id="calm" role="dialog" aria-modal="true" aria-label="Nimm dir einen Moment">
+  <div class="cookie-card">
+    <span class="spark">✦</span>
+    <div class="ct">Ein Moment für dich</div>
+    <p>Was du gleich liest, ist mit viel Liebe ganz für dich gemacht. Es ist kein Text, den man mal eben zwischen Tür und Angel überfliegt. Atme einmal tief durch, mach dir vielleicht einen Tee und nimm dir eine ruhige Minute, in der dich nichts stört. Lies langsam, Zeile für Zeile, und spür beim Lesen immer wieder hin, was sich für dich stimmig anfühlt. Dein Bauplan läuft dir nicht weg. Er darf in aller Ruhe bei dir ankommen.</p>
+    <button class="cbtn" id="calm-ok" type="button">Alles klar, ich nehm mir alle Zeit, die ich brauche 🤍</button>
+  </div>
+</div>
+
 <script>
 (function(){
   var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -964,6 +980,10 @@
     var ok=document.getElementById('cookie-ok');
     if(ok) ok.addEventListener('click',function(){ try{ localStorage.setItem('imh_cookie_ok','1'); }catch(e){} ck.classList.remove('show'); });
   })();
+
+  /* ── Ruhe-Hinweis, wenn der Bauplan angezeigt wird ── */
+  var calmOk=document.getElementById('calm-ok');
+  if(calmOk) calmOk.addEventListener('click',function(){ var c=document.getElementById('calm'); if(c) c.classList.remove('show'); });
   var API = '';                                    // gleiche Domain (Vercel / dev.py)
   var GEO = 'https://geocoding-api.open-meteo.com/v1/search';
   var state = { result:null, city:null };
@@ -1172,7 +1192,8 @@
     var btn=this; btn.disabled=true; btn.textContent='Einen Moment…';
     fetch(API+'/api/subscribe',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name:name,email:email})})
       .then(function(r){return r.json();}).catch(function(){return {ok:true};})
-      .then(function(){ renderFull(state.result); show('step3'); btn.disabled=false; btn.textContent='Meinen kosmischen Bauplan zeigen ✦'; });
+      .then(function(){ renderFull(state.result); show('step3'); btn.disabled=false; btn.textContent='Meinen kosmischen Bauplan zeigen ✦';
+        var calm=document.getElementById('calm'); if(calm) calm.classList.add('show'); });
   });
 
   function pcard(sym,klabel,vmain,meta,meaning,desc){
