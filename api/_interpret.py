@@ -1016,6 +1016,7 @@ def teaser(chart):
         "type_short": t.get("short", ""),
         "intuition_tag": _intu["tagline"] if _intu else "",
         "intuition_type": _intu["archetype"] if _intu else "",
+        "sun_sym": sun.get("sym", ""),
         "profile": hd["profile"],
         "profile_name": profile_name(hd["profile"]),
         "profile_desc": PROFILE_DESC.get(hd["profile"], ""),

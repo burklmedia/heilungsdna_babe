@@ -292,12 +292,10 @@
   .glimpse .type-big { font-family: var(--script); color: var(--gold); font-size: clamp(38px,6vw,58px); display: block; margin: 14px 0 6px; line-height: 1; text-shadow: 0 0 30px var(--glow); }
   .glimpse .type-sub { font-size: 13px; letter-spacing: .05em; color: var(--ink-mute); text-transform: uppercase; }
   .glimpse .type-desc { color: var(--ink-soft); font-size: 18px; line-height: 1.7; max-width: 52ch; margin: 20px auto 0; }
-  .glimpse-lead { color: var(--ink-soft); font-size: 17px; line-height: 1.7; max-width: 56ch; margin: 16px auto 0; }
-  .pillars { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin: 32px auto 8px; max-width: 640px; }
-  .pillar { background: rgba(38,24,72,.42); border: 1px solid rgba(245,197,107,.34); border-radius: 16px; padding: 20px 14px; box-shadow: 0 0 30px -18px var(--glow); }
-  .pillar-eyebrow { font-size: 10.5px; letter-spacing: .16em; text-transform: uppercase; color: var(--accent); margin-bottom: 10px; }
-  .pillar-big { font-family: var(--script); color: var(--gold); font-size: clamp(24px,3.4vw,32px); line-height: 1.05; text-shadow: 0 0 26px var(--glow); margin-bottom: 8px; }
-  .pillar-sub { font-size: 12.5px; color: var(--ink-soft); line-height: 1.45; }
+  .glimpse .type-mini { font-size: 15.5px; color: var(--ink-soft); display: flex; align-items: center; justify-content: center;
+    gap: 12px; flex-wrap: wrap; margin: 4px 0 2px; letter-spacing: .01em; }
+  .glimpse .type-mini .mini-star { color: var(--gold); font-size: 10px; opacity: .85; }
+  .glimpse-more { color: var(--ink-soft); font-size: 17px; line-height: 1.72; max-width: 54ch; margin: 22px auto 0; }
   .facts3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin: 30px auto; max-width: 560px; }
   .fact { background: rgba(38,24,72,.5); border: 1px solid rgba(245,197,107,.45); border-radius: 14px; padding: 16px 12px; box-shadow: 0 0 22px -14px var(--glow); }
   .fact .fk { font-size: 10.5px; letter-spacing: .12em; text-transform: uppercase; color: var(--ink-mute); margin-bottom: 6px; }
@@ -547,7 +545,6 @@
     body { font-size: 16px; }
     section.band { padding: 62px 0; }
     .facts3 { grid-template-columns: 1fr; }
-    .pillars { grid-template-columns: 1fr; max-width: 340px; }
     .row3 { grid-template-columns: 1fr 1fr 1fr; }
     .card, .mailcard { padding: 26px 22px; }
     .cards { grid-template-columns: 1fr; }
@@ -870,32 +867,16 @@
     <div class="glimpse" id="glimpse">
       <span class="spark">✦</span>
       <h2 id="g-title">Dein Bauplan zeichnet sich ab</h2>
-      <p class="glimpse-lead">Aus deinem Geburtsmoment entstehen mehrere Ebenen, die zusammen ein Bild ergeben. Dein Human Design, dein Geburtshoroskop und dein Intuitionstyp. Hier ist schon ein erster Blick auf jede davon.</p>
 
-      <div class="pillars">
-        <div class="pillar">
-          <div class="pillar-eyebrow">Human Design</div>
-          <div class="pillar-big script" id="g-type">…</div>
-          <div class="pillar-sub" id="g-typesub">…</div>
-        </div>
-        <div class="pillar">
-          <div class="pillar-eyebrow">Astrologie · Natalchart</div>
-          <div class="pillar-big script" id="g-sun">…</div>
-          <div class="pillar-sub" id="g-astrosub">…</div>
-        </div>
-        <div class="pillar">
-          <div class="pillar-eyebrow">Intuitionstyp</div>
-          <div class="pillar-big script" id="g-intu">…</div>
-          <div class="pillar-sub" id="g-intusub">…</div>
-        </div>
-      </div>
-
+      <span class="type-big" id="g-type">…</span>
+      <div class="type-mini" id="g-mini">…</div>
+      <p class="glimpse-more" id="g-more">…</p>
       <p class="type-desc" id="g-desc">…</p>
 
       <div class="facts3">
         <div class="fact"><div class="fk">Strategie</div><div class="fv" id="g-strategy">…</div></div>
-        <div class="fact"><div class="fk">Mondzeichen</div><div class="fv" id="g-moon">…</div></div>
-        <div class="fact"><div class="fk">Aura</div><div class="fv" id="g-aura">…</div></div>
+        <div class="fact"><div class="fk">Profil</div><div class="fv" id="g-profile">…</div></div>
+        <div class="fact"><div class="fk">Sonne</div><div class="fv" id="g-sun">…</div></div>
       </div>
 
       <p class="authority-note" id="g-authority">…</p>
@@ -1166,15 +1147,16 @@
     function set(id,v){ var e=document.getElementById(id); if(e) e.textContent=v; }
     set('g-title', name?('Dein Bauplan zeichnet sich ab, '+name):'Dein Bauplan zeichnet sich ab');
     set('g-type', t.type);
-    set('g-typesub', 'Profil '+t.profile+', '+t.profile_name);
-    set('g-sun', t.sun_sign||'…');
-    set('g-astrosub', 'Sonne · Mond in '+(t.moon_sign||'…'));
-    set('g-intu', t.intuition_type||'…');
-    set('g-intusub', t.intuition_tag||'');
+    var miniParts=[];
+    if(t.sun_sign) miniParts.push((t.sun_sym?(tp(t.sun_sym)+' '):'')+t.sun_sign);
+    if(t.intuition_type) miniParts.push(t.intuition_type);
+    document.getElementById('g-mini').innerHTML=miniParts.join('<span class="mini-star">✦</span>');
+    var art=(d.birth&&d.birth.gender==='f')?'eine':'ein';
+    set('g-more', 'Und du bist noch so viel mehr als '+art+' '+t.type+'. Das hier ist nur der erste Faden. Dein kompletter Bauplan verwebt deinen Sternenhimmel, deine Energie und deine Intuition zu einem einzigen Bild.');
     set('g-desc', t.type_short||t.hook||'');
     set('g-strategy', t.strategy||'…');
-    set('g-moon', t.moon_sign||'…');
-    set('g-aura', t.aura||'…');
+    set('g-profile', t.profile||'…');
+    set('g-sun', t.sun_sign||'…');
     document.getElementById('g-authority').innerHTML='<strong style="color:var(--ink)">'+esc(t.authority)+':</strong> '+esc(t.authority_desc||'');
     var lp=t.locked_preview||[];
     document.getElementById('g-locked').innerHTML=lp.map(function(x){
@@ -1278,6 +1260,15 @@
         '</div>'+
         '<div class="panel tight glowpanel"><span class="cap">Human Design</span>'+
           '<div class="graphic gbody">'+buildBodygraph(hd)+'</div>'+glegend+'</div>'+
+      '</div>'+
+      '<div class="cap2" style="margin-top:32px">Die zwölf Häuser, deine Lebensfelder</div>'+
+      '<p style="color:var(--ink-mute);font-size:12.5px;line-height:1.55;margin:0 0 12px;max-width:60ch">Die Häuser zeigen, in welchem Lebensbereich sich ein Planet entfaltet. So kannst du jede Position in deinem Natalchart oben einordnen.</p>'+
+      '<div class="houses">'+(f.houses||[]).map(function(h){
+        return '<div class="hrow"><span class="hnr">'+h.nr+'</span><span class="htxt"><b>Haus '+h.nr+', '+esc(h.title)+'</b><span>'+esc(h.meaning)+'</span></span></div>';
+      }).join('')+'</div>'+
+      '<div class="legend legend-top" style="margin-top:32px"><div class="lh">Was bedeutet was?</div>'+
+        '<p class="legend-intro">Hier findest du die wichtigsten Begriffe aus deinem Bauplan in einfachen Worten. So hast du sie gleich zu Beginn erklärt und kannst jederzeit nachschauen.</p>'+
+        LEGEND.map(function(l){return '<div class="li"><div class="t">'+esc(l[0])+'</div><div class="d">'+esc(l[1])+'</div></div>';}).join('')+
       '</div>';
 
     // ── HUMAN DESIGN ──
@@ -1302,18 +1293,10 @@
         var meta=p.deg+', '+p.element+(hs?(', '+hs):'');
         return pcard(p.sym, p.label, vmain, meta, p.meaning, p.desc);
       }).join('')+
-      '<div class="cap2" style="margin-top:26px">Die zwölf Häuser, deine Lebensfelder</div>'+
-      '<p style="color:var(--ink-mute);font-size:12.5px;line-height:1.55;margin:0 0 12px;max-width:60ch">Die Häuser zeigen, in welchem Lebensbereich sich ein Planet entfaltet. So kannst du jede Position oben einordnen.</p>'+
-      '<div class="houses">'+(f.houses||[]).map(function(h){
-        return '<div class="hrow"><span class="hnr">'+h.nr+'</span><span class="htxt"><b>Haus '+h.nr+', '+esc(h.title)+'</b><span>'+esc(h.meaning)+'</span></span></div>';
-      }).join('')+'</div>';
+      '<p style="color:var(--ink-mute);font-size:12.5px;line-height:1.6;margin:22px 0 0;max-width:60ch">Was die zwölf Häuser bedeuten und was welches Symbol heißt, findest du übersichtlich im ersten Reiter, in der Übersicht.</p>';
 
     // ── DEUTUNG ──
     document.getElementById('pane-de').innerHTML=
-      '<div class="legend legend-top"><div class="lh">Was bedeutet was?</div>'+
-        '<p class="legend-intro">Bevor du eintauchst, hier die wichtigsten Begriffe in einfachen Worten. So kannst du jederzeit nachschauen, während du deine Deutung liest.</p>'+
-        LEGEND.map(function(l){return '<div class="li"><div class="t">'+esc(l[0])+'</div><div class="d">'+esc(l[1])+'</div></div>';}).join('')+
-      '</div>'+
       '<div class="story">'+
       (f.sections||[]).map(function(s,i){
         var nr=('0'+(i+1)).slice(-2);
