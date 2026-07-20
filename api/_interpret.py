@@ -1011,9 +1011,23 @@ def teaser(chart):
     defined = hd.get("defined_centers", [])
     g = chart.get("gender", "n")
     _intu = build_intuition(chart)
+    asc = chart.get("ascendant")
+
+    # Konkreter Wiedererkennungs-Funke aus Sonne, Mond und Aszendent
+    resonance = []
+    if asc:
+        resonance.append(("So wirkst du nach außen", SIGN_CORE.get(asc["sign"], "")))
+    resonance.append(("Das brauchst du im Innersten", SIGN_CORE.get(moon["sign"], "")))
+    resonance.append(("Darum geht es in deinem Kern", SIGN_CORE.get(sun["sign"], "")))
+    resonance_hook = (f"Und immer wenn du dich verbiegst, um dazuzugehören, meldet sich "
+                      f"{t.get('not_self', 'ein leises Unbehagen')} in dir. Genau an dieser Stelle "
+                      "beginnt dein eigentlicher Weg zu dir selbst.")
+
     return {
         "type": type_display(hd["type"], g),
         "type_short": t.get("short", ""),
+        "resonance": resonance,
+        "resonance_hook": resonance_hook,
         "intuition_tag": _intu["tagline"] if _intu else "",
         "intuition_type": _intu["archetype"] if _intu else "",
         "sun_sym": sun.get("sym", ""),
