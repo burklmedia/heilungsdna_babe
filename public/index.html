@@ -908,7 +908,7 @@
 <!-- ==================== STEP 3: VOLLANALYSE ==================== -->
 <section class="step" id="step3">
   <div class="wrap" style="padding-top:40px">
-    <button class="backlink" data-goto="step1" type="button">↺ neue Analyse</button>
+    <button class="btn" style="width:auto;margin-bottom:24px" data-goto="step1" type="button">← Neuen Bauplan erstellen</button>
     <article class="report">
       <div class="report-head">
         <div class="report-emblem">✦</div>
@@ -1261,15 +1261,15 @@
         '<div class="panel tight glowpanel"><span class="cap">Human Design</span>'+
           '<div class="graphic gbody">'+buildBodygraph(hd)+'</div>'+glegend+'</div>'+
       '</div>'+
-      '<div class="cap2" style="margin-top:32px">Die zwölf Häuser, deine Lebensfelder</div>'+
-      '<p style="color:var(--ink-mute);font-size:12.5px;line-height:1.55;margin:0 0 12px;max-width:60ch">Die Häuser zeigen, in welchem Lebensbereich sich ein Planet entfaltet. So kannst du jede Position in deinem Natalchart oben einordnen.</p>'+
-      '<div class="houses">'+(f.houses||[]).map(function(h){
-        return '<div class="hrow"><span class="hnr">'+h.nr+'</span><span class="htxt"><b>Haus '+h.nr+', '+esc(h.title)+'</b><span>'+esc(h.meaning)+'</span></span></div>';
-      }).join('')+'</div>'+
       '<div class="legend legend-top" style="margin-top:32px"><div class="lh">Was bedeutet was?</div>'+
         '<p class="legend-intro">Hier findest du die wichtigsten Begriffe aus deinem Bauplan in einfachen Worten. So hast du sie gleich zu Beginn erklärt und kannst jederzeit nachschauen.</p>'+
         LEGEND.map(function(l){return '<div class="li"><div class="t">'+esc(l[0])+'</div><div class="d">'+esc(l[1])+'</div></div>';}).join('')+
-      '</div>';
+      '</div>'+
+      '<div class="cap2" style="margin-top:32px">Die zwölf Häuser, deine Lebensfelder</div>'+
+      '<p style="color:var(--ink-mute);font-size:13px;line-height:1.6;margin:0 0 12px">Die Häuser zeigen, in welchem Lebensbereich sich ein Planet entfaltet. So kannst du jede Position in deinem Natalchart oben einordnen.</p>'+
+      '<div class="houses">'+(f.houses||[]).map(function(h){
+        return '<div class="hrow"><span class="hnr">'+h.nr+'</span><span class="htxt"><b>Haus '+h.nr+', '+esc(h.title)+'</b><span>'+esc(h.meaning)+'</span></span></div>';
+      }).join('')+'</div>';
 
     // ── HUMAN DESIGN ──
     document.getElementById('pane-hd').innerHTML=
@@ -1278,7 +1278,7 @@
       kv('Profil',hd.profile+(t.profile_name?(', '+t.profile_name):''))+kv('Definition',hd.definition)+
       (cross?kv('Inkarnationskreuz',cross.pers_sun+'/'+cross.pers_earth+', '+cross.des_sun+'/'+cross.des_earth):'')+
       '<div class="cap2" style="margin-top:24px">Deine neun Zentren, tippe für die Tiefe</div>'+
-      '<p style="color:var(--ink-mute);font-size:12.5px;line-height:1.6;margin:0 0 14px;max-width:60ch">Jedes Zentrum ist entweder definiert oder offen. Definiert heißt: hier bist du dir treu, diese Energie ist immer verlässlich da. Offen heißt: hier bist du feinfühlig, formbar und lernst ein Leben lang. Beides ist wertvoll. Tippe ein Zentrum an und du siehst, was es bei dir bedeutet, was du damit machst und was es über dich aussagt.</p>'+
+      '<p style="color:var(--ink-mute);font-size:13.5px;line-height:1.65;margin:0 0 16px">Jedes Zentrum ist entweder definiert oder offen. Definiert heißt: hier bist du dir treu, diese Energie ist immer verlässlich da. Offen heißt: hier bist du feinfühlig, formbar und lernst ein Leben lang. Beides ist wertvoll. Tippe ein Zentrum an und du siehst, was es bei dir bedeutet, was du damit machst und was es über dich aussagt.</p>'+
       (f.hd_centers||[]).map(function(c){ return hdCenterCard(c); }).join('');
 
     // ── NATALCHART ──
@@ -1286,14 +1286,14 @@
       (f.geo?('<div class="graphic gwheel">'+buildNatalWheel(f.geo)+'</div>'):
         '<p style="color:var(--ink-mute);font-size:13px;text-align:center;margin-bottom:14px">Für das Horoskop-Rad brauchen wir deine Geburtszeit.</p>')+
       '<div class="cap2">Deine Positionen, tippe für die Bedeutung</div>'+
-      '<p style="color:var(--ink-mute);font-size:12.5px;line-height:1.55;margin:0 0 14px;max-width:62ch">Beim Haus zeigen wir dir beide gängigen Systeme: <b>Ganzzeichen</b> (moderne, klare Zählung) und <b>Placidus</b> (Standard vieler Chart-Rechner wie astro.com). Sie können sich um ein Haus unterscheiden, beide sind gültig. Die ausführliche Deutung folgt den Ganzzeichen-Häusern.</p>'+
+      '<p style="color:var(--ink-mute);font-size:13.5px;line-height:1.65;margin:0 0 16px">Beim Haus zeigen wir dir beide gängigen Systeme: <b>Ganzzeichen</b> (moderne, klare Zählung) und <b>Placidus</b> (Standard vieler Chart-Rechner wie astro.com). Sie können sich um ein Haus unterscheiden, beide sind gültig. Die ausführliche Deutung folgt den Ganzzeichen-Häusern.</p>'+
       (f.positions||[]).map(function(p){
         var vmain='<span class="ps">'+tp(p.signSymbol)+'</span> '+esc(p.sign);
         var hs = p.house ? (p.house===p.house_pl ? ('Haus '+p.house) : ('Ganzzeichen H'+p.house+' · Placidus H'+p.house_pl)) : '';
         var meta=p.deg+', '+p.element+(hs?(', '+hs):'');
         return pcard(p.sym, p.label, vmain, meta, p.meaning, p.desc);
       }).join('')+
-      '<p style="color:var(--ink-mute);font-size:12.5px;line-height:1.6;margin:22px 0 0;max-width:60ch">Was die zwölf Häuser bedeuten und was welches Symbol heißt, findest du übersichtlich im ersten Reiter, in der Übersicht.</p>';
+      '<p style="color:var(--ink-mute);font-size:13.5px;line-height:1.65;margin:22px 0 0">Was die zwölf Häuser bedeuten und was welches Symbol heißt, findest du übersichtlich im ersten Reiter, in der Übersicht.</p>';
 
     // ── DEUTUNG ──
     document.getElementById('pane-de').innerHTML=
