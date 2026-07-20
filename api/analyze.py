@@ -25,7 +25,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 _IMPORT_ERROR = None
 try:
     from _engine import compute_chart
-    from _interpret import teaser, full_analysis
+    from _interpret import teaser, full_analysis, norm_gender
     from _geo import resolve_place, tz_for
 except Exception:  # noqa
     import traceback
@@ -77,10 +77,13 @@ def build_result(body):
     chart = compute_chart(name, year, month, day, hour, minute, lat, lon, tz,
                           time_known=time_known)
     chart["place_display"] = display
+    gender = norm_gender(body.get("gender"))
+    chart["gender"] = gender
     return {
         "ok": True,
         "birth": {"name": name, "date": body.get("date"),
                   "time": body.get("time") or "unbekannt", "place": display,
+                  "gender": gender,
                   "lat": round(lat, 4), "lon": round(lon, 4), "tz": tz},
         "teaser": teaser(chart),
         "full": full_analysis(chart),

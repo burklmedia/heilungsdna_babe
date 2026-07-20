@@ -742,6 +742,51 @@ def profile_name(profile):
         PROFILE_LINES.get(int(x), "") for x in profile.split("/")))
 
 
+# ── Geschlecht: männlich (m), weiblich (f) oder geschlechtsneutral (n) ──
+# Bei n (divers / keine Angabe) nutzen wir bewusst neutrale, gegenderte Formen.
+TYPE_GENDER = {
+    "Generator": {"m": "Generator", "f": "Generatorin"},
+    "Manifestierender Generator": {"m": "Manifestierender Generator",
+                                   "f": "Manifestierende Generatorin"},
+    "Manifestor": {"m": "Manifestor", "f": "Manifestorin"},
+    "Projektor": {"m": "Projektor", "f": "Projektorin"},
+    "Reflektor": {"m": "Reflektor", "f": "Reflektorin"},
+}
+# Intuitions-Archetyp je Element. n ist die neutrale Adjektivform ohne Artikel.
+INTU_ARCHETYPE = {
+    "Wasser": {"m": "Der Tiefenfühlende", "f": "Die Tiefenfühlende", "n": "Tiefenfühlend"},
+    "Feuer": {"m": "Der Impulsstarke", "f": "Die Impulsstarke", "n": "Impulsstark"},
+    "Erde": {"m": "Der Spürsinnige", "f": "Die Spürsinnige", "n": "Spürsinnig"},
+    "Luft": {"m": "Der Klarsehende", "f": "Die Klarsehende", "n": "Klarsehend"},
+}
+
+
+def norm_gender(g):
+    """Frontend-Wert auf m / f / n normalisieren (n = neutral/gegendert)."""
+    g = (g or "").strip().lower()
+    if g in ("m", "mann", "männlich", "maennlich", "male", "herr"):
+        return "m"
+    if g in ("f", "w", "frau", "weiblich", "female", "dame"):
+        return "f"
+    return "n"  # divers, keine Angabe, unbekannt
+
+
+def type_display(hd_type, gender):
+    """Human-Design-Typ als Wort passend zum Geschlecht."""
+    v = TYPE_GENDER.get(hd_type)
+    if not v:
+        return hd_type
+    if gender == "f":
+        return v["f"]
+    return v["m"]  # m und n nutzen die im HD gebräuchliche, neutrale Grundform
+
+
+def intu_archetype(element, gender):
+    """Intuitions-Archetyp als Wort passend zum Geschlecht."""
+    v = INTU_ARCHETYPE.get(element, {})
+    return v.get(gender) or v.get("f") or ""
+
+
 INTUITION = {
     "Wasser": {
         "archetype": "Die Tiefenfühlende",
@@ -857,15 +902,16 @@ def build_intuition(chart):
     element = SIGN_ELEMENT.get(moon_sign, "Wasser")
     base = INTUITION[element]
     order = ["Feuer", "Erde", "Luft", "Wasser"]
+    g = chart.get("gender", "n")
 
     result = {
         "key": element,
-        "archetype": base["archetype"],
+        "archetype": intu_archetype(element, g),
         "tagline": base["tagline"],
         "moon_sign": moon_sign,
         "text": base["text"].format(moon=moon_sign),
         "tools": base["tools"],
-        "all": [{"key": e, "archetype": INTUITION[e]["archetype"],
+        "all": [{"key": e, "archetype": intu_archetype(e, g),
                  "tagline": INTUITION[e]["tagline"], "oneliner": INTUITION[e]["oneliner"]}
                 for e in order],
         "note": "Der Intuitionstyp ist kein klassisches Human-Design- oder Astrologie-System, "
@@ -963,9 +1009,13 @@ def teaser(chart):
     sun = chart["natal"]["Sonne"]
     moon = chart["natal"]["Mond"]
     defined = hd.get("defined_centers", [])
+    g = chart.get("gender", "n")
+    _intu = build_intuition(chart)
     return {
-        "type": hd["type"],
+        "type": type_display(hd["type"], g),
         "type_short": t.get("short", ""),
+        "intuition_tag": _intu["tagline"] if _intu else "",
+        "intuition_type": _intu["archetype"] if _intu else "",
         "profile": hd["profile"],
         "profile_name": profile_name(hd["profile"]),
         "profile_desc": PROFILE_DESC.get(hd["profile"], ""),
@@ -981,11 +1031,16 @@ def teaser(chart):
         "defined_centers": defined,
         "definition": hd.get("definition", ""),
         "locked_preview": [
-            "Dein vollständiges Geburtshoroskop mit allen Planeten auf die Bogenminute",
-            "Dein Aszendent und dein MC, also wie du wirkst und wohin dein Weg zeigt",
-            "Dein Chiron, deine tiefe Wunde und der Ort deiner größten Heilkraft",
+            "Dein vollständiges Geburtshoroskop mit allen Planeten, exakt auf die Bogenminute",
+            "Dein Aszendent, Deszendent, MC und IC, also wie du wirkst, was du anziehst und wohin dein Weg zeigt",
+            "Jeder Planet in Zeichen und Haus, konkret gedeutet für dein Leben",
+            "Deine Elemente-Balance und dein persönlicher Lebensschwerpunkt",
+            "Dein Human-Design-Typ, deine innere Autorität und dein Profil im Klartext",
             "Deine definierten und offenen Zentren, wo du Kraft schöpfst und wo du dich verlierst",
-            "Deine persönliche Deutung in Klartext, dein roter Faden fürs Leben",
+            "Dein Entscheidungsweg, deine größte Stärke und deine größte Herausforderung, und wie du sie meisterst",
+            "Deine Lebensaufgabe aus deiner Mondknoten-Achse und dein Chiron, deine Wunde und Heilkraft",
+            "Dein Intuitionstyp, über welchen Kanal deine innere Führung zu dir spricht",
+            "Konkrete Werkzeuge und Handlungsempfehlungen, ganz auf dich zugeschnitten",
         ],
     }
 
@@ -1215,6 +1270,9 @@ def full_analysis(chart):
     t = TYPE_INFO.get(hd["type"], {})
     name = chart.get("name") or "du"
     asc = chart.get("ascendant")
+    g = chart.get("gender", "n")
+    type_word = type_display(hd["type"], g)
+    hd["type_display"] = type_word
 
     sections = []
     _sun = chart["natal"].get("Sonne")
@@ -1223,7 +1281,7 @@ def full_analysis(chart):
         sections.append(_kern_section(_sun, _moon, asc))
     sections.append({
         "title": "Dein Human-Design-Typ",
-        "headline": hd["type"],
+        "headline": type_word,
         "body": ("Bevor du irgendwas an dir ändern willst, darfst du erst mal verstehen, wie du gebaut "
                  "bist. Dein Typ ist die Grundmelodie deiner Energie. Er zeigt dir, wie du am "
                  "leichtesten durchs Leben gehst und wo du dich immer wieder verausgabst.\n\n"

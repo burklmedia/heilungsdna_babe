@@ -129,7 +129,18 @@
     transition: border-color .18s ease, box-shadow .18s ease; }
   .field input::placeholder { color: var(--ink-mute); }
   .field input:focus { outline: none; border-color: var(--gold); box-shadow: 0 0 0 3px rgba(245,197,107,.2); }
+  .field select { width: 100%; background: rgba(255,255,255,.06); border: 1px solid var(--line); color: var(--ink);
+    border-radius: 13px; padding: 13px 34px 13px 13px; font-size: 15px; font-family: var(--sans);
+    -webkit-appearance: none; appearance: none; cursor: pointer;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='%23f5c56b' stroke-width='1.6' stroke-linecap='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat; background-position: right 13px center;
+    transition: border-color .18s ease, box-shadow .18s ease; }
+  .field select:focus { outline: none; border-color: var(--gold); box-shadow: 0 0 0 3px rgba(245,197,107,.2); }
+  .field select:invalid, .field select.placeheld { color: var(--ink-mute); }
+  .field select option { color: #160e2e; background: #f3ecff; }
   .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .row3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+  .datewrap .subl { font-size: 12.5px; letter-spacing: .04em; font-weight: 600; color: var(--gold); margin-bottom: 6px; }
   .microcopy { font-size: 12px; color: var(--ink-soft); text-align: center; margin-top: 12px; }
   .err { color: var(--err); font-size: 14px; margin-top: 10px; text-align: center; min-height: 1em; }
 
@@ -281,6 +292,12 @@
   .glimpse .type-big { font-family: var(--script); color: var(--gold); font-size: clamp(38px,6vw,58px); display: block; margin: 14px 0 6px; line-height: 1; text-shadow: 0 0 30px var(--glow); }
   .glimpse .type-sub { font-size: 13px; letter-spacing: .05em; color: var(--ink-mute); text-transform: uppercase; }
   .glimpse .type-desc { color: var(--ink-soft); font-size: 18px; line-height: 1.7; max-width: 52ch; margin: 20px auto 0; }
+  .glimpse-lead { color: var(--ink-soft); font-size: 17px; line-height: 1.7; max-width: 56ch; margin: 16px auto 0; }
+  .pillars { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin: 32px auto 8px; max-width: 640px; }
+  .pillar { background: rgba(38,24,72,.42); border: 1px solid rgba(245,197,107,.34); border-radius: 16px; padding: 20px 14px; box-shadow: 0 0 30px -18px var(--glow); }
+  .pillar-eyebrow { font-size: 10.5px; letter-spacing: .16em; text-transform: uppercase; color: var(--accent); margin-bottom: 10px; }
+  .pillar-big { font-family: var(--script); color: var(--gold); font-size: clamp(24px,3.4vw,32px); line-height: 1.05; text-shadow: 0 0 26px var(--glow); margin-bottom: 8px; }
+  .pillar-sub { font-size: 12.5px; color: var(--ink-soft); line-height: 1.45; }
   .facts3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin: 30px auto; max-width: 560px; }
   .fact { background: rgba(38,24,72,.5); border: 1px solid rgba(245,197,107,.45); border-radius: 14px; padding: 16px 12px; box-shadow: 0 0 22px -14px var(--glow); }
   .fact .fk { font-size: 10.5px; letter-spacing: .12em; text-transform: uppercase; color: var(--ink-mute); margin-bottom: 6px; }
@@ -418,6 +435,7 @@
   .graphic.wheelframe { margin-top: 4px; border-radius: 50%;
     background: radial-gradient(circle at 50% 46%, rgba(245,197,107,.12), transparent 62%); }
   .panel.glowpanel { border-color: rgba(245,197,107,.42); box-shadow: 0 0 34px -8px var(--glow), inset 0 0 40px -30px var(--glow); }
+  .panel.glowpanel-natal { border-color: rgba(201,164,255,.46); box-shadow: 0 0 34px -8px rgba(201,164,255,.4), inset 0 0 40px -30px rgba(201,164,255,.4); }
 
   .pcard { border: 1px solid var(--line); border-radius: 12px; margin-bottom: 7px; overflow: hidden;
     background: rgba(255,255,255,.02); transition: border-color .2s, background .2s; }
@@ -529,6 +547,8 @@
     body { font-size: 16px; }
     section.band { padding: 62px 0; }
     .facts3 { grid-template-columns: 1fr; }
+    .pillars { grid-template-columns: 1fr; max-width: 340px; }
+    .row3 { grid-template-columns: 1fr 1fr 1fr; }
     .card, .mailcard { padding: 26px 22px; }
     .cards { grid-template-columns: 1fr; }
     .finalcta { padding: 44px 26px; }
@@ -566,18 +586,45 @@
         <div class="card">
           <h3>Starte deine Analyse</h3>
           <p class="hint">Für die Berechnung brauchen wir deinen genauen Geburtsmoment.</p>
-          <div class="field">
-            <label for="f-name">Name</label>
-            <input id="f-name" type="text" placeholder="Wie dürfen wir dich nennen?" autocomplete="off" required>
-          </div>
           <div class="row2">
             <div class="field">
-              <label for="f-date">Geburtsdatum</label>
-              <input id="f-date" type="text" inputmode="numeric" placeholder="TT.MM.JJJJ" autocomplete="off" required>
+              <label for="f-name">Name</label>
+              <input id="f-name" type="text" placeholder="Wie dürfen wir dich nennen?" autocomplete="off" required>
             </div>
             <div class="field">
-              <label for="f-time">Geburtszeit</label>
-              <input id="f-time" type="text" inputmode="numeric" placeholder="HH:MM" autocomplete="off" required>
+              <label for="f-gender">Geschlecht</label>
+              <select id="f-gender" class="placeheld" required>
+                <option value="" disabled selected hidden>Bitte wählen</option>
+                <option value="weiblich">Weiblich</option>
+                <option value="männlich">Männlich</option>
+                <option value="divers">Divers</option>
+                <option value="keine">Möchte ich nicht sagen</option>
+              </select>
+            </div>
+          </div>
+          <div class="field datewrap">
+            <div class="subl">Geburtsdatum</div>
+            <div class="row3">
+              <select id="f-day" class="placeheld" aria-label="Tag" required>
+                <option value="" disabled selected hidden>Tag</option>
+              </select>
+              <select id="f-month" class="placeheld" aria-label="Monat" required>
+                <option value="" disabled selected hidden>Monat</option>
+              </select>
+              <select id="f-year" class="placeheld" aria-label="Jahr" required>
+                <option value="" disabled selected hidden>Jahr</option>
+              </select>
+            </div>
+          </div>
+          <div class="field datewrap">
+            <div class="subl">Geburtszeit</div>
+            <div class="row2">
+              <select id="f-hour" class="placeheld" aria-label="Stunde" required>
+                <option value="" disabled selected hidden>Stunde</option>
+              </select>
+              <select id="f-min" class="placeheld" aria-label="Minute" required>
+                <option value="" disabled selected hidden>Minute</option>
+              </select>
             </div>
           </div>
           <div class="field">
@@ -823,15 +870,32 @@
     <div class="glimpse" id="glimpse">
       <span class="spark">✦</span>
       <h2 id="g-title">Dein Bauplan zeichnet sich ab</h2>
+      <p class="glimpse-lead">Aus deinem Geburtsmoment entstehen mehrere Ebenen, die zusammen ein Bild ergeben. Dein Human Design, dein Geburtshoroskop und dein Intuitionstyp. Hier ist schon ein erster Blick auf jede davon.</p>
 
-      <span class="type-big" id="g-type">…</span>
-      <span class="type-sub" id="g-typesub">…</span>
+      <div class="pillars">
+        <div class="pillar">
+          <div class="pillar-eyebrow">Human Design</div>
+          <div class="pillar-big script" id="g-type">…</div>
+          <div class="pillar-sub" id="g-typesub">…</div>
+        </div>
+        <div class="pillar">
+          <div class="pillar-eyebrow">Astrologie · Natalchart</div>
+          <div class="pillar-big script" id="g-sun">…</div>
+          <div class="pillar-sub" id="g-astrosub">…</div>
+        </div>
+        <div class="pillar">
+          <div class="pillar-eyebrow">Intuitionstyp</div>
+          <div class="pillar-big script" id="g-intu">…</div>
+          <div class="pillar-sub" id="g-intusub">…</div>
+        </div>
+      </div>
+
       <p class="type-desc" id="g-desc">…</p>
 
       <div class="facts3">
         <div class="fact"><div class="fk">Strategie</div><div class="fv" id="g-strategy">…</div></div>
-        <div class="fact"><div class="fk">Profil</div><div class="fv" id="g-profile">…</div></div>
-        <div class="fact"><div class="fk">Sonne</div><div class="fv" id="g-sun">…</div></div>
+        <div class="fact"><div class="fk">Mondzeichen</div><div class="fv" id="g-moon">…</div></div>
+        <div class="fact"><div class="fk">Aura</div><div class="fv" id="g-aura">…</div></div>
       </div>
 
       <p class="authority-note" id="g-authority">…</p>
@@ -843,7 +907,7 @@
 
       <div class="mailcard">
         <h3>Dein <span class="accent">kompletter</span> kosmischer Bauplan, kostenlos</h3>
-        <p>Dein vollständiges Human-Design-Chart, dein Geburtshoroskop mit Aszendent und was das alles für dich bedeutet. Trag dich ein, ich sende dir deinen Bauplan sofort zu.</p>
+        <p>Dein vollständiges Human-Design-Chart, dein Geburtshoroskop mit Aszendent, dein Intuitionstyp und deine persönliche Deutung in Klartext, was das alles für dich bedeutet. Trag dich ein, ich sende dir deinen Bauplan sofort zu.</p>
         <div class="field">
           <label for="g-name">Dein Vorname</label>
           <input id="g-name" type="text" placeholder="Vorname" autocomplete="given-name">
@@ -1043,14 +1107,39 @@
     document.getElementById('glimpse').classList.add('show'); scrollTo({top:0,behavior:'smooth'}); }
 
   /* ── Flow: Schritt 1 → Ritual → Teaser ── */
+  // Datums- und Zeit-Dropdowns befüllen (mobilfreundlich, kein Tippen nötig)
+  (function initPickers(){
+    var MONTHS=['Januar','Februar','März','April','Mai','Juni','Juli','August','September','Oktober','November','Dezember'];
+    function opt(v,label){ return '<option value="'+v+'">'+label+'</option>'; }
+    function fill(id,html){ var e=document.getElementById(id); if(e) e.insertAdjacentHTML('beforeend',html); }
+    var s;
+    s=''; for(var i=1;i<=31;i++) s+=opt(i,i); fill('f-day',s);
+    s=''; for(var j=1;j<=12;j++) s+=opt(j,MONTHS[j-1]); fill('f-month',s);
+    s=''; var nowY=new Date().getFullYear(); for(var yy=nowY; yy>=1900; yy--) s+=opt(yy,yy); fill('f-year',s);
+    s=''; for(var hh=0;hh<24;hh++) s+=opt(hh,('0'+hh).slice(-2)+' Uhr'); fill('f-hour',s);
+    s=''; for(var mm=0;mm<60;mm++) s+=opt(mm,('0'+mm).slice(-2)+' Min'); fill('f-min',s);
+    ['f-gender','f-day','f-month','f-year','f-hour','f-min'].forEach(function(id){
+      var el=document.getElementById(id);
+      if(el) el.addEventListener('change',function(){ el.classList.toggle('placeheld', !el.value); });
+    });
+  })();
+
   document.getElementById('go1').addEventListener('click',function(){
     var err=document.getElementById('err1'); err.textContent='';
-    var name=val('f-name'),date=val('f-date'),time=val('f-time'),place=val('f-place');
+    var name=val('f-name'),gender=val('f-gender'),place=val('f-place');
+    var day=val('f-day'),month=val('f-month'),year=val('f-year');
+    var hour=val('f-hour'),min=val('f-min');
     if(!name){ err.textContent='Bitte gib deinen Namen ein.'; return; }
-    if(!date){ err.textContent='Bitte gib dein Geburtsdatum ein (TT.MM.JJJJ).'; return; }
-    if(!time){ err.textContent='Bitte gib deine Geburtszeit ein (HH:MM).'; return; }
+    if(!gender){ err.textContent='Bitte wähle dein Geschlecht.'; return; }
+    if(!day||!month||!year){ err.textContent='Bitte wähle dein vollständiges Geburtsdatum.'; return; }
+    if(!hour||!min){ err.textContent='Bitte wähle deine Geburtszeit (Stunde und Minute).'; return; }
     if(!place){ err.textContent='Bitte gib deinen Geburtsort ein.'; return; }
-    var body={name:name,date:date,time:time,place:place};
+    var dcheck=new Date(+year,+month-1,+day);
+    if(dcheck.getFullYear()!=+year||dcheck.getMonth()!=+month-1||dcheck.getDate()!=+day){
+      err.textContent='Dieses Datum gibt es nicht. Bitte prüfe Tag und Monat.'; return; }
+    var date=year+'-'+('0'+month).slice(-2)+'-'+('0'+day).slice(-2);
+    var time=('0'+hour).slice(-2)+':'+('0'+min).slice(-2);
+    var body={name:name,gender:gender,date:date,time:time,place:place};
     if(state.city){ body.lat=state.city.lat; body.lon=state.city.lon; body.tz=state.city.tz; }
     show('step2'); runRitual();
     var t0=Date.now();
@@ -1074,13 +1163,18 @@
 
   function fillGlimpse(d){
     var t=d.teaser, name=d.birth.name;
-    document.getElementById('g-title').textContent=name?('Dein Bauplan zeichnet sich ab, '+name):'Dein Bauplan zeichnet sich ab';
-    document.getElementById('g-type').textContent=t.type;
-    document.getElementById('g-typesub').textContent='Profil '+t.profile+', '+t.profile_name;
-    document.getElementById('g-desc').textContent=t.type_short||t.hook||'';
-    document.getElementById('g-strategy').textContent=t.strategy||'…';
-    document.getElementById('g-profile').textContent=t.profile||'…';
-    document.getElementById('g-sun').textContent=t.sun_sign||'…';
+    function set(id,v){ var e=document.getElementById(id); if(e) e.textContent=v; }
+    set('g-title', name?('Dein Bauplan zeichnet sich ab, '+name):'Dein Bauplan zeichnet sich ab');
+    set('g-type', t.type);
+    set('g-typesub', 'Profil '+t.profile+', '+t.profile_name);
+    set('g-sun', t.sun_sign||'…');
+    set('g-astrosub', 'Sonne · Mond in '+(t.moon_sign||'…'));
+    set('g-intu', t.intuition_type||'…');
+    set('g-intusub', t.intuition_tag||'');
+    set('g-desc', t.type_short||t.hook||'');
+    set('g-strategy', t.strategy||'…');
+    set('g-moon', t.moon_sign||'…');
+    set('g-aura', t.aura||'…');
     document.getElementById('g-authority').innerHTML='<strong style="color:var(--ink)">'+esc(t.authority)+':</strong> '+esc(t.authority_desc||'');
     var lp=t.locked_preview||[];
     document.getElementById('g-locked').innerHTML=lp.map(function(x){
@@ -1170,12 +1264,12 @@
     document.getElementById('pane-ov').innerHTML=
       '<p class="ov-intro">'+(b.name?(esc(b.name)+', '):'')+'was du gleich liest, ist kein Test und kein Urteil. Es ist ein Blick auf das, was in dir angelegt ist, seit dem ersten Moment deines Lebens. Vielleicht erkennst du dich an mancher Stelle so genau wieder, dass es kurz wehtut. Das ist gut so. Es heißt, du wirst gesehen. Prüf beim Lesen immer selbst, was sich für dich stimmig anfühlt. Was nicht passt, darfst du getrost liegen lassen.</p>'+
       '<div class="factrow">'+
-        '<div class="f"><div class="l">Typ</div><div class="v">'+esc(hd.type)+'</div></div>'+
+        '<div class="f"><div class="l">Typ</div><div class="v">'+esc(hd.type_display||hd.type)+'</div></div>'+
         '<div class="f"><div class="l">Autorität</div><div class="v">'+esc(shorten(hd.authority))+'</div></div>'+
         '<div class="f"><div class="l">Profil</div><div class="v">'+esc(hd.profile)+'</div></div>'+
       '</div>'+
       '<div class="grid2">'+
-        '<div class="panel tight"><span class="cap">Natalchart</span>'+
+        '<div class="panel tight glowpanel-natal"><span class="cap">Natalchart</span>'+
           (f.geo?'<div class="graphic gwheel wheelframe">'+buildNatalWheel(f.geo)+'</div>':'')+
           '<div class="natkey">'+
             natrow('☉','Sonne','Sonne')+natrow('☽','Mond','Mond')+
@@ -1189,7 +1283,7 @@
     // ── HUMAN DESIGN ──
     document.getElementById('pane-hd').innerHTML=
       '<div class="graphic gbody">'+buildBodygraph(hd)+'</div>'+glegend+
-      kv('Typ',hd.type)+(t.strategy?kv('Strategie',t.strategy):'')+kv('Autorität',hd.authority)+
+      kv('Typ',hd.type_display||hd.type)+(t.strategy?kv('Strategie',t.strategy):'')+kv('Autorität',hd.authority)+
       kv('Profil',hd.profile+(t.profile_name?(', '+t.profile_name):''))+kv('Definition',hd.definition)+
       (cross?kv('Inkarnationskreuz',cross.pers_sun+'/'+cross.pers_earth+', '+cross.des_sun+'/'+cross.des_earth):'')+
       '<div class="cap2" style="margin-top:24px">Deine neun Zentren, tippe für die Tiefe</div>'+
