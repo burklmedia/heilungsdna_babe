@@ -575,6 +575,29 @@
   #calm .cookie-card p { font-size: 15.5px; line-height: 1.72; margin-bottom: 24px; }
   #calm .cookie-card .cbtn { line-height: 1.35; padding: 14px 30px; }
 
+  /* Lese-Fortschrittsbalken (dünne goldene Linie ganz oben) */
+  #progressbar { position: fixed; top: 0; left: 0; height: 3px; width: 0; z-index: 9999; pointer-events: none;
+    background: linear-gradient(90deg, var(--gold), var(--accent)); box-shadow: 0 0 12px var(--glow); transition: width .12s linear; }
+  /* Sanftes Einblenden beim Scrollen */
+  .reveal-init { opacity: 0; transform: translateY(18px); transition: opacity .6s ease, transform .6s cubic-bezier(.2,.7,.2,1); }
+  .reveal-init.in { opacity: 1; transform: none; }
+  /* Nach-oben-Knopf im Bauplan (nur Handy/Tablet) */
+  .scrolltop { position: fixed; right: 16px; bottom: 18px; z-index: 900; width: 46px; height: 46px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center; font-size: 20px; color: #3a2410; border: none; cursor: pointer;
+    background: linear-gradient(135deg, var(--gold), var(--gold-deep)); box-shadow: 0 0 0 1px rgba(245,197,107,.45), 0 12px 30px -8px var(--glow);
+    opacity: 0; pointer-events: none; transform: translateY(12px); transition: opacity .3s ease, transform .3s ease; }
+  .scrolltop.show { opacity: 1; pointer-events: auto; transform: translateY(0); }
+  @media (min-width: 901px) { .scrolltop { display: none; } }
+  /* Einklappbare Blöcke in der Übersicht (Handy): "Was bedeutet was?" & Häuser */
+  .ov-fold { border: 1px solid var(--line); border-radius: 16px; background: rgba(255,255,255,.02); margin-top: 18px; overflow: hidden; }
+  .ov-fold > summary { list-style: none; cursor: pointer; display: flex; align-items: center; justify-content: space-between; gap: 12px;
+    padding: 16px 18px; font-size: 11px; letter-spacing: .26em; text-transform: uppercase; color: var(--gold); }
+  .ov-fold > summary::-webkit-details-marker { display: none; }
+  .ov-fold > summary .ov-fold-x { font-size: 20px; line-height: 1; transition: transform .3s ease; flex: none; }
+  .ov-fold[open] > summary .ov-fold-x { transform: rotate(45deg); }
+  .ov-fold-b { padding: 2px 18px 18px; }
+  .ov-fold-b .legend-intro { margin-top: 0; }
+
   @media (max-width: 900px) {
     .hero-grid { grid-template-columns: 1fr; gap: 40px; }
     .pain-grid { grid-template-columns: 1fr; }
@@ -584,6 +607,16 @@
     .about-box { grid-template-columns: 1fr; gap: 28px; padding: 40px 30px; }
     .about-portrait { max-width: 220px; }
     .grid2 { grid-template-columns: 1fr; }
+    /* Startseite kompakter: weniger Leerraum zwischen den Abschnitten */
+    section.band { padding: 56px 0; }
+    .sec-head { margin-bottom: 30px; }
+    .hero { padding: 18px 0 44px; }
+    /* Chip oben als eine saubere, zentrierte Zeile statt zwei Spalten */
+    .hero .chip { display: block; text-align: center; line-height: 1.5; }
+    .hero .chip .sp { display: inline; }
+    /* Merkmal-Chips als kompakte, zentrierte Reihe */
+    .traits { justify-content: center; gap: 8px; margin-top: 20px; }
+    .traits span { font-size: 12.5px; padding: 8px 13px; }
     /* Reiter-Leiste: immer erreichbar (klebt oben) und in einer sauberen,
        wischbaren Reihe statt als gestapelter Haufen. overflow-x:clip hält den
        seitlichen Rand sauber, ohne das Sticky-Verhalten zu brechen. */
@@ -601,7 +634,7 @@
   }
   @media (max-width: 560px) {
     body { font-size: 16px; }
-    section.band { padding: 62px 0; }
+    section.band { padding: 44px 0; }
     .facts3 { grid-template-columns: 1fr; }
     .row3 { grid-template-columns: 1fr 1fr 1fr; }
     .card, .mailcard { padding: 26px 22px; }
@@ -612,6 +645,7 @@
 </head>
 <body>
 
+<div id="progressbar" aria-hidden="true"></div>
 <div id="aura" aria-hidden="true"></div>
 <div id="orb" aria-hidden="true"></div>
 <canvas id="stars" aria-hidden="true"></canvas>
@@ -1052,6 +1086,7 @@
 </div>
 
 <button class="floatcta" id="floatcta" data-scroll="start" type="button">Jetzt kostenlos starten ✦</button>
+<button class="scrolltop" id="scrolltop" type="button" aria-label="Nach oben zu den Reitern">↑</button>
 
 <div id="calm" role="dialog" aria-modal="true" aria-label="Nimm dir einen Moment">
   <div class="cookie-card">
@@ -1101,6 +1136,33 @@
     addEventListener('resize', upd);
     upd();
   })();
+
+  /* ── Lese-Fortschrittsbalken oben ── */
+  (function(){
+    var pb=document.getElementById('progressbar'); if(!pb) return;
+    function upd(){ var h=document.documentElement.scrollHeight-innerHeight;
+      pb.style.width=(h>4?Math.min(100,(scrollY/h)*100):0)+'%'; }
+    addEventListener('scroll', upd, {passive:true}); addEventListener('resize', upd); upd();
+  })();
+
+  /* ── Nach-oben-Knopf im Bauplan (nur Handy/Tablet) ── */
+  (function(){
+    var st=document.getElementById('scrolltop'); if(!st) return;
+    function onStep3(){ var s=document.getElementById('step3'); return s && s.classList.contains('active'); }
+    function upd(){ st.classList.toggle('show', onStep3() && innerWidth<=900 && scrollY>700); }
+    st.addEventListener('click', function(){ scrollTo({top:0, behavior:'smooth'}); });
+    addEventListener('scroll', upd, {passive:true}); addEventListener('resize', upd); upd();
+  })();
+
+  /* ── Sanftes Einblenden der Abschnitte beim Scrollen ── */
+  (function(){
+    if(reduce || !('IntersectionObserver' in window)) return;
+    var els=[].slice.call(document.querySelectorAll('.sec-head, header.hero .card, .pain, .mockup, .about-box, .finalcta'));
+    if(!els.length) return;
+    var io=new IntersectionObserver(function(es){ es.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } }); }, {threshold:.12, rootMargin:'0px 0px -6% 0px'});
+    els.forEach(function(el){ el.classList.add('reveal-init'); io.observe(el); });
+  })();
+
   var API = '';                                    // gleiche Domain (Vercel / dev.py)
   var GEO = 'https://geocoding-api.open-meteo.com/v1/search';
   var state = { result:null, city:null };
@@ -1407,6 +1469,24 @@
     var by={}; (f.positions||[]).forEach(function(p){by[p.key]=p;});
     function q(k){ return by[k]?(tp(by[k].signSymbol)+' '+by[k].sign):'…'; }
     function natrow(sym,label,k){ return '<div class="nk"><span class="nk-s">'+tp(sym)+'</span><span class="nk-l">'+esc(label)+'</span><span class="nk-v">'+q(k)+'</span></div>'; }
+    // "Was bedeutet was?" & Häuser: am Handy einklappbar, am Desktop offen wie gehabt
+    var ovMobile = window.innerWidth<=900;
+    var legendInner=
+      '<p class="legend-intro">Hier findest du die wichtigsten Begriffe aus deinem Bauplan in einfachen Worten. So hast du sie gleich zu Beginn erklärt und kannst jederzeit nachschauen.</p>'+
+      LEGEND.map(function(l){return '<div class="li"><div class="t">'+esc(l[0])+'</div><div class="d">'+esc(l[1])+'</div></div>';}).join('');
+    var housesInner=
+      '<p style="color:var(--ink-mute);font-size:13px;line-height:1.6;margin:0 0 12px">Die Häuser zeigen, in welchem Lebensbereich sich ein Planet entfaltet. So kannst du jede Position in deinem Natalchart oben einordnen.</p>'+
+      '<div class="houses">'+(f.houses||[]).map(function(h){
+        return '<div class="hrow"><span class="hnr">'+h.nr+'</span><span class="htxt"><b>Haus '+h.nr+', '+esc(h.title)+'</b><span>'+esc(h.meaning)+'</span></span></div>';
+      }).join('')+'</div>';
+    var ovLegend, ovHouses;
+    if(ovMobile){
+      ovLegend='<details class="ov-fold"><summary class="ov-fold-h"><span>Was bedeutet was?</span><span class="ov-fold-x">+</span></summary><div class="ov-fold-b legend">'+legendInner+'</div></details>';
+      ovHouses='<details class="ov-fold"><summary class="ov-fold-h"><span>Die zwölf Häuser, deine Lebensfelder</span><span class="ov-fold-x">+</span></summary><div class="ov-fold-b">'+housesInner+'</div></details>';
+    } else {
+      ovLegend='<div class="legend legend-top" style="margin-top:32px"><div class="lh">Was bedeutet was?</div>'+legendInner+'</div>';
+      ovHouses='<div class="cap2" style="margin-top:32px">Die zwölf Häuser, deine Lebensfelder</div>'+housesInner;
+    }
     document.getElementById('pane-ov').innerHTML=
       '<p class="ov-intro">'+(b.name?(esc(b.name)+', '):'')+'was du gleich liest, ist kein Test und kein Urteil. Es ist ein Blick auf das, was in dir angelegt ist, seit dem ersten Moment deines Lebens. Vielleicht erkennst du dich an mancher Stelle so genau wieder, dass es kurz wehtut. Das ist gut so. Es heißt, du wirst gesehen. Prüf beim Lesen immer selbst, was sich für dich stimmig anfühlt. Was nicht passt, darfst du getrost liegen lassen.</p>'+
       '<div class="factrow">'+
@@ -1425,15 +1505,7 @@
         '<div class="panel tight glowpanel"><span class="cap">Human Design</span>'+
           '<div class="graphic gbody">'+buildBodygraph(hd)+'</div>'+glegend+'</div>'+
       '</div>'+
-      '<div class="legend legend-top" style="margin-top:32px"><div class="lh">Was bedeutet was?</div>'+
-        '<p class="legend-intro">Hier findest du die wichtigsten Begriffe aus deinem Bauplan in einfachen Worten. So hast du sie gleich zu Beginn erklärt und kannst jederzeit nachschauen.</p>'+
-        LEGEND.map(function(l){return '<div class="li"><div class="t">'+esc(l[0])+'</div><div class="d">'+esc(l[1])+'</div></div>';}).join('')+
-      '</div>'+
-      '<div class="cap2" style="margin-top:32px">Die zwölf Häuser, deine Lebensfelder</div>'+
-      '<p style="color:var(--ink-mute);font-size:13px;line-height:1.6;margin:0 0 12px">Die Häuser zeigen, in welchem Lebensbereich sich ein Planet entfaltet. So kannst du jede Position in deinem Natalchart oben einordnen.</p>'+
-      '<div class="houses">'+(f.houses||[]).map(function(h){
-        return '<div class="hrow"><span class="hnr">'+h.nr+'</span><span class="htxt"><b>Haus '+h.nr+', '+esc(h.title)+'</b><span>'+esc(h.meaning)+'</span></span></div>';
-      }).join('')+'</div>';
+      ovLegend+ovHouses;
 
     // ── HUMAN DESIGN ──
     document.getElementById('pane-hd').innerHTML=
