@@ -85,6 +85,10 @@
   .chip { display: inline-flex; align-items: center; gap: 8px; font-size: 12.5px; letter-spacing: .04em;
     color: var(--ink-soft); background: rgba(201,164,255,.14); padding: 7px 15px; border-radius: 999px; }
   .chip .sp { color: var(--accent); }
+  /* Chip im Kopfbereich als durchlaufender Text: die drei Teile brechen sonst
+     jeder für sich um und zerfallen in ungleiche Spalten */
+  .hero .chip { display: inline-block; line-height: 1.55; max-width: 36em; }
+  .hero .chip .sp { display: inline; }
   .accent { color: var(--gold); font-style: italic; }
   em.rose { color: var(--accent); font-style: italic; }
 
@@ -620,9 +624,8 @@
     .promise { margin-left: auto; margin-right: auto; }
     .herolead { margin-left: auto; margin-right: auto; }
     .card h3, .card .hint { text-align: center; }
-    /* Chip oben als eine saubere, zentrierte Zeile statt zwei Spalten */
-    .hero .chip { display: block; text-align: center; line-height: 1.5; }
-    .hero .chip .sp { display: inline; }
+    /* Chip oben zentriert; die mittige Achse kommt vom Elternteil */
+    .hero .chip { text-align: center; }
     /* Merkmal-Chips als kompakte, zentrierte Reihe */
     .traits { justify-content: center; gap: 8px; margin-top: 20px; }
     .traits span { font-size: 12.5px; padding: 8px 13px; }
