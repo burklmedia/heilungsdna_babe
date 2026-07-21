@@ -611,6 +611,15 @@
     section.band { padding: 56px 0; }
     .sec-head { margin-bottom: 30px; }
     .hero { padding: 18px 0 44px; }
+    /* Kopfbereich auf Handy und Tablet mittig statt linksbündig, damit
+       Logo, Überschrift und Text eine ruhige Achse bilden */
+    .brandbar { flex-direction: column; justify-content: center; gap: 14px;
+      text-align: center; padding-top: 22px; }
+    .brand { justify-content: center; }
+    .hero-grid > *:first-child { text-align: center; }
+    .promise { margin-left: auto; margin-right: auto; }
+    .herolead { margin-left: auto; margin-right: auto; }
+    .card h3, .card .hint { text-align: center; }
     /* Chip oben als eine saubere, zentrierte Zeile statt zwei Spalten */
     .hero .chip { display: block; text-align: center; line-height: 1.5; }
     .hero .chip .sp { display: inline; }
