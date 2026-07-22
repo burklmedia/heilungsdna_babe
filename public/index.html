@@ -46,9 +46,11 @@
     --shadow: 0 30px 70px -34px rgba(10,4,30,0.78);
   }
   * { box-sizing: border-box; }
-  html { scroll-behavior: smooth; }
+  html { scroll-behavior: smooth; overscroll-behavior-x: none; }
   body { margin: 0; background: var(--ground); color: var(--ink);
-    font-family: var(--sans); font-size: 17px; line-height: 1.62; -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+    font-family: var(--sans); font-size: 17px; line-height: 1.62; -webkit-font-smoothing: antialiased;
+    overflow-x: clip; overscroll-behavior-x: none; }
+  #analyse { scroll-margin-top: 20px; }
   #aura, #stars, #orb { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
   #aura { background:
       radial-gradient(48% 38% at 62% 4%, rgba(245,197,107,.18) 0%, rgba(245,197,107,.05) 34%, transparent 62%),
@@ -448,7 +450,8 @@
   .report-rule { height: 1px; max-width: 320px; margin: 24px auto 30px; background: linear-gradient(90deg, transparent, rgba(245,197,107,.55), transparent); }
   @media (max-width: 560px) { .report { padding: 32px 20px; border-radius: 22px; } }
 
-  .rtabs { margin: 24px 0 28px; }
+  .rtabs-hint { text-align: center; font-size: 12px; letter-spacing: .04em; color: var(--ink-mute); margin: 22px 0 10px; }
+  .rtabs { margin: 4px 0 28px; }
   .rtabs-track { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
   .rtab { font-family: var(--sans); font-size: 14px; font-weight: 600; color: var(--ink-soft);
     background: rgba(201,164,255,.08); border: 1px solid var(--line); border-radius: 999px;
@@ -666,7 +669,7 @@
 <section class="step active" id="step1">
   <div class="wrap brandbar">
     <div class="brand"><span class="b-script">Intuition</span> <span class="b-serif">mit Herz</span></div>
-    <a href="#start" class="navlink">Lern dich kennen ↓</a>
+    <a href="#analyse" class="navlink" data-scroll="analyse">Lern dich kennen ↓</a>
   </div>
 
   <header class="hero" id="start">
@@ -684,7 +687,7 @@
           <div class="traits"><span>Kein Persönlichkeitstest</span><span>Exakt berechnet</span><span>Kostenlos starten</span></div>
         </div>
 
-        <div class="card">
+        <div class="card" id="analyse">
           <h3>Starte deine Analyse</h3>
           <p class="hint">Für die Berechnung brauchen wir deinen genauen Geburtsmoment.</p>
           <div class="row2">
@@ -791,7 +794,7 @@
             <div class="item"><span class="check">✓</span><p><b>Dein Chiron &amp; deine Zentren</b><span>, deine Urwunde, deine Heilkraft und wo du Kraft schöpfst.</span></p></div>
             <div class="item"><span class="check">✓</span><p><b>Deutung in Klartext</b><span>, liebevoll, konkret und sofort für dich anwendbar.</span></p></div>
           </div>
-          <div class="midcta"><a href="#start" class="btn" style="width:auto" data-scroll="start">Jetzt meinen Bauplan entdecken ✦</a></div>
+          <div class="midcta"><a href="#analyse" class="btn" style="width:auto" data-scroll="analyse">Jetzt meinen Bauplan entdecken ✦</a></div>
         </div>
         <div class="solar" aria-hidden="true">
           <div style="position:absolute;inset:0;background-repeat:repeat;background-size:90px 90px,130px 130px;opacity:.5;background-image:radial-gradient(1px 1px at 20px 30px,rgba(255,255,255,.9),transparent),radial-gradient(1px 1px at 80px 100px,rgba(210,190,255,.8),transparent);"></div>
@@ -911,7 +914,7 @@
           <div class="mcard"><span class="ic">🌞</span> Handlungsempfehlungen</div>
         </div>
       </div>
-      <div style="text-align:center;margin-top:42px"><a href="#start" class="btn" style="width:auto" data-scroll="start">Ich möchte meinen Bauplan sehen ✦</a></div>
+      <div style="text-align:center;margin-top:42px"><a href="#analyse" class="btn" style="width:auto" data-scroll="analyse">Ich möchte meinen Bauplan sehen ✦</a></div>
     </div>
   </section>
 
@@ -968,7 +971,7 @@
       <div class="finalcta">
         <h2>Vielleicht ist genau jetzt der richtige Moment, dich selbst <span class="script" style="font-size:1.15em">neu kennenzulernen.</span></h2>
         <p>Dein Bauplan wartet bereits seit dem Tag deiner Geburt. Du musst ihn nur noch lesen.</p>
-        <a href="#start" class="btn" data-scroll="start">Jetzt kostenlos starten ✦</a>
+        <a href="#analyse" class="btn" data-scroll="analyse">Jetzt kostenlos starten ✦</a>
       </div>
     </div>
   </section>
@@ -1062,6 +1065,7 @@
         <p class="report-greeting" id="a-greeting"></p>
         <div class="report-rule"></div>
       </div>
+      <div class="rtabs-hint">Scrolle dich hier durch alle Themengebiete deines Bauplans</div>
       <nav class="rtabs" id="rtabs">
         <div class="rtabs-track">
           <button class="rtab active" data-rtab="ov" type="button">✦ Übersicht</button>
@@ -1097,7 +1101,7 @@
   </div>
 </div>
 
-<button class="floatcta" id="floatcta" data-scroll="start" type="button">Jetzt kostenlos starten ✦</button>
+<button class="floatcta" id="floatcta" data-scroll="analyse" type="button">Jetzt kostenlos starten ✦</button>
 <button class="scrolltop" id="scrolltop" type="button" aria-label="Nach oben zu den Reitern">↑</button>
 
 <div id="calm" role="dialog" aria-modal="true" aria-label="Nimm dir einen Moment">

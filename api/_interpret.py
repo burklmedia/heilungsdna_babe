@@ -1492,9 +1492,9 @@ def full_analysis(chart):
             f"Deine eigentliche Aufgabe liegt auf der anderen Seite, im {nk['sign']}. " + axis.get("higher", "")
             + f"\n\nUnd hier kommt der Teil, den du nicht überspringen darfst: Du wächst da nicht rein, "
             f"indem du darüber nachdenkst. Du wächst rein, indem du im echten Leben immer wieder anders "
-            f"handelst als sonst. Als {hd['type']} gelingt dir das, wenn du deiner Strategie folgst, "
-            f"also {t.get('strategy','').lower()}, und wichtige Entscheidungen über deine "
-            f"{hd['authority'].lower()} triffst, statt aus dem alten Reflex heraus. Jedes Mal, wenn du "
+            f"handelst als sonst. Als {hd['type']} gelingt dir das über genau den Entscheidungsweg, "
+            f"den du weiter oben schon entdeckt hast: erst dein eigener Impuls, dann die ruhige "
+            f"Prüfung von innen, statt aus dem alten Reflex heraus. Jedes Mal, wenn du "
             f"dich in einem dieser Momente für den ungewohnten, den {nk['sign']}-Weg entscheidest, "
             f"erfüllst du ein Stück deiner Lebensaufgabe. Es sind keine großen Gesten. Es sind die "
             f"kleinen, unbequemen Entscheidungen, in denen du dich für dich entscheidest.\n\n"
@@ -1528,8 +1528,8 @@ def full_analysis(chart):
                      "Vielleicht spürst du ihn genau in diesem Moment, während du das hier liest. "
                      "Dieses Ziehen in der Brust. Das ist in Ordnung. Es heißt, dass diese Stelle "
                      "endlich gesehen wird. Von dir.\n\nUnd jetzt der Satz, den du dir vielleicht dein "
-                     "ganzes Leben gewünscht hast: Mit dir war nie etwas falsch. Diese Wunde macht "
-                     "dich nicht kaputt. Sie macht dich weich. Weil du diesen Schmerz so gut kennst, "
+                     "ganzes Leben gewünscht hast: An dir ist nichts kaputt und war es nie. Diese "
+                     "Wunde macht dich nicht schwächer. Sie macht dich weich. Weil du diesen Schmerz so gut kennst, "
                      "spürst du ihn bei anderen sofort. Du bist der Mensch, der einem anderen sagen "
                      "kann: Du bist genug. Und der es auch so meint. Deine Wunde und deine Gabe sind "
                      "dieselbe Stelle. Du heilst genau durch sie."),
@@ -1543,10 +1543,9 @@ def full_analysis(chart):
             "subtitle": "Wie du gut mit dir und deiner Umwelt umgehst",
             "headline": "Kleine Schritte, große Wirkung",
             "body": ("Ein paar konkrete Impulse, wie du dein Higher Self stärkst und dein altes Muster "
-                     "früh erkennst:\n\n" + tool_lines + "\n\nUnd im Umgang mit anderen: Lebe deine "
-                     "Strategie, " + t.get("strategy", "").lower() + ", und triff wichtige "
-                     "Entscheidungen über deine " + hd["authority"].lower() + ". So bleibst du bei "
-                     "dir, auch wenn es um dich herum laut wird."),
+                     "früh erkennst:\n\n" + tool_lines + "\n\nUnd im Umgang mit anderen bleibt dein "
+                     "Kompass derselbe, den du bei deinem Entscheidungsweg entdeckt hast: erst spüren, "
+                     "dann handeln. So bleibst du bei dir, auch wenn es um dich herum laut wird."),
             "facts": [],
         })
 
