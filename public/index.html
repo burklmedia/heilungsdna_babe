@@ -49,7 +49,9 @@
   html { scroll-behavior: smooth; overscroll-behavior-x: none; }
   body { margin: 0; background: var(--ground); color: var(--ink);
     font-family: var(--sans); font-size: 17px; line-height: 1.62; -webkit-font-smoothing: antialiased;
-    overflow-x: clip; overscroll-behavior-x: none; }
+    overflow-x: clip; overscroll-behavior-x: none;
+    /* nur senkrecht scrollen (+ Zoom); waagerechtes Verschieben der Seite unterbinden */
+    touch-action: pan-y pinch-zoom; }
   #analyse { scroll-margin-top: 20px; }
   #aura, #stars, #orb { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
   #aura { background:
@@ -454,7 +456,10 @@
   .report-rule { height: 1px; max-width: 320px; margin: 24px auto 30px; background: linear-gradient(90deg, transparent, rgba(245,197,107,.55), transparent); }
   @media (max-width: 560px) { .report { padding: 32px 20px; border-radius: 22px; } }
 
-  .rtabs-hint { text-align: center; font-size: 12px; letter-spacing: .04em; color: var(--ink-mute); margin: 22px 0 10px; }
+  .rtabs-hint { text-align: center; font-size: 13.5px; font-weight: 600; letter-spacing: .01em; color: var(--gold);
+    margin: 24px 0 12px; text-shadow: 0 0 16px var(--glow); display: flex; align-items: center; justify-content: center; gap: 9px; }
+  .rtabs-hint::before, .rtabs-hint::after { content: "⇢"; color: var(--gold); opacity: .7; font-size: 15px; }
+  .rtabs-hint::before { content: "⇠"; }
   .rtabs { margin: 4px 0 28px; }
   .rtabs-track { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
   .rtab { font-family: var(--sans); font-size: 14px; font-weight: 600; color: var(--ink-soft);
@@ -646,7 +651,7 @@
       border: 1px solid var(--line); border-radius: 16px;
       box-shadow: 0 12px 28px -16px rgba(10,4,30,.85); }
     .rtabs-track { flex-wrap: nowrap; justify-content: flex-start;
-      overflow-x: auto; overflow-y: hidden; -webkit-overflow-scrolling: touch;
+      overflow-x: auto; overflow-y: hidden; -webkit-overflow-scrolling: touch; touch-action: pan-x;
       scroll-snap-type: x proximity; scrollbar-width: none; padding: 2px; }
     .rtabs-track::-webkit-scrollbar { display: none; }
     .rtab { flex: 0 0 auto; scroll-snap-align: start; }
@@ -1189,7 +1194,10 @@
   var state = { result:null, city:null };
 
   function show(id){ document.querySelectorAll('.step').forEach(function(s){s.classList.remove('active');});
-    document.getElementById(id).classList.add('active'); scrollTo({top:0,behavior:'smooth'}); }
+    document.getElementById(id).classList.add('active');
+    // sofort nach ganz oben springen (kein weiches Scrollen, das am Handy oft abbricht)
+    window.scrollTo({top:0,left:0,behavior:'instant'});
+    requestAnimationFrame(function(){ window.scrollTo(0,0); }); }
   function val(id){ var e=document.getElementById(id); return e?e.value.trim():''; }
   function esc(s){ return String(s==null?'':s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];}); }
   // Astro-Glyphen einfarbig statt bunt-Emoji erzwingen (Variation Selector 15)
@@ -1314,7 +1322,7 @@
         st.style.opacity=1; sub.style.opacity=1; step++; tick(); },FADE); },HOLD); })();
   }
   function endRitual(){ ritualOn=false; document.getElementById('ritualwrap').style.display='none';
-    document.getElementById('glimpse').classList.add('show'); scrollTo({top:0,behavior:'smooth'}); }
+    document.getElementById('glimpse').classList.add('show'); window.scrollTo({top:0,left:0,behavior:'instant'}); }
 
   /* ── Flow: Schritt 1 → Ritual → Teaser ── */
   // Datums- und Zeit-Dropdowns befüllen (mobilfreundlich, kein Tippen nötig)
