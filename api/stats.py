@@ -32,6 +32,11 @@ STEPS = [
     ("bauplan", "Bauplan gesehen"),
 ]
 
+EXTRA = [
+    ("scroll", "Startseite gelesen (>60%)"),
+    ("pdf", "PDF geöffnet"),
+]
+
 PAGE_CSS = """
 *{box-sizing:border-box} body{margin:0;background:#160e2e;color:#f3eefe;
 font-family:-apple-system,Segoe UI,Roboto,sans-serif;padding:32px 20px}
@@ -106,6 +111,16 @@ def _dashboard():
             "</div></div>" % (width, label, val, of_visit, step))
         prev = val
 
+    # weitere Kennzahlen (kein Trichter, nur Zahlen)
+    extra_vals = mget(["imh:t:" + e for e, _ in EXTRA])
+    extra_html = ""
+    for (ev, label), val in zip(EXTRA, extra_vals):
+        of_visit = (100.0 * val / base) if base else 0
+        extra_html += (
+            "<div class=row><div class=lbl>%s</div><div class=rgt>"
+            "<div class=num>%d</div><div class=pct>%.0f%% der Besucher</div>"
+            "</div></div>" % (label, val, of_visit))
+
     # letzte 14 Tage
     days = [(datetime.now(timezone.utc).date() - timedelta(days=i)) for i in range(13, -1, -1)]
     day_keys = []
@@ -128,6 +143,8 @@ def _dashboard():
         "<h1>Deine Statistik</h1>"
         "<p class=sub>Eigenes Tracking, cookiefrei, ohne Namen. Live aus deinem Funnel.</p>"
         "<div class=funnel>" + rows + "</div>"
+        "<h1 style='font-size:16px'>Weitere Kennzahlen</h1>"
+        "<div class=funnel>" + extra_html + "</div>"
         "<h1 style='font-size:16px'>Letzte 14 Tage</h1>"
         "<table>" + thead + trows + "</table>"
         "<p class=note>Die Zahlen zaehlen Sitzungen: jedes Ereignis wird pro "

@@ -27,7 +27,7 @@ except Exception:  # noqa
     def incr(keys):
         return
 
-ALLOWED = {"visit", "himmel", "teaser", "email", "bauplan"}
+ALLOWED = {"visit", "himmel", "teaser", "email", "bauplan", "scroll", "pdf"}
 
 
 def _count(event):
