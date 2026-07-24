@@ -305,16 +305,23 @@
   .finalcta h2 { font-size: clamp(26px,4vw,38px); line-height: 1.18; color: #fff; margin-bottom: 18px; }
   .finalcta p { color: rgba(255,255,255,.9); font-size: 18px; line-height: 1.6; margin-bottom: 26px; }
   .finalcta .btn { width: auto; }
-  /* Stimme / Testimonial */
-  .testimonial { max-width: 720px; margin: 0 auto; text-align: center; background: linear-gradient(135deg,#2a1a52,#4a2f8a); border: 1px solid var(--line-strong); border-radius: 28px; padding: 44px 46px; position: relative; box-shadow: var(--shadow); }
-  .testimonial .t-quote { font-family: var(--serif); font-size: 74px; line-height: 1; color: var(--gold); opacity: .45; height: 44px; }
-  .testimonial blockquote { font-family: var(--serif); font-style: italic; font-size: clamp(21px,2.8vw,27px); line-height: 1.5; color: #fff; margin: 0 0 26px; text-wrap: balance; }
-  .testimonial figcaption { display: inline-flex; align-items: center; gap: 12px; }
-  .testimonial .t-avatar { width: 48px; height: 48px; border-radius: 50%; background: radial-gradient(circle at 35% 30%, #f7d99a, #e0a94a); color: #3a2410; font-family: var(--sans); font-weight: 700; font-size: 19px; display: flex; align-items: center; justify-content: center; object-fit: cover; flex: none; }
-  .testimonial .t-who { text-align: left; display: flex; flex-direction: column; line-height: 1.35; }
-  .testimonial .t-who b { color: #fff; font-size: 15px; }
-  .testimonial .t-who span { color: var(--ink-soft); font-size: 12.5px; }
-  @media (max-width: 560px) { .testimonial { padding: 34px 24px; } }
+  /* Stimme / Testimonial, dezent, Bild + Text */
+  .voice { max-width: 800px; margin: 0 auto; display: grid; grid-template-columns: 150px 1fr; gap: 32px; align-items: center;
+    background: rgba(38,24,72,.4); border: 1px solid var(--line); border-radius: 24px; padding: 30px 34px; }
+  .voice-photo { position: relative; width: 150px; height: 150px; border-radius: 50%; overflow: hidden; flex: none;
+    background: radial-gradient(circle at 35% 30%, #f7d99a, #e0a94a); box-shadow: 0 0 0 1px rgba(245,197,107,.5), 0 0 40px -12px var(--glow); }
+  .voice-photo img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .voice-initial { display: none; position: absolute; inset: 0; align-items: center; justify-content: center;
+    font-family: var(--sans); font-weight: 700; font-size: 52px; color: #3a2410; }
+  .voice-photo.noimg .voice-initial { display: flex; }
+  .voice-eyebrow { font-family: var(--script); font-size: 22px; color: var(--gold); margin-bottom: 8px; }
+  .voice blockquote { font-family: var(--serif); font-style: italic; font-size: clamp(17px,2vw,20px); line-height: 1.6; color: var(--ink); margin: 0 0 14px; text-wrap: pretty; }
+  .voice figcaption { font-family: var(--sans); font-size: 13.5px; color: var(--ink-soft); }
+  .voice figcaption b { color: #fff; font-weight: 700; }
+  @media (max-width: 640px) {
+    .voice { grid-template-columns: 1fr; justify-items: center; text-align: center; gap: 20px; padding: 30px 24px; }
+    .voice-photo { width: 120px; height: 120px; }
+  }
 
   /* about */
   .about-box { background: linear-gradient(135deg, #2a1a52 0%, #4a2f8a 100%); border-radius: 30px; padding: 52px 54px;
@@ -795,6 +802,24 @@
     </div>
   </header>
 
+  <!-- Stimme / Testimonial -->
+  <section class="band">
+    <div class="wrap">
+      <figure class="voice">
+        <div class="voice-photo">
+          <img src="tobi.jpg" alt="Tobi, hat seinen Bauplan gelesen" loading="lazy"
+               onerror="this.parentNode.classList.add('noimg');this.remove()">
+          <span class="voice-initial">T</span>
+        </div>
+        <div class="voice-body">
+          <div class="voice-eyebrow">Eine Stimme, die uns geblieben ist</div>
+          <blockquote>Ich war ehrlich skeptisch, ich hatte mich nie mit Astrologie beschäftigt. Dann habe ich meinen Bauplan gelesen und musste weinen. Zum ersten Mal stand da schwarz auf weiß, warum ich so fühle, wie ich fühle. Kein Schubladendenken, sondern das Gefühl, endlich gesehen zu werden. Ich hole ihn immer wieder hervor, wenn ich mich selbst gerade nicht mehr spüre.</blockquote>
+          <figcaption><b>Tobi</b>, nach seinem kosmischen Bauplan</figcaption>
+        </div>
+      </figure>
+    </div>
+  </section>
+
   <!-- PAIN -->
   <section class="band band-2">
     <div class="wrap">
@@ -989,23 +1014,8 @@
     </div>
   </section>
 
-  <!-- Stimme -->
-  <section class="band band-2">
-    <div class="wrap">
-      <figure class="testimonial">
-        <div class="t-quote">„</div>
-        <blockquote>Genau das hat mich zu Tränen gerührt. Ich hätte das nie erwartet. Ich habe mich vorher nie mit Astrologie beschäftigt.</blockquote>
-        <figcaption>
-          <img src="tobi.jpg" alt="Tobi" class="t-avatar" loading="lazy"
-               onerror="var s=document.createElement('span');s.className='t-avatar';s.textContent='T';this.replaceWith(s)">
-          <span class="t-who"><b>Tobi</b><span>hat seinen Bauplan gelesen</span></span>
-        </figcaption>
-      </figure>
-    </div>
-  </section>
-
   <!-- FAQ -->
-  <section class="band">
+  <section class="band band-2">
     <div class="wrap">
       <div class="sec-head center">
         <h2>Vielleicht fragst du dich <span class="script">gerade noch …</span></h2>
