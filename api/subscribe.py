@@ -127,16 +127,15 @@ class handler(BaseHTTPRequestHandler):
             name = (body.get("name") or "").strip()
             if "@" not in email or "." not in email:
                 return self._send(400, {"ok": False, "error": "Bitte gib eine gültige E-Mail an."})
-            # Persoenlicher PDF-Link fuer die Willkommensmail (Feld bauplan_pdf).
-            # Der Parameter d ist base64url-kodiert und traegt die Geburtsdaten;
-            # das PDF wird daraus jederzeit frisch neu berechnet.
+            # Persoenlicher PDF-Parameter fuer die Willkommensmail (Feld bauplan_pdf).
+            # Wir speichern NUR den base64url-Teil, nicht die ganze URL. In der Mail
+            # steht dann eine vollstaendige, gueltige Adresse mit dem Tag am Ende:
+            #   https://<domain>/api/pdf?d={$bauplan_pdf}
+            # So erkennt MailerLite die URL sicher und ersetzt die Variable zuverlaessig.
             extra = {}
             d = (body.get("d") or "").strip()
             if d:
-                host = self.headers.get("x-forwarded-host") or self.headers.get("host") or ""
-                proto = self.headers.get("x-forwarded-proto") or "https"
-                if host:
-                    extra["bauplan_pdf"] = "%s://%s/api/pdf?d=%s" % (proto, host, d)
+                extra["bauplan_pdf"] = d
             ok, msg = subscribe_contact(name, email, extra or None)
             self._send(200, {"ok": True, "stored": ok, "message": msg})
         except Exception as e:  # noqa
