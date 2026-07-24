@@ -17,9 +17,39 @@ import urllib.request
 
 
 def _creds():
-    url = os.environ.get("KV_REST_API_URL") or os.environ.get("UPSTASH_REDIS_REST_URL")
-    tok = os.environ.get("KV_REST_API_TOKEN") or os.environ.get("UPSTASH_REDIS_REST_TOKEN")
-    return url, tok
+    e = os.environ
+    # 1) bekannte Namenspaare (Vercel KV / Upstash direkt)
+    for u, t in (("KV_REST_API_URL", "KV_REST_API_TOKEN"),
+                 ("UPSTASH_REDIS_REST_URL", "UPSTASH_REDIS_REST_TOKEN")):
+        if e.get(u) and e.get(t):
+            return e[u], e[t]
+    # 2) automatisch: eine REST-URL-Variable (https) + passender Token, egal
+    #    wie das Upstash/Vercel-Integration die Variablen genau benannt hat.
+    for k, v in e.items():
+        ku = k.upper()
+        if isinstance(v, str) and v.startswith("http") and "REST" in ku and "URL" in ku:
+            prefix = ku.rsplit("URL", 1)[0].rstrip("_")
+            for tk, tv in e.items():
+                tku = tk.upper()
+                if tv and "TOKEN" in tku and tku.startswith(prefix):
+                    return v, tv
+            for tk, tv in e.items():
+                tku = tk.upper()
+                if tv and "REST" in tku and "TOKEN" in tku:
+                    return v, tv
+    return None, None
+
+
+def diag_names():
+    """Nur Namen (keine Werte) der speicher-relevanten Variablen, fuer die
+    Diagnose. Werte werden nie ausgegeben."""
+    out = []
+    for k in sorted(os.environ.keys()):
+        ku = k.upper()
+        if any(s in ku for s in ("KV", "REDIS", "UPSTASH", "STORAGE")):
+            out.append(k)
+    u, t = _creds()
+    return {"gefundene_namen": out, "url_erkannt": bool(u), "token_erkannt": bool(t)}
 
 
 def configured():

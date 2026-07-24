@@ -13,13 +13,16 @@ import sys
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 try:
-    from _store import mget, configured
+    from _store import mget, configured, diag_names
 except Exception:  # noqa
     def mget(keys):
         return [0] * len(keys)
 
     def configured():
         return False
+
+    def diag_names():
+        return {"gefundene_namen": [], "url_erkannt": False, "token_erkannt": False}
 
 STEPS = [
     ("visit", "Besucher"),
@@ -153,4 +156,15 @@ class handler(BaseHTTPRequestHandler):
         if pw != pw_env:
             return self._send(200 if not pw else 401,
                               _login("Falsches Passwort." if pw else ""))
+        if (parse_qs(urlparse(self.path).query).get("diag") or [""])[0]:
+            d = diag_names()
+            names = "".join("<li>" + n + "</li>" for n in d["gefundene_namen"]) or "<li>(keine gefunden)</li>"
+            return self._send(200, _html(
+                "<h1>Diagnose Speicher</h1>"
+                "<p class=sub>Nur Namen, keine Werte.</p>"
+                "<p>URL erkannt: <b>%s</b> · Token erkannt: <b>%s</b></p>"
+                "<p>Gefundene speicher-relevante Variablen:</p><ul>%s</ul>"
+                "<p class=note>Wenn hier nichts steht, ist der Speicher noch nicht "
+                "mit dieser Umgebung verbunden oder es fehlt ein Redeploy.</p>"
+                % (d["url_erkannt"], d["token_erkannt"], names)))
         self._send(200, _dashboard())
