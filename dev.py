@@ -16,6 +16,7 @@ import json
 import os
 import sys
 import mimetypes
+from urllib.parse import urlparse, parse_qs
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 
 BASE = os.path.dirname(os.path.abspath(__file__))
@@ -23,6 +24,11 @@ PUBLIC = os.path.join(BASE, "public")
 sys.path.insert(0, os.path.join(BASE, "api"))
 
 from analyze import build_result  # noqa: E402
+
+try:
+    from pdf import build_pdf as _build_pdf, _decode as _pdf_decode, _filename as _pdf_filename  # noqa: E402
+except Exception:  # noqa
+    _build_pdf = None
 
 try:
     from subscribe import subscribe_contact  # noqa: E402
@@ -47,6 +53,8 @@ class Handler(BaseHTTPRequestHandler):
         self.wfile.write(data)
 
     def do_GET(self):
+        if self.path.startswith("/api/pdf"):
+            return self._pdf()
         path = "/index.html" if self.path in ("/", "") else self.path.split("?")[0]
         fp = os.path.normpath(os.path.join(PUBLIC, path.lstrip("/")))
         if not fp.startswith(PUBLIC) or not os.path.isfile(fp):
@@ -58,6 +66,27 @@ class Handler(BaseHTTPRequestHandler):
         self.send_header("Content-Length", str(len(data)))
         self.end_headers()
         self.wfile.write(data)
+
+    def _pdf(self):
+        if _build_pdf is None:
+            return self._json(500, {"ok": False, "error": "PDF-Modul nicht geladen (fpdf2 installiert?)"})
+        try:
+            d = (parse_qs(urlparse(self.path).query).get("d") or [""])[0]
+            if not d:
+                return self._json(400, {"ok": False, "error": "Kein Parameter d."})
+            result = build_result(_pdf_decode(d))
+            data = _build_pdf(result)
+            self.send_response(200)
+            self.send_header("Content-Type", "application/pdf")
+            self.send_header("Content-Disposition",
+                             'inline; filename="%s"' % _pdf_filename(result["birth"].get("name")))
+            self.send_header("Content-Length", str(len(data)))
+            self.end_headers()
+            self.wfile.write(data)
+        except ValueError as e:
+            self._json(400, {"ok": False, "error": str(e)})
+        except Exception as e:  # noqa
+            self._json(500, {"ok": False, "error": "PDF fehlgeschlagen.", "detail": str(e)})
 
     def do_OPTIONS(self):
         self._json(204, {})

@@ -27,13 +27,18 @@ import urllib.request
 # (redeploy-trigger, damit Vercel die MailerLite-Env-Variablen zieht)
 
 
-def _mailerlite(name, email):
+def _mailerlite(name, email, extra_fields=None):
     key = os.environ.get("MAILERLITE_API_KEY")
     if not key:
         return None  # nicht konfiguriert -> naechster Dienst
     payload = {"email": email}
+    fields = {}
     if name:
-        payload["fields"] = {"name": name}
+        fields["name"] = name
+    if extra_fields:
+        fields.update(extra_fields)
+    if fields:
+        payload["fields"] = fields
     group_id = os.environ.get("MAILERLITE_GROUP_ID")
     if group_id:
         payload["groups"] = [str(group_id)]
@@ -82,9 +87,9 @@ def _brevo(name, email):
         return False, str(e)
 
 
-def subscribe_contact(name, email):
+def subscribe_contact(name, email, extra_fields=None):
     """Versucht zuerst MailerLite, dann Brevo. Ohne Konfiguration: nur annehmen."""
-    res = _mailerlite(name, email)
+    res = _mailerlite(name, email, extra_fields)
     if res is not None:
         return res
     return _brevo(name, email)
@@ -122,7 +127,17 @@ class handler(BaseHTTPRequestHandler):
             name = (body.get("name") or "").strip()
             if "@" not in email or "." not in email:
                 return self._send(400, {"ok": False, "error": "Bitte gib eine gültige E-Mail an."})
-            ok, msg = subscribe_contact(name, email)
+            # Persoenlicher PDF-Link fuer die Willkommensmail (Feld bauplan_pdf).
+            # Der Parameter d ist base64url-kodiert und traegt die Geburtsdaten;
+            # das PDF wird daraus jederzeit frisch neu berechnet.
+            extra = {}
+            d = (body.get("d") or "").strip()
+            if d:
+                host = self.headers.get("x-forwarded-host") or self.headers.get("host") or ""
+                proto = self.headers.get("x-forwarded-proto") or "https"
+                if host:
+                    extra["bauplan_pdf"] = "%s://%s/api/pdf?d=%s" % (proto, host, d)
+            ok, msg = subscribe_contact(name, email, extra or None)
             self._send(200, {"ok": True, "stored": ok, "message": msg})
         except Exception as e:  # noqa
             self._send(500, {"ok": False, "error": str(e)})

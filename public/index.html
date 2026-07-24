@@ -104,6 +104,8 @@
   .btn:hover { transform: translateY(-2px); box-shadow: 0 0 0 1px rgba(245,197,107,.6), 0 12px 54px -4px var(--glow); filter: brightness(1.03); }
   .btn:disabled { opacity: .6; cursor: default; transform: none; }
   .btn:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
+  .btn-ghost { background: rgba(245,197,107,.1); color: var(--gold); box-shadow: 0 0 0 1px rgba(245,197,107,.45); }
+  .btn-ghost:hover { background: rgba(245,197,107,.18); box-shadow: 0 0 0 1px rgba(245,197,107,.7); filter: none; }
   .floatcta { position: fixed; left: 50%; bottom: 22px; transform: translateX(-50%) translateY(24px); z-index: 900;
     opacity: 0; pointer-events: none; transition: opacity .3s ease, transform .3s ease;
     font-family: var(--sans); font-size: 15px; font-weight: 700; color: #3a2410; white-space: nowrap;
@@ -1064,7 +1066,10 @@
 <!-- ==================== STEP 3: VOLLANALYSE ==================== -->
 <section class="step" id="step3">
   <div class="wrap" style="padding-top:40px">
-    <button class="btn" style="width:auto;margin-bottom:24px" data-goto="step1" type="button">← Neuen Bauplan erstellen</button>
+    <div style="display:flex;flex-wrap:wrap;gap:10px;margin-bottom:24px">
+      <button class="btn" style="width:auto;margin:0" data-goto="step1" type="button">← Neuen Bauplan erstellen</button>
+      <button class="btn btn-ghost" style="width:auto;margin:0" id="pdfbtn" type="button">Als PDF speichern ↓</button>
+    </div>
     <article class="report">
       <div class="report-head">
         <div class="report-emblem">✦</div>
@@ -1434,14 +1439,34 @@
   }
 
   /* ── Schritt 2 → E-Mail → Vollanalyse ── */
+  // Geburtsdaten base64url-kodieren, damit der Server daraus jederzeit frisch
+  // ein PDF rechnen kann. Nichts wird gespeichert, alles steckt im Link.
+  function pdfParam(){
+    try{
+      var b=state.result&&state.result.birth; if(!b) return null;
+      var o={name:b.name,gender:b.gender,date:b.date,place:b.place,lat:b.lat,lon:b.lon,tz:b.tz};
+      o.time=(b.time&&b.time!=='unbekannt')?b.time:'';
+      var s=btoa(unescape(encodeURIComponent(JSON.stringify(o))));
+      return s.replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
+    }catch(e){ return null; }
+  }
+
   document.getElementById('go2').addEventListener('click',function(){
     var err=document.getElementById('err2'); err.textContent='';
     var email=val('g-mail'), name=val('g-name')||(state.result?state.result.birth.name:'');
     if(email.indexOf('@')<0||email.indexOf('.')<0){ err.textContent='Bitte gib eine gültige E-Mail an.'; return; }
     var btn=this; btn.disabled=true; btn.textContent='Einen Moment…';
-    fetch(API+'/api/subscribe',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name:name,email:email})})
+    var payload={name:name,email:email}; var pp=pdfParam(); if(pp) payload.d=pp;
+    fetch(API+'/api/subscribe',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)})
       .then(function(r){return r.json();}).catch(function(){return {ok:true};})
       .then(function(){ renderFull(state.result); show('step3'); btn.disabled=false; btn.textContent='Meinen kosmischen Bauplan zeigen ✦'; showCalm(); });
+  });
+
+  var pdfbtn=document.getElementById('pdfbtn');
+  if(pdfbtn) pdfbtn.addEventListener('click',function(){
+    var p=pdfParam();
+    if(!p){ return; }
+    window.open(API+'/api/pdf?d='+p,'_blank');
   });
 
   function pcard(sym,klabel,vmain,meta,meaning,desc){

@@ -3,11 +3,13 @@
   "builds": [
     { "src": "api/analyze.py", "use": "@vercel/python", "config": { "includeFiles": "api/**" } },
     { "src": "api/subscribe.py", "use": "@vercel/python", "config": { "includeFiles": "api/**" } },
+    { "src": "api/pdf.py", "use": "@vercel/python", "config": { "includeFiles": "api/**" } },
     { "src": "public/**", "use": "@vercel/static" }
   ],
   "routes": [
     { "src": "/api/analyze", "dest": "/api/analyze.py" },
     { "src": "/api/subscribe", "dest": "/api/subscribe.py" },
+    { "src": "/api/pdf", "dest": "/api/pdf.py" },
     { "src": "/", "dest": "/public/index.html" },
     { "src": "/(.*)", "dest": "/public/$1" }
   ]
