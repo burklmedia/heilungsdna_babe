@@ -1198,6 +1198,20 @@
   var GEO = 'https://geocoding-api.open-meteo.com/v1/search';
   var state = { result:null, city:null };
 
+  // Eigenes, cookiefreies Tracking (kein Google, keine Namen). Jedes Ereignis
+  // wird pro Browser-Sitzung nur einmal gezaehlt.
+  function track(ev){
+    try{
+      var k='imh_ev_'+ev;
+      if(sessionStorage.getItem(k)) return;
+      sessionStorage.setItem(k,'1');
+      var body=JSON.stringify({e:ev});
+      if(navigator.sendBeacon){ navigator.sendBeacon(API+'/api/track', body); }
+      else { fetch(API+'/api/track',{method:'POST',body:body,keepalive:true}); }
+    }catch(_){}
+  }
+  track('visit');
+
   function show(id){ document.querySelectorAll('.step').forEach(function(s){s.classList.remove('active');});
     document.getElementById(id).classList.add('active');
     // sofort nach ganz oben springen (kein weiches Scrollen, das am Handy oft abbricht)
@@ -1388,6 +1402,7 @@
     var body={name:name,gender:gender,date:date,time:time,place:place};
     if(state.city){ body.lat=state.city.lat; body.lon=state.city.lon; body.tz=state.city.tz; }
     saveForm();   // Angaben lokal merken
+    track('himmel');
     show('step2'); runRitual();
     var t0=Date.now();
     fetch(API+'/api/analyze',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)})
@@ -1404,7 +1419,7 @@
     setTimeout(function(){
       if(netMsg || !d || !d.ok){ document.getElementById('ritualwrap').style.display='none'; show('step1');
         err.textContent=netMsg||(d&&d.error)||'Etwas ist schiefgelaufen. Bitte prüfe deine Angaben.'; return; }
-      state.result=d; fillGlimpse(d); endRitual();
+      state.result=d; fillGlimpse(d); endRitual(); track('teaser');
     },wait);
   }
 
@@ -1456,10 +1471,11 @@
     var email=val('g-mail'), name=val('g-name')||(state.result?state.result.birth.name:'');
     if(email.indexOf('@')<0||email.indexOf('.')<0){ err.textContent='Bitte gib eine gültige E-Mail an.'; return; }
     var btn=this; btn.disabled=true; btn.textContent='Einen Moment…';
+    track('email');
     var payload={name:name,email:email}; var pp=pdfParam(); if(pp) payload.d=pp;
     fetch(API+'/api/subscribe',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)})
       .then(function(r){return r.json();}).catch(function(){return {ok:true};})
-      .then(function(){ renderFull(state.result); show('step3'); btn.disabled=false; btn.textContent='Meinen kosmischen Bauplan zeigen ✦'; showCalm(); });
+      .then(function(){ renderFull(state.result); show('step3'); track('bauplan'); btn.disabled=false; btn.textContent='Meinen kosmischen Bauplan zeigen ✦'; showCalm(); });
   });
 
   var pdfbtn=document.getElementById('pdfbtn');

@@ -53,6 +53,10 @@ class Handler(BaseHTTPRequestHandler):
         self.wfile.write(data)
 
     def do_GET(self):
+        if self.path.startswith("/api/track"):
+            self.send_response(204); self.end_headers(); return
+        if self.path.startswith("/api/stats"):
+            return self._stats()
         if self.path.startswith("/api/pdf"):
             return self._pdf()
         path = "/index.html" if self.path in ("/", "") else self.path.split("?")[0]
@@ -88,10 +92,26 @@ class Handler(BaseHTTPRequestHandler):
         except Exception as e:  # noqa
             self._json(500, {"ok": False, "error": "PDF fehlgeschlagen.", "detail": str(e)})
 
+    def _stats(self):
+        try:
+            import stats as S
+            html = S._dashboard() if os.environ.get("STATS_PASSWORD") else S._html(
+                "<h1>Statistik</h1><div class=warn>Lokal kein Passwort/Speicher gesetzt.</div>")
+            data = html.encode("utf-8")
+            self.send_response(200)
+            self.send_header("Content-Type", "text/html; charset=utf-8")
+            self.send_header("Content-Length", str(len(data)))
+            self.end_headers()
+            self.wfile.write(data)
+        except Exception as e:  # noqa
+            self._json(500, {"error": str(e)})
+
     def do_OPTIONS(self):
         self._json(204, {})
 
     def do_POST(self):
+        if self.path.startswith("/api/track"):
+            self.send_response(204); self.end_headers(); return
         length = int(self.headers.get("content-length", 0))
         try:
             body = json.loads(self.rfile.read(length) or b"{}")
