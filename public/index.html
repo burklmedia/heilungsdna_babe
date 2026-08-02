@@ -411,13 +411,15 @@
     border: 1px solid rgba(245,197,107,.28); border-radius: 20px; background: rgba(38,24,72,.42);
     padding: 22px 24px 0; box-shadow: 0 0 55px -28px var(--glow); }
   .preview-label { font-size: 11px; letter-spacing: .2em; text-transform: uppercase; color: var(--accent); text-align: center; margin-bottom: 16px; }
-  .preview-body { position: relative; max-height: 300px; overflow: hidden;
-    -webkit-mask-image: linear-gradient(to bottom, #000 48%, transparent 97%);
-            mask-image: linear-gradient(to bottom, #000 48%, transparent 97%); }
-  .preview-body .pv-title { font-family: var(--serif); color: var(--gold); font-size: 21px; margin: 0 0 4px; }
-  .preview-body .pv-sub { font-size: 12.5px; color: var(--ink-mute); margin-bottom: 12px; }
-  .preview-body .pv-lead { font-family: var(--serif); color: var(--gold); font-size: 16.5px; line-height: 1.5; margin-bottom: 12px; }
-  .preview-body p { color: var(--ink-soft); font-size: 15px; line-height: 1.78; margin: 0 0 12px; }
+  .preview-body { position: relative; max-height: 470px; overflow: hidden;
+    -webkit-mask-image: linear-gradient(to bottom, #000 60%, transparent 98%);
+            mask-image: linear-gradient(to bottom, #000 60%, transparent 98%); }
+  .preview-body .pv-pills { display: flex; flex-wrap: wrap; justify-content: center; gap: 7px; margin-bottom: 18px; }
+  .preview-body .pv-pill { font-size: 11.5px; font-weight: 600; color: var(--ink-soft); background: rgba(201,164,255,.08);
+    border: 1px solid var(--line); border-radius: 999px; padding: 6px 12px; }
+  .preview-body .pv-pill.on { color: #3a2410; background: linear-gradient(135deg, var(--gold), var(--gold-deep)); border-color: transparent; }
+  .preview-body .factrow { margin-top: 0; }
+  .preview-body .grid2 { margin-top: 18px; }
   .preview-seal { position: relative; text-align: center; margin-top: -34px; padding-bottom: 26px; z-index: 2; }
   .preview-seal .lock { width: 54px; height: 54px; margin: 0 auto 12px; border-radius: 50%; display: grid; place-items: center;
     font-size: 22px; background: rgba(22,14,46,.92); border: 1px solid rgba(245,197,107,.5); box-shadow: 0 0 26px -4px var(--glow); }
@@ -433,9 +435,10 @@
   .locked-fold[open] .lf-x { transform: rotate(45deg); }
   .locked-fold #g-locked { padding: 0 20px 6px; }
   /* Vorteile am E-Mail-Feld */
-  .mail-perks { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 18px; }
-  .mail-perks span { font-size: 12.5px; font-weight: 600; color: var(--gold); background: rgba(245,197,107,.1);
-    border: 1px solid rgba(245,197,107,.32); border-radius: 999px; padding: 6px 12px; }
+  .mail-perks { display: flex; flex-wrap: nowrap; justify-content: center; align-items: center; gap: 14px; margin-bottom: 20px; }
+  .mail-perks span { font-size: 12px; font-weight: 600; color: var(--gold); white-space: nowrap; position: relative; }
+  .mail-perks span:not(:last-child)::after { content: ""; position: absolute; right: -8px; top: 50%; width: 3px; height: 3px;
+    border-radius: 50%; background: rgba(245,197,107,.5); transform: translateY(-50%); }
 
   .mailcard { margin: 36px auto 0; max-width: 480px; background: rgba(38,24,72,.6); backdrop-filter: blur(12px);
     border: 1px solid rgba(245,197,107,.5); border-radius: 26px; padding: 32px;
@@ -1134,7 +1137,7 @@
       <p class="authority-note" id="g-authority">…</p>
 
       <div class="preview-wrap" id="g-preview" style="display:none">
-        <div class="preview-label">Ein erster Blick in deine Deutung</div>
+        <div class="preview-label">So sieht dein fertiger Bauplan aus</div>
         <div class="preview-body" id="g-preview-body"></div>
         <div class="preview-seal">
           <div class="lock">🔒</div>
@@ -1151,7 +1154,7 @@
       <div class="mailcard">
         <h3>Dein <span class="accent">kompletter</span> kosmischer Bauplan, kostenlos</h3>
         <p>Trag dich ein und du hast sofort Zugriff, deinen kompletten Bauplan in Ruhe durchzulesen. Und du kannst ihn dir direkt als PDF herunterladen, damit du alles immer wieder in Ruhe nachlesen kannst.</p>
-        <div class="mail-perks"><span>✓ Sofort hier lesen</span><span>✓ Als PDF herunterladen</span><span>✓ Kostenlos</span></div>
+        <div class="mail-perks"><span>✓ Sofort lesen</span><span>✓ Als PDF</span><span>✓ Kostenlos</span></div>
         <div class="field">
           <label for="g-name">Dein Vorname</label>
           <input id="g-name" type="text" placeholder="Vorname" autocomplete="given-name">
@@ -1562,14 +1565,30 @@
     var lp=t.locked_preview||[];
     document.getElementById('g-locked').innerHTML=lp.map(function(x){
       return '<div class="lockrow"><span class="lk">✦</span>'+esc(x)+'</div>'; }).join('');
-    // Versiegelte Vorschau: der echte Anfang deiner Deutung, unten mit Schloss
-    var sec=(d.full&&d.full.sections&&d.full.sections[0])?d.full.sections[0]:null;
-    if(sec){
-      var paras=String(sec.body||'').split('\n\n').slice(0,3).map(function(pp){return '<p>'+esc(pp)+'</p>';}).join('');
+    // Versiegelte Vorschau: sieht aus wie die echte Bauplan-Seite, unten mit Schloss
+    var f=d.full, hd=f&&f.hd;
+    if(f&&hd){
+      var glegend='<div class="glegend"><span><b class="on"></b>definiert</span><span><b class="off"></b>offen</span></div>';
+      var pills=['✦ Übersicht','◈ Human Design','☉ Natalchart','❋ Intuitionstyp','❂ Deutung']
+        .map(function(x,ix){ return '<span class="pv-pill'+(ix===0?' on':'')+'">'+x+'</span>'; }).join('');
+      var by={}; (f.positions||[]).forEach(function(pp){by[pp.key]=pp;});
+      function pvq(k){ return by[k]?(tp(by[k].signSymbol)+' '+by[k].sign):'…'; }
+      function pvnr(sym,label,k){ return '<div class="nk"><span class="nk-s">'+tp(sym)+'</span><span class="nk-l">'+esc(label)+'</span><span class="nk-v">'+pvq(k)+'</span></div>'; }
       document.getElementById('g-preview-body').innerHTML=
-        '<div class="pv-title">'+esc(sec.title)+'</div>'+
-        (sec.subtitle?'<div class="pv-sub">'+esc(sec.subtitle)+'</div>':'')+
-        (sec.headline?'<div class="pv-lead">'+esc(sec.headline)+'</div>':'')+paras;
+        '<div class="pv-pills">'+pills+'</div>'+
+        '<div class="factrow">'+
+          '<div class="f"><div class="l">Typ</div><div class="v">'+esc(hd.type_display||hd.type)+'</div></div>'+
+          '<div class="f"><div class="l">Autorität</div><div class="v">'+esc(shorten(hd.authority))+'</div></div>'+
+          '<div class="f"><div class="l">Profil</div><div class="v">'+esc(hd.profile)+'</div></div>'+
+        '</div>'+
+        '<div class="grid2">'+
+          '<div class="panel tight glowpanel-natal"><span class="cap">Natalchart</span>'+
+            (f.geo?'<div class="graphic gwheel wheelframe">'+buildNatalWheel(f.geo)+'</div>':'')+
+            '<div class="natkey">'+pvnr('☉','Sonne','Sonne')+pvnr('☽','Mond','Mond')+pvnr('AC','Aszendent','AC')+pvnr('DC','Deszendent','DC')+'</div>'+
+          '</div>'+
+          '<div class="panel tight glowpanel"><span class="cap">Human Design</span>'+
+            '<div class="graphic gbody">'+buildBodygraph(hd)+'</div>'+glegend+'</div>'+
+        '</div>';
       document.getElementById('g-preview').style.display='';
     }
     var gn=document.getElementById('g-name'); if(gn && name) gn.value=name;
