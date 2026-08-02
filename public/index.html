@@ -406,6 +406,36 @@
   .lockrow { display: flex; align-items: center; gap: 14px; padding: 13px 0; border-bottom: 1px solid var(--line); color: var(--ink-soft); font-size: 15.5px; }
   .lockrow:last-child { border-bottom: none; }
   .lockrow .lk { flex: none; width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center; background: rgba(245,197,107,.14); color: var(--gold); font-size: 14px; box-shadow: 0 0 16px -4px var(--glow); }
+  /* Versiegelte Vorschau der Deutung */
+  .preview-wrap { max-width: 560px; margin: 38px auto 0; text-align: left; position: relative; overflow: hidden;
+    border: 1px solid rgba(245,197,107,.28); border-radius: 20px; background: rgba(38,24,72,.42);
+    padding: 22px 24px 0; box-shadow: 0 0 55px -28px var(--glow); }
+  .preview-label { font-size: 11px; letter-spacing: .2em; text-transform: uppercase; color: var(--accent); text-align: center; margin-bottom: 16px; }
+  .preview-body { position: relative; max-height: 300px; overflow: hidden;
+    -webkit-mask-image: linear-gradient(to bottom, #000 48%, transparent 97%);
+            mask-image: linear-gradient(to bottom, #000 48%, transparent 97%); }
+  .preview-body .pv-title { font-family: var(--serif); color: var(--gold); font-size: 21px; margin: 0 0 4px; }
+  .preview-body .pv-sub { font-size: 12.5px; color: var(--ink-mute); margin-bottom: 12px; }
+  .preview-body .pv-lead { font-family: var(--serif); color: var(--gold); font-size: 16.5px; line-height: 1.5; margin-bottom: 12px; }
+  .preview-body p { color: var(--ink-soft); font-size: 15px; line-height: 1.78; margin: 0 0 12px; }
+  .preview-seal { position: relative; text-align: center; margin-top: -34px; padding-bottom: 26px; z-index: 2; }
+  .preview-seal .lock { width: 54px; height: 54px; margin: 0 auto 12px; border-radius: 50%; display: grid; place-items: center;
+    font-size: 22px; background: rgba(22,14,46,.92); border: 1px solid rgba(245,197,107,.5); box-shadow: 0 0 26px -4px var(--glow); }
+  .preview-seal .seal-text { font-family: var(--serif); color: var(--ink); font-size: 16.5px; }
+  .preview-seal .seal-sub { color: var(--ink-mute); font-size: 13px; margin-top: 4px; }
+  /* "Das steckt dahinter" als aufklappbares Feld */
+  .locked-fold { max-width: 560px; margin: 22px auto 0; text-align: left; border: 1px solid var(--line);
+    border-radius: 16px; background: rgba(255,255,255,.02); overflow: hidden; }
+  .locked-fold > summary { list-style: none; cursor: pointer; display: flex; align-items: center; justify-content: space-between;
+    gap: 12px; padding: 16px 20px; font-size: 12px; letter-spacing: .06em; text-transform: uppercase; color: var(--gold); }
+  .locked-fold > summary::-webkit-details-marker { display: none; }
+  .locked-fold .lf-x { font-size: 20px; line-height: 1; transition: transform .3s ease; flex: none; }
+  .locked-fold[open] .lf-x { transform: rotate(45deg); }
+  .locked-fold #g-locked { padding: 0 20px 6px; }
+  /* Vorteile am E-Mail-Feld */
+  .mail-perks { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 18px; }
+  .mail-perks span { font-size: 12.5px; font-weight: 600; color: var(--gold); background: rgba(245,197,107,.1);
+    border: 1px solid rgba(245,197,107,.32); border-radius: 999px; padding: 6px 12px; }
 
   .mailcard { margin: 36px auto 0; max-width: 480px; background: rgba(38,24,72,.6); backdrop-filter: blur(12px);
     border: 1px solid rgba(245,197,107,.5); border-radius: 26px; padding: 32px;
@@ -1103,14 +1133,25 @@
 
       <p class="authority-note" id="g-authority">…</p>
 
-      <div class="locked-wrap">
-        <div class="lbl">🔒 Das steckt in deinem kompletten kosmischen Bauplan</div>
-        <div id="g-locked"></div>
+      <div class="preview-wrap" id="g-preview" style="display:none">
+        <div class="preview-label">Ein erster Blick in deine Deutung</div>
+        <div class="preview-body" id="g-preview-body"></div>
+        <div class="preview-seal">
+          <div class="lock">🔒</div>
+          <div class="seal-text">Deine vollständige Deutung ist noch versiegelt</div>
+          <div class="seal-sub">Trag dich unten ein, dann öffnet sie sich ganz für dich</div>
+        </div>
       </div>
+
+      <details class="locked-fold">
+        <summary><span>🔒 Das steckt in deinem kompletten kosmischen Bauplan</span><span class="lf-x">+</span></summary>
+        <div id="g-locked"></div>
+      </details>
 
       <div class="mailcard">
         <h3>Dein <span class="accent">kompletter</span> kosmischer Bauplan, kostenlos</h3>
-        <p>Dein vollständiges Human-Design-Chart, dein Geburtshoroskop mit Aszendent, dein Intuitionstyp und deine persönliche Deutung in Klartext, was das alles für dich bedeutet. Trag dich ein, ich sende dir deinen Bauplan sofort zu.</p>
+        <p>Trag dich ein und du hast sofort Zugriff, deinen kompletten Bauplan in Ruhe durchzulesen. Deine persönliche PDF bekommst du zusätzlich per E-Mail, damit du alles immer wieder nachlesen kannst.</p>
+        <div class="mail-perks"><span>✓ Sofort hier lesen</span><span>✓ PDF per E-Mail</span><span>✓ Kostenlos</span></div>
         <div class="field">
           <label for="g-name">Dein Vorname</label>
           <input id="g-name" type="text" placeholder="Vorname" autocomplete="given-name">
@@ -1521,6 +1562,16 @@
     var lp=t.locked_preview||[];
     document.getElementById('g-locked').innerHTML=lp.map(function(x){
       return '<div class="lockrow"><span class="lk">✦</span>'+esc(x)+'</div>'; }).join('');
+    // Versiegelte Vorschau: der echte Anfang deiner Deutung, unten mit Schloss
+    var sec=(d.full&&d.full.sections&&d.full.sections[0])?d.full.sections[0]:null;
+    if(sec){
+      var paras=String(sec.body||'').split('\n\n').slice(0,3).map(function(pp){return '<p>'+esc(pp)+'</p>';}).join('');
+      document.getElementById('g-preview-body').innerHTML=
+        '<div class="pv-title">'+esc(sec.title)+'</div>'+
+        (sec.subtitle?'<div class="pv-sub">'+esc(sec.subtitle)+'</div>':'')+
+        (sec.headline?'<div class="pv-lead">'+esc(sec.headline)+'</div>':'')+paras;
+      document.getElementById('g-preview').style.display='';
+    }
     var gn=document.getElementById('g-name'); if(gn && name) gn.value=name;
   }
 
