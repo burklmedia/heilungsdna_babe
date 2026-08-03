@@ -1100,7 +1100,7 @@
       <div class="g-greeting" id="g-greeting">
         <span class="spark">✦</span>
         <h2 id="g-hello">Dein Bauplan zeichnet sich ab</h2>
-        <p class="g-lead">Ein erster Blick auf das, was der Himmel im Moment deiner Geburt für dich gewebt hat.</p>
+        <p class="g-lead" id="g-lead">Ein erster Blick auf das, was der Himmel im Moment deiner Geburt für dich gewebt hat.</p>
       </div>
       <div class="preview-wrap" id="g-preview" style="display:none">
         <div class="preview-label">So sieht dein fertiger Bauplan aus</div>
@@ -1508,6 +1508,22 @@
     var t=d.teaser, name=d.birth.name;
     var hello=document.getElementById('g-hello');
     if(hello) hello.textContent = name ? ('Dein Bauplan zeichnet sich ab, '+name) : 'Dein Bauplan zeichnet sich ab';
+    // Dynamische Anrede aus den Geburtsdaten (Wochentag · Monat · Jahr · Ort)
+    var lead=document.getElementById('g-lead');
+    if(lead){
+      var WD=['Sonntag','Montag','Dienstag','Mittwoch','Donnerstag','Freitag','Samstag'];
+      var MO=['Januar','Februar','März','April','Mai','Juni','Juli','August','September','Oktober','November','Dezember'];
+      var m=(d.birth.date||'').match(/^(\d{4})-(\d{2})-(\d{2})/);
+      if(m){
+        var yr=+m[1], mon=+m[2], day=+m[3];
+        var dt=new Date(yr, mon-1, day);
+        var place=(d.birth.place||'').split(',')[0].trim();
+        var wo=WD[dt.getDay()], mn=MO[mon-1];
+        lead.textContent = place
+          ? ('An einem '+wo+' im '+mn+' '+yr+' kamst du in '+place+' zur Welt – und in diesem einen Moment stand der Himmel so, wie er nie zuvor stand und nie wieder stehen wird.')
+          : ('An einem '+wo+' im '+mn+' '+yr+' kamst du zur Welt – und in diesem einen Moment stand der Himmel so, wie er nie zuvor stand und nie wieder stehen wird.');
+      }
+    }
     var lp=t.locked_preview||[];
     document.getElementById('g-locked').innerHTML=lp.map(function(x){
       return '<div class="lockrow"><span class="lk">✦</span>'+esc(x)+'</div>'; }).join('');
