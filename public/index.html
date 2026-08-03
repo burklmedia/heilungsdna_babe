@@ -379,6 +379,10 @@
   /* ---------------- GLIMPSE (Teaser) ---------------- */
   .glimpse { max-width: 680px; margin: 0 auto; text-align: center; display: none; }
   .glimpse.show { display: block; animation: rise .8s cubic-bezier(.2,.7,.2,1) both; }
+  .g-greeting { text-align: center; margin: 0 auto 6px; max-width: 560px; }
+  .g-greeting .spark { font-size: 1.5rem; color: var(--gold); }
+  .g-greeting h2 { font-size: clamp(28px,4.4vw,42px); margin: 10px 0 8px; }
+  .g-greeting .g-lead { color: var(--ink-soft); font-size: 16.5px; line-height: 1.65; max-width: 44ch; margin: 0 auto; }
 
   .locked-wrap { max-width: 520px; margin: 34px auto 0; text-align: left; }
   .locked-wrap .lbl { font-size: 12px; letter-spacing: .1em; text-transform: uppercase; color: var(--gold); margin-bottom: 14px; text-align: center; }
@@ -1093,6 +1097,11 @@
 
   <div class="wrap" style="padding-top:60px;padding-bottom:80px">
     <div class="glimpse" id="glimpse">
+      <div class="g-greeting" id="g-greeting">
+        <span class="spark">✦</span>
+        <h2 id="g-hello">Dein Bauplan zeichnet sich ab</h2>
+        <p class="g-lead">Ein erster Blick auf das, was der Himmel im Moment deiner Geburt für dich gewebt hat.</p>
+      </div>
       <div class="preview-wrap" id="g-preview" style="display:none">
         <div class="preview-label">So sieht dein fertiger Bauplan aus</div>
         <div class="preview-body" id="g-preview-body"></div>
@@ -1497,6 +1506,8 @@
 
   function fillGlimpse(d){
     var t=d.teaser, name=d.birth.name;
+    var hello=document.getElementById('g-hello');
+    if(hello) hello.textContent = name ? ('Dein Bauplan zeichnet sich ab, '+name) : 'Dein Bauplan zeichnet sich ab';
     var lp=t.locked_preview||[];
     document.getElementById('g-locked').innerHTML=lp.map(function(x){
       return '<div class="lockrow"><span class="lk">✦</span>'+esc(x)+'</div>'; }).join('');
