@@ -379,27 +379,6 @@
   /* ---------------- GLIMPSE (Teaser) ---------------- */
   .glimpse { max-width: 680px; margin: 0 auto; text-align: center; display: none; }
   .glimpse.show { display: block; animation: rise .8s cubic-bezier(.2,.7,.2,1) both; }
-  .glimpse .spark { font-size: 1.5rem; color: var(--gold); }
-  .glimpse h2 { font-size: clamp(28px,4.4vw,42px); margin: 12px 0 6px; }
-  .glimpse .type-big { font-family: var(--script); color: var(--gold); font-size: clamp(38px,6vw,58px); display: block; margin: 14px 0 6px; line-height: 1; text-shadow: 0 0 30px var(--glow); }
-  .glimpse .type-desc { color: var(--ink-soft); font-size: 18px; line-height: 1.7; max-width: 52ch; margin: 20px auto 0; }
-  .glimpse .type-mini { font-size: 15.5px; color: var(--ink-soft); display: flex; align-items: center; justify-content: center;
-    gap: 12px; flex-wrap: wrap; margin: 4px 0 2px; letter-spacing: .01em; }
-  .glimpse .type-mini .mini-star { color: var(--gold); font-size: 10px; opacity: .85; }
-  .glimpse-more { color: var(--ink-soft); font-size: 17px; line-height: 1.72; max-width: 54ch; margin: 22px auto 0; }
-  .resonance { max-width: 560px; margin: 30px auto 0; text-align: left; padding: 24px 26px 22px; border-radius: 18px;
-    background: linear-gradient(135deg, rgba(201,164,255,.09), rgba(245,197,107,.06)); border: 1px solid rgba(245,197,107,.3);
-    box-shadow: 0 0 40px -20px var(--glow); }
-  .resonance .res-title { font-family: var(--serif); font-size: 21px; color: var(--gold); text-align: center; margin-bottom: 18px; }
-  .res-row { margin-bottom: 13px; }
-  .res-row .rk { font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: var(--accent); margin-bottom: 3px; }
-  .res-row .rv { font-size: 15.5px; color: var(--ink); line-height: 1.5; }
-  .resonance .res-hook { margin: 16px 0 0; font-size: 15px; color: var(--ink-soft); line-height: 1.7; font-style: italic; }
-  .facts3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin: 30px auto; max-width: 560px; }
-  .fact { background: rgba(38,24,72,.5); border: 1px solid rgba(245,197,107,.45); border-radius: 14px; padding: 16px 12px; box-shadow: 0 0 22px -14px var(--glow); }
-  .fact .fk { font-size: 10.5px; letter-spacing: .12em; text-transform: uppercase; color: var(--ink-mute); margin-bottom: 6px; }
-  .fact .fv { font-family: var(--serif); color: var(--ink); font-size: 18px; line-height: 1.2; }
-  .glimpse .authority-note { color: var(--ink-soft); font-size: 17px; line-height: 1.7; max-width: 52ch; margin: 0 auto; padding: 20px 24px; border-left: 2px solid var(--gold); text-align: left; background: rgba(245,197,107,0.06); border-radius: 0 12px 12px 0; }
 
   .locked-wrap { max-width: 520px; margin: 34px auto 0; text-align: left; }
   .locked-wrap .lbl { font-size: 12px; letter-spacing: .1em; text-transform: uppercase; color: var(--gold); margin-bottom: 14px; text-align: center; }
@@ -407,11 +386,11 @@
   .lockrow:last-child { border-bottom: none; }
   .lockrow .lk { flex: none; width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center; background: rgba(245,197,107,.14); color: var(--gold); font-size: 14px; box-shadow: 0 0 16px -4px var(--glow); }
   /* Versiegelte Vorschau der Deutung */
-  .preview-wrap { max-width: 560px; margin: 38px auto 0; text-align: left; position: relative; overflow: hidden;
-    border: 1px solid rgba(245,197,107,.28); border-radius: 20px; background: rgba(38,24,72,.42);
-    padding: 22px 24px 0; box-shadow: 0 0 55px -28px var(--glow); }
-  .preview-label { font-size: 11px; letter-spacing: .2em; text-transform: uppercase; color: var(--accent); text-align: center; margin-bottom: 16px; }
-  .preview-body { position: relative; max-height: 470px; overflow: hidden;
+  .preview-wrap { max-width: 640px; margin: 8px auto 0; text-align: left; position: relative; overflow: hidden;
+    border: 1px solid rgba(245,197,107,.28); border-radius: 22px; background: rgba(38,24,72,.42);
+    padding: 26px 28px 0; box-shadow: 0 0 60px -26px var(--glow); }
+  .preview-label { font-size: 11.5px; letter-spacing: .2em; text-transform: uppercase; color: var(--accent); text-align: center; margin-bottom: 18px; }
+  .preview-body { position: relative; max-height: 560px; overflow: hidden;
     -webkit-mask-image: linear-gradient(to bottom, #000 60%, transparent 98%);
             mask-image: linear-gradient(to bottom, #000 60%, transparent 98%); }
   .preview-body .pv-pills { display: flex; flex-wrap: wrap; justify-content: center; gap: 7px; margin-bottom: 18px; }
@@ -426,7 +405,7 @@
   .preview-seal .seal-text { font-family: var(--serif); color: var(--ink); font-size: 16.5px; }
   .preview-seal .seal-sub { color: var(--ink-mute); font-size: 13px; margin-top: 4px; }
   /* "Das steckt dahinter" als aufklappbares Feld */
-  .locked-fold { max-width: 560px; margin: 22px auto 0; text-align: left; border: 1px solid var(--line);
+  .locked-fold { max-width: 640px; margin: 22px auto 0; text-align: left; border: 1px solid var(--line);
     border-radius: 16px; background: rgba(255,255,255,.02); overflow: hidden; }
   .locked-fold > summary { list-style: none; cursor: pointer; display: flex; align-items: center; justify-content: space-between;
     gap: 12px; padding: 16px 20px; font-size: 12px; letter-spacing: .06em; text-transform: uppercase; color: var(--gold); }
@@ -1114,28 +1093,6 @@
 
   <div class="wrap" style="padding-top:60px;padding-bottom:80px">
     <div class="glimpse" id="glimpse">
-      <span class="spark">✦</span>
-      <h2 id="g-title">Dein Bauplan zeichnet sich ab</h2>
-
-      <span class="type-big" id="g-type">…</span>
-      <div class="type-mini" id="g-mini">…</div>
-      <p class="glimpse-more" id="g-more">…</p>
-      <p class="type-desc" id="g-desc">…</p>
-
-      <div class="resonance" id="g-resonance" style="display:none">
-        <div class="res-title">Erkennst du dich hier wieder?</div>
-        <div id="g-res-rows"></div>
-        <p class="res-hook" id="g-res-hook"></p>
-      </div>
-
-      <div class="facts3">
-        <div class="fact"><div class="fk">Strategie</div><div class="fv" id="g-strategy">…</div></div>
-        <div class="fact"><div class="fk">Profil</div><div class="fv" id="g-profile">…</div></div>
-        <div class="fact"><div class="fk">Sonne</div><div class="fv" id="g-sun">…</div></div>
-      </div>
-
-      <p class="authority-note" id="g-authority">…</p>
-
       <div class="preview-wrap" id="g-preview" style="display:none">
         <div class="preview-label">So sieht dein fertiger Bauplan aus</div>
         <div class="preview-body" id="g-preview-body"></div>
@@ -1540,28 +1497,6 @@
 
   function fillGlimpse(d){
     var t=d.teaser, name=d.birth.name;
-    function set(id,v){ var e=document.getElementById(id); if(e) e.textContent=v; }
-    set('g-title', name?('Dein Bauplan zeichnet sich ab, '+name):'Dein Bauplan zeichnet sich ab');
-    set('g-type', t.type);
-    var miniParts=[];
-    if(t.sun_sign) miniParts.push((t.sun_sym?(tp(t.sun_sym)+' '):'')+t.sun_sign);
-    if(t.intuition_type) miniParts.push(t.intuition_type);
-    document.getElementById('g-mini').innerHTML=miniParts.join('<span class="mini-star">✦</span>');
-    var art=(d.birth&&d.birth.gender==='f')?'eine':'ein';
-    set('g-more', 'Und du bist noch so viel mehr als '+art+' '+t.type+'. Das hier ist nur der erste Faden. Dein kompletter Bauplan verwebt deinen Sternenhimmel, deine Energie und deine Intuition zu einem einzigen Bild.');
-    set('g-desc', t.type_short||t.hook||'');
-    var res=t.resonance||[];
-    if(res.length){
-      document.getElementById('g-res-rows').innerHTML=res.map(function(r){
-        return '<div class="res-row"><div class="rk">'+esc(r[0])+'</div><div class="rv">'+esc(r[1])+'</div></div>';
-      }).join('');
-      set('g-res-hook', t.resonance_hook||'');
-      document.getElementById('g-resonance').style.display='';
-    }
-    set('g-strategy', t.strategy||'…');
-    set('g-profile', t.profile||'…');
-    set('g-sun', t.sun_sign||'…');
-    document.getElementById('g-authority').innerHTML='<strong style="color:var(--ink)">'+esc(t.authority)+':</strong> '+esc(t.authority_desc||'');
     var lp=t.locked_preview||[];
     document.getElementById('g-locked').innerHTML=lp.map(function(x){
       return '<div class="lockrow"><span class="lk">✦</span>'+esc(x)+'</div>'; }).join('');
