@@ -1554,7 +1554,14 @@
       } else if(sun){
         parts.push('In genau diesem Moment stand deine Sonne in <b>'+esc(sun)+'</b>.');
       }
-      parts.push('Diese Konstellation gab es nie zuvor und wird es nie wieder geben. Sie gehört ganz allein dir.');
+      var ty=t.type, pf=t.profile;
+      if(ty&&pf){
+        parts.push('Daraus ist ein <b>'+esc(ty)+'</b> mit dem Profil <b>'+esc(pf)+'</b> geworden. Wie du Entscheidungen triffst, wo deine Stärke liegt und was dich manchmal ausbremst, das zeigt dir dein Bauplan gleich ganz genau.');
+      } else if(ty){
+        parts.push('Daraus ist ein <b>'+esc(ty)+'</b> geworden. Wie du Entscheidungen triffst, wo deine Stärke liegt und was dich manchmal ausbremst, das zeigt dir dein Bauplan gleich ganz genau.');
+      } else {
+        parts.push('Wie du Entscheidungen triffst, wo deine Stärke liegt und was dich manchmal ausbremst, das zeigt dir dein Bauplan gleich ganz genau.');
+      }
       if(parts.length) lead.innerHTML=parts.join(' ');
     }
     var lp=t.locked_preview||[];
