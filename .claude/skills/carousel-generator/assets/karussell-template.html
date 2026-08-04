@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=1080, initial-scale=1" />
+<title>Karussell — Intuition mit Herz</title>
+<style>
+  /* ============================================================
+     BRAND — hier Farben, Fonts und Kürzel anpassen
+     (Werte für „Intuition mit Herz" / Denise voreingestellt)
+     ============================================================ */
+  :root{
+    --ground:    #160e2e;   /* Hintergrund (tiefes Violett)      */
+    --ground-2:  #241848;   /* Verlauf-Ton                       */
+    --panel:     #261848;
+    --ink:       #f3eefe;   /* Haupttext (fast weiß)             */
+    --ink-soft:  #b3a8d4;   /* gedämpfter Text                   */
+    --accent:    #c9a4ff;   /* Akzent (sanftes Violett)          */
+    --gold:      #f5c56b;   /* Gold für Kernaussagen             */
+    --gold-deep: #eab24d;
+    --line:      rgba(201,164,255,0.22);
+    --serif: "Cormorant Garamond", Georgia, "Times New Roman", serif;
+    --script:"Great Vibes", "Cormorant Garamond", cursive;
+    --sans:  "Mulish", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  }
+  .brandmark::after{ content:"Intuition mit Herz · @deniseeichberg"; }
+
+  /* ============================================================
+     Layout — normalerweise nicht anfassen
+     ============================================================ */
+  *{ box-sizing:border-box; margin:0; padding:0; }
+  html,body{ background:#0c0720; }
+  body{ font-family:var(--sans); color:var(--ink); }
+
+  .slide{
+    position:relative;
+    width:1080px; height:1350px;
+    display:flex; flex-direction:column;
+    justify-content:center;
+    padding:120px 110px;
+    background:
+      radial-gradient(1200px 900px at 80% -10%, rgba(160,110,255,0.28), transparent 60%),
+      radial-gradient(1000px 800px at 10% 110%, rgba(245,197,107,0.14), transparent 60%),
+      linear-gradient(160deg, var(--ground) 0%, var(--ground-2) 100%);
+    overflow:hidden;
+  }
+  /* dezente Sternenpunkte */
+  .slide::before{
+    content:""; position:absolute; inset:0; pointer-events:none;
+    background-image:
+      radial-gradient(1.6px 1.6px at 18% 22%, rgba(255,255,255,.55), transparent),
+      radial-gradient(1.4px 1.4px at 72% 34%, rgba(255,255,255,.45), transparent),
+      radial-gradient(1.2px 1.2px at 40% 70%, rgba(255,255,255,.40), transparent),
+      radial-gradient(1.6px 1.6px at 86% 80%, rgba(245,197,107,.55), transparent),
+      radial-gradient(1.2px 1.2px at 30% 88%, rgba(201,164,255,.55), transparent);
+  }
+  .slide > *{ position:relative; z-index:1; }
+
+  .kicker{
+    font-family:var(--sans); font-weight:700;
+    letter-spacing:.28em; text-transform:uppercase;
+    font-size:26px; color:var(--accent);
+    margin-bottom:34px;
+  }
+  .headline{
+    font-family:var(--serif); font-weight:600;
+    font-size:96px; line-height:1.06; color:var(--ink);
+    letter-spacing:.005em;
+  }
+  .headline .gold{ color:var(--gold); font-style:italic; }
+  .body{
+    font-family:var(--serif); font-size:46px; line-height:1.4;
+    color:var(--ink-soft); margin-top:40px; max-width:820px;
+  }
+  .cta{
+    font-family:var(--sans); font-weight:700; font-size:44px;
+    line-height:1.35; color:var(--ink); margin-top:36px;
+  }
+  .cta .accent{ color:var(--gold); }
+
+  /* Fußzeile mit Marke + Seitenzahl */
+  .foot{
+    position:absolute; left:110px; right:110px; bottom:70px;
+    display:flex; align-items:center; justify-content:space-between;
+    font-family:var(--sans); font-size:24px; color:var(--ink-soft);
+    letter-spacing:.04em;
+  }
+  .brandmark{ opacity:.9; }
+  .page{ font-variant-numeric:tabular-nums; opacity:.75; }
+
+  /* Preview: Slides untereinander mit Abstand.
+     Beim Rendern (?slide=N) zeigt JS nur eine Slide, randlos. */
+  body{ display:flex; flex-direction:column; align-items:center; gap:40px; padding:40px 0; }
+  body.render{ gap:0; padding:0; }
+  body.render .slide{ display:none; }
+  body.render .slide.show{ display:flex; }
+</style>
+</head>
+<body>
+
+  <!-- ============= SLIDES: pro Slide eine <section>, fortlaufend data-slide ============= -->
+
+  <section class="slide" data-slide="1">
+    <h1 class="headline">Du bist nicht faul.<br><span class="gold">Du folgst dem falschen Takt.</span></h1>
+    <div class="foot"><span class="brandmark"></span><span class="page">1</span></div>
+  </section>
+
+  <section class="slide" data-slide="2">
+    <div class="kicker">Deine Energie</div>
+    <h2 class="headline">Nicht jede Energie ist zum <span class="gold">Dauerlauf</span> gemacht.</h2>
+    <p class="body">Dein Design sagt dir, wie du sie einsetzt — ohne auszubrennen.</p>
+    <div class="foot"><span class="brandmark"></span><span class="page">2</span></div>
+  </section>
+
+  <section class="slide" data-slide="3">
+    <div class="kicker">Zwei Modi</div>
+    <h2 class="headline">Manche schieben an. <span class="gold">Andere reagieren.</span></h2>
+    <p class="body">Zwingst du dich in den falschen Modus, kostet alles doppelt Kraft.</p>
+    <div class="foot"><span class="brandmark"></span><span class="page">3</span></div>
+  </section>
+
+  <section class="slide" data-slide="4">
+    <div class="kicker">Ein Signal</div>
+    <h2 class="headline">Erschöpfung ist oft nur ein <span class="gold">Hinweis.</span></h2>
+    <p class="body">Nicht „mehr durchhalten". Sondern: anders ansetzen.</p>
+    <div class="foot"><span class="brandmark"></span><span class="page">4</span></div>
+  </section>
+
+  <section class="slide" data-slide="5">
+    <div class="kicker">Der Kern</div>
+    <h2 class="headline">Deine <span class="gold">Autorität</span> kennt die Antwort vor deinem Kopf.</h2>
+    <p class="body">Bauch, Herz oder Timing — je nach deinem kosmischen Bauplan.</p>
+    <div class="foot"><span class="brandmark"></span><span class="page">5</span></div>
+  </section>
+
+  <section class="slide" data-slide="6">
+    <h2 class="headline">Lies deinen <span class="gold">Himmel.</span></h2>
+    <p class="cta">Willst du wissen, wie deine Energie tickt?<br>
+      <span class="accent">Link in Bio.</span> 🤍 Und speicher dir das für den nächsten müden Tag.</p>
+    <div class="foot"><span class="brandmark"></span><span class="page">6</span></div>
+  </section>
+
+  <!-- ============= Ende Slides ============= -->
+
+<script>
+  // ?slide=N  ->  nur diese Slide zeigen (für den PNG-Export)
+  var p = new URLSearchParams(location.search);
+  var n = p.get("slide");
+  if(n){
+    document.body.classList.add("render");
+    var el = document.querySelector('.slide[data-slide="'+n+'"]');
+    if(el) el.classList.add("show");
+  }
+</script>
+</body>
+</html>
