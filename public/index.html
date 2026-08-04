@@ -1707,8 +1707,7 @@
     var by={}; (f.positions||[]).forEach(function(p){by[p.key]=p;});
     function q(k){ return by[k]?(tp(by[k].signSymbol)+' '+by[k].sign):'…'; }
     function natrow(sym,label,k){ return '<div class="nk"><span class="nk-s">'+tp(sym)+'</span><span class="nk-l">'+esc(label)+'</span><span class="nk-v">'+q(k)+'</span></div>'; }
-    // "Was bedeutet was?" & Häuser: am Handy einklappbar, am Desktop offen wie gehabt
-    var ovMobile = window.innerWidth<=900;
+    // "Was bedeutet was?" & Häuser: überall als aufklappbares Modul (zu per Default)
     var legendInner=
       '<p class="legend-intro">Hier findest du die wichtigsten Begriffe aus deinem Bauplan in einfachen Worten. So hast du sie gleich zu Beginn erklärt und kannst jederzeit nachschauen.</p>'+
       LEGEND.map(function(l){return '<div class="li"><div class="t">'+esc(l[0])+'</div><div class="d">'+esc(l[1])+'</div></div>';}).join('');
@@ -1717,14 +1716,8 @@
       '<div class="houses">'+(f.houses||[]).map(function(h){
         return '<div class="hrow"><span class="hnr">'+h.nr+'</span><span class="htxt"><b>Haus '+h.nr+', '+esc(h.title)+'</b><span>'+esc(h.meaning)+'</span></span></div>';
       }).join('')+'</div>';
-    var ovLegend, ovHouses;
-    if(ovMobile){
-      ovLegend='<details class="ov-fold"><summary class="ov-fold-h"><span>Was bedeutet was?</span><span class="ov-fold-x">+</span></summary><div class="ov-fold-b legend">'+legendInner+'</div></details>';
-      ovHouses='<details class="ov-fold"><summary class="ov-fold-h"><span>Die zwölf Häuser, deine Lebensfelder</span><span class="ov-fold-x">+</span></summary><div class="ov-fold-b">'+housesInner+'</div></details>';
-    } else {
-      ovLegend='<div class="legend legend-top" style="margin-top:32px"><div class="lh">Was bedeutet was?</div>'+legendInner+'</div>';
-      ovHouses='<div class="cap2" style="margin-top:32px">Die zwölf Häuser, deine Lebensfelder</div>'+housesInner;
-    }
+    var ovLegend='<details class="ov-fold"><summary class="ov-fold-h"><span>Was bedeutet was?</span><span class="ov-fold-x">+</span></summary><div class="ov-fold-b legend">'+legendInner+'</div></details>';
+    var ovHouses='<details class="ov-fold"><summary class="ov-fold-h"><span>Die zwölf Häuser, deine Lebensfelder</span><span class="ov-fold-x">+</span></summary><div class="ov-fold-b">'+housesInner+'</div></details>';
     document.getElementById('pane-ov').innerHTML=
       '<p class="ov-intro">'+(b.name?(esc(b.name)+', '):'')+'was du gleich liest, ist kein Test und kein Urteil. Es ist ein Blick auf das, was in dir angelegt ist, seit dem ersten Moment deines Lebens. Vielleicht erkennst du dich an mancher Stelle so genau wieder, dass es kurz wehtut. Das ist gut so. Es heißt, du wirst gesehen. Prüf beim Lesen immer selbst, was sich für dich stimmig anfühlt. Was nicht passt, darfst du getrost liegen lassen.</p>'+
       '<div class="factrow">'+
