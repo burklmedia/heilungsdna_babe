@@ -59,7 +59,9 @@ class Handler(BaseHTTPRequestHandler):
             return self._stats()
         if self.path.startswith("/api/pdf"):
             return self._pdf()
-        path = "/index.html" if self.path in ("/", "") else self.path.split("?")[0]
+        path = self.path.split("?")[0]
+        if path in ("/", ""):
+            path = "/index.html"
         fp = os.path.normpath(os.path.join(PUBLIC, path.lstrip("/")))
         if not fp.startswith(PUBLIC) or not os.path.isfile(fp):
             return self._json(404, {"error": "not found"})

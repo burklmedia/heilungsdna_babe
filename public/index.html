@@ -282,7 +282,7 @@
   .mgh { font-size: 10px; letter-spacing: .18em; text-transform: uppercase; color: var(--gold); margin: 10px 0 1px; display: flex; align-items: center; gap: 8px; }
   .mgh::before { content: "✦"; font-size: 9px; opacity: .85; }
   .mock-hint { text-align: center; font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: var(--accent); margin-top: 10px; opacity: .85; }
-  @media (prefers-reduced-motion: reduce) { .mock-reel { animation: none; } }
+  @media (prefers-reduced-motion: reduce) { .mock-reel { animation: none; } .locked-attn { animation: none; } }
   .cards { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
   .mcard { display: flex; align-items: center; gap: 11px; background: rgba(38,24,72,.5); border: 1px solid var(--line); border-radius: 14px; padding: 14px 15px; font-size: 14.5px; color: var(--ink); }
   .mcard .ic { font-size: 18px; flex: none; }
@@ -383,10 +383,11 @@
   .g-greeting .spark { font-size: 1.5rem; color: var(--gold); }
   .g-greeting h2 { font-size: clamp(28px,4.4vw,42px); margin: 10px 0 8px; }
   .g-greeting h2 .script { font-size: 1.16em; }
-  .g-greeting .g-lead { color: var(--ink-soft); font-size: 16.5px; line-height: 1.65; max-width: 46ch; margin: 0 auto; }
+  .g-greeting .g-lead { color: var(--ink-soft); font-size: 16.5px; line-height: 1.65; max-width: 52ch; margin: 0 auto; }
+  .g-greeting .g-lead b { color: var(--gold); font-weight: 600; }
   /* Versiegelte Vorschau links, E-Mail-Feld rechts – nebeneinander */
-  .glimpse-cols { display: grid; grid-template-columns: minmax(0,1.05fr) minmax(0,.95fr); gap: 30px; align-items: start; text-align: left; }
-  .glimpse-cols .g-left { min-width: 0; }
+  .glimpse-cols { display: grid; grid-template-columns: minmax(0,1.05fr) minmax(0,.95fr); gap: 30px; align-items: stretch; text-align: left; }
+  .glimpse-cols .g-left { min-width: 0; display: flex; flex-direction: column; }
   @media (max-width: 780px) { .glimpse-cols { grid-template-columns: 1fr; gap: 8px; } }
 
   .locked-wrap { max-width: 520px; margin: 34px auto 0; text-align: left; }
@@ -414,10 +415,15 @@
   .preview-seal .seal-text { font-family: var(--serif); color: var(--ink); font-size: 16.5px; }
   .preview-seal .seal-sub { color: var(--ink-mute); font-size: 13px; margin-top: 4px; }
   /* "Das steckt dahinter" als aufklappbares Feld */
-  .locked-fold { max-width: 640px; margin: 22px auto 0; text-align: left; border: 1px solid var(--line);
-    border-radius: 16px; background: rgba(255,255,255,.02); overflow: hidden; }
-  .locked-fold > summary { list-style: none; cursor: pointer; display: flex; align-items: center; justify-content: space-between;
-    gap: 12px; padding: 16px 20px; font-size: 12px; letter-spacing: .06em; text-transform: uppercase; color: var(--gold); }
+  .locked-fold { max-width: 640px; margin: 34px auto 0; text-align: left; border: 1px solid rgba(245,197,107,.4);
+    border-radius: 16px; background: rgba(245,197,107,.05); overflow: hidden; }
+  .locked-attn { animation: lockglow 3.2s ease-in-out infinite; }
+  @keyframes lockglow {
+    0%,100% { box-shadow: 0 0 0 1px rgba(245,197,107,.28), 0 0 26px -12px var(--glow); }
+    50%     { box-shadow: 0 0 0 1px rgba(245,197,107,.55), 0 0 46px -6px var(--glow); }
+  }
+  .locked-fold > summary { list-style: none; cursor: pointer; display: flex; align-items: center; justify-content: center;
+    gap: 10px; padding: 16px 20px; font-size: 12px; letter-spacing: .06em; text-transform: uppercase; color: var(--gold); }
   .locked-fold > summary::-webkit-details-marker { display: none; }
   .locked-fold .lf-x { font-size: 20px; line-height: 1; transition: transform .3s ease; flex: none; }
   .locked-fold[open] .lf-x { transform: rotate(45deg); }
@@ -437,10 +443,9 @@
   .mailcard > p { color: var(--ink-soft); font-size: 15.5px; margin-bottom: 18px; }
   .mailcard .field { text-align: left; }
   .form-note { font-size: 12px; color: var(--ink-mute); margin-top: 12px; line-height: 1.5; text-align: left; }
-  /* Im Zwei-Spalten-Layout füllen Vorschau + Formular ihre Spalte ganz aus */
-  .glimpse-cols .preview-wrap { max-width: none; margin: 0; }
-  .glimpse-cols .locked-fold { max-width: none; margin: 20px 0 0; }
-  .glimpse-cols .mailcard { max-width: none; margin: 0; }
+  /* Im Zwei-Spalten-Layout füllen Vorschau + Formular ihre Spalte ganz aus und sind gleich hoch */
+  .glimpse-cols .preview-wrap { max-width: none; margin: 0; flex: 1; }
+  .glimpse-cols .mailcard { max-width: none; margin: 0; display: flex; flex-direction: column; justify-content: center; }
   @media (max-width: 780px) {
     .glimpse-cols .preview-wrap, .glimpse-cols .locked-fold, .glimpse-cols .mailcard { max-width: 560px; margin-left: auto; margin-right: auto; }
     .glimpse-cols .mailcard { margin-top: 26px; }
@@ -1128,10 +1133,6 @@
             </div>
           </div>
 
-          <details class="locked-fold">
-            <summary><span>🔒 Das steckt in deinem kompletten kosmischen Bauplan</span><span class="lf-x">+</span></summary>
-            <div id="g-locked"></div>
-          </details>
         </div>
 
         <div class="mailcard">
@@ -1151,6 +1152,11 @@
           <p class="form-note">Mit dem Absenden meldest du dich zu meinem kostenlosen Newsletter an und erhältst deine Analyse. Jederzeit mit einem Klick abbestellbar. Es gilt meine <a href="/datenschutz.html" style="color:var(--gold)">Datenschutzerklärung</a>.</p>
         </div>
       </div>
+
+      <details class="locked-fold locked-attn">
+        <summary><span>🔒 Das steckt in deinem kompletten kosmischen Bauplan</span><span class="lf-x">+</span></summary>
+        <div id="g-locked"></div>
+      </details>
     </div>
   </div>
 </section>
@@ -1533,15 +1539,23 @@
       var WD=['Sonntag','Montag','Dienstag','Mittwoch','Donnerstag','Freitag','Samstag'];
       var MO=['Januar','Februar','März','April','Mai','Juni','Juli','August','September','Oktober','November','Dezember'];
       var m=(d.birth.date||'').match(/^(\d{4})-(\d{2})-(\d{2})/);
+      var sun=t.sun_sign, moon=t.moon_sign,
+          asc=(d.full&&d.full.ascendant&&d.full.ascendant.sign)||'';
+      var parts=[];
       if(m){
-        var yr=+m[1], mon=+m[2], day=+m[3];
-        var dt=new Date(yr, mon-1, day);
+        var yr=+m[1], mon=+m[2];
+        var dt=new Date(yr, mon-1, +m[3]);
         var place=(d.birth.place||'').split(',')[0].trim();
         var wo=WD[dt.getDay()], mn=MO[mon-1];
-        lead.textContent = place
-          ? ('An einem '+wo+' im '+mn+' '+yr+' kamst du in '+place+' zur Welt – und in diesem einen Moment stand der Himmel so, wie er nie zuvor stand und nie wieder stehen wird.')
-          : ('An einem '+wo+' im '+mn+' '+yr+' kamst du zur Welt – und in diesem einen Moment stand der Himmel so, wie er nie zuvor stand und nie wieder stehen wird.');
+        parts.push('An einem '+wo+' im '+mn+' '+yr+' kamst du'+(place?(' in '+place):'')+' zur Welt.');
       }
+      if(sun&&moon){
+        parts.push('In genau diesem Moment stand deine Sonne in <b>'+esc(sun)+'</b>, dein Mond in <b>'+esc(moon)+'</b>'+(asc?(', und <b>'+esc(asc)+'</b> stieg am Horizont auf'):'')+'.');
+      } else if(sun){
+        parts.push('In genau diesem Moment stand deine Sonne in <b>'+esc(sun)+'</b>.');
+      }
+      parts.push('Diese Konstellation gab es nie zuvor und wird es nie wieder geben. Sie gehört ganz allein dir.');
+      if(parts.length) lead.innerHTML=parts.join(' ');
     }
     var lp=t.locked_preview||[];
     document.getElementById('g-locked').innerHTML=lp.map(function(x){
