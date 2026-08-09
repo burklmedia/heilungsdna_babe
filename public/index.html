@@ -639,6 +639,18 @@
   .facet2-t { font-family: var(--serif); font-size: 16px; color: var(--ink); margin-bottom: 5px; }
   .facet2-d { font-size: 13.5px; color: var(--ink-soft); line-height: 1.75; }
 
+  /* Numerologie */
+  .num-big { font-family: var(--serif); font-weight: 600; font-size: clamp(56px,14vw,90px); line-height: 1;
+    color: var(--gold); text-shadow: 0 0 30px var(--glow); margin: 2px 0 4px; }
+  .num-calc { font-family: var(--sans); font-size: 13px; letter-spacing: .02em; color: var(--ink-soft);
+    background: rgba(245,197,107,.06); border: 1px solid rgba(245,197,107,.28); border-radius: 999px;
+    padding: 8px 16px; display: inline-block; margin: 6px auto 4px; }
+  .num-badge { width: 52px; height: 52px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    font-family: var(--serif); font-size: 24px; color: var(--ink-soft); border: 1px solid var(--line-strong);
+    background: rgba(255,255,255,.02); margin: 0 auto; }
+  .num-badge.on { color: #3a2410; background: linear-gradient(135deg, var(--gold), var(--gold-deep));
+    border-color: transparent; box-shadow: 0 0 18px -4px var(--glow); }
+
   /* footer */
   footer { border-top: 1px solid var(--line); padding: 40px 0; color: var(--ink-mute); font-size: 14px; margin-top: 40px; }
   .foot { display: flex; align-items: center; justify-content: space-between; gap: 20px; flex-wrap: wrap; }
@@ -1001,6 +1013,11 @@
                 <div class="mrow"><span>Dein Kanal</span><b>Körper-Intuition</b></div>
               </div>
               <div class="mock-group">
+                <div class="mgh">Numerologie</div>
+                <div class="mrow gold"><span>Lebenszahl</span><b>7, der Weg der Tiefe</b></div>
+                <div class="mrow"><span>Namenszahl</span><b>3, Ausdruck &amp; Freude</b></div>
+              </div>
+              <div class="mock-group">
                 <div class="mgh">Deine persönliche Deutung</div>
                 <div class="mrow"><span>Lebensaufgabe</span><b>von Jungfrau zu Fische</b></div>
                 <div class="mrow"><span>Größte Stärke</span><b>dein Gespür für Menschen</b></div>
@@ -1016,6 +1033,7 @@
         <div class="cards">
           <div class="mcard"><span class="ic">✨</span> Dein Human-Design-Typ</div>
           <div class="mcard"><span class="ic">🌙</span> Deine innere Autorität</div>
+          <div class="mcard"><span class="ic">🔢</span> Deine Lebenszahl</div>
           <div class="mcard"><span class="ic">⭐</span> Deine Lebensaufgabe</div>
           <div class="mcard"><span class="ic">💛</span> Deine größten Stärken</div>
           <div class="mcard"><span class="ic">🌿</span> Deine Herausforderungen</div>
@@ -1185,6 +1203,7 @@
           <button class="rtab" data-rtab="hd" type="button">◈ Human Design</button>
           <button class="rtab" data-rtab="na" type="button">☉ Natalchart</button>
           <button class="rtab" data-rtab="in" type="button">❋ Intuitionstyp</button>
+          <button class="rtab" data-rtab="nu" type="button">❖ Numerologie</button>
           <button class="rtab" data-rtab="de" type="button">❂ Deutung</button>
         </div>
       </nav>
@@ -1192,6 +1211,7 @@
       <div class="rpane" id="pane-hd"></div>
       <div class="rpane" id="pane-na"></div>
       <div class="rpane" id="pane-in"></div>
+      <div class="rpane" id="pane-nu"></div>
       <div class="rpane" id="pane-de"></div>
       <p style="text-align:center;margin-top:26px;color:var(--ink-mute);font-size:12.5px" id="note"></p>
     </article>
@@ -1822,6 +1842,37 @@
             }).join('')+
           '</div>'+
           '<p class="intu-note">'+esc(it.note)+'</p>'+
+        '</div>';
+    }
+
+    // ── NUMEROLOGIE ──
+    var nu=f.numerology;
+    if(nu){
+      var nameCard = nu.name_number ?
+        ('<div class="cap2" style="margin-top:28px">Deine Namenszahl</div>'+
+         '<div class="facets2"><div class="facet2">'+
+           '<div class="facet2-t">Namenszahl '+esc(String(nu.name_number.number))+
+             (nu.name_number.name?(' · '+esc(nu.name_number.name)):'')+'</div>'+
+           '<div class="facet2-d">'+esc(nu.name_number.text)+'</div>'+
+         '</div></div>') : '';
+      var numGallery='<div class="cap2" style="margin-top:28px">Die neun Lebenszahlen</div>'+
+        '<div class="intu-gallery">'+
+        (nu.all||[]).map(function(a){ var on=a.number===nu.lifepath;
+          return '<div class="itype'+(on?' on':'')+'">'+(on?'<div class="itype-badge">deine Zahl</div>':'')+
+            '<div class="itype-sk"><div class="num-badge'+(on?' on':'')+'">'+a.number+'</div></div>'+
+            '<div class="itype-name">'+esc(a.short||'')+'</div>'+
+            '<div class="itype-tag">'+esc(a.keyword)+'</div></div>';
+        }).join('')+'</div>';
+      document.getElementById('pane-nu').innerHTML=
+        '<div class="intu">'+
+          '<div class="intu-eyebrow">Deine Lebenszahl</div>'+
+          '<div class="num-big">'+esc(String(nu.lifepath))+'</div>'+
+          '<div class="intu-tag">'+esc(nu.title)+' · '+esc(nu.tagline)+'</div>'+
+          '<div style="text-align:center"><span class="num-calc">'+esc(nu.calc)+'</span></div>'+
+          '<p class="intu-text" style="margin-top:8px">'+esc(nu.text)+'</p>'+
+          nameCard+
+          numGallery+
+          '<p class="intu-note">'+esc(nu.note)+'</p>'+
         '</div>';
     }
 

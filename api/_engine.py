@@ -295,6 +295,7 @@ def compute_chart(name, year, month, day, hour, minute, lat, lon, tz_name,
 
     result = {
         "name": name,
+        "birth_date": {"year": year, "month": month, "day": day},
         "hd": {
             "type": hd_type,
             "authority": authority,

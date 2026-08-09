@@ -501,6 +501,27 @@ def build_pdf(result):
             _unit(pdf, str(c.get("name") or ""), state,
                   c.get("theme") or c.get("meaning"), body)
 
+    # Numerologie
+    num = full.get("numerology")
+    if num:
+        kap += 1
+        _simple_chapter_head(pdf, kap, "Deine Numerologie",
+                             "Zwei Zahlen, die sich aus deinem Geburtsdatum und deinem Vornamen "
+                             "ergeben und einen eigenen Blick auf deine Themen werfen.")
+        lp_body = str(num.get("text") or "")
+        if num.get("calc"):
+            lp_body += "\nSo wird sie gerechnet: " + str(num["calc"])
+        _unit(pdf, num.get("title") or "Lebenszahl",
+              "Lebenszahl " + str(num.get("lifepath", "")),
+              num.get("tagline"), lp_body)
+        nn = num.get("name_number")
+        if nn:
+            _unit(pdf, "Namenszahl " + str(nn.get("number", "")),
+                  nn.get("name") or "", None, nn.get("text"))
+        if num.get("note"):
+            pdf.ln(2)
+            _para(pdf, num["note"], size=8.5, color=MUTE, h=4.6, after=0)
+
     # Abschluss
     if full.get("closing"):
         kap += 1

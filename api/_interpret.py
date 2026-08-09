@@ -1007,6 +1007,189 @@ def build_intuition(chart):
     return result
 
 
+# ── Numerologie (deterministisch aus Geburtsdatum und Vorname, 0 € KI) ──
+# Pythagoräische Buchstabenwerte; deutsche Umlaute werden vorher aufgelöst.
+_NUM_LETTERS = {
+    "a": 1, "b": 2, "c": 3, "d": 4, "e": 5, "f": 6, "g": 7, "h": 8, "i": 9,
+    "j": 1, "k": 2, "l": 3, "m": 4, "n": 5, "o": 6, "p": 7, "q": 8, "r": 9,
+    "s": 1, "t": 2, "u": 3, "v": 4, "w": 5, "x": 6, "y": 7, "z": 8,
+}
+_NUM_TRANS = str.maketrans({"ä": "ae", "ö": "oe", "ü": "ue", "ß": "ss",
+                            "á": "a", "à": "a", "â": "a", "é": "e", "è": "e",
+                            "ê": "e", "í": "i", "ó": "o", "ú": "u", "ñ": "n", "ç": "c"})
+
+
+def _num_reduce(n, keep_master=True):
+    """Quersumme, bis eine Ziffer bleibt. Meisterzahlen 11, 22, 33 bleiben stehen."""
+    while n > 9 and not (keep_master and n in (11, 22, 33)):
+        n = sum(int(d) for d in str(n))
+    return n
+
+
+LIFEPATH = {
+    1: {"title": "Der Weg der Eigenständigkeit", "tagline": "Führung und Mut",
+        "keyword": "Anfangen und führen",
+        "text": "Deine Eins ist die Zahl des Anfangs. Du bist hier, um deinen eigenen Weg zu "
+                "gehen, nicht den, den andere für dich vorgesehen haben. In dir steckt eine "
+                "natürliche Führungskraft und der Mut, Dinge als Erste anzupacken. Vielleicht "
+                "hast du früh gelernt, dich anzupassen, und tief gespürt, dass dich das klein "
+                "macht. Deine Kraft wächst genau dann, wenn du zu deiner eigenen Richtung stehst, "
+                "auch wenn du dafür ein Stück allein vorangehst. Du bist gebaut, um selbst zu "
+                "entscheiden."},
+    2: {"title": "Der Weg der Verbindung", "tagline": "Feingefühl und Nähe",
+        "keyword": "Verbinden und spüren",
+        "text": "Deine Zwei ist die Zahl der Verbindung. Du spürst feiner als die meisten, was "
+                "zwischen Menschen mitschwingt, und hast die Gabe, Brücken zu bauen und "
+                "auszugleichen. An der Seite anderer blühst du am meisten auf. Vielleicht stellst "
+                "du dich dabei oft zu weit hinten an und vergisst dich selbst. Deine Aufgabe ist, "
+                "deine Sanftheit als Stärke zu sehen und trotzdem für dich einzustehen. Echte "
+                "Harmonie schließt dich immer mit ein."},
+    3: {"title": "Der Weg des Ausdrucks", "tagline": "Freude und Kreativität",
+        "keyword": "Ausdrücken und leuchten",
+        "text": "Deine Drei ist die Zahl des Ausdrucks. In dir wohnt eine Leichtigkeit und eine "
+                "schöpferische Freude, die andere ansteckt. Du bringst Farbe dorthin, wo es grau "
+                "wird, mit Worten, mit Kreativität, mit deinem Lachen. Vielleicht hast du gelernt, "
+                "dich kleiner zu machen, um bloß nicht zu viel zu sein. Aber deine Freude ist ein "
+                "Geschenk, kein Zuviel. Wenn du dich zeigst, geht es dir am besten."},
+    4: {"title": "Der Weg der Beständigkeit", "tagline": "Struktur und Halt",
+        "keyword": "Bauen und halten",
+        "text": "Deine Vier ist die Zahl des festen Bodens. Du baust mit Geduld etwas auf, das "
+                "bleibt, und andere verlassen sich auf dein Wort. Struktur, Ordnung und "
+                "Verlässlichkeit sind deine natürliche Sprache. Vielleicht bist du manchmal zu "
+                "streng mit dir und lässt wenig Leichtigkeit zu. Erlaub dir, auch mal loszulassen. "
+                "Dein Halt ist echt, du musst ihn dir nicht ständig hart erkämpfen."},
+    5: {"title": "Der Weg der Freiheit", "tagline": "Wandel und Weite",
+        "keyword": "Erleben und wandeln",
+        "text": "Deine Fünf ist die Zahl der Freiheit. Du brauchst Bewegung, Abwechslung und Weite, "
+                "um dich lebendig zu fühlen, und lernst am meisten, indem du das Leben selbst "
+                "erfährst. Enge macht dich unruhig. Vielleicht hast du dich manchmal als zu "
+                "sprunghaft erlebt oder so genannt bekommen. Aber dein Hunger nach Erfahrung ist "
+                "kein Makel, er ist dein Motor. Gib dir die Freiheit, die du brauchst, und du "
+                "findest von ganz allein zur Ruhe."},
+    6: {"title": "Der Weg der Fürsorge", "tagline": "Liebe und Verantwortung",
+        "keyword": "Sorgen und lieben",
+        "text": "Deine Sechs ist die Zahl der Liebe und der Fürsorge. Du sorgst von Herzen für die "
+                "Menschen um dich und hast ein feines Gespür für das, was ein Zuhause warm macht. "
+                "Verantwortung trägst du gern. Vielleicht kümmerst du dich so sehr um andere, dass "
+                "du dabei zuletzt kommst. Deine Lektion ist, dieselbe Fürsorge auch dir selbst zu "
+                "schenken. Du darfst genährt werden, nicht immer nur nähren."},
+    7: {"title": "Der Weg der Tiefe", "tagline": "Wahrheit und Weisheit",
+        "keyword": "Ergründen und verstehen",
+        "text": "Deine Sieben ist die Zahl der Tiefe. Du gibst dich nicht mit der Oberfläche "
+                "zufrieden, du willst verstehen, was wirklich dahintersteckt. Stille, Rückzug und "
+                "die großen Fragen gehören zu dir. Vielleicht fühlst du dich manchmal einsam oder "
+                "anders als die anderen. Aber deine Tiefe ist eine Gabe, kein Abstand. Vertrau "
+                "deiner inneren Weisheit, sie führt dich sicherer als jeder laute Rat von außen."},
+    8: {"title": "Der Weg der Kraft", "tagline": "Fülle und Wirkung",
+        "keyword": "Gestalten und tragen",
+        "text": "Deine Acht ist die Zahl der Kraft und der Fülle. In dir steckt die Fähigkeit, im "
+                "Außen zu wirken, Verantwortung zu tragen und etwas Großes auf die Beine zu "
+                "stellen. Du denkst in Möglichkeiten, nicht in Grenzen. Vielleicht hast du ein "
+                "zwiespältiges Verhältnis zu Erfolg und Geld, mal Sehnsucht, mal Scheu. Deine "
+                "Aufgabe ist, deine Kraft anzunehmen, ohne dich über sie zu definieren. Du darfst "
+                "wirken und trotzdem weich bleiben."},
+    9: {"title": "Der Weg des Mitgefühls", "tagline": "Weite und Vollendung",
+        "keyword": "Geben und loslassen",
+        "text": "Deine Neun ist die Zahl des großen Herzens. Du fühlst über dich hinaus, mit den "
+                "Menschen und mit der Welt, und trägst eine natürliche Weisheit und Großzügigkeit "
+                "in dir. Oft gibst du, ohne zu rechnen. Vielleicht fällt dir das Loslassen schwer, "
+                "das Festhalten an dem, was längst vorbei ist. Deine Lektion ist, zu vertrauen, "
+                "dass im Loslassen Platz für Neues entsteht. Dein Mitgefühl ist dein Geschenk an "
+                "diese Welt."},
+    11: {"title": "Die Meisterzahl der Eingebung", "tagline": "Licht und Intuition",
+         "keyword": "Erspüren und inspirieren",
+         "text": "Deine Elf ist eine Meisterzahl, eine der seltensten und feinsten Schwingungen der "
+                 "Numerologie. Sie trägt alles von der Zwei, aber in einer viel höheren, hellwachen "
+                 "Form. Du bist wie ein Kanal für Eingebung und Inspiration und spürst Dinge, für "
+                 "die andere keine Worte haben. Das kann sich groß anfühlen, manchmal fast zu viel. "
+                 "Vielleicht schwankst du zwischen tiefer Klarheit und leisem Selbstzweifel. Wenn du "
+                 "deiner inneren Stimme vertraust, wirst du für andere zu einem Licht."},
+    22: {"title": "Die Meisterzahl der Verwirklichung", "tagline": "Vision und Aufbau",
+         "keyword": "Träumen und bauen",
+         "text": "Deine Zweiundzwanzig ist die Meisterzahl des Baumeisters, eine der kraftvollsten "
+                 "überhaupt. Sie verbindet die große Vision der Elf mit dem festen Boden der Vier. "
+                 "Du hast die seltene Gabe, große Träume nicht nur zu denken, sondern sie wirklich "
+                 "in die Welt zu bringen. Vielleicht spürst du den Druck dieser Größe und traust "
+                 "dich manchmal nicht so recht heran. Geh in kleinen, festen Schritten. Was in dir "
+                 "angelegt ist, darf echt werden."},
+    33: {"title": "Die Meisterzahl der Liebe", "tagline": "Heilung und Hingabe",
+         "keyword": "Heilen und dienen",
+         "text": "Deine Dreiunddreißig ist die höchste und seltenste Meisterzahl, die Zahl des "
+                 "liebenden Herzens. Sie trägt eine tiefe Berufung, für andere da zu sein und mit "
+                 "reiner Wärme zu heilen. In dir wohnt ein großer Wunsch, die Welt ein Stück "
+                 "sanfter zu machen. Diese Berufung darf dich nur nicht auslaugen. Deine Aufgabe "
+                 "ist, dieselbe Liebe, die du so großzügig verschenkst, auch dir selbst zu "
+                 "schenken."},
+}
+
+NAMENUM = {
+    1: "Dein Name trägt eine führende, eigenständige Note und lässt dich selbstbewusst und klar wirken.",
+    2: "Dein Name schwingt sanft und verbindend und lässt dich nahbar und feinfühlig wirken.",
+    3: "Dein Name hat etwas Leichtes und Ausdrucksstarkes und bringt Freude und Lebendigkeit mit sich.",
+    4: "Dein Name wirkt geerdet und verlässlich und strahlt Ruhe und Beständigkeit aus.",
+    5: "Dein Name trägt Bewegung und Freiheit in sich und wirkt lebendig, neugierig und wandelbar.",
+    6: "Dein Name schwingt warm und fürsorglich und lässt dich zu einem Menschen werden, bei dem sich andere geborgen fühlen.",
+    7: "Dein Name hat etwas Tiefes und Nachdenkliches und umgibt dich mit einer leisen, geheimnisvollen Note.",
+    8: "Dein Name trägt Kraft und Präsenz und lässt dich stark und zielsicher wirken.",
+    9: "Dein Name schwingt weit und mitfühlend und umgibt dich mit einer warmen, großherzigen Ausstrahlung.",
+    11: "Dein Name trägt die feine Schwingung der Meisterzahl Elf, hellwach und inspirierend.",
+    22: "Dein Name trägt die kraftvolle Schwingung der Meisterzahl Zweiundzwanzig, visionär und zugleich geerdet.",
+    33: "Dein Name trägt die seltene, liebevolle Schwingung der Meisterzahl Dreiunddreißig.",
+}
+
+_NUM_WORD = {1: "eins", 2: "zwei", 3: "drei", 4: "vier", 5: "fünf", 6: "sechs",
+             7: "sieben", 8: "acht", 9: "neun", 11: "elf", 22: "zweiundzwanzig",
+             33: "dreiunddreißig"}
+# Kurzlabel fürs Zahlen-Raster (sauberer Nominativ, kein Genitiv-Rest)
+LIFEPATH_SHORT = {1: "Eigenständigkeit", 2: "Verbindung", 3: "Ausdruck", 4: "Beständigkeit",
+                  5: "Freiheit", 6: "Fürsorge", 7: "Tiefe", 8: "Kraft", 9: "Mitgefühl"}
+
+
+def _name_number(name):
+    s = (name or "").strip().lower().translate(_NUM_TRANS)
+    vals = [_NUM_LETTERS[c] for c in s if c in _NUM_LETTERS]
+    if not vals:
+        return None
+    return _num_reduce(sum(vals))
+
+
+def build_numerology(chart):
+    """Lebenszahl aus dem Geburtsdatum, Namenszahl aus dem Vornamen. Rein arithmetisch."""
+    bd = chart.get("birth_date")
+    if not bd:
+        return None
+    y, m, d = bd["year"], bd["month"], bd["day"]
+    dr, mr, yr = _num_reduce(d), _num_reduce(m), _num_reduce(sum(int(x) for x in str(y)))
+    total = dr + mr + yr
+    lp = _num_reduce(total)
+    info = LIFEPATH.get(lp) or LIFEPATH[_num_reduce(lp, keep_master=False)]
+    calc = f"{d:02d}.{m:02d}.{y}  →  {dr} + {mr} + {yr} = {total}  →  {lp}"
+
+    name = (chart.get("name") or "").strip()
+    name_num = None
+    if name and name.lower() != "du":
+        nn = _name_number(name)
+        if nn:
+            name_num = {"number": nn, "text": NAMENUM.get(nn, ""), "name": name}
+
+    return {
+        "lifepath": lp,
+        "is_master": lp in (11, 22, 33),
+        "title": info["title"],
+        "tagline": info["tagline"],
+        "keyword": info["keyword"],
+        "text": info["text"],
+        "calc": calc,
+        "name_number": name_num,
+        "all": [{"number": k, "short": LIFEPATH_SHORT[k], "keyword": LIFEPATH[k]["keyword"]}
+                for k in range(1, 10)],
+        "note": "Die Numerologie ist ein eigenes, altes Deutungssystem und kein Teil von Human "
+                "Design oder Astrologie. Deine Lebenszahl entsteht aus deinem Geburtsdatum, deine "
+                "Namenszahl aus den Buchstaben deines Vornamens. Verstehe beide als ein weiteres "
+                "Bild zur Selbstreflexion, das dich an deine eigenen Themen erinnert.",
+    }
+
+
 def teaser(chart):
     """Der kostenlose Funke: ausführlich genug zum Neugierigmachen, ohne das volle Bild."""
     hd = chart["hd"]
@@ -1060,6 +1243,7 @@ def teaser(chart):
             "Dein Entscheidungsweg, deine größte Stärke und deine größte Herausforderung, und wie du sie meisterst",
             "Deine Lebensaufgabe aus deiner Mondknoten-Achse und dein Chiron, deine Wunde und Heilkraft",
             "Dein Intuitionstyp, über welchen Kanal deine innere Führung zu dir spricht",
+            "Deine Lebenszahl und Namenszahl aus der Numerologie, dein roter Faden in einer Zahl",
             "Konkrete Werkzeuge und Handlungsempfehlungen, ganz auf dich zugeschnitten",
         ],
     }
@@ -1661,6 +1845,7 @@ def full_analysis(chart):
         "houses": houses,
         "hd_centers": hd_centers,
         "intuition": intuition,
+        "numerology": build_numerology(chart),
         "ascendant": asc,
         "geo": geo,
         "closing": closing,
