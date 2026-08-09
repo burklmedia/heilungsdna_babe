@@ -6,6 +6,7 @@ Ton: warm, klar, gefühlvoll, in Du-Form. Ohne Gedankenstriche, ohne
 "nicht ... sondern"-Konstruktionen. Menschen sollen sich wiedererkennen.
 Die Zahlen bleiben immer die exakt berechneten aus _engine.py.
 """
+from datetime import date
 
 TYPE_INFO = {
     "Generator": {
@@ -1144,6 +1145,37 @@ _NUM_WORD = {1: "eins", 2: "zwei", 3: "drei", 4: "vier", 5: "fünf", 6: "sechs",
 LIFEPATH_SHORT = {1: "Eigenständigkeit", 2: "Verbindung", 3: "Ausdruck", 4: "Beständigkeit",
                   5: "Freiheit", 6: "Fürsorge", 7: "Tiefe", 8: "Kraft", 9: "Mitgefühl"}
 
+# Persönliches Jahr: das Motto des aktuellen Kalenderjahres (wandert jährlich weiter, 1 bis 9).
+PERSONAL_YEAR = {
+    1: {"theme": "Neuanfang", "text": "Ein Jahr des Neuanfangs. Ein frischer Zyklus beginnt, und "
+        "was du jetzt anstößt, trägt weit. Sei mutig, geh den ersten Schritt und setz die Samen "
+        "für die nächsten neun Jahre."},
+    2: {"theme": "Geduld und Nähe", "text": "Ein Jahr der Geduld und der Beziehungen. Vieles reift "
+        "leise im Hintergrund, auch wenn nach außen wenig passiert. Pflege deine Verbindungen, "
+        "höre hin und dräng nichts. Zusammenarbeit trägt dich jetzt weiter als der Alleingang."},
+    3: {"theme": "Ausdruck und Freude", "text": "Ein Jahr des Ausdrucks und der Lebensfreude. Zeig "
+        "dich, sei kreativ und lass wieder Leichtigkeit herein. Dein Herz will nach außen, also "
+        "gönn dir Begegnungen, Farbe und alles, was dich zum Leuchten bringt."},
+    4: {"theme": "Aufbau", "text": "Ein Jahr des Aufbaus. Jetzt zählen Fleiß, Struktur und ein "
+        "langer Atem. Was du dieses Jahr solide baust, trägt dich über Jahre. Kümmere dich um die "
+        "Fundamente, auch wenn es unspektakulär wirkt."},
+    5: {"theme": "Veränderung", "text": "Ein Jahr der Veränderung und der Freiheit. Rechne mit "
+        "Bewegung, neuen Chancen und der einen oder anderen Überraschung. Bleib flexibel und offen, "
+        "klammere dich nicht ans Alte. Dieses Jahr will, dass du das Leben spürst."},
+    6: {"theme": "Verantwortung und Liebe", "text": "Ein Jahr der Verantwortung und der Liebe. "
+        "Familie, Zuhause und die Menschen, die dir wichtig sind, rücken in den Mittelpunkt. Du "
+        "gibst viel in diesem Jahr, also vergiss dabei nicht, auch für dich selbst zu sorgen."},
+    7: {"theme": "Einkehr", "text": "Ein Jahr der Einkehr. Zieh dich bewusst ein Stück zurück, "
+        "reflektiere und geh in die Tiefe. Nicht im lauten Außen, sondern in der Stille liegt "
+        "dieses Jahr dein Wachstum. Vertrau deiner inneren Stimme mehr als je zuvor."},
+    8: {"theme": "Ernte und Kraft", "text": "Ein Jahr der Ernte und der Kraft. Jetzt darfst du im "
+        "Außen wirken und einfahren, was du in den Jahren davor gesät hast. Trau dich, groß zu "
+        "denken und Verantwortung zu übernehmen. Deine Arbeit zahlt sich aus."},
+    9: {"theme": "Loslassen", "text": "Ein Jahr des Loslassens und des Abschließens. Ein ganzer "
+        "Zyklus geht zu Ende. Räum auf, verabschiede, was seine Zeit hatte, und mach innerlich "
+        "Platz. Alles, was du jetzt gehen lässt, schafft Raum für den Neuanfang im nächsten Jahr."},
+}
+
 
 def _name_number(name):
     s = (name or "").strip().lower().translate(_NUM_TRANS)
@@ -1172,6 +1204,15 @@ def build_numerology(chart):
         if nn:
             name_num = {"number": nn, "text": NAMENUM.get(nn, ""), "name": name}
 
+    # Persönliches Jahr: Geburtstag + Geburtsmonat + aktuelles Kalenderjahr (1 bis 9)
+    cy = date.today().year
+    py = _num_reduce(_num_reduce(d, keep_master=False) + _num_reduce(m, keep_master=False)
+                     + _num_reduce(sum(int(x) for x in str(cy)), keep_master=False),
+                     keep_master=False)
+    py_info = PERSONAL_YEAR.get(py, {})
+    personal_year = {"year": cy, "number": py,
+                     "theme": py_info.get("theme", ""), "text": py_info.get("text", "")}
+
     return {
         "lifepath": lp,
         "is_master": lp in (11, 22, 33),
@@ -1181,6 +1222,7 @@ def build_numerology(chart):
         "text": info["text"],
         "calc": calc,
         "name_number": name_num,
+        "personal_year": personal_year,
         "all": [{"number": k, "short": LIFEPATH_SHORT[k], "keyword": LIFEPATH[k]["keyword"]}
                 for k in range(1, 10)],
         "note": "Die Numerologie ist ein eigenes, altes Deutungssystem und kein Teil von Human "

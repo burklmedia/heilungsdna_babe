@@ -518,6 +518,11 @@ def build_pdf(result):
         if nn:
             _unit(pdf, "Namenszahl " + str(nn.get("number", "")),
                   nn.get("name") or "", None, nn.get("text"))
+        py = num.get("personal_year")
+        if py and py.get("number"):
+            _unit(pdf, "Persönliches Jahr " + str(py.get("number", "")),
+                  str(py.get("year", "")) + " · " + str(py.get("theme", "")),
+                  None, str(py.get("text", "")) + " Diese Zahl wandert jedes Jahr eine weiter.")
         if num.get("note"):
             pdf.ln(2)
             _para(pdf, num["note"], size=8.5, color=MUTE, h=4.6, after=0)

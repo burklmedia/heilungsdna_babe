@@ -1855,6 +1855,13 @@
              (nu.name_number.name?(' · '+esc(nu.name_number.name)):'')+'</div>'+
            '<div class="facet2-d">'+esc(nu.name_number.text)+'</div>'+
          '</div></div>') : '';
+      var py=nu.personal_year;
+      var pyCard = (py && py.number) ? (
+        '<div class="cap2" style="margin-top:28px">Dein persönliches Jahr '+esc(String(py.year))+'</div>'+
+        '<div class="facets2"><div class="facet2">'+
+          '<div class="facet2-t">Jahreszahl '+esc(String(py.number))+' · '+esc(py.theme)+'</div>'+
+          '<div class="facet2-d">'+esc(py.text)+' <span style="color:var(--ink-mute)">Diese Zahl wandert jedes Jahr eine weiter.</span></div>'+
+        '</div></div>') : '';
       var numGallery='<div class="cap2" style="margin-top:28px">Die neun Lebenszahlen</div>'+
         '<div class="intu-gallery">'+
         (nu.all||[]).map(function(a){ var on=a.number===nu.lifepath;
@@ -1871,6 +1878,7 @@
           '<div style="text-align:center"><span class="num-calc">'+esc(nu.calc)+'</span></div>'+
           '<p class="intu-text" style="margin-top:8px">'+esc(nu.text)+'</p>'+
           nameCard+
+          pyCard+
           numGallery+
           '<p class="intu-note">'+esc(nu.note)+'</p>'+
         '</div>';
