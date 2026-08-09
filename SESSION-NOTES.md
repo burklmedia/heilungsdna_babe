@@ -33,6 +33,9 @@ Hinweis: `timezonefinder==8.2.5` baut auf Python 3.9 nicht; für den Normalweg
 (Städte-Autocomplete via Open-Meteo) nicht nötig.
 
 ## Offene Punkte für den Vollausbau (nächste Runde)
+- [ ] **Numerologie ausbauen** (von Denise gewünscht, bewusst später): das Modul komplexer machen —
+      z. B. Herzenszahl/Seelenzahl, Ausdruckszahl aus vollem Namen, Persönlichkeitszahl, ggf.
+      Wächst-/Herausforderungszahlen. Aktuell: Lebenszahl + Namenszahl + persönliches Jahr.
 - [ ] Echtes **Autor:innen-Foto** und finale Bio im „Über dich"-Block (aktuell Platzhalter).
 - [ ] **Impressum / Datenschutz** als echte Seiten (`/impressum`, `/datenschutz`).
 - [ ] **E-Mail-Anbindung** (Brevo o. ä.) in `api/subscribe.py` scharf schalten + echter Analyse-Versand.

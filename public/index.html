@@ -409,6 +409,20 @@
   .preview-body .pv-pill.on { color: #3a2410; background: linear-gradient(135deg, var(--gold), var(--gold-deep)); border-color: transparent; }
   .preview-body .factrow { margin-top: 0; }
   .preview-body .grid2 { margin-top: 18px; }
+  /* Klickbare System-Teaser in der versiegelten Vorschau */
+  .pv-pill { cursor: pointer; transition: color .18s ease, background .18s ease, border-color .18s ease; user-select: none; }
+  .pv-pill:hover { color: var(--ink); border-color: var(--line-strong); }
+  .pv-pill:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .pv-pill.on { cursor: default; }
+  #g-preview-panel { animation: rise .35s cubic-bezier(.2,.7,.2,1) both; }
+  @media (prefers-reduced-motion: reduce) { #g-preview-panel { animation: none; } }
+  .pv-tease { font-size: 13.5px; color: var(--ink-soft); line-height: 1.7; text-align: center; margin: 16px auto 0; max-width: 42ch; }
+  .pv-big { font-size: clamp(30px,7vw,44px); text-align: center; line-height: 1.12; margin: 6px 0 2px; }
+  .pv-sub { font-family: var(--serif); font-style: italic; font-size: 16px; color: var(--ink-soft); text-align: center; }
+  .pv-chapters { display: flex; flex-direction: column; gap: 7px; max-width: 340px; margin: 0 auto; }
+  .pv-chap { display: flex; align-items: center; gap: 12px; font-family: var(--serif); font-size: 15.5px; color: var(--ink);
+    padding: 9px 14px; border: 1px solid var(--line); border-radius: 10px; background: rgba(255,255,255,.02); }
+  .pv-chap span { font-family: var(--sans); font-size: 11px; font-weight: 700; letter-spacing: .12em; color: var(--gold); flex: none; }
   .preview-seal { position: relative; text-align: center; margin-top: -34px; padding-bottom: 26px; z-index: 2; }
   .preview-seal .lock { width: 54px; height: 54px; margin: 0 auto 12px; border-radius: 50%; display: grid; place-items: center;
     font-size: 22px; background: rgba(22,14,46,.92); border: 1px solid rgba(245,197,107,.5); box-shadow: 0 0 26px -4px var(--glow); }
@@ -518,7 +532,7 @@
 
   /* Ergebnis: Tabs, Karten, Legende */
   /* Ergebnis als besonderes "Brief"-Dokument */
-  .report { position: relative; max-width: 840px; margin: 0 auto; border-radius: 28px; overflow: hidden;
+  .report { position: relative; max-width: 980px; margin: 0 auto; border-radius: 28px; overflow: hidden;
     background: linear-gradient(180deg, rgba(40,26,74,.78), rgba(25,17,52,.82));
     border: 1px solid rgba(245,197,107,.45);
     box-shadow: 0 44px 100px -44px rgba(10,4,30,.92), 0 0 0 1px rgba(245,197,107,.12), 0 0 80px -26px var(--glow);
@@ -763,6 +777,17 @@
     .row3 select, .row2 select { font-size: 14.5px; padding-right: 24px; padding-left: 11px;
       background-position: right 8px center; text-overflow: ellipsis; }
   }
+  /* Desktop / Tablet: alle Reiter in EINER Reihe (kein Umbruch in zwei Zeilen) */
+  @media (min-width: 901px) {
+    .rtabs-track { flex-wrap: nowrap; }
+    .rtab { padding: 9px 15px; font-size: 13.5px; white-space: nowrap; }
+  }
+  /* Reiter-Hinweis: Handy scrollt, Desktop klickt */
+  .rtabs-hint .hint-click { display: none; }
+  @media (min-width: 901px) {
+    .rtabs-hint .hint-scroll { display: none; }
+    .rtabs-hint .hint-click { display: inline; }
+  }
 </style>
 </head>
 <body>
@@ -783,7 +808,7 @@
     <div class="wrap">
       <div class="hero-grid">
         <div>
-          <div class="chip"><span class="sp">✨</span> <span class="sp">Human Design • Astrologie • Numerologie • Intuitionstyp</span> verständlich für dich verbunden</div>
+          <div class="chip"><span class="sp">✨</span> <span class="sp">Alles in einem</span> und verständlich für dich verbunden</div>
           <h1>Entdecke, wer du <span class="script">wirklich</span> bist,<br>exakt aus deinem Geburtshimmel.</h1>
           <p class="promise">Du musst nicht jemand anderes werden. Du musst nur verstehen, <b>wer du schon immer warst.</b></p>
           <div class="herolead">
@@ -795,7 +820,7 @@
         </div>
 
         <div class="card" id="analyse">
-          <h3>Starte deine Analyse</h3>
+          <h3>Starte deine einzigartige Analyse</h3>
           <p class="hint">Für die Berechnung brauchen wir deinen genauen Geburtsmoment.</p>
           <div class="row2">
             <div class="field">
@@ -1200,7 +1225,7 @@
         <p class="report-greeting" id="a-greeting"></p>
         <div class="report-rule"></div>
       </div>
-      <div class="rtabs-hint">Scrolle dich hier durch alle Themengebiete deines Bauplans</div>
+      <div class="rtabs-hint"><span class="hint-scroll">Scrolle dich hier durch alle Themengebiete deines Bauplans</span><span class="hint-click">Klicke dich hier durch alle Themengebiete deines Bauplans</span></div>
       <nav class="rtabs" id="rtabs">
         <div class="rtabs-track">
           <button class="rtab active" data-rtab="ov" type="button">✦ Übersicht</button>
@@ -1596,26 +1621,55 @@
     var f=d.full, hd=f&&f.hd;
     if(f&&hd){
       var glegend='<div class="glegend"><span><b class="on"></b>definiert</span><span><b class="off"></b>offen</span></div>';
-      var pills=['✦ Übersicht','◈ Human Design','☉ Natalchart','❋ Intuitionstyp','❂ Deutung']
-        .map(function(x,ix){ return '<span class="pv-pill'+(ix===0?' on':'')+'">'+x+'</span>'; }).join('');
       var by={}; (f.positions||[]).forEach(function(pp){by[pp.key]=pp;});
       function pvq(k){ return by[k]?(tp(by[k].signSymbol)+' '+by[k].sign):'…'; }
       function pvnr(sym,label,k){ return '<div class="nk"><span class="nk-s">'+tp(sym)+'</span><span class="nk-l">'+esc(label)+'</span><span class="nk-v">'+pvq(k)+'</span></div>'; }
+      function pvFacts(){ return '<div class="factrow">'+
+        '<div class="f"><div class="l">Typ</div><div class="v">'+esc(hd.type_display||hd.type)+'</div></div>'+
+        '<div class="f"><div class="l">Autorität</div><div class="v">'+esc(shorten(hd.authority))+'</div></div>'+
+        '<div class="f"><div class="l">Profil</div><div class="v">'+esc(hd.profile)+'</div></div></div>'; }
+      // Kleiner Teaser je System, alles noch versiegelt
+      function pvTeaser(key){
+        if(key==='na'){
+          return (f.geo?'<div class="graphic gwheel wheelframe">'+buildNatalWheel(f.geo)+'</div>':'')+
+            '<div class="natkey">'+pvnr('☉','Sonne','Sonne')+pvnr('☽','Mond','Mond')+pvnr('AC','Aszendent','AC')+pvnr('DC','Deszendent','DC')+'</div>'+
+            '<p class="pv-tease">Dein komplettes Geburtshoroskop mit allen Planeten in Zeichen und Haus, exakt auf die Bogenminute berechnet.</p>';
+        }
+        if(key==='in'){
+          var it=f.intuition; if(!it) return '';
+          return '<div class="intu-sketch">'+intuSketch(it.key)+'</div>'+
+            '<div class="pv-big script">'+esc(it.archetype)+'</div>'+
+            '<div class="pv-sub">'+esc(it.tagline)+' · Mond in '+esc(it.moon_sign)+'</div>'+
+            '<p class="pv-tease">Über welchen Kanal deine innere Führung zu dir spricht, und wie du ihr wieder vertrauen lernst.</p>';
+        }
+        if(key==='nu'){
+          var nu=f.numerology; if(!nu) return '';
+          return '<div class="num-big" style="font-size:clamp(46px,12vw,68px)">'+esc(String(nu.lifepath))+'</div>'+
+            '<div class="pv-sub">'+esc(nu.title)+' · '+esc(nu.tagline)+'</div>'+
+            (nu.calc?'<div style="text-align:center;margin-top:6px"><span class="num-calc">'+esc(nu.calc)+'</span></div>':'')+
+            '<p class="pv-tease">Deine Lebenszahl, deine Namenszahl und dein persönliches Jahr, dein roter Faden in Zahlen.</p>';
+        }
+        if(key==='de'){
+          var secs=f.sections||[];
+          return '<div class="pv-sub" style="margin-bottom:12px">'+secs.length+' persönliche Kapitel, ganz in Klartext</div>'+
+            '<div class="pv-chapters">'+secs.slice(0,6).map(function(s,i){return '<div class="pv-chap"><span>'+('0'+(i+1)).slice(-2)+'</span>'+esc(s.title)+'</div>';}).join('')+'</div>'+
+            '<p class="pv-tease">Von deinem innersten Kern über deine Lebensaufgabe bis zu Chiron, deiner Wunde und Heilkraft. Liebevoll für dich gedeutet.</p>';
+        }
+        return '<div class="graphic gbody">'+buildBodygraph(hd)+'</div>'+glegend+pvFacts()+
+          '<p class="pv-tease">Dein Energie-Bauplan: wie du am stimmigsten Entscheidungen triffst, wo deine Kraft verlässlich sitzt und welche deiner neun Zentren definiert sind.</p>';
+      }
+      var PV=[['hd','◈ Human Design'],['na','☉ Natalchart'],['in','❋ Intuitionstyp'],['nu','❖ Numerologie'],['de','❂ Deutung']];
+      var pills=PV.map(function(p,ix){ return '<span class="pv-pill'+(ix===0?' on':'')+'" data-pv="'+p[0]+'" role="button" tabindex="0">'+p[1]+'</span>'; }).join('');
       document.getElementById('g-preview-body').innerHTML=
         '<div class="pv-pills">'+pills+'</div>'+
-        '<div class="factrow">'+
-          '<div class="f"><div class="l">Typ</div><div class="v">'+esc(hd.type_display||hd.type)+'</div></div>'+
-          '<div class="f"><div class="l">Autorität</div><div class="v">'+esc(shorten(hd.authority))+'</div></div>'+
-          '<div class="f"><div class="l">Profil</div><div class="v">'+esc(hd.profile)+'</div></div>'+
-        '</div>'+
-        '<div class="grid2">'+
-          '<div class="panel tight glowpanel-natal"><span class="cap">Natalchart</span>'+
-            (f.geo?'<div class="graphic gwheel wheelframe">'+buildNatalWheel(f.geo)+'</div>':'')+
-            '<div class="natkey">'+pvnr('☉','Sonne','Sonne')+pvnr('☽','Mond','Mond')+pvnr('AC','Aszendent','AC')+pvnr('DC','Deszendent','DC')+'</div>'+
-          '</div>'+
-          '<div class="panel tight glowpanel"><span class="cap">Human Design</span>'+
-            '<div class="graphic gbody">'+buildBodygraph(hd)+'</div>'+glegend+'</div>'+
-        '</div>';
+        '<div id="g-preview-panel">'+pvTeaser('hd')+'</div>';
+      var pvBody=document.getElementById('g-preview-body');
+      function pvActivate(el){ if(!el) return;
+        pvBody.querySelectorAll('.pv-pill').forEach(function(x){x.classList.toggle('on', x===el);});
+        document.getElementById('g-preview-panel').innerHTML=pvTeaser(el.getAttribute('data-pv')); }
+      pvBody.querySelector('.pv-pills').addEventListener('click',function(e){ pvActivate(e.target.closest('.pv-pill')); });
+      pvBody.querySelector('.pv-pills').addEventListener('keydown',function(e){
+        if(e.key==='Enter'||e.key===' '){ var el=e.target.closest('.pv-pill'); if(el){ e.preventDefault(); pvActivate(el); } } });
       document.getElementById('g-preview').style.display='';
     }
     var gn=document.getElementById('g-name'); if(gn && name) gn.value=name;
