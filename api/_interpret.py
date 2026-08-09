@@ -724,8 +724,13 @@ PLANET_HOUSE = {
 
 def _pos_desc(key, sign, house):
     if key == "Chiron":
-        return CHIRON_SIGN.get(sign, "Chiron zeigt, wo du verletzlich bist, und genau dort liegt "
-                               "deine besondere Kraft, andere zu heilen.")
+        full = CHIRON_SIGN.get(sign, "")
+        first = full.split(". ", 1)[0].strip()
+        if first:
+            return (first + ". Die ganze Deutung deiner Wunde und Heilkraft findest du im Kapitel "
+                    "„Dein Chiron, Wunde und Heilung“ im Reiter Deutung.")
+        return ("Chiron zeigt, wo du verletzlich bist, und genau dort liegt deine besondere Kraft, "
+                "andere zu heilen.")
     base = PLANET_INTRO.get(key, "") + " " + SIGN_EMOTION.get(sign, "")
     ph = PLANET_HOUSE.get(key, {}).get(house)
     if ph:
@@ -1178,7 +1183,8 @@ def _element_section(nat, asc, mc):
         + lack + ".\n\n"
         "So eine Verteilung ist kein Mangel. Sie zeigt nur, wo deine Gaben von ganz allein fließen "
         "und wo du dir bewusst ein wenig dazuholen darfst. Oft ziehen wir genau die Menschen an, "
-        "die unser schwächstes Element stark leben. Vielleicht kennst du das.")
+        "die unser schwächstes Element stark leben. Achte einmal darauf, wen du dir ins Leben "
+        "holst.")
     return {
         "title": "Deine Elemente-Balance",
         "subtitle": "Feuer, Erde, Luft und Wasser in deinem Chart",
@@ -1260,13 +1266,14 @@ def _aspects_section(nat):
 def _intuition_deutung_section(it):
     body = (
         f"Auch dein Intuitionstyp gehört mitten in deinen Bauplan. Über deinen Mond in "
-        f"{it['moon_sign']} spricht deine Intuition auf eine ganz bestimmte Art zu dir.\n\n"
-        f"Bei dir ist es die {it['tagline']}. {it['text']}")
+        f"{it['moon_sign']} spricht deine innere Führung als {it['tagline']} zu dir, immer auf "
+        f"deine ganz eigene Art.\n\n"
+        f"Wie sich das genau anfühlt und welche Werkzeuge zu dir passen, findest du ausführlich im "
+        f"eigenen Reiter „Intuitionstyp“. Fürs große Ganze zählt hier vor allem eins: Diese leise "
+        f"Stimme ist kein nettes Extra. Sie ist ein zweiter Kompass neben deiner inneren Autorität. "
+        f"Wenn du ihr wieder traust, führt sie dich in vielen Momenten zuverlässiger als jeder "
+        f"Verstand.")
     dp = it.get("depth")
-    if dp:
-        body += f"\n\n{dp['summary']}"
-    body += ("\n\nWenn du lernst, dieser leisen inneren Stimme wieder zu trauen, hast du einen "
-             "Kompass in dir, der dich zuverlässiger führt als jeder Verstand.")
     facts = [("Intuitionstyp", it["archetype"]), ("Mond", it["moon_sign"])]
     if dp:
         facts.append(("Ausprägung", dp["level"]))
@@ -1300,8 +1307,8 @@ def full_analysis(chart):
         "body": ("Bevor du irgendwas an dir ändern willst, darfst du erst mal verstehen, wie du gebaut "
                  "bist. Dein Typ ist die Grundmelodie deiner Energie. Er zeigt dir, wie du am "
                  "leichtesten durchs Leben gehst und wo du dich immer wieder verausgabst.\n\n"
-                 + t.get("short", "") + "\n\nVielleicht kennst du das. Du siehst Menschen, denen "
-                 "vieles leicht fällt. Und du fragst dich, warum es bei dir an manchen Stellen so viel "
+                 + t.get("short", "") + "\n\nDu kennst bestimmt Menschen, denen vieles mühelos "
+                 "gelingt. Und du fragst dich, warum es bei dir an manchen Stellen so viel "
                  "schwerer geht. Meistens ist der Grund ganz einfach. Du hast versucht, nach einer "
                  "Melodie zu leben, die gar nicht deine ist.\n\nWenn du deiner eigenen Art vertraust, "
                  "ändert sich etwas Leises, aber Tiefes. Das Leben fühlt sich weniger nach Widerstand "
@@ -1379,10 +1386,10 @@ def full_analysis(chart):
                  "erst mit dem Richtigen in Berührung.\n\n"
                  f"Der zweite Schritt ist deine innere Autorität, deine {auth.lower()}. Sie sagt dir, "
                  "ob ein Ja auch wirklich deins ist.\n\n"
-                 "Vielleicht hast du dich oft schnell über den Kopf entschieden und dich danach "
-                 "gefragt, warum sich alles falsch anfühlt. Dein Kopf ist einfach zu schnell für "
-                 "dich. Wenn du diesen zwei Schritten folgst, triffst du Entscheidungen, die du "
-                 "nicht mehr bereust."),
+                 "Erinnerst du dich, wie oft du schnell aus dem Kopf entschieden und dich danach "
+                 "gefragt hast, warum sich alles falsch anfühlt? In dieser Reihenfolge kann dir das "
+                 "nicht mehr passieren. Erst in Berührung kommen, dann von innen prüfen, und du "
+                 "triffst Entscheidungen, die du nicht mehr bereust."),
         "takeaway": f"Kurz gesagt: {strat}. Und dann ehrlich auf deine {auth} hören.",
         "facts": [("Strategie", strat), ("Autorität", auth)],
     })
@@ -1404,9 +1411,9 @@ def full_analysis(chart):
         "facts": [("Sonne", sun_sign), ("Signatur", sig)],
     })
 
-    heraus_open = ((" Dazu kommen deine offenen Zentren: " + ", ".join(ocs) + ". Hier nimmst du den "
-                    "Druck und die Energie anderer auf und hältst sie schnell für deine eigenen. Das "
-                    "erschöpft dich, oft ohne dass du weißt, warum.") if ocs else "")
+    heraus_open = ((" Dazu kommen deine offenen Zentren (" + ", ".join(ocs) + "), die du oben schon "
+                    "kennengelernt hast. Genau dort nimmst du fremden Druck am leichtesten für deinen "
+                    "eigenen und erschöpfst dich, ohne zu wissen, warum.") if ocs else "")
     sections.append({
         "title": "Deine größte Herausforderung",
         "subtitle": "Und wie du sie meisterst",
@@ -1481,20 +1488,18 @@ def full_analysis(chart):
         })
     if nk and sk and axis:
         _lifebody = (
-            f"Jetzt wird es ernst. Denn hier geht es nicht mehr um einzelne Bausteine, sondern um den "
-            f"einen roten Faden, der sich durch dein ganzes Leben zieht. Deine Mondknoten-Achse zeigt, "
-            f"woher du kommst und wohin du eigentlich sollst.\n\n"
-            f"Ganz ehrlich: Das {sk['sign']}-Muster kennst du in- und auswendig. Es ist dein "
-            f"Sicherheitsmodus, dein Zuhause im Vertrauten. " + axis.get("lower", "") + " Und genau das "
-            f"ist die Falle. Weil es sich so sicher anfühlt, kehrst du immer wieder dorthin zurück, "
-            f"auch wenn du längst spürst, dass es dich nicht mehr wachsen lässt. Es hält dich klein und "
-            f"nennt es Schutz.\n\n"
-            f"Deine eigentliche Aufgabe liegt auf der anderen Seite, im {nk['sign']}. " + axis.get("higher", "")
-            + f"\n\nUnd hier kommt der Teil, den du nicht überspringen darfst: Du wächst da nicht rein, "
-            f"indem du darüber nachdenkst. Du wächst rein, indem du im echten Leben immer wieder anders "
-            f"handelst als sonst. Als {hd['type']} gelingt dir das über genau den Entscheidungsweg, "
-            f"den du weiter oben schon entdeckt hast: erst dein eigener Impuls, dann die ruhige "
-            f"Prüfung von innen, statt aus dem alten Reflex heraus. Jedes Mal, wenn du "
+            f"Jetzt wird es ernst. Hier geht es nicht mehr um einzelne Bausteine, sondern um den "
+            f"einen roten Faden, der sich durch dein ganzes Leben zieht. Deine beiden Seiten hast du "
+            f"gerade kennengelernt: das vertraute {sk['sign']}-Muster, in das du unter Druck "
+            f"zurückfällst, und dein {nk['sign']}-Wachstum, das eigentlich schon in dir wartet.\n\n"
+            f"Und genau da liegt die Falle. Weil sich das Alte so sicher anfühlt, kehrst du immer "
+            f"wieder dorthin zurück, auch wenn du längst spürst, dass es dich nicht mehr wachsen "
+            f"lässt. Es hält dich klein und nennt es Schutz.\n\n"
+            f"Jetzt kommt der Teil, den du nicht überspringen darfst, das Wie: Du wächst da nicht "
+            f"rein, indem du darüber nachdenkst. Du wächst rein, indem du im echten Leben immer wieder "
+            f"anders handelst als sonst. Als {hd['type']} gelingt dir das über genau den "
+            f"Entscheidungsweg, den du weiter oben schon entdeckt hast: erst dein eigener Impuls, dann "
+            f"die ruhige Prüfung von innen, statt aus dem alten Reflex heraus. Jedes Mal, wenn du "
             f"dich in einem dieser Momente für den ungewohnten, den {nk['sign']}-Weg entscheidest, "
             f"erfüllst du ein Stück deiner Lebensaufgabe. Es sind keine großen Gesten. Es sind die "
             f"kleinen, unbequemen Entscheidungen, in denen du dich für dich entscheidest.\n\n"
