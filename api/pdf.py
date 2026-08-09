@@ -235,7 +235,9 @@ def _cover(pdf, birth, name):
     # Geburtszeile
     parts = []
     if birth.get("date"):
-        parts.append(str(birth["date"]))
+        _bd = str(birth["date"])
+        _m = re.match(r"^(\d{4})-(\d{2})-(\d{2})", _bd)
+        parts.append(f"{_m.group(3)}.{_m.group(2)}.{_m.group(1)}" if _m else _bd)
     if birth.get("time") and birth["time"] != "unbekannt":
         parts.append(str(birth["time"]) + " Uhr")
     if birth.get("place"):

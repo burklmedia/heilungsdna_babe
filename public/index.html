@@ -758,6 +758,10 @@
     .card, .mailcard { padding: 26px 22px; }
     .cards { grid-template-columns: 1fr; }
     .finalcta { padding: 44px 26px; }
+    /* Datums- und Zeit-Dropdowns: mehr Platz für Text, Pfeil rückt näher an den Rand,
+       damit "Monat" und lange Monatsnamen nicht mit dem Pfeil kollidieren */
+    .row3 select, .row2 select { font-size: 14.5px; padding-right: 24px; padding-left: 11px;
+      background-position: right 8px center; text-overflow: ellipsis; }
   }
 </style>
 </head>
@@ -796,7 +800,7 @@
           <div class="row2">
             <div class="field">
               <label for="f-name">Name</label>
-              <input id="f-name" type="text" placeholder="Wie dürfen wir dich nennen?" autocomplete="off" required>
+              <input id="f-name" type="text" placeholder="Dein Vorname" autocomplete="off" required>
             </div>
             <div class="field">
               <label for="f-gender">Geschlecht</label>
@@ -1575,10 +1579,11 @@
         parts.push('In genau diesem Moment stand deine Sonne in <b>'+esc(sun)+'</b>.');
       }
       var ty=t.type, pf=t.profile;
+      var art=(d.birth&&d.birth.gender==='f')?'eine':'ein';
       if(ty&&pf){
-        parts.push('Daraus ist ein <b>'+esc(ty)+'</b> mit dem Profil <b>'+esc(pf)+'</b> geworden. Wie du Entscheidungen triffst, wo deine Stärke liegt und was dich manchmal ausbremst, das zeigt dir dein Bauplan gleich ganz genau.');
+        parts.push('Daraus ist '+art+' <b>'+esc(ty)+'</b> mit dem Profil <b>'+esc(pf)+'</b> geworden. Wie du Entscheidungen triffst, wo deine Stärke liegt und was dich manchmal ausbremst, das zeigt dir dein Bauplan gleich ganz genau.');
       } else if(ty){
-        parts.push('Daraus ist ein <b>'+esc(ty)+'</b> geworden. Wie du Entscheidungen triffst, wo deine Stärke liegt und was dich manchmal ausbremst, das zeigt dir dein Bauplan gleich ganz genau.');
+        parts.push('Daraus ist '+art+' <b>'+esc(ty)+'</b> geworden. Wie du Entscheidungen triffst, wo deine Stärke liegt und was dich manchmal ausbremst, das zeigt dir dein Bauplan gleich ganz genau.');
       } else {
         parts.push('Wie du Entscheidungen triffst, wo deine Stärke liegt und was dich manchmal ausbremst, das zeigt dir dein Bauplan gleich ganz genau.');
       }
@@ -1718,7 +1723,8 @@
     var f=d.full, b=d.birth, hd=f.hd, t=d.teaser||{}, cross=hd.incarnation_cross;
     document.getElementById('a-title').textContent='Dein kosmischer Bauplan';
     var an=document.getElementById('a-name'); if(an) an.textContent=b.name||'';
-    document.getElementById('a-birth').textContent=[b.date,b.time,b.place].filter(function(x){return x&&x!=='unbekannt';}).join(', ');
+    var bdate=(function(s){var m=String(s||'').match(/^(\d{4})-(\d{2})-(\d{2})/);return m?(m[3]+'.'+m[2]+'.'+m[1]):s;})(b.date);
+    document.getElementById('a-birth').textContent=[bdate,b.time,b.place].filter(function(x){return x&&x!=='unbekannt';}).join(', ');
     var ag=document.getElementById('a-greeting');
     if(ag) ag.textContent=(b.name?('Schön, dass du da bist, '+b.name+'. '):'Schön, dass du da bist. ')+'Nimm dir einen ruhigen Moment. Das hier ist ganz für dich gemacht.';
     var glegend='<div class="glegend"><span><b class="on"></b>definiert</span><span><b class="off"></b>offen</span></div>';
