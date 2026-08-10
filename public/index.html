@@ -120,8 +120,9 @@
   .chip .sp { color: var(--accent); }
   /* Chip im Kopfbereich als durchlaufender Text: die drei Teile brechen sonst
      jeder für sich um und zerfallen in ungleiche Spalten */
-  .hero .chip { display: inline-block; line-height: 1.55; max-width: 36em; }
+  .hero .chip { display: inline-block; line-height: 1.55; max-width: 36em; text-align: center; }
   .hero .chip .sp { display: inline; }
+  .hero .chip .chip-sub { display: block; margin-top: 5px; color: var(--ink-soft); }
   .accent { color: var(--gold); font-style: italic; }
   em.rose { color: var(--accent); font-style: italic; }
 
@@ -808,7 +809,7 @@
     <div class="wrap">
       <div class="hero-grid">
         <div>
-          <div class="chip"><span class="sp">✨</span> <span class="sp">Alles in einem</span> und verständlich für dich verbunden</div>
+          <div class="chip"><span class="sp">✨</span> <span class="sp">Human Design • Natalchart • Intuitionstyp • Numerologie</span><span class="chip-sub">Alles in einem und verständlich für dich verbunden</span></div>
           <h1>Entdecke, wer du <span class="script">wirklich</span> bist,<br>exakt aus deinem Geburtshimmel.</h1>
           <p class="promise">Du musst nicht jemand anderes werden. Du musst nur verstehen, <b>wer du schon immer warst.</b></p>
           <div class="herolead">
