@@ -1123,19 +1123,80 @@ LIFEPATH = {
                  "schenken."},
 }
 
+# Namenszahl (Ausdruckszahl): wie du deinen Lebensweg nach außen lebst und wirkst.
+# Aus den Buchstaben deines Vornamens. Jeweils: was es heißt + was du damit anfängst.
 NAMENUM = {
-    1: "Dein Name trägt eine führende, eigenständige Note und lässt dich selbstbewusst und klar wirken.",
-    2: "Dein Name schwingt sanft und verbindend und lässt dich nahbar und feinfühlig wirken.",
-    3: "Dein Name hat etwas Leichtes und Ausdrucksstarkes und bringt Freude und Lebendigkeit mit sich.",
-    4: "Dein Name wirkt geerdet und verlässlich und strahlt Ruhe und Beständigkeit aus.",
-    5: "Dein Name trägt Bewegung und Freiheit in sich und wirkt lebendig, neugierig und wandelbar.",
-    6: "Dein Name schwingt warm und fürsorglich und lässt dich zu einem Menschen werden, bei dem sich andere geborgen fühlen.",
-    7: "Dein Name hat etwas Tiefes und Nachdenkliches und umgibt dich mit einer leisen, geheimnisvollen Note.",
-    8: "Dein Name trägt Kraft und Präsenz und lässt dich stark und zielsicher wirken.",
-    9: "Dein Name schwingt weit und mitfühlend und umgibt dich mit einer warmen, großherzigen Ausstrahlung.",
-    11: "Dein Name trägt die feine Schwingung der Meisterzahl Elf, hellwach und inspirierend.",
-    22: "Dein Name trägt die kraftvolle Schwingung der Meisterzahl Zweiundzwanzig, visionär und zugleich geerdet.",
-    33: "Dein Name trägt die seltene, liebevolle Schwingung der Meisterzahl Dreiunddreißig.",
+    1: "Deine Namenszahl 1 gibt deinem Auftreten etwas Führendes und Eigenständiges. Nach außen "
+       "wirkst du selbstbewusst, klar und tatkräftig, wie jemand, der gern vorangeht. Lebe das, "
+       "indem du Initiative ergreifst und zu deiner eigenen Richtung stehst, statt dich anzupassen. "
+       "Achte nur darauf, andere mitzunehmen, statt sie zu überrollen.",
+    2: "Deine Namenszahl 2 verleiht deinem Ausdruck etwas Sanftes und Verbindendes. Du wirkst "
+       "nahbar, feinfühlig und ausgleichend, Menschen öffnen sich dir schnell. Deine Stärke ist es, "
+       "zu vermitteln und Brücken zu bauen. Denk nur daran, dabei auch dich selbst zu zeigen und "
+       "deine eigene Meinung einzubringen.",
+    3: "Deine Namenszahl 3 bringt Leichtigkeit und Ausdruckskraft in dein Auftreten. Du wirkst "
+       "lebendig, humorvoll und inspirierend und findest oft genau die richtigen Worte. Lebe das, "
+       "indem du dich kreativ zeigst und dich mitteilst. Bleib nur dran, auch wenn dich zwischendurch "
+       "der Selbstzweifel packt.",
+    4: "Deine Namenszahl 4 gibt dir eine geerdete, verlässliche Ausstrahlung. Andere erleben dich "
+       "als jemanden, auf den man bauen kann, ruhig und beständig. Deinen Weg gehst du gründlich und "
+       "Schritt für Schritt. Erlaub dir zwischendurch bewusst auch Leichtigkeit und Pausen.",
+    5: "Deine Namenszahl 5 macht deinen Ausdruck lebendig und wandelbar. Du wirkst neugierig, offen "
+       "und beweglich und bringst frischen Wind, wohin du kommst. Deinen Weg gehst du über Erfahrung "
+       "und Abwechslung. Achte nur darauf, dich nicht zu verzetteln und dranzubleiben, wenn es zählt.",
+    6: "Deine Namenszahl 6 umgibt dich mit Wärme und Fürsorge. Menschen fühlen sich in deiner Nähe "
+       "schnell geborgen und aufgehoben. Deinen Weg gehst du verantwortungsvoll und mit einem feinen "
+       "Blick fürs Miteinander. Vergiss dabei nicht, dieselbe Fürsorge auch dir selbst zu schenken.",
+    7: "Deine Namenszahl 7 gibt dir eine tiefe, leicht geheimnisvolle Ausstrahlung. Du wirkst "
+       "nachdenklich, beobachtend und nicht sofort zu durchschauen. Deinen Weg gehst du reflektiert "
+       "und mit dem Wunsch, die Dinge wirklich zu verstehen. Öffne dich ruhig auch mal, statt dich "
+       "zurückzuziehen.",
+    8: "Deine Namenszahl 8 verleiht dir Präsenz und Kraft. Du wirkst zielstrebig, souverän und "
+       "stark, wie jemand, der etwas bewegen kann. Deinen Weg gehst du mit Ehrgeiz und Weitblick. "
+       "Zeig dabei ruhig auch deine weichen, verletzlichen Seiten, das macht dich nur stärker.",
+    9: "Deine Namenszahl 9 umgibt dich mit einer warmen, großherzigen Ausstrahlung. Du wirkst "
+       "mitfühlend, weise und offen für das große Ganze. Deinen Weg gehst du mit dem Wunsch, etwas "
+       "beizutragen. Achte nur darauf, dich nicht in der Fürsorge für andere zu verlieren.",
+    11: "Deine Namenszahl 11 ist eine Meisterzahl und gibt deinem Ausdruck etwas Hellwaches, fast "
+        "Elektrisierendes. Du wirkst inspirierend und feinfühlig, oft spürst du mehr, als du in Worte "
+        "fasst. Das ist ein Geschenk, kann aber auch viel sein. Erde dich bewusst, dann kann diese "
+        "hohe Schwingung wirklich durch dich wirken.",
+    22: "Deine Namenszahl 22 ist eine Meisterzahl und verbindet Vision mit Bodenhaftung. Nach außen "
+        "wirkst du wie jemand, der Großes denken und es zugleich umsetzen kann. Das ist eine seltene "
+        "Kraft. Geh sie in ruhigen, festen Schritten an, statt dich unter deinen eigenen Anspruch zu "
+        "setzen.",
+    33: "Deine Namenszahl 33 ist die seltenste Meisterzahl und umgibt dich mit einer heilenden, "
+        "liebevollen Ausstrahlung. Menschen spüren deine Wärme und dein echtes Interesse. Deine Gabe "
+        "ist, andere durch dein Vorbild zu stärken. Denk nur daran, genug Kraft auch für dich selbst "
+        "zu behalten.",
+}
+
+# Stärken und Aufgabe je Lebenszahl (aus der Numerologie-Recherche, für mehr Tiefe im Reiter).
+LIFEPATH_MORE = {
+    1: {"strengths": "Tatkraft, Mut, Pioniergeist, Führungsstärke und Originalität",
+        "growth": "Führung mit echtem Zuhören zu verbinden und Nähe zuzulassen, statt alles allein zu stemmen"},
+    2: {"strengths": "Empathie, Diplomatie, Feingefühl, Geduld und Teamgeist",
+        "growth": "deine eigenen Bedürfnisse genauso ernst zu nehmen wie die der anderen, statt in der Harmonie zu verschwinden"},
+    3: {"strengths": "Kreativität, Ausdruckskraft, Optimismus, Charme und Inspiration",
+        "growth": "deine Selbstzweifel zu überwinden und deine Kreativität mutig und dranbleibend zu leben"},
+    4: {"strengths": "Disziplin, Verlässlichkeit, Organisationstalent, Ausdauer und Bodenständigkeit",
+        "growth": "Flexibilität und Leichtigkeit zuzulassen, ohne deinen inneren Halt zu verlieren"},
+    5: {"strengths": "Vielseitigkeit, Anpassungsfähigkeit, Neugier und Mut zur Veränderung",
+        "growth": "deine Freiheit mit Verantwortung und innerer Stabilität zu verbinden"},
+    6: {"strengths": "Verantwortungsgefühl, Mitgefühl, Gerechtigkeitssinn und Sinn für Schönheit",
+        "growth": "Fürsorge für andere und Fürsorge für dich selbst in eine gesunde Balance zu bringen"},
+    7: {"strengths": "Tiefgang, ein klarer analytischer Geist, Intuition und spirituelles Gespür",
+        "growth": "wieder Vertrauen zu fassen und deine Erkenntnisse zu teilen, statt dich zu isolieren"},
+    8: {"strengths": "Durchsetzungskraft, strategisches Denken, Ausdauer und Ehrgeiz",
+        "growth": "Kraft und Erfolg mit Fairness und innerer Ruhe zu verbinden und Verletzlichkeit zuzulassen"},
+    9: {"strengths": "Mitgefühl, Weitblick, Großzügigkeit und Idealismus",
+        "growth": "deinen Idealismus zu erden und auch für dich selbst zu sorgen, statt dich zu verausgaben"},
+    11: {"strengths": "eine starke Intuition, visionäre Kraft, Inspiration und ein feines Gespür für Zusammenhänge",
+         "growth": "dich zu erden, damit die hohe Schwingung dich trägt statt überflutet, und deinen Selbstzweifel zu besänftigen"},
+    22: {"strengths": "ein großes Umsetzungsvermögen, Weitblick mit Bodenhaftung und echte Aufbaukraft",
+         "growth": "in kleinen, festen Schritten zu gehen und dich nicht an deinem eigenen Anspruch zu verbrennen"},
+    33: {"strengths": "heilende Wärme, tiefes Mitgefühl, eine Lehrgabe und humanitäre Kraft",
+         "growth": "klare Grenzen zu setzen und dich selbst zu nähren, statt dich für andere aufzugeben"},
 }
 
 _NUM_WORD = {1: "eins", 2: "zwei", 3: "drei", 4: "vier", 5: "fünf", 6: "sechs",
@@ -1191,11 +1252,20 @@ def build_numerology(chart):
     if not bd:
         return None
     y, m, d = bd["year"], bd["month"], bd["day"]
-    dr, mr, yr = _num_reduce(d), _num_reduce(m), _num_reduce(sum(int(x) for x in str(y)))
-    total = dr + mr + yr
-    lp = _num_reduce(total)
+    # Kanonische Methode: ALLE Ziffern des Geburtsdatums einzeln addieren, dann
+    # Schritt für Schritt quersummieren. Meisterzahlen 11/22/33 stoppen die Reduktion.
+    digits = [int(c) for c in f"{d:02d}{m:02d}{y}"]
+    raw = sum(digits)
+    chain = [raw]
+    n = raw
+    while n > 9 and n not in (11, 22, 33):
+        n = sum(int(c) for c in str(n))
+        chain.append(n)
+    lp = chain[-1]
     info = LIFEPATH.get(lp) or LIFEPATH[_num_reduce(lp, keep_master=False)]
-    calc = f"{d:02d}.{m:02d}.{y}  →  {dr} + {mr} + {yr} = {total}  →  {lp}"
+    more = LIFEPATH_MORE.get(lp) or LIFEPATH_MORE.get(_num_reduce(lp, keep_master=False), {})
+    calc = (f"{d:02d}.{m:02d}.{y}  →  " + "+".join(str(x) for x in digits) + f" = {raw}"
+            + "".join("  →  " + str(c) for c in chain[1:]))
 
     name = (chart.get("name") or "").strip()
     name_num = None
@@ -1220,6 +1290,8 @@ def build_numerology(chart):
         "tagline": info["tagline"],
         "keyword": info["keyword"],
         "text": info["text"],
+        "strengths": more.get("strengths", ""),
+        "growth": more.get("growth", ""),
         "calc": calc,
         "name_number": name_num,
         "personal_year": personal_year,

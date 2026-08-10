@@ -511,6 +511,10 @@ def build_pdf(result):
                              "Zwei Zahlen, die sich aus deinem Geburtsdatum und deinem Vornamen "
                              "ergeben und einen eigenen Blick auf deine Themen werfen.")
         lp_body = str(num.get("text") or "")
+        if num.get("strengths"):
+            lp_body += "\nDeine Stärken: " + str(num["strengths"]) + "."
+        if num.get("growth"):
+            lp_body += "\nDeine Aufgabe: Es geht darum, " + str(num["growth"]) + "."
         if num.get("calc"):
             lp_body += "\nSo wird sie gerechnet: " + str(num["calc"])
         _unit(pdf, num.get("title") or "Lebenszahl",

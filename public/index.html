@@ -387,7 +387,7 @@
   .g-greeting .g-lead { color: var(--ink-soft); font-size: 16.5px; line-height: 1.65; max-width: 52ch; margin: 0 auto; }
   .g-greeting .g-lead b { color: var(--gold); font-weight: 600; }
   /* Versiegelte Vorschau links, E-Mail-Feld rechts – nebeneinander */
-  .glimpse-cols { display: grid; grid-template-columns: minmax(0,1.05fr) minmax(0,.95fr); gap: 30px; align-items: stretch; text-align: left; }
+  .glimpse-cols { display: grid; grid-template-columns: minmax(0,1.12fr) minmax(0,.88fr); gap: 30px; align-items: stretch; text-align: left; }
   .glimpse-cols .g-left { min-width: 0; display: flex; flex-direction: column; }
   @media (max-width: 780px) { .glimpse-cols { grid-template-columns: 1fr; gap: 8px; } }
 
@@ -404,12 +404,10 @@
   .preview-body { position: relative; max-height: 560px; overflow: hidden;
     -webkit-mask-image: linear-gradient(to bottom, #000 60%, transparent 98%);
             mask-image: linear-gradient(to bottom, #000 60%, transparent 98%); }
-  /* Vorschau-Pills immer in EINER Reihe (bei wenig Platz wischbar) */
-  .preview-body .pv-pills { display: flex; flex-wrap: nowrap; justify-content: center; gap: 6px; margin-bottom: 18px;
-    overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; padding-bottom: 2px; }
-  .preview-body .pv-pills::-webkit-scrollbar { display: none; }
-  .preview-body .pv-pill { font-size: 11.5px; font-weight: 600; color: var(--ink-soft); background: rgba(201,164,255,.08);
-    border: 1px solid var(--line); border-radius: 999px; padding: 6px 11px; white-space: nowrap; flex: 0 0 auto; }
+  /* Vorschau-Pills: alle nebeneinander, nicht wischbar (bricht bei sehr wenig Platz sauber um) */
+  .preview-body .pv-pills { display: flex; flex-wrap: wrap; justify-content: center; gap: 5px; margin-bottom: 18px; }
+  .preview-body .pv-pill { font-size: 10.5px; font-weight: 600; color: var(--ink-soft); background: rgba(201,164,255,.08);
+    border: 1px solid var(--line); border-radius: 999px; padding: 5px 9px; white-space: nowrap; }
   .preview-body .pv-pill.on { color: #3a2410; background: linear-gradient(135deg, var(--gold), var(--gold-deep)); border-color: transparent; }
   .preview-body .factrow { margin-top: 0; }
   .preview-body .grid2 { margin-top: 18px; }
@@ -490,6 +488,15 @@
 
   /* Chart-Grafiken (Rad + Bodygraph) */
   .graphic { display: flex; justify-content: center; margin: 2px 0 16px; }
+  /* Dezente goldene Funkelsterne links/rechts der Grafik */
+  .graphic-flank { position: relative; }
+  .gsparkle { position: absolute; z-index: 0; pointer-events: none; line-height: 1; color: var(--gold);
+    text-shadow: 0 0 8px var(--glow), 0 0 3px var(--gold); opacity: 0; will-change: opacity, transform;
+    animation: gtwinkle 3.4s ease-in-out infinite; }
+  @keyframes gtwinkle { 0%, 100% { opacity: 0; transform: scale(.55) rotate(0deg); }
+    50% { opacity: .85; transform: scale(1) rotate(20deg); } }
+  @media (prefers-reduced-motion: reduce) { .gsparkle { animation: none; opacity: .5; } }
+  .graphic-flank .graphic { position: relative; z-index: 1; }
   .graphic svg { width: 100%; height: auto; max-width: 330px; display: block; }
   .graphic.gwheel svg { max-width: 460px; }
   .graphic.gbody svg { max-width: 300px; }
@@ -658,8 +665,18 @@
   .facet2-d { font-size: 13.5px; color: var(--ink-soft); line-height: 1.75; }
 
   /* Numerologie */
-  .num-big { font-family: var(--serif); font-weight: 600; font-size: clamp(56px,14vw,90px); line-height: 1;
-    color: var(--gold); text-shadow: 0 0 30px var(--glow); margin: 2px 0 4px; }
+  .num-big { font-family: var(--serif); font-weight: 600; font-size: clamp(42px,9vw,62px); line-height: 1;
+    color: var(--gold); text-shadow: 0 0 26px var(--glow); margin: 2px 0 4px; }
+  /* Kompaktes, cleanes 3-Spalten-Raster der neun Lebenszahlen */
+  .num-gallery { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+  .numtile { display: flex; flex-direction: column; align-items: center; gap: 3px; text-align: center;
+    border: 1px solid var(--line); border-radius: 12px; padding: 12px 8px; background: rgba(255,255,255,.02); }
+  .numtile.on { border-color: rgba(245,197,107,.55); background: rgba(245,197,107,.08); box-shadow: 0 0 22px -8px var(--glow); }
+  .numtile-n { font-family: var(--serif); font-size: 22px; color: var(--ink-soft); line-height: 1; }
+  .numtile.on .numtile-n { color: var(--gold); text-shadow: 0 0 14px var(--glow); }
+  .numtile-l { font-size: 11px; color: var(--ink-mute); letter-spacing: .01em; }
+  .numtile.on .numtile-l { color: var(--ink-soft); }
+  @media (max-width: 400px) { .numtile-l { font-size: 10px; } }
   .num-calc { font-family: var(--sans); font-size: 13px; letter-spacing: .02em; color: var(--ink-soft);
     background: rgba(245,197,107,.06); border: 1px solid rgba(245,197,107,.28); border-radius: 999px;
     padding: 8px 16px; display: inline-block; margin: 6px auto 4px; }
@@ -1692,7 +1709,7 @@
         return '<div class="graphic gbody">'+buildBodygraph(hd)+'</div>'+glegend+pvFacts()+
           '<p class="pv-tease">Dein Energie-Bauplan: wie du am stimmigsten Entscheidungen triffst, wo deine Kraft verlässlich sitzt und welche deiner neun Zentren definiert sind.</p>';
       }
-      var PV=[['hd','◈ Human Design'],['na','☉ Natalchart'],['in','❋ Intuitionstyp'],['nu','❖ Numerologie'],['de','❂ Deutung']];
+      var PV=[['hd','Human Design'],['na','Natalchart'],['in','Intuitionstyp'],['nu','Numerologie'],['de','Deutung']];
       var pills=PV.map(function(p,ix){ return '<span class="pv-pill'+(ix===0?' on':'')+'" data-pv="'+p[0]+'" role="button" tabindex="0">'+p[1]+'</span>'; }).join('');
       document.getElementById('g-preview-body').innerHTML=
         '<div class="pv-pills">'+pills+'</div>'+
@@ -1798,15 +1815,22 @@
     var rt=document.getElementById('rtabs'), track=rt&&rt.querySelector('.rtabs-track'), act=track&&track.querySelector('.rtab.active');
     // aktiven Reiter in der wischbaren Leiste mittig zeigen
     if(track&&act){ track.scrollTo({left: act.offsetLeft-(track.clientWidth-act.offsetWidth)/2, behavior:'smooth'}); }
-    // beim Antippen am Handy: zum Anfang des neuen Reiters springen (unter der Leiste)
-    if(userClick && rt && window.innerWidth<=900){
+    // beim Antippen (Handy wie Desktop): zum Anfang des neuen Reiters springen, damit man oben bleibt
+    if(userClick && rt){
       var pane=document.getElementById('pane-'+id);
       if(pane){ var h=rt.getBoundingClientRect().height;
-        var top=pane.getBoundingClientRect().top+window.scrollY-h-24;
+        var top=pane.getBoundingClientRect().top+window.scrollY-h-(window.innerWidth<=900?24:20);
         window.scrollTo({top:Math.max(0,top), behavior:'auto'}); }
     }
   }
 
+  /* Dezente goldene Funkelsterne links und rechts einer Grafik */
+  function starflank(inner){
+    var sp=[['left:7%;top:12%',12,0],['left:3%;top:45%',9,1.2],['left:10%;top:78%',13,2.1],
+            ['right:7%;top:16%',13,0.6],['right:3%;top:50%',10,1.7],['right:9%;top:82%',12,2.5]];
+    var stars=sp.map(function(s){ return '<span class="gsparkle" aria-hidden="true" style="'+s[0]+';font-size:'+s[1]+'px;animation-delay:'+s[2]+'s">✦</span>'; }).join('');
+    return '<div class="graphic-flank">'+stars+inner+'</div>';
+  }
   function renderFull(d){
     var f=d.full, b=d.birth, hd=f.hd, t=d.teaser||{}, cross=hd.incarnation_cross;
     document.getElementById('a-title').textContent='Dein kosmischer Bauplan';
@@ -1854,7 +1878,7 @@
 
     // ── HUMAN DESIGN ──
     document.getElementById('pane-hd').innerHTML=
-      '<div class="graphic gbody">'+buildBodygraph(hd)+'</div>'+glegend+
+      starflank('<div class="graphic gbody">'+buildBodygraph(hd)+'</div>')+glegend+
       kv('Typ',hd.type_display||hd.type)+(t.strategy?kv('Strategie',t.strategy):'')+kv('Autorität',hd.authority)+
       kv('Profil',hd.profile+(t.profile_name?(', '+t.profile_name):''))+kv('Definition',hd.definition)+
       (cross?kv('Inkarnationskreuz',cross.pers_sun+'/'+cross.pers_earth+', '+cross.des_sun+'/'+cross.des_earth):'')+
@@ -1864,7 +1888,7 @@
 
     // ── NATALCHART ──
     document.getElementById('pane-na').innerHTML=
-      (f.geo?('<div class="graphic gwheel">'+buildNatalWheel(f.geo)+'</div>'):
+      (f.geo?starflank('<div class="graphic gwheel">'+buildNatalWheel(f.geo)+'</div>'):
         '<p style="color:var(--ink-mute);font-size:13px;text-align:center;margin-bottom:14px">Für das Horoskop-Rad brauchen wir deine Geburtszeit.</p>')+
       '<div class="cap2">Deine Positionen, tippe für die Bedeutung</div>'+
       '<p style="color:var(--ink-mute);font-size:13.5px;line-height:1.65;margin:0 0 16px">Beim Haus zeigen wir dir beide gängigen Systeme: <b>Ganzzeichen</b> (moderne, klare Zählung) und <b>Placidus</b> (Standard vieler Chart-Rechner wie astro.com). Sie können sich um ein Haus unterscheiden, beide sind gültig. Die ausführliche Deutung folgt den Ganzzeichen-Häusern.</p>'+
@@ -1886,7 +1910,7 @@
         var take=s.takeaway?'<div class="acc-take">'+esc(s.takeaway)+'</div>':'';
         var facts=(s.facts&&s.facts.length)?'<div class="acc-facts">'+s.facts.map(function(ft){return '<span><strong>'+esc(ft[0])+':</strong> '+esc(ft[1])+'</span>';}).join('')+'</div>':'';
         var sub=s.subtitle?'<small>'+esc(s.subtitle)+'</small>':'';
-        return '<details class="acc" name="deut"'+(i===0?' open':'')+'>'+
+        return '<details class="acc" name="deut">'+
           '<summary class="acc-h"><span class="acc-nr">'+nr+'</span><span class="acc-t">'+esc(s.title)+sub+'</span><span class="acc-x">+</span></summary>'+
           '<div class="acc-b">'+lead+paras+take+facts+'</div></details>';
       }).join('')+'</div>'+
@@ -1956,13 +1980,16 @@
           '<div class="facet2-t">Jahreszahl '+esc(String(py.number))+' · '+esc(py.theme)+'</div>'+
           '<div class="facet2-d">'+esc(py.text)+' <span style="color:var(--ink-mute)">Diese Zahl wandert jedes Jahr eine weiter.</span></div>'+
         '</div></div>') : '';
-      var numGallery='<div class="cap2" style="margin-top:28px">Die neun Lebenszahlen</div>'+
-        '<div class="intu-gallery">'+
+      var moreCard = (nu.strengths||nu.growth) ?
+        ('<div class="facets2" style="margin-top:22px">'+
+          (nu.strengths?'<div class="facet2"><div class="facet2-t">Deine Stärken</div><div class="facet2-d">'+esc(nu.strengths)+'.</div></div>':'')+
+          (nu.growth?'<div class="facet2"><div class="facet2-t">Deine Aufgabe</div><div class="facet2-d">Es geht darum, '+esc(nu.growth)+'.</div></div>':'')+
+        '</div>') : '';
+      var numGallery='<div class="cap2" style="margin-top:28px">Die neun Lebenszahlen im Überblick</div>'+
+        '<div class="num-gallery">'+
         (nu.all||[]).map(function(a){ var on=a.number===nu.lifepath;
-          return '<div class="itype'+(on?' on':'')+'">'+(on?'<div class="itype-badge">deine Zahl</div>':'')+
-            '<div class="itype-sk"><div class="num-badge'+(on?' on':'')+'">'+a.number+'</div></div>'+
-            '<div class="itype-name">'+esc(a.short||'')+'</div>'+
-            '<div class="itype-tag">'+esc(a.keyword)+'</div></div>';
+          return '<div class="numtile'+(on?' on':'')+'"><div class="numtile-n">'+a.number+'</div>'+
+            '<div class="numtile-l">'+esc(a.short||'')+'</div></div>';
         }).join('')+'</div>';
       document.getElementById('pane-nu').innerHTML=
         '<div class="intu">'+
@@ -1971,6 +1998,7 @@
           '<div class="intu-tag">'+esc(nu.title)+' · '+esc(nu.tagline)+'</div>'+
           '<div style="text-align:center"><span class="num-calc">'+esc(nu.calc)+'</span></div>'+
           '<p class="intu-text" style="margin-top:8px">'+esc(nu.text)+'</p>'+
+          moreCard+
           nameCard+
           pyCard+
           numGallery+
