@@ -427,7 +427,7 @@ def _uebersicht(pdf, teaser, full):
     for term, desc in LEGEND:
         _keep(pdf, 15)
         pdf.set_font("Cormo", "B", 14)
-        pdf.set_text_color(*INK_DARK)
+        pdf.set_text_color(*GOLD)
         pdf.multi_cell(0, 6.2, safe(term), new_x=XPos.LMARGIN, new_y=YPos.NEXT)
         pdf.set_font("Mul", "", 10)
         pdf.set_text_color(*BODY_DK)
