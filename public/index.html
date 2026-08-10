@@ -404,9 +404,12 @@
   .preview-body { position: relative; max-height: 560px; overflow: hidden;
     -webkit-mask-image: linear-gradient(to bottom, #000 60%, transparent 98%);
             mask-image: linear-gradient(to bottom, #000 60%, transparent 98%); }
-  .preview-body .pv-pills { display: flex; flex-wrap: wrap; justify-content: center; gap: 7px; margin-bottom: 18px; }
+  /* Vorschau-Pills immer in EINER Reihe (bei wenig Platz wischbar) */
+  .preview-body .pv-pills { display: flex; flex-wrap: nowrap; justify-content: center; gap: 6px; margin-bottom: 18px;
+    overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; padding-bottom: 2px; }
+  .preview-body .pv-pills::-webkit-scrollbar { display: none; }
   .preview-body .pv-pill { font-size: 11.5px; font-weight: 600; color: var(--ink-soft); background: rgba(201,164,255,.08);
-    border: 1px solid var(--line); border-radius: 999px; padding: 6px 12px; }
+    border: 1px solid var(--line); border-radius: 999px; padding: 6px 11px; white-space: nowrap; flex: 0 0 auto; }
   .preview-body .pv-pill.on { color: #3a2410; background: linear-gradient(135deg, var(--gold), var(--gold-deep)); border-color: transparent; }
   .preview-body .factrow { margin-top: 0; }
   .preview-body .grid2 { margin-top: 18px; }
@@ -415,7 +418,7 @@
   .pv-pill:hover { color: var(--ink); border-color: var(--line-strong); }
   .pv-pill:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
   .pv-pill.on { cursor: default; }
-  #g-preview-panel { animation: rise .35s cubic-bezier(.2,.7,.2,1) both; }
+  #g-preview-panel { text-align: center; animation: rise .35s cubic-bezier(.2,.7,.2,1) both; }
   @media (prefers-reduced-motion: reduce) { #g-preview-panel { animation: none; } }
   .pv-tease { font-size: 13.5px; color: var(--ink-soft); line-height: 1.7; text-align: center; margin: 16px auto 0; max-width: 42ch; }
   .pv-big { font-size: clamp(30px,7vw,44px); text-align: center; line-height: 1.12; margin: 6px 0 2px; }
@@ -1265,6 +1268,7 @@
 </div>
 
 <button class="floatcta" id="floatcta" data-scroll="analyse" type="button">Jetzt kostenlos starten ✦</button>
+<button class="floatcta" id="floatcta2" type="button">Meinen Bauplan erhalten ✦</button>
 <button class="scrolltop" id="scrolltop" type="button" aria-label="Nach oben zu den Reitern">↑</button>
 
 <div id="calm" role="dialog" aria-modal="true" aria-label="Nimm dir einen Moment">
@@ -1313,6 +1317,35 @@
     }
     addEventListener('scroll', upd, {passive:true});
     addEventListener('resize', upd);
+    upd();
+  })();
+
+  /* ── Mitlaufender Button auf der Vorschau-Seite (nur Handy): zurück zum Anmelde-Feld ── */
+  (function(){
+    var fc=document.getElementById('floatcta2'); if(!fc) return;
+    function onStep2(){ var s=document.getElementById('step2'); return s && s.classList.contains('active'); }
+    function upd(){
+      var show=false;
+      var g=document.getElementById('glimpse');
+      var card=g && g.querySelector('.mailcard');
+      if(onStep2() && g && g.classList.contains('show') && card && innerWidth<=780){
+        var r=card.getBoundingClientRect();
+        // Button zeigen, solange das Anmelde-Feld nicht sichtbar ist
+        show = (r.bottom < 90 || r.top > innerHeight-60);
+      }
+      fc.classList.toggle('show', show);
+    }
+    fc.addEventListener('click', function(){
+      var g=document.getElementById('glimpse'); var card=g && g.querySelector('.mailcard');
+      if(card){ card.scrollIntoView({behavior:'smooth', block:'center'}); }
+      var mail=document.getElementById('g-mail');
+      if(mail){ setTimeout(function(){ try{ mail.focus({preventScroll:true}); }catch(e){} }, 450); }
+    });
+    addEventListener('scroll', upd, {passive:true});
+    addEventListener('resize', upd);
+    // Auch aktualisieren, sobald die Vorschau erscheint (Klassenwechsel an #glimpse)
+    var g0=document.getElementById('glimpse');
+    if(g0 && window.MutationObserver){ new MutationObserver(upd).observe(g0, {attributes:true, attributeFilter:['class']}); }
     upd();
   })();
 
