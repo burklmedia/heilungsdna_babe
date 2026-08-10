@@ -63,6 +63,28 @@ PLANET_ABBR = {
     "Chiron": "Ch", "Nordknoten": "Kn", "Südknoten": "Sk",
 }
 
+# Glossar "Was bedeutet was?" (aus dem Uebersicht-Reiter der Website)
+LEGEND = [
+    ("Human-Design-Typ", "Deine Energie-Bauart. Sie zeigt, wie du am stimmigsten handelst und Entscheidungen triffst."),
+    ("Innere Autorität", "Woher deine verlässliche Ja-oder-Nein-Klarheit kommt, dein innerer Kompass."),
+    ("Profil", "Die Rolle, in der sich dein Weg entfaltet, mit einer bewussten und einer unbewussten Seite."),
+    ("Zentren", "Neun Energiefelder. Definiert heißt verlässlich und konstant, offen heißt lernend und formbar."),
+    ("Sonne", "Dein Wesenskern, wer du im tiefsten Sinn bist."),
+    ("Mond", "Deine Gefühlswelt und was du brauchst, um dich sicher zu fühlen."),
+    ("Aszendent (AC)", "Wie du auf andere wirkst, dein Auftritt. Dafür braucht es deine Geburtszeit."),
+    ("Deszendent (DC)", "Er liegt genau gegenüber vom AC und zeigt, was du im Partner suchst und anziehst."),
+    ("MC / IC", "Deine Berufung nach außen (MC) und deine Wurzel nach innen (IC)."),
+    ("Häuser", "Zwölf Lebensfelder. Sie zeigen, in welchem Bereich deines Lebens ein Planet konkret wirkt."),
+    ("Elemente-Balance", "Wie sich Feuer, Erde, Luft und Wasser in dir verteilen. Dein stärkstes Element geht dir am leichtesten von der Hand."),
+    ("Deine größte Stärke", "Die Stelle, an der Human Design und Natalchart dasselbe sagen. Was dir mühelos gelingt."),
+    ("Deine größte Herausforderung", "Wo du am leichtesten von dir selbst abrutschst, aus Human Design und Chart gelesen, mit dem Weg, wie du sie meisterst."),
+    ("Intuitionstyp", "Über welchen Kanal deine innere Führung zu dir spricht, abgeleitet aus deinem Mond."),
+    ("Chiron", "Deine älteste Wunde und genau dort deine besondere Gabe, andere zu heilen."),
+    ("Mondknoten-Achse", "Dein roter Faden. Woher du kommst (Südknoten) und wohin du wächst (Nordknoten), deine Lebensaufgabe."),
+    ("Stellium", "Eine Häufung von Planeten in einem Zeichen oder Haus. Ein besonders betonter Lebensschwerpunkt."),
+    ("Aspekte", "Die Winkel zwischen deinen Planeten, die inneren Gespräche zwischen deinen Kräften."),
+]
+
 _SUPPORTED = None
 
 
@@ -272,56 +294,179 @@ def _cover(pdf, birth, name):
                    align="C", new_x=XPos.LMARGIN, new_y=YPos.NEXT)
 
 
-def _summary(pdf, teaser, full):
+def _factrow(pdf, teaser, hd, y):
+    """Drei goldgerahmte Kernfakten nebeneinander (Typ, Autorität, Profil)."""
+    cw = PW - pdf.l_margin - pdf.r_margin
+    gap = 6.0
+    fw = (cw - 2 * gap) / 3.0
+    fh = 20.0
+    facts = [("Typ", hd.get("type_display") or hd.get("type") or teaser.get("type") or ""),
+             ("Autorität", (hd.get("authority") or teaser.get("authority") or "")
+              .replace(" Autorität", "").replace("Emotionale", "Emotional")),
+             ("Profil", hd.get("profile") or teaser.get("profile") or "")]
+    for i, (lab, val) in enumerate(facts):
+        x = pdf.l_margin + i * (fw + gap)
+        pdf.set_fill_color(*CARD)
+        pdf.set_draw_color(*GOLD)
+        pdf.set_line_width(0.3)
+        _round_rect(pdf, x, y, fw, fh, 3.5, style="DF", border_opacity=0.34)
+        pdf.set_xy(x, y + 4)
+        pdf.set_font("Mul", "", 7.5)
+        pdf.set_text_color(*INK_SOFT)
+        with pdf.local_context(char_spacing=0.8):
+            pdf.cell(fw, 4, safe(lab.upper()), align="C", new_x=XPos.LMARGIN, new_y=YPos.NEXT)
+        pdf.set_xy(x + 2, y + 9)
+        pdf.set_font("Cormo", "", 15)
+        pdf.set_text_color(*GOLD)
+        pdf.multi_cell(fw - 4, 6.5, safe(val), align="C", new_x=XPos.LMARGIN, new_y=YPos.NEXT)
+    return y + fh
+
+
+def _uebersicht(pdf, teaser, full):
+    """Reiter 1: die ganze Uebersicht auf einem Blatt (Kernfakten + beide
+    Abbildungen nebeneinander), danach die zwei aufgeklappten Felder
+    'Was bedeutet was?' und die zwoelf Haeuser."""
+    hd = full.get("hd", {})
+    geo = full.get("geo")
+    name = full.get("name") or ""
     pdf.theme = "dark"
     pdf.add_page()
     _heading_block(pdf, "Übersicht", "Auf einen Blick", on_dark=True)
-    _para(pdf, "Das sind die Kernpunkte, aus denen sich alles Weitere ableitet. "
-               "Sie sind exakt aus deinem Geburtsmoment berechnet und ändern sich nie.",
-          font="Mul", size=11, color=INK_SOFT, h=6.4, after=6)
+    _para(pdf, (name + ", " if name else "") +
+          "was du gleich liest, ist kein Test und kein Urteil. Es ist ein Blick auf das, "
+          "was in dir angelegt ist, seit dem ersten Moment deines Lebens. Prüf beim Lesen "
+          "immer selbst, was sich stimmig anfühlt. Was nicht passt, darfst du liegen lassen.",
+          font="Mul", size=10, color=INK_SOFT, h=5.8, after=5)
 
-    prof = str(teaser.get("profile") or "")
-    if teaser.get("profile_name"):
-        prof = (prof + ", " + str(teaser["profile_name"])).strip(", ")
-    asc = (full.get("ascendant") or {}).get("sign", "")
-    sma = ", ".join(x for x in [
-        str(teaser.get("sun_sign") or ""), str(teaser.get("moon_sign") or ""), str(asc)] if x)
-    rows = []
-    if teaser.get("type"):
-        rows.append(("Typ", str(teaser["type"]), GOLD))
-    if teaser.get("authority"):
-        rows.append(("Innere Autorität", str(teaser["authority"]), INK_L))
-    if prof:
-        rows.append(("Profil", prof, INK_L))
-    if sma:
-        rows.append(("Sonne, Mond, Aszendent", sma, LILAC))
+    y = _factrow(pdf, teaser, hd, pdf.get_y() + 1)
+    y += 8
 
-    cy = pdf.get_y() + 4
-    cx = pdf.l_margin
+    # Zwei Panels nebeneinander: links Natalchart-Rad, rechts Bodygraph
     cw = PW - pdf.l_margin - pdf.r_margin
-    pad = 13.0
-    row_h = 15.5
-    ch = pad * 2 + row_h * len(rows)
-    pdf.set_fill_color(*CARD)
-    pdf.set_draw_color(*GOLD)
-    pdf.set_line_width(0.3)
-    _round_rect(pdf, cx, cy, cw, ch, 4.5, style="DF", border_opacity=0.30)
-    for i, (label, value, col) in enumerate(rows):
-        ry = cy + pad + i * row_h
-        pdf.set_xy(cx + pad, ry)
-        pdf.set_font("Mul", "", 8.5)
+    gap = 8.0
+    col = (cw - gap) / 2.0
+    ph = 118.0
+    lx = pdf.l_margin
+    rx = pdf.l_margin + col + gap
+    for x in (lx, rx):
+        pdf.set_fill_color(*CARD)
+        pdf.set_draw_color(*GOLD)
+        pdf.set_line_width(0.3)
+        _round_rect(pdf, x, y, col, ph, 4.0, style="DF", border_opacity=0.24)
+
+    # Panel-Titel
+    for x, cap in ((lx, "Natalchart"), (rx, "Human Design")):
+        pdf.set_xy(x, y + 6)
+        pdf.set_font("Mul", "", 8)
+        pdf.set_text_color(*GOLD)
+        with pdf.local_context(char_spacing=1.4):
+            pdf.cell(col, 4, safe(cap.upper()), align="C")
+
+    # linkes Panel: Rad + Schluesselwerte
+    if geo:
+        dia = col - 16
+        _draw_wheel(pdf, geo, lx + (col - dia) / 2.0, y + 14, dia)
+        by = {p["key"]: p for p in full.get("positions", [])}
+
+        def qv(k):
+            p = by.get(k)
+            return (p["sign"] + " " + p["deg"]) if p else "…"
+        ky = y + 14 + dia + 3
+        for lab, k in (("Sonne", "Sonne"), ("Mond", "Mond"),
+                       ("Aszendent", "AC"), ("Deszendent", "DC")):
+            pdf.set_xy(lx + 6, ky)
+            pdf.set_font("Mul", "", 7.5)
+            pdf.set_text_color(*INK_SOFT)
+            pdf.cell(col * 0.42, 5, safe(lab.upper()))
+            pdf.set_xy(lx + col * 0.42, ky)
+            pdf.set_font("Cormo", "", 12)
+            pdf.set_text_color(*LILAC)
+            pdf.cell(col * 0.58 - 6, 5, safe(qv(k)), align="R")
+            ky += 6
+    else:
+        pdf.set_xy(lx + 6, y + ph / 2 - 8)
+        pdf.set_font("Cormo", "I", 11)
         pdf.set_text_color(*INK_SOFT)
-        with pdf.local_context(char_spacing=0.8):
-            pdf.cell(cw / 2 - pad, row_h - 5, safe(label.upper()))
-        pdf.set_xy(cx + cw / 2, ry)
-        pdf.set_font("Cormo", "", 18)
-        pdf.set_text_color(*col)
-        pdf.cell(cw / 2 - pad, row_h - 5, safe(value), align="R")
-        if i < len(rows) - 1:
-            with pdf.local_context(stroke_opacity=0.2):
-                pdf.set_draw_color(*LILAC)
-                pdf.set_line_width(0.2)
-                pdf.line(cx + pad, ry + row_h - 2.5, cx + cw - pad, ry + row_h - 2.5)
+        pdf.multi_cell(col - 12, 5.4, safe("Für das Rad brauchen wir deine Geburtszeit."),
+                       align="C", new_x=XPos.LMARGIN, new_y=YPos.NEXT)
+
+    # rechtes Panel: Bodygraph + Legende
+    bth = ph - 34
+    bw = (260.0 / 452.0) * bth
+    _draw_bodygraph(pdf, hd, rx + (col - bw) / 2.0, y + 14, bth)
+    ly = y + ph - 12
+    pdf.set_fill_color(*GOLD)
+    pdf.rect(rx + col / 2 - 26, ly, 2.6, 2.6, style="F")
+    _ctext(pdf, rx + col / 2 - 15, ly + 1.3, "definiert", 7.5, INK_SOFT)
+    pdf.set_draw_color(*INK_SOFT)
+    pdf.set_line_width(0.3)
+    pdf.rect(rx + col / 2 + 6, ly, 2.6, 2.6, style="D")
+    _ctext(pdf, rx + col / 2 + 17, ly + 1.3, "offen", 7.5, INK_SOFT)
+
+    pdf.set_y(y + ph)
+
+    # ── aufgeklappte Felder auf hellen Seiten ──
+    pdf.theme = "cream"
+    pdf.add_page()
+    _fold_head(pdf, "Was bedeutet was?")
+    _para(pdf, "Hier findest du die wichtigsten Begriffe aus deinem Bauplan in einfachen "
+               "Worten. So kannst du jederzeit nachschauen.",
+          size=10, color=BODY_DK, h=5.7, after=4)
+    for term, desc in LEGEND:
+        _keep(pdf, 15)
+        pdf.set_font("Cormo", "B", 14)
+        pdf.set_text_color(*INK_DARK)
+        pdf.multi_cell(0, 6.2, safe(term), new_x=XPos.LMARGIN, new_y=YPos.NEXT)
+        pdf.set_font("Mul", "", 10)
+        pdf.set_text_color(*BODY_DK)
+        pdf.multi_cell(0, 5.6, safe(desc), new_x=XPos.LMARGIN, new_y=YPos.NEXT, align="J")
+        pdf.ln(3.5)
+
+    _keep(pdf, 40)
+    pdf.ln(2)
+    _fold_head(pdf, "Die zwölf Häuser, deine Lebensfelder")
+    _para(pdf, "Die Häuser zeigen, in welchem Lebensbereich sich ein Planet entfaltet. "
+               "So kannst du jede Position in deinem Natalchart einordnen.",
+          size=10, color=BODY_DK, h=5.7, after=4)
+    for h in full.get("houses", []):
+        _keep(pdf, 13)
+        y0 = pdf.get_y()
+        pdf.set_font("Mul", "B", 9)
+        pdf.set_text_color(*GOLD_DK)
+        pdf.set_xy(pdf.l_margin, y0 + 0.6)
+        pdf.cell(9, 6, str(h.get("nr", "")))
+        pdf.set_xy(pdf.l_margin + 9, y0)
+        pdf.set_font("Cormo", "B", 13)
+        pdf.set_text_color(*INK_DARK)
+        pdf.cell(0, 6, safe("Haus " + str(h.get("nr", "")) + ", " + str(h.get("title") or "")),
+                 new_x=XPos.LMARGIN, new_y=YPos.NEXT)
+        pdf.set_xy(pdf.l_margin + 9, pdf.get_y())
+        pdf.set_font("Mul", "", 9.5)
+        pdf.set_text_color(*BODY_DK)
+        pdf.multi_cell(PW - pdf.l_margin - pdf.r_margin - 9, 5.2, safe(h.get("meaning") or ""),
+                       new_x=XPos.LMARGIN, new_y=YPos.NEXT)
+        pdf.ln(2.5)
+
+
+def _fold_head(pdf, title):
+    """Kopf eines aufgeklappten Felds (wie ein geoeffneter Reiter auf hell)."""
+    _keep(pdf, 20)
+    x = pdf.l_margin
+    w = PW - pdf.l_margin - pdf.r_margin
+    y = pdf.get_y()
+    pdf.set_fill_color(*QUOTE_BG)
+    _round_rect(pdf, x, y, w, 11, 3, style="F")
+    pdf.set_fill_color(*GOLD2)
+    pdf.rect(x, y, 1.2, 11, style="F")
+    pdf.set_xy(x + 7, y)
+    pdf.set_font("Cormo", "B", 15)
+    pdf.set_text_color(*INK_DARK)
+    pdf.cell(w - 26, 11, safe(title))
+    pdf.set_font("Mul", "", 16)
+    pdf.set_text_color(*GOLD_DK)
+    pdf.set_xy(x + w - 14, y)
+    pdf.cell(10, 11, "+", align="C")
+    pdf.set_y(y + 11 + 4)
 
 
 def _round_rect(pdf, x, y, w, h, r, style="D", border_opacity=1.0):
@@ -561,100 +706,141 @@ def _draw_wheel(pdf, geo, ox, oy, dia):
         _ctext(pdf, g[0], g[1], abbr, 8.5, INK_L, style="B")
 
 
-def _fig_caption(pdf, eyebrow, title, on_dark=True):
-    _eyebrow(pdf, eyebrow, GOLD if on_dark else MUTE, size=8, spacing=1.1)
-    pdf.ln(2.5)
-    pdf.set_font("Cormo", "", 21)
-    pdf.set_text_color(*(INK_L if on_dark else INK_DARK))
-    pdf.cell(0, 8, safe(title), new_x=XPos.LMARGIN, new_y=YPos.NEXT, align="C")
-    pdf.ln(2)
+def _kvrow_dark(pdf, k, v):
+    """Zeile Schluessel/Wert auf dunkel, mit feiner Trennlinie (wie kv auf der Seite)."""
+    if not v:
+        return
+    cw = PW - pdf.l_margin - pdf.r_margin
+    y0 = pdf.get_y()
+    pdf.set_font("Mul", "", 10)
+    pdf.set_text_color(*INK_SOFT)
+    pdf.cell(cw * 0.4, 8, safe(k))
+    pdf.set_xy(pdf.l_margin + cw * 0.4, y0)
+    pdf.set_font("Cormo", "", 15)
+    pdf.set_text_color(*INK_L)
+    pdf.multi_cell(cw * 0.6, 8, safe(v), align="R", new_x=XPos.LMARGIN, new_y=YPos.NEXT)
+    with pdf.local_context(stroke_opacity=0.18):
+        pdf.set_draw_color(*LILAC)
+        pdf.set_line_width(0.2)
+        pdf.line(pdf.l_margin, pdf.get_y() + 0.6, PW - pdf.r_margin, pdf.get_y() + 0.6)
+    pdf.ln(2.4)
 
 
-def _figures(pdf, full):
-    """Kapitel 'Deine Abbildungen': Geburtshoroskop-Rad und Energie-Bauplan,
-    genau wie die Grafiken im Uebersicht-Reiter der Website."""
+def _human_design(pdf, teaser, full):
+    """Reiter Human Design: Bodygraph gross, Kernfakten und die neun Zentren."""
+    hd = full.get("hd", {})
     pdf.theme = "dark"
     pdf.add_page()
-    _heading_block(pdf, "Abbildungen", "Deine Abbildungen", on_dark=True)
-    _para(pdf, "Dein Geburtsmoment als Bild: das Horoskop-Rad mit allen Planeten in "
-               "Zeichen und Haus und dein Human-Design-Bodygraph mit den definierten "
-               "Zentren und aktiven Kanälen.",
-          font="Mul", size=10.5, color=INK_SOFT, h=6.2, after=4)
+    _heading_block(pdf, "Reiter", "Human Design", on_dark=True)
+    th = 118.0
+    ox = (PW - (260.0 / 452.0) * th) / 2.0
+    oy = pdf.get_y() + 1
+    _draw_bodygraph(pdf, hd, ox, oy, th)
+    pdf.set_y(oy + th + 6)
+    cx = PW / 2.0
+    yy = pdf.get_y()
+    pdf.set_fill_color(*GOLD)
+    pdf.rect(cx - 38, yy, 2.8, 2.8, style="F")
+    _ctext(pdf, cx - 26, yy + 1.4, "definiert", 8.5, INK_SOFT)
+    pdf.set_draw_color(*INK_SOFT)
+    pdf.set_line_width(0.3)
+    pdf.rect(cx + 8, yy, 2.8, 2.8, style="D")
+    _ctext(pdf, cx + 20, yy + 1.4, "offen", 8.5, INK_SOFT)
+    pdf.ln(9)
+    cross = hd.get("incarnation_cross")
+    _kvrow_dark(pdf, "Typ", hd.get("type_display") or hd.get("type"))
+    _kvrow_dark(pdf, "Strategie", teaser.get("strategy"))
+    _kvrow_dark(pdf, "Autorität", hd.get("authority"))
+    prof = str(hd.get("profile") or "")
+    if teaser.get("profile_name"):
+        prof = (prof + ", " + str(teaser["profile_name"])).strip(", ")
+    _kvrow_dark(pdf, "Profil", prof)
+    _kvrow_dark(pdf, "Definition", hd.get("definition"))
+    if cross:
+        _kvrow_dark(pdf, "Inkarnationskreuz",
+                    "%s/%s, %s/%s" % (cross.get("pers_sun"), cross.get("pers_earth"),
+                                      cross.get("des_sun"), cross.get("des_earth")))
 
+    # Die neun Zentren auf hellen Seiten
+    pdf.theme = "cream"
+    pdf.add_page()
+    _heading_block(pdf, "Human Design", "Deine neun Energiezentren", on_dark=False)
+    _para(pdf, "Jedes Zentrum ist entweder definiert oder offen. Definiert heißt: hier "
+               "bist du dir treu, diese Energie ist immer verlässlich da. Offen heißt: "
+               "hier bist du feinfühlig, formbar und lernst ein Leben lang. Beides ist "
+               "wertvoll.", size=10.5, color=BODY_DK, h=5.9, after=3)
+    for c in full.get("hd_centers", []):
+        state = "definiert" if c.get("defined") else "offen"
+        body = str(c.get("detail") or "")
+        if c.get("defined") and c.get("gift"):
+            body += ("\n" if body else "") + "Deine Gabe hier: " + str(c["gift"]) + "."
+        if (not c.get("defined")) and c.get("tip"):
+            body += ("\n" if body else "") + "Impuls: " + str(c["tip"])
+        _unit(pdf, str(c.get("name") or ""), state,
+              c.get("theme") or c.get("meaning"), body)
+
+
+def _natalchart(pdf, full):
+    """Reiter Natalchart: Horoskop-Rad gross und alle Positionen im Detail."""
     geo = full.get("geo")
+    pdf.theme = "dark"
+    pdf.add_page()
+    _heading_block(pdf, "Reiter", "Natalchart", on_dark=True)
     if geo:
-        pdf.ln(1)
-        _fig_caption(pdf, "Natalchart", "Dein Geburtshoroskop")
-        dia = 118.0
-        oy = pdf.get_y()
+        dia = 122.0
+        oy = pdf.get_y() + 1
         _draw_wheel(pdf, geo, (PW - dia) / 2.0, oy, dia)
-        pdf.set_y(oy + dia + 3)
-        # Schluesselwerte unter dem Rad
+        pdf.set_y(oy + dia + 5)
         by = {p["key"]: p for p in full.get("positions", [])}
 
         def qv(k):
             p = by.get(k)
             return (p["sign"] + " " + p["deg"]) if p else "…"
-        keyrows = [("Sonne", qv("Sonne")), ("Mond", qv("Mond")),
-                   ("Aszendent", qv("AC")), ("Deszendent", qv("DC"))]
         cw = PW - pdf.l_margin - pdf.r_margin
-        for i, (lab, val) in enumerate(keyrows):
+        pairs = [("Sonne", qv("Sonne")), ("Mond", qv("Mond")),
+                 ("Aszendent", qv("AC")), ("Deszendent", qv("DC"))]
+        for i in range(0, len(pairs), 2):
             y0 = pdf.get_y()
-            pdf.set_font("Mul", "", 8.5)
-            pdf.set_text_color(*INK_SOFT)
-            with pdf.local_context(char_spacing=0.6):
-                pdf.cell(cw / 2, 7, safe(lab.upper()))
-            pdf.set_xy(pdf.l_margin + cw / 2, y0)
-            pdf.set_font("Cormo", "", 15)
-            pdf.set_text_color(*LILAC)
-            pdf.cell(cw / 2, 7, safe(val), align="R", new_x=XPos.LMARGIN, new_y=YPos.NEXT)
-            with pdf.local_context(stroke_opacity=0.25):
-                pdf.set_draw_color(*LILAC)
-                pdf.set_line_width(0.2)
-                pdf.line(pdf.l_margin, pdf.get_y() + 0.4, PW - pdf.r_margin, pdf.get_y() + 0.4)
-            pdf.ln(1.5)
+            for j in range(2):
+                if i + j >= len(pairs):
+                    break
+                lab, val = pairs[i + j]
+                x = pdf.l_margin + j * (cw / 2)
+                pdf.set_xy(x, y0)
+                pdf.set_font("Mul", "", 8)
+                pdf.set_text_color(*INK_SOFT)
+                pdf.cell(cw / 4, 6, safe(lab.upper()))
+                pdf.set_xy(x + cw / 4, y0)
+                pdf.set_font("Cormo", "", 13)
+                pdf.set_text_color(*LILAC)
+                pdf.cell(cw / 4 - 4, 6, safe(val))
+            pdf.ln(7)
     else:
-        _para(pdf, "Für das Horoskop-Rad brauchen wir deine Geburtszeit. "
-                   "Dein Energie-Bauplan zeigt sich auch ohne sie.",
-              font="Cormo", style="I", size=12.5, color=GOLD, h=6, after=4, align="C")
+        _para(pdf, "Für das Horoskop-Rad brauchen wir deine Geburtszeit. Die Positionen "
+                   "von Sonne, Mond und den Planeten liest du trotzdem gleich.",
+              font="Cormo", style="I", size=13, color=GOLD, h=6.4, after=4, align="C")
 
-    # Bodygraph auf eigener Seite (viel Raum, gut lesbar)
-    pdf.theme = "dark"
+    # Positionen auf hellen Seiten
+    pdf.theme = "cream"
     pdf.add_page()
-    _fig_caption(pdf, "Human Design", "Dein Energie-Bauplan")
-    hd = full.get("hd", {})
-    th = 150.0
-    ox = (PW - (260.0 / 452.0) * th) / 2.0
-    oy = pdf.get_y() + 2
-    _draw_bodygraph(pdf, hd, ox, oy, th)
-    pdf.set_y(oy + th + 8)
-    # Legende definiert / offen
-    cx = PW / 2.0
-    pdf.set_fill_color(*GOLD)
-    pdf.rect(cx - 40, pdf.get_y() + 1.6, 3, 3, style="F")
-    _ctext(pdf, cx - 27, pdf.get_y() + 3, "definiert", 9, INK_SOFT)
-    pdf.set_draw_color(*INK_SOFT)
-    pdf.set_line_width(0.3)
-    pdf.rect(cx + 8, pdf.get_y() + 1.6, 3, 3, style="D")
-    _ctext(pdf, cx + 22, pdf.get_y() + 3, "offen", 9, INK_SOFT)
-    pdf.ln(10)
-    facts = [("Typ", hd.get("type_display") or hd.get("type") or ""),
-             ("Autorität", hd.get("authority") or ""),
-             ("Profil", hd.get("profile") or "")]
-    cw = PW - pdf.l_margin - pdf.r_margin
-    fw = cw / 3.0
-    y0 = pdf.get_y()
-    for i, (lab, val) in enumerate(facts):
-        x = pdf.l_margin + i * fw
-        pdf.set_xy(x, y0)
-        pdf.set_font("Mul", "", 8)
-        pdf.set_text_color(*INK_SOFT)
-        with pdf.local_context(char_spacing=0.8):
-            pdf.cell(fw, 5, safe(lab.upper()), align="C", new_x=XPos.LMARGIN, new_y=YPos.NEXT)
-        pdf.set_x(x)
-        pdf.set_font("Cormo", "", 15)
-        pdf.set_text_color(*GOLD)
-        pdf.multi_cell(fw, 6.5, safe(val), align="C", new_x=XPos.LMARGIN, new_y=YPos.NEXT)
+    _heading_block(pdf, "Natalchart", "Deine Positionen im Detail", on_dark=False)
+    _para(pdf, "Jeder Planet steht für einen Bereich deines Lebens. Zeichen und Haus "
+               "sagen, wie und wo er sich zeigt. Beim Haus zeigen wir Ganzzeichen und "
+               "Placidus; die ausführliche Deutung folgt den Ganzzeichen-Häusern.",
+          size=10.5, color=BODY_DK, h=5.9, after=3)
+    for p in full.get("positions", []):
+        sign = str(p.get("sign") or "")
+        deg = str(p.get("deg") or "")
+        house = p.get("house")
+        hpl = p.get("house_pl", house)
+        meta = ", ".join(x for x in [sign, deg] if x)
+        if house:
+            if hpl and hpl != house:
+                meta += ", Ganzzeichen H%s / Placidus H%s" % (house, hpl)
+            else:
+                meta += ", " + str(house) + ". Haus"
+        _unit(pdf, str(p.get("label") or p.get("key") or ""), meta,
+              p.get("meaning"), p.get("desc"))
 
 
 # ---------- Inhaltsverzeichnis ----------
@@ -813,42 +999,6 @@ def _deutung(pdf, sections):
                 pdf.ln(1)
 
 
-def _planets(pdf, full):
-    _simple_chapter_head(pdf, "Natalchart", "Deine Planeten im Detail",
-                         "Jeder Planet steht für einen Bereich deines Lebens. "
-                         "Zeichen und Haus sagen, wie und wo er sich zeigt.")
-    for p in full.get("positions", []):
-        sign = str(p.get("sign") or "")
-        deg = str(p.get("deg") or "")
-        house = p.get("house")
-        meta = ", ".join(x for x in [sign, deg] if x)
-        if house:
-            meta += (", " if meta else "") + str(house) + ". Haus"
-        _unit(pdf, str(p.get("label") or p.get("key") or ""), meta,
-              p.get("meaning"), p.get("desc"))
-
-
-def _houses(pdf, full):
-    _simple_chapter_head(pdf, "Lebensfelder", "Deine Häuser",
-                         "Die zwölf Lebensbühnen, auf denen sich dein Chart zeigt.")
-    for h in full.get("houses", []):
-        _unit(pdf, "Haus " + str(h.get("nr", "")), str(h.get("title") or ""),
-              None, h.get("meaning"))
-
-
-def _centers(pdf, full):
-    _simple_chapter_head(pdf, "Human Design", "Deine neun Energiezentren",
-                         "Was bei dir fest verankert ist und was dich fein "
-                         "wahrnehmen lässt.")
-    for c in full.get("hd_centers", []):
-        state = "definiert" if c.get("defined") else "offen"
-        body = str(c.get("detail") or "")
-        if c.get("tip"):
-            body += ("\n" if body else "") + "Impuls: " + str(c["tip"])
-        _unit(pdf, str(c.get("name") or ""), state,
-              c.get("theme") or c.get("meaning"), body)
-
-
 def _numerology(pdf, full):
     num = full["numerology"]
     _simple_chapter_head(pdf, "Zahlen", "Deine Numerologie",
@@ -877,11 +1027,51 @@ def _numerology(pdf, full):
 
 
 def _closing(pdf, full):
-    _simple_chapter_head(pdf, "Abschluss", "Zum Schluss")
-    _para(pdf, full["closing"], font="Cormo", size=14, color=INK_DARK, h=7, after=4)
+    """Abschlussseite: der warme Schlusstext und ein spiritueller Lieblingsspruch."""
+    pdf.theme = "dark"
+    pdf.add_page()
+    cx = PW / 2.0
+    # weicher Goldschein oben
+    with pdf.local_context(fill_opacity=0.10):
+        pdf.set_fill_color(*GOLD)
+        _circle(pdf, cx, 20, 130, style="F")
+    _heading_block(pdf, "Abschluss", "Zum Schluss", on_dark=True)
+    _para(pdf, full.get("closing"), font="Cormo", style="I", size=14.5,
+          color=INK_L, h=7.2, after=6)
+
+    # Lieblingsspruch als goldgerahmtes Zitat
+    quote = "Du lebst nur einmal in diesem Leben – also mach das Beste daraus."
+    _keep(pdf, 60)
+    pdf.ln(4)
+    x = pdf.l_margin
+    w = PW - pdf.l_margin - pdf.r_margin
+    top = pdf.get_y()
+    pdf.set_font("Cormo", "I", 20)
+    lines = pdf.multi_cell(w - 24, 9, safe(quote), dry_run=True, output="LINES")
+    th = 9 * max(1, len(lines))
+    box_h = 16 + th + 16
+    pdf.set_fill_color(*CARD)
+    pdf.set_draw_color(*GOLD)
+    pdf.set_line_width(0.4)
+    _round_rect(pdf, x, top, w, box_h, 5, style="DF", border_opacity=0.4)
+    pdf.set_xy(x, top + 9)
+    pdf.set_font("Vibes", "", 22)
+    pdf.set_text_color(*GOLD)
+    pdf.cell(w, 8, safe("Zum Mitnehmen"), align="C", new_x=XPos.LMARGIN, new_y=YPos.NEXT)
+    pdf.set_xy(x + 12, top + 18)
+    pdf.set_font("Cormo", "I", 20)
+    pdf.set_text_color(*INK_L)
+    pdf.multi_cell(w - 24, 9, safe(quote), align="C", new_x=XPos.LMARGIN, new_y=YPos.NEXT)
+    pdf.set_y(top + box_h)
+
+    # Wortmarke + Hinweis
+    pdf.ln(10)
+    pdf.set_font("Vibes", "", 24)
+    pdf.set_text_color(*GOLD)
+    pdf.cell(0, 10, safe("Intuition mit Herz"), align="C", new_x=XPos.LMARGIN, new_y=YPos.NEXT)
     if full.get("note"):
-        pdf.ln(2)
-        _para(pdf, full["note"], size=8.5, color=MUTE, h=4.6, after=0)
+        pdf.ln(4)
+        _para(pdf, full["note"], size=8.5, color=INK_SOFT, h=4.6, after=0, align="C")
 
 
 def _render(result, toc_entries):
@@ -916,20 +1106,17 @@ def _render(result, toc_entries):
         fn(pdf, *a)
         collected.append((("0" + str(len(collected) + 1))[-2:], title, first))
 
-    chap("Auf einen Blick", _summary, teaser, full)
-    chap("Deine Abbildungen", _figures, full)
-    if full.get("sections"):
-        chap("Deine Deutung", _deutung, full["sections"])
-    if full.get("positions"):
-        chap("Deine Planeten im Detail", _planets, full)
-    if full.get("houses"):
-        chap("Deine Häuser", _houses, full)
-    if full.get("hd_centers"):
-        chap("Deine neun Energiezentren", _centers, full)
+    # Reihenfolge wie die Reiter der Website: Uebersicht, Human Design,
+    # Natalchart, Intuitionstyp, Numerologie, Deutung, dann der Abschluss.
+    chap("Übersicht", _uebersicht, teaser, full)
+    chap("Human Design", _human_design, teaser, full)
+    chap("Natalchart", _natalchart, full)
     if full.get("intuition"):
-        chap("Dein Intuitionstyp", _intuition, full["intuition"])
+        chap("Intuitionstyp", _intuition, full["intuition"])
     if full.get("numerology"):
-        chap("Deine Numerologie", _numerology, full)
+        chap("Numerologie", _numerology, full)
+    if full.get("sections"):
+        chap("Deutung", _deutung, full["sections"])
     if full.get("closing"):
         chap("Zum Schluss", _closing, full)
 
