@@ -41,14 +41,18 @@ GOLD2 = (234, 178, 77)      # #eab24d
 GOLD_DK = (184, 137, 44)    # #b8892c  Gold-Text auf hell
 LILAC = (201, 164, 255)     # #c9a4ff
 LILAC2 = (180, 140, 255)    # #b48cff
-INK_L = (243, 238, 254)     # helle Schrift auf dunkel
-INK_SOFT = (179, 168, 212)  # gedaempft auf dunkel
-INK_DARK = (44, 38, 66)     # #2c2642 Schrift auf hell
-BODY_DK = (74, 64, 102)     # #4a4066 Fliesstext auf hell
-MUTE = (138, 122, 176)      # #8a7ab0 Eyebrow auf hell
-LINE_CREAM = (228, 220, 240)
-LINE_CREAM2 = (236, 229, 246)
-QUOTE_BG = (244, 237, 250)  # #f4edfa
+INK_L = (243, 238, 254)     # helle Schrift auf dunkel (Ueberschriften/Werte)
+INK_SOFT = (194, 183, 224)  # gedaempft auf dunkel
+# Das ganze Dokument ist jetzt dunkel gehalten. Die frueher hellen Rollen
+# zeigen deshalb auf dunkeltaugliche Werte.
+INK_DARK = (243, 238, 254)  # Ueberschriften auf dunkel (= hell)
+BODY_DK = (206, 197, 230)   # Fliesstext auf dunkel
+GOLD_DK = (245, 197, 107)   # Gold-Text auf dunkel (= GOLD)
+MUTE = (150, 134, 190)      # #9686be gedaempftes Flieder
+CARD2 = (44, 30, 84)        # #2c1e54 zweite Kartenflaeche
+LINE_CREAM = (74, 60, 112)  # feine Trennlinie (Flieder, dunkel)
+LINE_CREAM2 = (58, 46, 92)  # noch feiner
+QUOTE_BG = (44, 30, 84)     # Zitat-/Kartenflaeche auf dunkel
 LINE_DARK = (74, 60, 112)   # feine Linie auf dunkel
 
 PW, PH = 210.0, 297.0       # A4 mm
@@ -61,6 +65,14 @@ PLANET_ABBR = {
     "Sonne": "So", "Mond": "Mo", "Merkur": "Me", "Venus": "Ve", "Mars": "Ma",
     "Jupiter": "Ju", "Saturn": "Sa", "Uranus": "Ur", "Neptun": "Ne", "Pluto": "Pl",
     "Chiron": "Ch", "Nordknoten": "Kn", "Südknoten": "Sk",
+}
+# Echte Astrosymbole (gezeichnet aus der eingebetteten Symbol-Schrift)
+SIGN_GLYPH = [chr(0x2648 + i) for i in range(12)]  # Widder..Fische
+PLANET_GLYPH = {
+    "Sonne": "☉", "Mond": "☽", "Merkur": "☿", "Venus": "♀",
+    "Mars": "♂", "Jupiter": "♃", "Saturn": "♄", "Uranus": "♅",
+    "Neptun": "♆", "Pluto": "♇", "Chiron": "⚷",
+    "Nordknoten": "☊", "Südknoten": "☋",
 }
 
 # Glossar "Was bedeutet was?" (aus dem Uebersicht-Reiter der Website)
@@ -182,7 +194,7 @@ def _keep(pdf, need):
         pdf.add_page()
 
 
-def _heading_block(pdf, kapitel, title, subtitle=None, on_dark=False):
+def _heading_block(pdf, kapitel, title, subtitle=None, on_dark=True):
     """Eyebrow + grosse Ueberschrift + Goldlinie + optionale Unterzeile."""
     ink = INK_L if on_dark else INK_DARK
     eb = GOLD if on_dark else MUTE
@@ -406,7 +418,7 @@ def _uebersicht(pdf, teaser, full):
     pdf.set_y(y + ph)
 
     # ── aufgeklappte Felder auf hellen Seiten ──
-    pdf.theme = "cream"
+    pdf.theme = "dark"
     pdf.add_page()
     _fold_head(pdf, "Was bedeutet was?")
     _para(pdf, "Hier findest du die wichtigsten Begriffe aus deinem Bauplan in einfachen "
@@ -449,24 +461,26 @@ def _uebersicht(pdf, teaser, full):
 
 
 def _fold_head(pdf, title):
-    """Kopf eines aufgeklappten Felds (wie ein geoeffneter Reiter auf hell)."""
+    """Kopf eines aufgeklappten Felds (wie ein geoeffneter Reiter)."""
     _keep(pdf, 20)
     x = pdf.l_margin
     w = PW - pdf.l_margin - pdf.r_margin
     y = pdf.get_y()
-    pdf.set_fill_color(*QUOTE_BG)
-    _round_rect(pdf, x, y, w, 11, 3, style="F")
+    pdf.set_fill_color(*CARD)
+    pdf.set_draw_color(*GOLD)
+    pdf.set_line_width(0.3)
+    _round_rect(pdf, x, y, w, 12, 3, style="DF", border_opacity=0.5)
     pdf.set_fill_color(*GOLD2)
-    pdf.rect(x, y, 1.2, 11, style="F")
-    pdf.set_xy(x + 7, y)
+    pdf.rect(x, y, 1.6, 12, style="F")
+    pdf.set_xy(x + 8, y)
     pdf.set_font("Cormo", "B", 15)
-    pdf.set_text_color(*INK_DARK)
-    pdf.cell(w - 26, 11, safe(title))
+    pdf.set_text_color(*INK_L)
+    pdf.cell(w - 26, 12, safe(title))
     pdf.set_font("Mul", "", 16)
-    pdf.set_text_color(*GOLD_DK)
+    pdf.set_text_color(*GOLD)
     pdf.set_xy(x + w - 14, y)
-    pdf.cell(10, 11, "+", align="C")
-    pdf.set_y(y + 11 + 4)
+    pdf.cell(10, 12, "+", align="C")
+    pdf.set_y(y + 12 + 4)
 
 
 def _round_rect(pdf, x, y, w, h, r, style="D", border_opacity=1.0):
@@ -495,49 +509,83 @@ def _merksatz(pdf, text):
     lines = pdf.multi_cell(inner, 6.4, safe(text), dry_run=True, output="LINES")
     th = 6.4 * max(1, len(lines))
     box_h = 8 + 6 + th + 8
-    pdf.set_fill_color(*QUOTE_BG)
-    _round_rect(pdf, x, top, w, box_h, 3, style="F")
+    pdf.set_fill_color(*CARD)
+    pdf.set_draw_color(*GOLD)
+    pdf.set_line_width(0.3)
+    _round_rect(pdf, x, top, w, box_h, 3, style="DF", border_opacity=0.45)
     pdf.set_fill_color(*GOLD2)
-    pdf.rect(x, top, 1.2, box_h, style="F")
-    pdf.set_xy(x + 7, top + 8)
-    _eyebrow(pdf, "Merksatz", GOLD_DK, size=7.5, spacing=1.1)
-    pdf.set_xy(x + 7, pdf.get_y() + 2)
+    pdf.rect(x, top, 1.6, box_h, style="F")
+    pdf.set_xy(x + 8, top + 8)
+    _eyebrow(pdf, "Merksatz", GOLD, size=7.5, spacing=1.1)
+    pdf.set_xy(x + 8, pdf.get_y() + 2)
     pdf.set_font("Cormo", "I", 14)
-    pdf.set_text_color(*INK_DARK)
+    pdf.set_text_color(*INK_L)
     pdf.multi_cell(inner, 6.4, safe(text), new_x=XPos.LMARGIN, new_y=YPos.NEXT)
     pdf.set_y(top + box_h)
     pdf.ln(3)
 
 
 def _unit(pdf, title, meta, oneliner, body):
-    _keep(pdf, 30)
-    pdf.set_draw_color(*LINE_CREAM)
-    pdf.set_line_width(0.2)
-    pdf.line(pdf.l_margin, pdf.get_y(), PW - pdf.r_margin, pdf.get_y())
-    pdf.ln(5)
-    y0 = pdf.get_y()
-    pdf.set_font("Cormo", "", 20)
-    pdf.set_text_color(*INK_DARK)
-    tw = pdf.get_string_width(safe(title))
-    pdf.cell(tw + 4, 8, safe(title))
-    if meta:
-        pdf.set_font("Mul", "", 10)
-        pdf.set_text_color(*MUTE)
-        pdf.set_xy(pdf.l_margin + tw + 6, y0 + 2.6)
-        pdf.cell(0, 5, safe(meta))
-    pdf.set_xy(pdf.l_margin, y0 + 9)
+    """Ein gerahmter Inhaltsblock (wie eine aufgeklappte Karte eines Reiters):
+    Fliederrahmen, goldener Akzent, Titel, Meta, Kurzzeile und Text."""
+    x = pdf.l_margin
+    w = PW - pdf.l_margin - pdf.r_margin
+    pad = 6.5
+    iw = w - 2 * pad - 2
+    # Hoehe vormessen
+    ol_lines = []
     if oneliner:
-        pdf.set_font("Cormo", "I", 12.5)
-        pdf.set_text_color(*GOLD_DK)
-        pdf.multi_cell(0, 5.6, safe(oneliner), new_x=XPos.LMARGIN, new_y=YPos.NEXT)
-        pdf.ln(1.5)
-    _para(pdf, body, size=10.5, color=BODY_DK, h=5.7, after=5)
+        pdf.set_font("Cormo", "I", 12)
+        ol_lines = pdf.multi_cell(iw, 5.6, safe(oneliner), dry_run=True, output="LINES")
+    bd_lines = []
+    if body:
+        pdf.set_font("Mul", "", 10.3)
+        bd_lines = pdf.multi_cell(iw, 5.7, safe(body), dry_run=True, output="LINES")
+    h_title = 8.0
+    h_meta = 5.0 if meta else 0.0
+    h_ol = (5.6 * len(ol_lines) + 2.0) if ol_lines else 0.0
+    h_bd = 5.7 * len(bd_lines)
+    box_h = pad + h_title + h_meta + h_ol + h_bd + pad - 1
+    _keep(pdf, box_h + 6)
+    top = pdf.get_y()
+    pdf.set_fill_color(*CARD)
+    pdf.set_draw_color(*LILAC)
+    pdf.set_line_width(0.3)
+    _round_rect(pdf, x, top, w, box_h, 3.5, style="DF", border_opacity=0.32)
+    pdf.set_fill_color(*GOLD2)
+    pdf.rect(x, top, 1.4, box_h, style="F")
+    ty = top + pad
+    pdf.set_xy(x + pad, ty)
+    pdf.set_font("Cormo", "", 19)
+    pdf.set_text_color(*INK_L)
+    pdf.cell(iw, h_title, safe(title), new_x=XPos.LMARGIN, new_y=YPos.NEXT)
+    yy = ty + h_title
+    if meta:
+        pdf.set_xy(x + pad, yy)
+        pdf.set_font("Mul", "", 9)
+        pdf.set_text_color(*MUTE)
+        with pdf.local_context(char_spacing=0.4):
+            pdf.cell(iw, h_meta, safe(meta))
+        yy += h_meta
+    if oneliner:
+        pdf.set_xy(x + pad, yy)
+        pdf.set_font("Cormo", "I", 12)
+        pdf.set_text_color(*GOLD)
+        pdf.multi_cell(iw, 5.6, safe(oneliner), new_x=XPos.LMARGIN, new_y=YPos.NEXT)
+        yy = pdf.get_y() + 2
+    if body:
+        pdf.set_xy(x + pad, yy)
+        pdf.set_font("Mul", "", 10.3)
+        pdf.set_text_color(*BODY_DK)
+        pdf.multi_cell(iw, 5.7, safe(body), new_x=XPos.LMARGIN, new_y=YPos.NEXT, align="J")
+    pdf.set_y(top + box_h)
+    pdf.ln(4)
 
 
 def _simple_chapter_head(pdf, eyebrow, title, intro=None):
-    pdf.theme = "cream"
+    pdf.theme = "dark"
     pdf.add_page()
-    _heading_block(pdf, eyebrow, title, on_dark=False)
+    _heading_block(pdf, eyebrow, title, on_dark=True)
     pdf.ln(1)
     if intro:
         _para(pdf, intro, size=10.5, color=BODY_DK, h=6, after=5)
@@ -556,6 +604,19 @@ def _ctext(pdf, cx, cy, s, size, color, font="Mul", style=""):
     h = size * 0.3528 * 1.25
     pdf.set_xy(cx - w / 2.0, cy - h / 2.0)
     pdf.cell(w, h, s, align="C")
+
+
+def _glyph(pdf, cx, cy, ch, size, color):
+    """Ein echtes Astrosymbol (Planet oder Zeichen) aus der Symbol-Schrift,
+    mittig auf (cx, cy). Laeuft NICHT durch safe(), sonst wuerde es entfernt."""
+    if not ch:
+        return
+    pdf.set_font("Astro", "", size)
+    pdf.set_text_color(*color)
+    w = pdf.get_string_width(ch)
+    h = size * 0.3528 * 1.3
+    pdf.set_xy(cx - w / 2.0, cy - h / 2.0)
+    pdf.cell(w, h, ch, align="C")
 
 
 def _draw_bodygraph(pdf, hd, ox, oy, target_h):
@@ -665,9 +726,9 @@ def _draw_wheel(pdf, geo, ox, oy, dia):
             pdf.line(a[0], a[1], b[0], b[1])
         si = (round(sign_start / 30) + i) % 12
         gp = P((R1 + R2) / 2, Lc + 15)
-        _ctext(pdf, gp[0], gp[1], SIGN_ABBR[si], 8, GOLD, style="")
+        _glyph(pdf, gp[0], gp[1], SIGN_GLYPH[si], 12, GOLD)
         hn = P(R4 + 13, Lc + 15)
-        _ctext(pdf, hn[0], hn[1], str(i + 1), 7, MUTE, style="")
+        _ctext(pdf, hn[0], hn[1], str(i + 1), 7, LILAC, style="")
 
     def axis(L1, L2, l1, l2, col):
         a, b = P(R1, L1), P(R1, L2)
@@ -702,8 +763,13 @@ def _draw_wheel(pdf, geo, ox, oy, dia):
         pdf.set_line_width(max(0.15, 1 * k))
         pdf.line(t1[0], t1[1], t2[0], t2[1])
         g = P(r, p["lon"])
-        abbr = PLANET_ABBR.get(p.get("name", ""), (p.get("name", "") or "")[:2])
-        _ctext(pdf, g[0], g[1], abbr, 8.5, INK_L, style="B")
+        gl = PLANET_GLYPH.get(p.get("name", ""))
+        if gl:
+            _glyph(pdf, g[0], g[1], gl, 12.5, INK_L)
+        else:
+            _ctext(pdf, g[0], g[1],
+                   PLANET_ABBR.get(p.get("name", ""), (p.get("name", "") or "")[:2]),
+                   8.5, INK_L, style="B")
 
 
 def _kvrow_dark(pdf, k, v):
@@ -762,9 +828,9 @@ def _human_design(pdf, teaser, full):
                                       cross.get("des_sun"), cross.get("des_earth")))
 
     # Die neun Zentren auf hellen Seiten
-    pdf.theme = "cream"
+    pdf.theme = "dark"
     pdf.add_page()
-    _heading_block(pdf, "Human Design", "Deine neun Energiezentren", on_dark=False)
+    _heading_block(pdf, "Human Design", "Deine neun Energiezentren", on_dark=True)
     _para(pdf, "Jedes Zentrum ist entweder definiert oder offen. Definiert heißt: hier "
                "bist du dir treu, diese Energie ist immer verlässlich da. Offen heißt: "
                "hier bist du feinfühlig, formbar und lernst ein Leben lang. Beides ist "
@@ -821,9 +887,9 @@ def _natalchart(pdf, full):
               font="Cormo", style="I", size=13, color=GOLD, h=6.4, after=4, align="C")
 
     # Positionen auf hellen Seiten
-    pdf.theme = "cream"
+    pdf.theme = "dark"
     pdf.add_page()
-    _heading_block(pdf, "Natalchart", "Deine Positionen im Detail", on_dark=False)
+    _heading_block(pdf, "Natalchart", "Deine Positionen im Detail", on_dark=True)
     _para(pdf, "Jeder Planet steht für einen Bereich deines Lebens. Zeichen und Haus "
                "sagen, wie und wo er sich zeigt. Beim Haus zeigen wir Ganzzeichen und "
                "Placidus; die ausführliche Deutung folgt den Ganzzeichen-Häusern.",
@@ -882,12 +948,12 @@ def _toc_page(pdf, entries):
 # ---------- Intuitionstyp ----------
 
 def _intuition(pdf, it):
-    pdf.theme = "cream"
+    pdf.theme = "dark"
     pdf.add_page()
     _heading_block(pdf, "Intuitionstyp", "Dein Intuitionstyp",
                    (it.get("archetype") or "") +
                    (" · Mond in " + it["moon_sign"] if it.get("moon_sign") else ""),
-                   on_dark=False)
+                   on_dark=True)
     pdf.ln(1)
     if it.get("tagline"):
         pdf.set_font("Cormo", "B", 16)
@@ -936,9 +1002,9 @@ def _intuition(pdf, it):
 # ---------- Deutung als ein Kapitel mit aufgeklappten Abschnitten ----------
 
 def _deutung(pdf, sections):
-    pdf.theme = "cream"
+    pdf.theme = "dark"
     pdf.add_page()
-    _heading_block(pdf, "Deutung", "Deine Deutung", on_dark=False)
+    _heading_block(pdf, "Deutung", "Deine Deutung", on_dark=True)
     _para(pdf, "Hier ist alles in Klartext für dich gedeutet, ein Abschnitt nach dem "
                "anderen. Prüf beim Lesen immer selbst, was sich stimmig anfühlt. Was "
                "nicht passt, darfst du liegen lassen.",
@@ -1026,51 +1092,87 @@ def _numerology(pdf, full):
         _para(pdf, num["note"], size=8.5, color=MUTE, h=4.6, after=0)
 
 
+def _instagram(pdf, x, y, s, color):
+    """Zeichnet ein Instagram-Symbol (gerundetes Quadrat, Linse, Punkt)."""
+    lw = max(0.5, s * 0.085)
+    pdf.set_draw_color(*color)
+    pdf.set_line_width(lw)
+    _round_rect(pdf, x, y, s, s, s * 0.30, style="D")
+    r = s * 0.29
+    pdf.ellipse(x + s / 2 - r, y + s / 2 - r, 2 * r, 2 * r, style="D")
+    d = s * 0.13
+    pdf.set_fill_color(*color)
+    pdf.ellipse(x + s - s * 0.28 - d / 2, y + s * 0.28 - d / 2, d, d, style="F")
+
+
 def _closing(pdf, full):
-    """Abschlussseite: der warme Schlusstext und ein spiritueller Lieblingsspruch."""
+    """Abschlussseite: der warme Schlusstext, der spirituelle Lieblingsspruch
+    und der Instagram-Auftritt."""
     pdf.theme = "dark"
     pdf.add_page()
     cx = PW / 2.0
-    # weicher Goldschein oben
-    with pdf.local_context(fill_opacity=0.10):
+    # weicher Goldschein oben + zarter Fliederring
+    with pdf.local_context(fill_opacity=0.12):
         pdf.set_fill_color(*GOLD)
         _circle(pdf, cx, 20, 130, style="F")
+    with pdf.local_context(stroke_opacity=0.16):
+        pdf.set_draw_color(*LILAC)
+        pdf.set_line_width(0.3)
+        _circle(pdf, cx, 40, 150)
     _heading_block(pdf, "Abschluss", "Zum Schluss", on_dark=True)
-    _para(pdf, full.get("closing"), font="Cormo", style="I", size=14.5,
-          color=INK_L, h=7.2, after=6)
+    _para(pdf, full.get("closing"), font="Cormo", style="I", size=14,
+          color=INK_L, h=7.0, after=6)
 
-    # Lieblingsspruch als goldgerahmtes Zitat
-    quote = "Du lebst nur einmal in diesem Leben – also mach das Beste daraus."
-    _keep(pdf, 60)
-    pdf.ln(4)
+    # Lieblingsspruch als gold-/fliedergerahmtes Zitat
+    quote = ("Du lebst nur einmal in diesem Leben. Du machst nichts falsch. Du machst "
+             "Erfahrungen. Lebe das Leben genauso, wie du es dir vorstellst. Denn es ist deins.")
+    _keep(pdf, 74)
+    pdf.ln(3)
     x = pdf.l_margin
     w = PW - pdf.l_margin - pdf.r_margin
     top = pdf.get_y()
-    pdf.set_font("Cormo", "I", 20)
-    lines = pdf.multi_cell(w - 24, 9, safe(quote), dry_run=True, output="LINES")
-    th = 9 * max(1, len(lines))
-    box_h = 16 + th + 16
+    pdf.set_font("Cormo", "I", 18)
+    lines = pdf.multi_cell(w - 28, 8.4, safe(quote), dry_run=True, output="LINES")
+    th = 8.4 * max(1, len(lines))
+    box_h = 15 + th + 15
     pdf.set_fill_color(*CARD)
     pdf.set_draw_color(*GOLD)
     pdf.set_line_width(0.4)
-    _round_rect(pdf, x, top, w, box_h, 5, style="DF", border_opacity=0.4)
+    _round_rect(pdf, x, top, w, box_h, 5, style="DF", border_opacity=0.5)
+    with pdf.local_context(stroke_opacity=0.4):
+        pdf.set_draw_color(*LILAC)
+        pdf.set_line_width(0.3)
+        _round_rect(pdf, x + 2, top + 2, w - 4, box_h - 4, 4, style="D")
     pdf.set_xy(x, top + 9)
     pdf.set_font("Vibes", "", 22)
     pdf.set_text_color(*GOLD)
     pdf.cell(w, 8, safe("Zum Mitnehmen"), align="C", new_x=XPos.LMARGIN, new_y=YPos.NEXT)
-    pdf.set_xy(x + 12, top + 18)
-    pdf.set_font("Cormo", "I", 20)
+    pdf.set_xy(x + 14, top + 17)
+    pdf.set_font("Cormo", "I", 18)
     pdf.set_text_color(*INK_L)
-    pdf.multi_cell(w - 24, 9, safe(quote), align="C", new_x=XPos.LMARGIN, new_y=YPos.NEXT)
+    pdf.multi_cell(w - 28, 8.4, safe(quote), align="C", new_x=XPos.LMARGIN, new_y=YPos.NEXT)
     pdf.set_y(top + box_h)
 
-    # Wortmarke + Hinweis
-    pdf.ln(10)
-    pdf.set_font("Vibes", "", 24)
+    # Instagram-Auftritt: Symbol + Handle
+    pdf.ln(12)
+    handle = "intuitionmitherz"
+    icon_s = 8.0
+    pdf.set_font("Mul", "B", 14)
+    tw = pdf.get_string_width(handle)
+    gap = 4.0
+    total = icon_s + gap + tw
+    gx = (PW - total) / 2.0
+    gy = pdf.get_y()
+    _instagram(pdf, gx, gy, icon_s, GOLD)
+    pdf.set_xy(gx + icon_s + gap, gy)
+    pdf.set_text_color(*INK_L)
+    pdf.cell(tw, icon_s, handle)
+    pdf.set_y(gy + icon_s + 6)
+    pdf.set_font("Vibes", "", 20)
     pdf.set_text_color(*GOLD)
-    pdf.cell(0, 10, safe("Intuition mit Herz"), align="C", new_x=XPos.LMARGIN, new_y=YPos.NEXT)
+    pdf.cell(0, 9, safe("intuition mit herz"), align="C", new_x=XPos.LMARGIN, new_y=YPos.NEXT)
     if full.get("note"):
-        pdf.ln(4)
+        pdf.ln(6)
         _para(pdf, full["note"], size=8.5, color=INK_SOFT, h=4.6, after=0, align="C")
 
 
@@ -1091,6 +1193,7 @@ def _render(result, toc_entries):
     pdf.add_font("Cormo", "I", os.path.join(FONT_DIR, "Cormorant-Italic.ttf"))
     pdf.add_font("Mul", "", os.path.join(FONT_DIR, "Mulish-Regular.ttf"))
     pdf.add_font("Mul", "B", os.path.join(FONT_DIR, "Mulish-Bold.ttf"))
+    pdf.add_font("Astro", "", os.path.join(FONT_DIR, "AstroSymbols.ttf"))
     pdf.set_title(safe("Dein kosmischer Bauplan"))
     pdf.set_author("Intuition mit Herz")
 
