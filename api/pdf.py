@@ -216,67 +216,100 @@ def _heading_block(pdf, kapitel, title, subtitle=None, on_dark=True):
 
 # ---------- Seiten ----------
 
+def _ritual_wheel(pdf, cx, cy, R):
+    """Ein Sternenrad wie die Animation beim Laden des Bauplans: zwei Ringe,
+    Ticks, die zwoelf Tierkreiszeichen und ein leuchtender Kern."""
+    def pt(r, deg):
+        a = math.radians(deg - 90)
+        return (cx + r * math.cos(a), cy + r * math.sin(a))
+
+    # weicher Goldschein
+    with pdf.local_context(fill_opacity=0.10):
+        pdf.set_fill_color(*GOLD)
+        _circle(pdf, cx, cy, R * 2.7, style="F")
+    # aeusserer Goldring + innerer Fliederring
+    pdf.set_line_width(0.4)
+    with pdf.local_context(stroke_opacity=0.6):
+        pdf.set_draw_color(*GOLD)
+        _circle(pdf, cx, cy, R * 2)
+    pdf.set_line_width(0.3)
+    with pdf.local_context(stroke_opacity=0.45):
+        pdf.set_draw_color(*LILAC)
+        _circle(pdf, cx, cy, R * 1.34)
+    # Ticks + Tierkreiszeichen rundherum
+    pdf.set_line_width(0.3)
+    for k in range(12):
+        deg = k * 30
+        a, b = pt(R, deg), pt(R - 3.5, deg)
+        with pdf.local_context(stroke_opacity=0.5):
+            pdf.set_draw_color(*LILAC)
+            pdf.line(a[0], a[1], b[0], b[1])
+        gp = pt(R - 10, deg + 15)
+        _glyph(pdf, gp[0], gp[1], SIGN_GLYPH[k], 9, GOLD)
+    # feine Speichen nach innen
+    with pdf.local_context(stroke_opacity=0.16):
+        pdf.set_draw_color(*LILAC)
+        pdf.set_line_width(0.2)
+        for k in range(12):
+            a, b = pt(R * 1.34, k * 30), pt(R * 0.34, k * 30)
+            pdf.line(a[0], a[1], b[0], b[1])
+    # zwei zarte Planetenpunkte auf den Ringen
+    p1 = pt(R, 52)
+    pdf.set_fill_color(*LILAC)
+    _circle(pdf, p1[0], p1[1], 2.6, style="F")
+    p2 = pt(R * 1.34, 200)
+    pdf.set_fill_color(*GOLD)
+    _circle(pdf, p2[0], p2[1], 2.2, style="F")
+    # leuchtender Kern
+    with pdf.local_context(fill_opacity=0.5):
+        pdf.set_fill_color(*GOLD)
+        _circle(pdf, cx, cy, 12, style="F")
+    with pdf.local_context(fill_opacity=0.85):
+        pdf.set_fill_color(*GOLD)
+        _circle(pdf, cx, cy, 6, style="F")
+    pdf.set_fill_color(255, 250, 240)
+    _circle(pdf, cx, cy, 2.6, style="F")
+
+
 def _cover(pdf, birth, name):
     pdf.theme = "cover"
     pdf.add_page()
     cx = PW / 2.0
-    # weicher Goldschein oben
-    with pdf.local_context(fill_opacity=0.10):
-        pdf.set_fill_color(*GOLD)
-        _circle(pdf, cx, 14, 150, style="F")
-    # zwei Ringe
-    pdf.set_line_width(0.3)
-    with pdf.local_context(stroke_opacity=0.24):
-        pdf.set_draw_color(*LILAC)
-        _circle(pdf, cx, 88, 92)
-    with pdf.local_context(stroke_opacity=0.30):
-        pdf.set_draw_color(*GOLD)
-        _circle(pdf, cx, 88, 66)
-    # Planetenpunkte auf den Ringen
-    pdf.set_fill_color(*GOLD)
-    _circle(pdf, cx, 89, 6, style="F")
-    pdf.set_fill_color(*LILAC)
-    _circle(pdf, cx + 30, 58.5, 3, style="F")
+
     # Sternenstaub
     for sx, sy, sd, col, op in [
-        (cx - 48, 118, 2.0, LILAC2, 0.85), (36, 30, 1.5, (243, 238, 254), 0.7),
-        (PW - 30, 150, 1.7, GOLD, 0.85), (34, 235, 1.3, LILAC, 0.8),
-        (PW - 40, 60, 1.4, INK_L, 0.6)]:
+        (cx - 60, 150, 2.0, LILAC2, 0.85), (36, 34, 1.5, (243, 238, 254), 0.7),
+        (PW - 30, 150, 1.7, GOLD, 0.85), (34, 250, 1.3, LILAC, 0.8),
+        (PW - 40, 235, 1.4, INK_L, 0.6), (cx + 62, 205, 1.6, GOLD, 0.7)]:
         with pdf.local_context(fill_opacity=op):
             pdf.set_fill_color(*col)
             _circle(pdf, sx, sy, sd, style="F")
 
-    # Wortmarke oben
-    pdf.set_xy(0, 26)
+    # Wortmarke oben (ohne Unterzeile)
+    pdf.set_xy(0, 30)
     pdf.set_font("Vibes", "", 30)
     pdf.set_text_color(*GOLD)
     pdf.cell(PW, 12, safe("Intuition mit Herz"), align="C",
              new_x=XPos.LMARGIN, new_y=YPos.NEXT)
-    pdf.set_x(0)
-    pdf.set_font("Mul", "", 8)
-    pdf.set_text_color(*INK_SOFT)
-    with pdf.local_context(char_spacing=1.6):
-        pdf.cell(PW, 6, safe("HUMAN DESIGN & ASTROLOGIE"), align="C",
-                 new_x=XPos.LMARGIN, new_y=YPos.NEXT)
 
-    # Titelblock, mittig
-    pdf.set_xy(0, 116)
+    # Sternenrad wie die Ladeanimation
+    _ritual_wheel(pdf, cx, 94.0, 40.0)
+
+    # Titelblock, zur Mitte gerueckt
+    pdf.set_xy(0, 150)
     pdf.set_font("Cormo", "", 40)
     pdf.set_text_color(*INK_L)
-    pdf.cell(PW, 15, safe("Dein kosmischer"), align="C", new_x=XPos.LMARGIN, new_y=YPos.NEXT)
+    pdf.cell(PW, 14, safe("Dein kosmischer"), align="C", new_x=XPos.LMARGIN, new_y=YPos.NEXT)
     pdf.set_x(0)
-    pdf.cell(PW, 15, safe("Bauplan"), align="C", new_x=XPos.LMARGIN, new_y=YPos.NEXT)
+    pdf.cell(PW, 14, safe("Bauplan"), align="C", new_x=XPos.LMARGIN, new_y=YPos.NEXT)
     if name:
-        pdf.ln(4)
+        pdf.ln(3)
         pdf.set_x(0)
-        pdf.set_font("Vibes", "", 26)
+        pdf.set_font("Vibes", "", 27)
         pdf.set_text_color(*GOLD)
         pdf.cell(PW, 12, safe("für " + name), align="C", new_x=XPos.LMARGIN, new_y=YPos.NEXT)
-    # goldene Kurzlinie
-    ly = pdf.get_y() + 6
-    pdf.set_fill_color(*GOLD)
-    pdf.rect(cx - 17, ly, 34, 0.4, style="F")
-    # Geburtszeile
+
+    # Geburtszeile, hervorgehoben in einer goldgerahmten Kapsel
     parts = []
     if birth.get("date"):
         _bd = str(birth["date"])
@@ -286,12 +319,21 @@ def _cover(pdf, birth, name):
         parts.append(str(birth["time"]) + " Uhr")
     if birth.get("place"):
         parts.append(str(birth["place"]))
-    pdf.set_xy(0, ly + 4)
+    line = "  ·  ".join(parts)
+    py = pdf.get_y() + 10
     pdf.set_font("Mul", "", 10.5)
-    pdf.set_text_color(*INK_SOFT)
-    with pdf.local_context(char_spacing=0.6):
-        pdf.cell(PW, 7, safe(", ".join(parts)), align="C",
-                 new_x=XPos.LMARGIN, new_y=YPos.NEXT)
+    tw = pdf.get_string_width(line)
+    pill_w = min(PW - 2 * MX, tw + 26)
+    pill_h = 12.0
+    px = cx - pill_w / 2.0
+    pdf.set_fill_color(*CARD)
+    pdf.set_draw_color(*GOLD)
+    pdf.set_line_width(0.4)
+    _round_rect(pdf, px, py, pill_w, pill_h, pill_h / 2.0, style="DF", border_opacity=0.6)
+    pdf.set_xy(px, py)
+    pdf.set_text_color(*GOLD)
+    with pdf.local_context(char_spacing=0.5):
+        pdf.cell(pill_w, pill_h, safe(line), align="C")
 
     # Fusszeile mit Satz
     pdf.set_fill_color(*GOLD)
@@ -1124,8 +1166,8 @@ def _closing(pdf, full):
           color=INK_L, h=7.0, after=6)
 
     # Lieblingsspruch als gold-/fliedergerahmtes Zitat
-    quote = ("Du lebst nur einmal in diesem Leben. Du machst nichts falsch. Du machst "
-             "Erfahrungen. Lebe das Leben genauso, wie du es dir vorstellst. Denn es ist deins.")
+    quote = ("Du lebst nur einmal in diesem Leben. Du machst nichts falsch. "
+             "Lebe das Leben genauso, wie du es dir vorstellst. Denn es ist deins.")
     _keep(pdf, 74)
     pdf.ln(3)
     x = pdf.l_margin
@@ -1167,10 +1209,7 @@ def _closing(pdf, full):
     pdf.set_xy(gx + icon_s + gap, gy)
     pdf.set_text_color(*INK_L)
     pdf.cell(tw, icon_s, handle)
-    pdf.set_y(gy + icon_s + 6)
-    pdf.set_font("Vibes", "", 20)
-    pdf.set_text_color(*GOLD)
-    pdf.cell(0, 9, safe("intuition mit herz"), align="C", new_x=XPos.LMARGIN, new_y=YPos.NEXT)
+    pdf.set_y(gy + icon_s + 10)
     if full.get("note"):
         pdf.ln(6)
         _para(pdf, full["note"], size=8.5, color=INK_SOFT, h=4.6, after=0, align="C")
