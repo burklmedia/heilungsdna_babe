@@ -407,12 +407,35 @@ def _abstract_emblem(pdf, cx, cy, R):
         pdf.set_draw_color(*LILAC)
         for a, b in links:
             pdf.line(nodes[a][0], nodes[a][1], nodes[b][0], nodes[b][1])
+    # Knoten: teils Sternchen (Astrologie), teils Bodygraph-Formen (Human
+    # Design) – so verweben sich die Systeme zu einem Bauplan.
+    def _node_shape(nx, ny, kind, s=2.5):
+        if kind == "square":
+            p = [(nx - s, ny - s), (nx + s, ny - s), (nx + s, ny + s), (nx - s, ny + s)]
+        elif kind == "diamond":
+            p = [(nx, ny - s), (nx + s, ny), (nx, ny + s), (nx - s, ny)]
+        elif kind == "tri_up":
+            p = [(nx, ny - s), (nx + s, ny + s), (nx - s, ny + s)]
+        else:  # tri_down
+            p = [(nx, ny + s), (nx + s, ny - s), (nx - s, ny - s)]
+        with pdf.local_context(fill_opacity=0.16):
+            pdf.set_fill_color(*GOLD)
+            pdf.polygon(p, style="F")
+        pdf.set_draw_color(*GOLD)
+        pdf.set_line_width(0.5)
+        with pdf.local_context(stroke_opacity=0.85):
+            pdf.polygon(p, style="D")
+
+    kinds = ["spark", "square", "diamond", "tri_up", "spark", "tri_down", "diamond", "dot"]
     for i, (nx, ny) in enumerate(nodes):
-        if i % 2 == 0:
+        kind = kinds[i % len(kinds)]
+        if kind == "spark":
             _spark(pdf, nx, ny, 1.9, GOLD)
-        else:
+        elif kind == "dot":
             pdf.set_fill_color(*LILAC)
             _circle(pdf, nx, ny, 1.7, style="F")
+        else:
+            _node_shape(nx, ny, kind)
     # leuchtender Kern
     with pdf.local_context(fill_opacity=0.5):
         pdf.set_fill_color(*GOLD)
@@ -654,8 +677,9 @@ def _uebersicht(pdf, teaser, full):
         pdf.multi_cell(0, 5.6, safe(desc), new_x=XPos.LMARGIN, new_y=YPos.NEXT, align="J")
         pdf.ln(3.5)
 
-    _keep(pdf, 40)
-    pdf.ln(2)
+    # Passt das Häuser-Feld nicht mehr drauf, den Rest zart fuellen statt leer lassen
+    if not _break_with_accent(pdf, 46):
+        pdf.ln(2)
     _fold_head(pdf, "Die zwölf Häuser, deine Lebensfelder")
     _para(pdf, "Die Häuser zeigen, in welchem Lebensbereich sich ein Planet entfaltet. "
                "So kannst du jede Position in deinem Natalchart einordnen.",
@@ -768,10 +792,8 @@ def _unit(pdf, title, meta, oneliner, body):
     h_bd = 5.7 * len(bd_lines)
     box_h = pad + h_title + h_meta + h_ol + h_bd + pad - 1
     # Passt die Karte nicht mehr auf die Seite? Dann vorher den Rest mit einem
-    # zarten Sternen-Akzent fuellen, damit keine grosse Leere entsteht.
-    if pdf.get_y() + box_h + 6 > pdf.page_break_trigger:
-        _page_tail_accent(pdf, min_remaining=44)
-        pdf.add_page()
+    # zarten Akzent fuellen, damit keine grosse Leere entsteht.
+    _break_with_accent(pdf, box_h + 6)
     top = pdf.get_y()
     pdf.set_fill_color(*CARD)
     pdf.set_draw_color(*LILAC)
@@ -1300,9 +1322,9 @@ def _deutung(pdf, sections):
           size=10.5, color=BODY_DK, h=6, after=3)
     for i, s in enumerate(sections):
         nr = ("0" + str(i + 1))[-2:]
-        # Genug Platz halten, damit Nummer, Titel und der Anfang zusammenbleiben
-        # und keine Ueberschrift einsam am Seitenende haengt.
-        _keep(pdf, 62)
+        # Genug Platz halten, damit Nummer, Titel und der Anfang zusammenbleiben;
+        # bricht es um, wird der Rest der Seite zart gefuellt.
+        _break_with_accent(pdf, 62, min_remaining=48)
         pdf.ln(3)
         pdf.set_draw_color(*LINE_CREAM)
         pdf.set_line_width(0.2)
@@ -1482,26 +1504,67 @@ def _signoff(pdf, cy):
 
 
 def _page_tail_accent(pdf, min_remaining=50.0):
-    """Setzt einen zarten Sternen-Akzent in die untere Haelfte einer Seite,
-    wenn dort viel Leerraum ist – im Stil der Abschlussseite."""
+    """Fuellt viel freien Raum am Seitenende mit einem sehr zarten, fliessenden
+    Akzent. Die Variante wechselt je Seite, damit es nie gleich aussieht."""
     remaining = pdf.page_break_trigger - pdf.get_y()
     if remaining < min_remaining:
         return
     cx = PW / 2.0
-    cy = min(pdf.get_y() + remaining * 0.5, pdf.page_break_trigger - 18)
-    with pdf.local_context(fill_opacity=0.06):
-        pdf.set_fill_color(*GOLD)
-        _circle(pdf, cx, cy, 62, style="F")
-    pdf.set_draw_color(*GOLD)
-    pdf.set_line_width(0.3)
-    with pdf.local_context(stroke_opacity=0.4):
-        pdf.line(cx - 32, cy, cx - 9, cy)
-        pdf.line(cx + 9, cy, cx + 32, cy)
-    _spark(pdf, cx, cy, 2.6, GOLD)
-    for dx, dy, r, col in [(-19, -6, 1.6, LILAC), (20, -5, 1.7, GOLD),
-                           (-12, 8, 1.3, LILAC2), (13, 8, 1.4, GOLD),
-                           (-44, 1, 1.3, GOLD), (44, 1, 1.3, LILAC)]:
-        _spark(pdf, cx + dx, cy + dy, r, col)
+    top = pdf.get_y()
+    bot = pdf.page_break_trigger
+    midy = min(top + remaining * 0.5, bot - 16)
+    seed = pdf.page_no()
+    feat = seed % 3
+
+    # --- wechselndes, sehr dezentes Feature-Element ---
+    if feat == 0:
+        # weicher Schein, der sanft aus einer unteren Ecke ausblendet
+        corner_x = (PW - 2) if (seed % 2) else 2
+        with pdf.local_context(fill_opacity=0.05):
+            pdf.set_fill_color(*GOLD)
+            _circle(pdf, corner_x, bot + 2, 100, style="F")
+    elif feat == 1:
+        # zarter Ring, halb aus dem Seitenrand
+        side_x = -8 if (seed % 2) else PW + 8
+        pdf.set_line_width(0.3)
+        with pdf.local_context(stroke_opacity=0.11):
+            pdf.set_draw_color(*LILAC)
+            _circle(pdf, side_x, midy, 92)
+    else:
+        # kleiner, blasser Kern mit zwei Linien
+        with pdf.local_context(fill_opacity=0.04):
+            pdf.set_fill_color(*GOLD)
+            _circle(pdf, cx, midy, 50, style="F")
+        pdf.set_draw_color(*GOLD)
+        pdf.set_line_width(0.3)
+        with pdf.local_context(stroke_opacity=0.28):
+            pdf.line(cx - 24, midy, cx - 8, midy)
+            pdf.line(cx + 8, midy, cx + 24, midy)
+        with pdf.local_context(fill_opacity=0.65):
+            pdf.set_fill_color(*GOLD)
+            _circle(pdf, cx, midy, 2.6, style="F")
+
+    # --- zart driftendes Sternenfeld, waechst mit dem freien Raum ---
+    n = int(min(10, max(3, remaining / 16.0)))
+    cols = [GOLD, LILAC, LILAC2, INK_SOFT]
+    for i in range(n):
+        fx = ((seed * (i * 7 + 5) + 13) % 101) / 101.0
+        fy = ((seed * (i * 5 + 3) + i * 23 + 7) % 97) / 97.0
+        x = MX + 10 + fx * (PW - 2 * MX - 20)
+        y = top + 8 + fy * (remaining - 16)
+        r = 0.9 + ((seed + i * 3) % 4) * 0.3
+        with pdf.local_context(fill_opacity=0.8):
+            _spark(pdf, x, y, r, cols[(i + seed) % 4])
+
+
+def _break_with_accent(pdf, need, min_remaining=44.0):
+    """Reicht der Platz fuer den naechsten Block nicht, wird der Rest der Seite
+    mit einem zarten Akzent gefuellt und dann umgebrochen."""
+    if pdf.get_y() + need > pdf.page_break_trigger:
+        _page_tail_accent(pdf, min_remaining=min_remaining)
+        pdf.add_page()
+        return True
+    return False
 
 
 def _closing(pdf, full):
