@@ -677,6 +677,11 @@
   .numtile-l { font-size: 11px; color: var(--ink-mute); letter-spacing: .01em; }
   .numtile.on .numtile-l { color: var(--ink-soft); }
   @media (max-width: 400px) { .numtile-l { font-size: 10px; } }
+  .numfact { position: relative; font-size: 14px; color: var(--ink-soft); line-height: 1.72; text-align: center;
+    max-width: 54ch; margin: 0 auto; padding: 18px 22px; border: 1px solid rgba(245,197,107,.3);
+    border-radius: 14px; background: rgba(245,197,107,.05); }
+  .numfact::before { content: "✦"; display: block; color: var(--gold); font-size: 15px; margin-bottom: 6px;
+    text-shadow: 0 0 16px var(--glow); }
   .num-calc { font-family: var(--sans); font-size: 13px; letter-spacing: .02em; color: var(--ink-soft);
     background: rgba(245,197,107,.06); border: 1px solid rgba(245,197,107,.28); border-radius: 999px;
     padding: 8px 16px; display: inline-block; margin: 6px auto 4px; }
@@ -1966,13 +1971,9 @@
     // ── NUMEROLOGIE ──
     var nu=f.numerology;
     if(nu){
-      var nameCard = nu.name_number ?
-        ('<div class="cap2" style="margin-top:28px">Deine Namenszahl</div>'+
-         '<div class="facets2"><div class="facet2">'+
-           '<div class="facet2-t">Namenszahl '+esc(String(nu.name_number.number))+
-             (nu.name_number.name?(' · '+esc(nu.name_number.name)):'')+'</div>'+
-           '<div class="facet2-d">'+esc(nu.name_number.text)+'</div>'+
-         '</div></div>') : '';
+      var factCard = nu.fact ?
+        ('<div class="cap2" style="margin-top:28px">Gut zu wissen</div>'+
+         '<div class="numfact">'+esc(nu.fact)+'</div>') : '';
       var py=nu.personal_year;
       var pyCard = (py && py.number) ? (
         '<div class="cap2" style="margin-top:28px">Dein persönliches Jahr '+esc(String(py.year))+'</div>'+
@@ -1999,8 +2000,8 @@
           '<div style="text-align:center"><span class="num-calc">'+esc(nu.calc)+'</span></div>'+
           '<p class="intu-text" style="margin-top:8px">'+esc(nu.text)+'</p>'+
           moreCard+
-          nameCard+
           pyCard+
+          factCard+
           numGallery+
           '<p class="intu-note">'+esc(nu.note)+'</p>'+
         '</div>';

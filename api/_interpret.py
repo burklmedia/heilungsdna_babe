@@ -1199,6 +1199,38 @@ LIFEPATH_MORE = {
          "growth": "klare Grenzen zu setzen und dich selbst zu nähren, statt dich für andere aufzugeben"},
 }
 
+# "Gut zu wissen": echte, faszinierende Symbolik/Fakten zur Zahl (Know-how, keine Vermutung).
+LIFEPATH_FACT = {
+    1: "Die Eins ist der Ursprung aller Zahlen, das Symbol für Einheit und den allerersten Anfang. "
+       "In fast allen Kulturen steht sie für das Eine, das Ganze, den ersten Funken.",
+    2: "Die Zwei ist die Zahl der Polarität und des Gleichgewichts: Tag und Nacht, Yin und Yang, Ich "
+       "und Du. Erst durch sie entsteht überhaupt Beziehung.",
+    3: "Die Drei gilt seit der Antike als Zahl der Harmonie und Vollständigkeit: Anfang, Mitte, Ende; "
+       "Körper, Geist, Seele; die Stabilität des Dreiecks. Nicht umsonst heißt es: Aller guten Dinge "
+       "sind drei.",
+    4: "Die Vier ordnet die Welt: vier Himmelsrichtungen, vier Elemente, vier Jahreszeiten. Sie ist "
+       "das Symbol für Stabilität und für alles Feste, Greifbare.",
+    5: "Die Fünf ist die Zahl des Menschen (fünf Finger, fünf Sinne) und der Bewegung. Im Pentagramm "
+       "gilt sie seit jeher als Zeichen für Lebendigkeit.",
+    6: "Die Sechs galt schon bei den alten Griechen als vollkommene Zahl, weil ihre Teiler 1, 2 und 3 "
+       "zusammen wieder 6 ergeben. Sie steht für Harmonie und Ebenmaß, wie in der sechseckigen "
+       "Bienenwabe.",
+    7: "Die Sieben gilt in vielen Kulturen als heilig: sieben Wochentage, sieben Chakren, sieben "
+       "Farben des Regenbogens, sieben Weltwunder. Sie ist die Zahl der Suche und des Geheimnisses.",
+    8: "Legt man die Acht auf die Seite, wird sie zum Zeichen der Unendlichkeit. Sie steht für "
+       "Kreislauf und Fülle, für den Ausgleich von materieller und geistiger Welt, und gilt in Asien "
+       "als große Glückszahl.",
+    9: "Die Neun ist die letzte einstellige Zahl, das Symbol für Vollendung und Abschluss. Und sie "
+       "hat einen verblüffenden Trick: Multiplizierst du sie mit irgendeiner Zahl, ergibt die "
+       "Quersumme des Ergebnisses immer wieder 9.",
+    11: "Die Elf ist die erste Meisterzahl, ein Tor aus zwei Einsen, das für einen direkten Draht zur "
+        "Intuition steht. Man kennt sie als Zahl der Eingebung und des Erwachens.",
+    22: "Die Zweiundzwanzig verbindet die Vision der Elf mit dem festen Boden der Vier. Man nennt sie "
+        "den Baumeister, weil sie große Ideen in echte, greifbare Form bringen kann.",
+    33: "Die Dreiunddreißig ist die seltenste Meisterzahl, die Zahl des Lehrers. Sie trägt Mitgefühl "
+        "und Hingabe und taucht in vielen spirituellen Traditionen als Zahl der Meisterschaft auf.",
+}
+
 _NUM_WORD = {1: "eins", 2: "zwei", 3: "drei", 4: "vier", 5: "fünf", 6: "sechs",
              7: "sieben", 8: "acht", 9: "neun", 11: "elf", 22: "zweiundzwanzig",
              33: "dreiunddreißig"}
@@ -1267,13 +1299,6 @@ def build_numerology(chart):
     calc = (f"{d:02d}.{m:02d}.{y}  →  " + "+".join(str(x) for x in digits) + f" = {raw}"
             + "".join("  →  " + str(c) for c in chain[1:]))
 
-    name = (chart.get("name") or "").strip()
-    name_num = None
-    if name and name.lower() != "du":
-        nn = _name_number(name)
-        if nn:
-            name_num = {"number": nn, "text": NAMENUM.get(nn, ""), "name": name}
-
     # Persönliches Jahr: Geburtstag + Geburtsmonat + aktuelles Kalenderjahr (1 bis 9)
     cy = date.today().year
     py = _num_reduce(_num_reduce(d, keep_master=False) + _num_reduce(m, keep_master=False)
@@ -1292,15 +1317,15 @@ def build_numerology(chart):
         "text": info["text"],
         "strengths": more.get("strengths", ""),
         "growth": more.get("growth", ""),
+        "fact": LIFEPATH_FACT.get(lp) or LIFEPATH_FACT.get(_num_reduce(lp, keep_master=False), ""),
         "calc": calc,
-        "name_number": name_num,
         "personal_year": personal_year,
         "all": [{"number": k, "short": LIFEPATH_SHORT[k], "keyword": LIFEPATH[k]["keyword"]}
                 for k in range(1, 10)],
         "note": "Die Numerologie ist ein eigenes, altes Deutungssystem und kein Teil von Human "
-                "Design oder Astrologie. Deine Lebenszahl entsteht aus deinem Geburtsdatum, deine "
-                "Namenszahl aus den Buchstaben deines Vornamens. Verstehe beide als ein weiteres "
-                "Bild zur Selbstreflexion, das dich an deine eigenen Themen erinnert.",
+                "Design oder Astrologie. Deine Lebenszahl entsteht aus deinem Geburtsdatum, dein "
+                "persönliches Jahr aus Tag, Monat und dem laufenden Jahr. Verstehe beides als ein "
+                "weiteres Bild zur Selbstreflexion, das dich an deine eigenen Themen erinnert.",
     }
 
 

@@ -515,15 +515,13 @@ def build_pdf(result):
             lp_body += "\nDeine Stärken: " + str(num["strengths"]) + "."
         if num.get("growth"):
             lp_body += "\nDeine Aufgabe: Es geht darum, " + str(num["growth"]) + "."
+        if num.get("fact"):
+            lp_body += "\nGut zu wissen: " + str(num["fact"])
         if num.get("calc"):
             lp_body += "\nSo wird sie gerechnet: " + str(num["calc"])
         _unit(pdf, num.get("title") or "Lebenszahl",
               "Lebenszahl " + str(num.get("lifepath", "")),
               num.get("tagline"), lp_body)
-        nn = num.get("name_number")
-        if nn:
-            _unit(pdf, "Namenszahl " + str(nn.get("number", "")),
-                  nn.get("name") or "", None, nn.get("text"))
         py = num.get("personal_year")
         if py and py.get("number"):
             _unit(pdf, "Persönliches Jahr " + str(py.get("number", "")),
