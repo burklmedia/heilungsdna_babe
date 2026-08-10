@@ -169,6 +169,20 @@ def _circle(pdf, cx, cy, d, style="D"):
     pdf.ellipse(cx - d / 2.0, cy - d / 2.0, d, d, style=style)
 
 
+def _spark(pdf, cx, cy, r, color):
+    """Ein zartes vierzackiges Funkel-Sternchen (gefuellt)."""
+    pts = []
+    for i in range(8):
+        rad = r if i % 2 == 0 else r * 0.34
+        a = math.radians(i * 45 - 90)
+        pts.append((cx + rad * math.cos(a), cy + rad * math.sin(a)))
+    pdf.set_fill_color(*color)
+    try:
+        pdf.polygon(pts, style="F")
+    except Exception:  # noqa
+        _circle(pdf, cx, cy, r, style="F")
+
+
 def _eyebrow(pdf, text, color, size=8, spacing=0.9):
     pdf.set_font("Mul", "", size)
     pdf.set_text_color(*color)
@@ -299,7 +313,10 @@ def _cover(pdf, birth, name):
         pdf.set_text_color(*GOLD)
         pdf.cell(PW, 12, safe("für " + name), align="C", new_x=XPos.LMARGIN, new_y=YPos.NEXT)
 
-    # Geburtszeile, hervorgehoben in einer goldgerahmten Kapsel
+    # Sternenrad wie die Ladeanimation, unter dem Titel
+    _ritual_wheel(pdf, cx, 116.0, 37.0)
+
+    # Geburtszeile UNTER dem Kreis, in einer geschmeidigen Sternen-Kapsel
     parts = []
     if birth.get("date"):
         _bd = str(birth["date"])
@@ -309,30 +326,35 @@ def _cover(pdf, birth, name):
         parts.append(str(birth["time"]) + " Uhr")
     if birth.get("place"):
         parts.append(str(birth["place"]))
-    line = "  ·  ".join(parts)
-    py = pdf.get_y() + 6
+    line = "   ·   ".join(parts)
+    py = 165.0
     pdf.set_font("Mul", "", 10.5)
     tw = pdf.get_string_width(line)
-    pill_w = min(PW - 2 * MX, tw + 26)
-    pill_h = 12.0
+    pill_w = min(PW - 2 * MX, tw + 42)
+    pill_h = 13.0
     px = cx - pill_w / 2.0
+    # Kapsel mit ganz runden Enden
     pdf.set_fill_color(*CARD)
     pdf.set_draw_color(*GOLD)
     pdf.set_line_width(0.4)
-    _round_rect(pdf, px, py, pill_w, pill_h, pill_h / 2.0, style="DF", border_opacity=0.6)
-    pdf.set_xy(px, py)
+    _round_rect(pdf, px, py, pill_w, pill_h, pill_h / 2.0, style="DF", border_opacity=0.65)
+    # kleine Funkel-Sternchen an den Enden
+    _spark(pdf, px + 8, py + pill_h / 2.0, 2.5, GOLD)
+    _spark(pdf, px + pill_w - 8, py + pill_h / 2.0, 2.5, GOLD)
+    # verstreute Sternchen ueber der Kapsel
+    _spark(pdf, cx - pill_w / 2.0 + 22, py - 5, 1.7, LILAC)
+    _spark(pdf, cx + pill_w / 2.0 - 24, py - 6, 1.9, GOLD)
+    _spark(pdf, cx + 6, py - 8, 1.4, LILAC2)
+    pdf.set_xy(px + 12, py)
     pdf.set_text_color(*GOLD)
     with pdf.local_context(char_spacing=0.5):
-        pdf.cell(pill_w, pill_h, safe(line), align="C")
-
-    # Sternenrad wie die Ladeanimation, unter dem Titel
-    _ritual_wheel(pdf, cx, 152.0, 40.0)
+        pdf.cell(pill_w - 24, pill_h, safe(line), align="C")
 
     # Spruch, sauber in Zeilen gesetzt (nicht abgeschnitten)
     pdf.set_fill_color(*GOLD)
     with pdf.local_context(fill_opacity=0.55):
-        pdf.rect(cx - 24, 216, 48, 0.3, style="F")
-    pdf.set_xy(MX, 224)
+        pdf.rect(cx - 24, 202, 48, 0.3, style="F")
+    pdf.set_xy(MX, 210)
     pdf.set_font("Cormo", "I", 15)
     pdf.set_text_color(*INK_L)
     pdf.multi_cell(PW - 2 * MX, 7.4,
@@ -1209,7 +1231,7 @@ def _closing(pdf, full):
         pdf.set_line_width(0.3)
         _circle(pdf, cx, 40, 150)
     # Inhalt etwas nach unten ruecken, damit die Seite ausgewogen wirkt
-    pdf.set_y(44)
+    pdf.set_y(42)
     _heading_block(pdf, "Abschluss", "Zum Schluss", on_dark=True)
     _para(pdf, full.get("closing"), font="Cormo", style="I", size=14,
           color=INK_L, h=7.0, after=6)
@@ -1245,7 +1267,7 @@ def _closing(pdf, full):
     pdf.set_y(top + box_h)
 
     # Instagram-Auftritt: Symbol + Handle
-    pdf.ln(12)
+    pdf.ln(11)
     handle = "intuitionmitherz"
     icon_s = 8.0
     pdf.set_font("Mul", "B", 14)
@@ -1258,12 +1280,27 @@ def _closing(pdf, full):
     pdf.set_xy(gx + icon_s + gap, gy)
     pdf.set_text_color(*INK_L)
     pdf.cell(tw, icon_s, handle)
-    pdf.set_y(gy + icon_s + 10)
+    pdf.set_y(gy + icon_s + 4)
+    # Aufruf: folgen und teilen
+    _para(pdf, "Folge mir für tägliche Impulse rund um Human Design und Astrologie. "
+               "Und wenn dich dein Bauplan berührt hat, teile ihn in deiner Story und "
+               "verlinke @intuitionmitherz.",
+          size=9.5, color=INK_SOFT, h=5.2, after=0, align="C")
+
+    # zarter Sternen-Abschluss als Trenner
+    _signoff(pdf, pdf.get_y() + 13)
+    pdf.set_y(pdf.get_y() + 24)
+
+    # Feindruck: Hinweis + Copyright
+    import datetime
+    year = datetime.date.today().year
     if full.get("note"):
-        pdf.ln(6)
-        _para(pdf, full["note"], size=8.5, color=INK_SOFT, h=4.6, after=0, align="C")
-    # zarter Sternen-Abschluss unten, damit die Seite ausgewogen ausklingt
-    _signoff(pdf, max(pdf.get_y() + 20, 252))
+        _para(pdf, full["note"], size=8, color=MUTE, h=4.4, after=1.5, align="C")
+    pdf.set_font("Mul", "", 8)
+    pdf.set_text_color(*MUTE)
+    with pdf.local_context(char_spacing=0.3):
+        pdf.cell(0, 4, safe("© %d Intuition mit Herz · Alle Rechte vorbehalten" % year),
+                 align="C", new_x=XPos.LMARGIN, new_y=YPos.NEXT)
 
 
 def _render(result, toc_entries):
