@@ -183,6 +183,93 @@ def _spark(pdf, cx, cy, r, color):
         _circle(pdf, cx, cy, r, style="F")
 
 
+def _teardrop_pts(cx, cy, s, steps=28):
+    """Punkte eines nach oben zeigenden Tropfens (fuer Wasser/Feuer)."""
+    R = 0.29 * s
+    oy = cy + 0.20 * s
+    pts = [(cx, cy - 0.52 * s)]
+    for i in range(steps + 1):
+        ang = math.radians(60 - 300.0 * i / steps)
+        pts.append((cx + R * math.cos(ang), oy - R * math.sin(ang)))
+    return pts
+
+
+def _wave(pdf, cx, cy, w, amp, color, segs=22, lw=0.5):
+    """Zarte Wellenlinie."""
+    pdf.set_draw_color(*color)
+    pdf.set_line_width(lw)
+    prev = None
+    for i in range(segs + 1):
+        t = i / segs
+        x = cx - w / 2.0 + w * t
+        y = cy + amp * math.sin(t * math.pi * 3)
+        if prev is not None:
+            pdf.line(prev[0], prev[1], x, y)
+        prev = (x, y)
+
+
+def _element_symbol(pdf, cx, cy, s, key):
+    """Zeichnet das Element-Sinnbild des Intuitionstyps als Medaillon
+    (Feuer, Erde, Luft, Wasser) – im Stil der Website-Skizzen."""
+    # Medaillon: weicher Schein + Goldring
+    with pdf.local_context(fill_opacity=0.10):
+        pdf.set_fill_color(*GOLD)
+        _circle(pdf, cx, cy, s * 1.9, style="F")
+    pdf.set_draw_color(*GOLD)
+    pdf.set_line_width(0.4)
+    with pdf.local_context(stroke_opacity=0.55):
+        _circle(pdf, cx, cy, s * 1.7)
+    with pdf.local_context(stroke_opacity=0.3):
+        pdf.set_draw_color(*LILAC)
+        _circle(pdf, cx, cy, s * 1.86)
+
+    def _fill_poly(pts, col, op):
+        with pdf.local_context(fill_opacity=op):
+            pdf.set_fill_color(*col)
+            pdf.polygon(pts, style="F")
+
+    if key == "Feuer":
+        pts = _teardrop_pts(cx, cy - 0.02 * s, s * 1.02)
+        _fill_poly(pts, GOLD, 0.22)
+        pdf.set_draw_color(*GOLD)
+        pdf.set_line_width(0.7)
+        pdf.polygon(pts, style="D")
+        _fill_poly(_teardrop_pts(cx, cy + 0.14 * s, 0.5 * s), LILAC, 0.5)
+        for dx, dy in [(-0.55, -0.34), (0.57, -0.16), (0.0, 0.62)]:
+            _spark(pdf, cx + dx * s, cy + dy * s, 0.1 * s, LILAC)
+    elif key == "Wasser":
+        pts = _teardrop_pts(cx, cy - 0.12 * s, 0.94 * s)
+        _fill_poly(pts, GOLD, 0.22)
+        pdf.set_draw_color(*GOLD)
+        pdf.set_line_width(0.7)
+        pdf.polygon(pts, style="D")
+        _wave(pdf, cx, cy + 0.5 * s, s * 1.05, 0.06 * s, LILAC, lw=0.6)
+        _wave(pdf, cx, cy + 0.66 * s, s * 0.8, 0.05 * s, LILAC2, lw=0.5)
+    elif key == "Erde":
+        tri = [(cx, cy - 0.5 * s), (cx + 0.56 * s, cy + 0.34 * s), (cx - 0.56 * s, cy + 0.34 * s)]
+        _fill_poly(tri, GOLD, 0.2)
+        pdf.set_draw_color(*GOLD)
+        pdf.set_line_width(0.7)
+        pdf.polygon(tri, style="D")
+        pdf.set_draw_color(*LILAC)
+        pdf.set_line_width(0.7)
+        pdf.line(cx - 0.66 * s, cy + 0.34 * s, cx + 0.66 * s, cy + 0.34 * s)
+        tri2 = [(cx + 0.18 * s, cy + 0.02 * s), (cx + 0.4 * s, cy + 0.34 * s),
+                (cx - 0.04 * s, cy + 0.34 * s)]
+        _fill_poly(tri2, LILAC, 0.4)
+    else:  # Luft
+        pdf.set_draw_color(*GOLD)
+        pdf.set_line_width(0.7)
+        pdf.ellipse(cx - 0.52 * s, cy - 0.3 * s, 1.04 * s, 0.6 * s, style="D")
+        with pdf.local_context(stroke_opacity=0.6):
+            pdf.set_draw_color(*LILAC)
+            _circle(pdf, cx, cy, 0.34 * s)
+        pdf.set_fill_color(*GOLD)
+        _circle(pdf, cx, cy, 0.16 * s, style="F")
+        _wave(pdf, cx, cy - 0.46 * s, 0.66 * s, 0.045 * s, LILAC, segs=16, lw=0.5)
+        _wave(pdf, cx, cy + 0.46 * s, 0.66 * s, 0.045 * s, LILAC, segs=16, lw=0.5)
+
+
 def _eyebrow(pdf, text, color, size=8, spacing=0.9):
     pdf.set_font("Mul", "", size)
     pdf.set_text_color(*color)
@@ -290,16 +377,23 @@ def _cover(pdf, birth, name):
     pdf.add_page()
     cx = PW / 2.0
 
-    # Sternenstaub
+    wy = 120.0
+    Rw = 36.0
+
+    # Sternenstaub + Funkeln, grosszuegig gestreut (etwas dramatischer)
     for sx, sy, sd, col, op in [
-        (cx - 60, 150, 2.0, LILAC2, 0.85), (36, 34, 1.5, (243, 238, 254), 0.7),
+        (cx - 66, 150, 2.0, LILAC2, 0.85), (36, 40, 1.5, (243, 238, 254), 0.7),
         (PW - 30, 150, 1.7, GOLD, 0.85), (34, 250, 1.3, LILAC, 0.8),
-        (PW - 40, 235, 1.4, INK_L, 0.6), (cx + 62, 205, 1.6, GOLD, 0.7)]:
+        (PW - 40, 238, 1.4, INK_L, 0.6), (cx + 66, 205, 1.6, GOLD, 0.7),
+        (44, 120, 1.3, GOLD, 0.6), (PW - 46, 96, 1.4, LILAC, 0.7)]:
         with pdf.local_context(fill_opacity=op):
             pdf.set_fill_color(*col)
             _circle(pdf, sx, sy, sd, style="F")
+    for sx, sy, sr, col in [(cx - 74, 96, 2.2, GOLD), (PW - 34, 250, 2.0, LILAC),
+                            (40, 205, 1.8, LILAC2), (cx + 76, 150, 2.0, GOLD)]:
+        _spark(pdf, sx, sy, sr, col)
 
-    # Titelblock oben: Titel, Name, Geburtszeile – ueber dem Sternenrad
+    # Titelblock oben: Titel + Name – ueber dem Sternenrad
     pdf.set_xy(0, 28)
     pdf.set_font("Cormo", "", 40)
     pdf.set_text_color(*INK_L)
@@ -313,8 +407,24 @@ def _cover(pdf, birth, name):
         pdf.set_text_color(*GOLD)
         pdf.cell(PW, 12, safe("für " + name), align="C", new_x=XPos.LMARGIN, new_y=YPos.NEXT)
 
-    # Sternenrad wie die Ladeanimation, unter dem Titel
-    _ritual_wheel(pdf, cx, 116.0, 37.0)
+    # ---- Medaillon: Platte + Doppelrahmen (Gold/Flieder) um das Sternenrad ----
+    with pdf.local_context(fill_opacity=0.55):
+        pdf.set_fill_color(*CARD2)
+        _circle(pdf, cx, wy, 94, style="F")
+    pdf.set_line_width(0.8)
+    with pdf.local_context(stroke_opacity=0.85):
+        pdf.set_draw_color(*GOLD)
+        _circle(pdf, cx, wy, 90)
+    pdf.set_line_width(0.4)
+    with pdf.local_context(stroke_opacity=0.5):
+        pdf.set_draw_color(*LILAC)
+        _circle(pdf, cx, wy, 96)
+    # vier Funkel-Sternchen auf dem Rahmen
+    for ang, col in [(45, GOLD), (135, LILAC), (225, GOLD), (315, LILAC)]:
+        a = math.radians(ang)
+        _spark(pdf, cx + 45 * math.cos(a), wy + 45 * math.sin(a), 2.4, col)
+    # Sternenrad in der Mitte
+    _ritual_wheel(pdf, cx, wy, Rw)
 
     # Geburtszeile UNTER dem Kreis, in einer geschmeidigen Sternen-Kapsel
     parts = []
@@ -327,34 +437,25 @@ def _cover(pdf, birth, name):
     if birth.get("place"):
         parts.append(str(birth["place"]))
     line = "   ·   ".join(parts)
-    py = 165.0
+    py = 174.0
     pdf.set_font("Mul", "", 10.5)
     tw = pdf.get_string_width(line)
     pill_w = min(PW - 2 * MX, tw + 42)
     pill_h = 13.0
     px = cx - pill_w / 2.0
-    # Kapsel mit ganz runden Enden
     pdf.set_fill_color(*CARD)
     pdf.set_draw_color(*GOLD)
     pdf.set_line_width(0.4)
     _round_rect(pdf, px, py, pill_w, pill_h, pill_h / 2.0, style="DF", border_opacity=0.65)
-    # kleine Funkel-Sternchen an den Enden
     _spark(pdf, px + 8, py + pill_h / 2.0, 2.5, GOLD)
     _spark(pdf, px + pill_w - 8, py + pill_h / 2.0, 2.5, GOLD)
-    # verstreute Sternchen ueber der Kapsel
-    _spark(pdf, cx - pill_w / 2.0 + 22, py - 5, 1.7, LILAC)
-    _spark(pdf, cx + pill_w / 2.0 - 24, py - 6, 1.9, GOLD)
-    _spark(pdf, cx + 6, py - 8, 1.4, LILAC2)
     pdf.set_xy(px + 12, py)
     pdf.set_text_color(*GOLD)
     with pdf.local_context(char_spacing=0.5):
         pdf.cell(pill_w - 24, pill_h, safe(line), align="C")
 
     # Spruch, sauber in Zeilen gesetzt (nicht abgeschnitten)
-    pdf.set_fill_color(*GOLD)
-    with pdf.local_context(fill_opacity=0.55):
-        pdf.rect(cx - 24, 202, 48, 0.3, style="F")
-    pdf.set_xy(MX, 210)
+    pdf.set_xy(MX, 202)
     pdf.set_font("Cormo", "I", 15)
     pdf.set_text_color(*INK_L)
     pdf.multi_cell(PW - 2 * MX, 7.4,
@@ -362,8 +463,11 @@ def _cover(pdf, birth, name):
                         "Auf den nächsten Seiten liest du nur noch,\nwie du gemeint bist."),
                    align="C", new_x=XPos.LMARGIN, new_y=YPos.NEXT)
 
-    # Wortmarke ganz unten, wie auf den anderen Seiten – unter dem Spruch
-    pdf.set_xy(0, 262)
+    # Sternen-Abschluss als Bindeglied zur letzten Seite
+    _signoff(pdf, 242.0)
+
+    # Wortmarke ganz unten, wie auf den anderen Seiten
+    pdf.set_xy(0, 258)
     pdf.set_font("Vibes", "", 26)
     pdf.set_text_color(*GOLD)
     pdf.cell(PW, 10, safe("Intuition mit Herz"), align="C",
@@ -1029,16 +1133,23 @@ def _toc_page(pdf, entries):
 def _intuition(pdf, it):
     pdf.theme = "dark"
     pdf.add_page()
-    _heading_block(pdf, "Intuitionstyp", "Dein Intuitionstyp",
-                   (it.get("archetype") or "") +
-                   (" · Mond in " + it["moon_sign"] if it.get("moon_sign") else ""),
-                   on_dark=True)
-    pdf.ln(1)
-    if it.get("tagline"):
-        pdf.set_font("Cormo", "B", 16)
-        pdf.set_text_color(*INK_DARK)
-        pdf.multi_cell(0, 7.4, safe(it["tagline"]), new_x=XPos.LMARGIN, new_y=YPos.NEXT)
-        pdf.ln(3)
+    _heading_block(pdf, "Intuitionstyp", "Dein Intuitionstyp", on_dark=True)
+    # Element-Medaillon zentriert
+    s = 15.0
+    ey = pdf.get_y() + 20
+    _element_symbol(pdf, PW / 2.0, ey, s, it.get("key"))
+    pdf.set_y(ey + s * 0.95 + 6)
+    if it.get("archetype"):
+        pdf.set_font("Cormo", "", 25)
+        pdf.set_text_color(*GOLD)
+        pdf.cell(0, 10, safe(it["archetype"]), align="C", new_x=XPos.LMARGIN, new_y=YPos.NEXT)
+    sub = " · ".join(x for x in [it.get("tagline"),
+                                 ("Mond in " + it["moon_sign"]) if it.get("moon_sign") else ""] if x)
+    if sub:
+        pdf.set_font("Cormo", "I", 13)
+        pdf.set_text_color(*INK_SOFT)
+        pdf.cell(0, 6, safe(sub), align="C", new_x=XPos.LMARGIN, new_y=YPos.NEXT)
+    pdf.ln(6)
     _para(pdf, it.get("text"), size=10.5, color=BODY_DK, h=5.9, after=4)
     depth = it.get("depth")
     if depth and depth.get("summary"):
@@ -1073,8 +1184,44 @@ def _intuition(pdf, it):
             pdf.multi_cell(PW - pdf.l_margin - pdf.r_margin - 7, 5.9, safe(tool),
                            new_x=XPos.LMARGIN, new_y=YPos.NEXT)
             pdf.ln(2.5)
-    if it.get("note"):
+    # Galerie der vier Intuitionstypen, jeweils mit Element-Symbol
+    types = it.get("all") or []
+    if types:
+        _keep(pdf, 70)
         pdf.ln(2)
+        _eyebrow(pdf, "Die vier Intuitionstypen", MUTE, size=8, spacing=1.0)
+        pdf.ln(4)
+        cw = PW - pdf.l_margin - pdf.r_margin
+        gap = 8.0
+        col = (cw - gap) / 2.0
+        ch = 46.0
+        for idx, a in enumerate(types):
+            row, ccol = divmod(idx, 2)
+            cxp = pdf.l_margin + ccol * (col + gap)
+            cyp = pdf.get_y() if ccol == 0 else cyp_row
+            if ccol == 0:
+                cyp_row = cyp
+            active = a.get("key") == it.get("key")
+            pdf.set_fill_color(*CARD)
+            pdf.set_draw_color(*(GOLD if active else LILAC))
+            pdf.set_line_width(0.4 if active else 0.3)
+            _round_rect(pdf, cxp, cyp_row, col, ch, 3.5, style="DF",
+                        border_opacity=0.55 if active else 0.28)
+            _element_symbol(pdf, cxp + col / 2.0, cyp_row + 12, 6.2, a.get("key"))
+            pdf.set_xy(cxp, cyp_row + 22)
+            pdf.set_font("Cormo", "", 14)
+            pdf.set_text_color(*(GOLD if active else INK_L))
+            pdf.cell(col, 6, safe(a.get("archetype") or ""), align="C",
+                     new_x=XPos.LMARGIN, new_y=YPos.NEXT)
+            pdf.set_xy(cxp + 4, cyp_row + 28)
+            pdf.set_font("Mul", "", 8)
+            pdf.set_text_color(*INK_SOFT)
+            pdf.multi_cell(col - 8, 4.4, safe(a.get("oneliner") or a.get("tagline") or ""),
+                           align="C", new_x=XPos.LMARGIN, new_y=YPos.NEXT)
+            if ccol == 1 or idx == len(types) - 1:
+                pdf.set_y(cyp_row + ch + gap)
+    if it.get("note"):
+        pdf.ln(1)
         _para(pdf, it["note"], size=8.5, color=MUTE, h=4.6, after=0)
 
 
@@ -1092,7 +1239,7 @@ def _deutung(pdf, sections):
         nr = ("0" + str(i + 1))[-2:]
         # Genug Platz halten, damit Nummer, Titel und der Anfang zusammenbleiben
         # und keine Ueberschrift einsam am Seitenende haengt.
-        _keep(pdf, 52)
+        _keep(pdf, 62)
         pdf.ln(3)
         pdf.set_draw_color(*LINE_CREAM)
         pdf.set_line_width(0.2)
@@ -1146,11 +1293,66 @@ def _deutung(pdf, sections):
                 pdf.ln(1)
 
 
+def _lifepath_emblem(pdf, num):
+    """Die Lebenszahl gross und auffaellig als goldenes Medaillon (wie im Bauplan)."""
+    cx = PW / 2.0
+    cy = pdf.get_y() + 24
+    d = 40.0
+    with pdf.local_context(fill_opacity=0.12):
+        pdf.set_fill_color(*GOLD)
+        _circle(pdf, cx, cy, d * 1.5, style="F")
+    pdf.set_draw_color(*GOLD)
+    pdf.set_line_width(0.5)
+    with pdf.local_context(stroke_opacity=0.6):
+        _circle(pdf, cx, cy, d)
+    with pdf.local_context(stroke_opacity=0.32):
+        pdf.set_draw_color(*LILAC)
+        _circle(pdf, cx, cy, d + 4)
+    # grosse Zahl
+    num_txt = str(num.get("lifepath", ""))
+    pdf.set_font("Cormo", "B", 54)
+    pdf.set_text_color(*GOLD)
+    w = pdf.get_string_width(num_txt)
+    pdf.set_xy(cx - w / 2.0, cy - 12.5)
+    pdf.cell(w, 25, num_txt, align="C")
+    pdf.set_y(cy + d / 2.0 + 5)
+    # Titel + Tagline
+    if num.get("title"):
+        pdf.set_font("Cormo", "", 20)
+        pdf.set_text_color(*INK_L)
+        pdf.cell(0, 8, safe(num["title"]), align="C", new_x=XPos.LMARGIN, new_y=YPos.NEXT)
+    if num.get("tagline"):
+        pdf.set_font("Cormo", "I", 13)
+        pdf.set_text_color(*GOLD)
+        pdf.cell(0, 6, safe(num["tagline"]), align="C", new_x=XPos.LMARGIN, new_y=YPos.NEXT)
+    if num.get("calc"):
+        pdf.ln(2)
+        pdf.set_font("Mul", "", 8.5)
+        cl = safe(num["calc"])
+        tw = pdf.get_string_width(cl)
+        pw = tw + 16
+        px = cx - pw / 2.0
+        yy = pdf.get_y()
+        pdf.set_fill_color(*CARD)
+        pdf.set_draw_color(*LILAC)
+        pdf.set_line_width(0.3)
+        _round_rect(pdf, px, yy, pw, 8, 4, style="DF", border_opacity=0.35)
+        pdf.set_xy(px, yy)
+        pdf.set_text_color(*INK_SOFT)
+        pdf.cell(pw, 8, cl, align="C")
+        pdf.set_y(yy + 8)
+    pdf.ln(6)
+
+
 def _numerology(pdf, full):
     num = full["numerology"]
-    _simple_chapter_head(pdf, "Zahlen", "Deine Numerologie",
-                         "Zwei Zahlen, die sich aus deinem Geburtsdatum und deinem Vornamen "
-                         "ergeben und einen eigenen Blick auf deine Themen werfen.")
+    pdf.theme = "dark"
+    pdf.add_page()
+    _heading_block(pdf, "Zahlen", "Deine Numerologie", on_dark=True)
+    _para(pdf, "Zwei Zahlen, die sich aus deinem Geburtsdatum und deinem Vornamen "
+               "ergeben und einen eigenen Blick auf deine Themen werfen.",
+          size=10.5, color=BODY_DK, h=6, after=3)
+    _lifepath_emblem(pdf, num)
     lp_body = str(num.get("text") or "")
     if num.get("strengths"):
         lp_body += "\nDeine Stärken: " + str(num["strengths"]) + "."
@@ -1158,11 +1360,9 @@ def _numerology(pdf, full):
         lp_body += "\nDeine Aufgabe: Es geht darum, " + str(num["growth"]) + "."
     if num.get("fact"):
         lp_body += "\nGut zu wissen: " + str(num["fact"])
-    if num.get("calc"):
-        lp_body += "\nSo wird sie gerechnet: " + str(num["calc"])
-    _unit(pdf, num.get("title") or "Lebenszahl",
+    _unit(pdf, "Was deine Zahl erzählt",
           "Lebenszahl " + str(num.get("lifepath", "")),
-          num.get("tagline"), lp_body)
+          None, lp_body)
     py = num.get("personal_year")
     if py and py.get("number"):
         _unit(pdf, "Persönliches Jahr " + str(py.get("number", "")),
@@ -1282,9 +1482,9 @@ def _closing(pdf, full):
     pdf.cell(tw, icon_s, handle)
     pdf.set_y(gy + icon_s + 4)
     # Aufruf: folgen und teilen
-    _para(pdf, "Folge mir für tägliche Impulse rund um Human Design und Astrologie. "
-               "Und wenn dich dein Bauplan berührt hat, teile ihn in deiner Story und "
-               "verlinke @intuitionmitherz.",
+    _para(pdf, "Folge mir für mehr Impulse. Und wenn dich dein Bauplan berührt oder "
+               "inspiriert hat, teile ihn gerne in deiner Story und verlinke "
+               "@intuitionmitherz.",
           size=9.5, color=INK_SOFT, h=5.2, after=0, align="C")
 
     # zarter Sternen-Abschluss als Trenner
