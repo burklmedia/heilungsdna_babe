@@ -1147,6 +1147,36 @@ def _instagram(pdf, x, y, s, color):
     pdf.ellipse(x + s - s * 0.28 - d / 2, y + s * 0.28 - d / 2, d, d, style="F")
 
 
+def _signoff(pdf, cy):
+    """Zarter Sternen-Abschluss: ein leuchtender Kern zwischen zwei Goldlinien,
+    von kleinen Sternen flankiert. Ein warmes Echo des Deckblatt-Rades."""
+    cx = PW / 2.0
+    with pdf.local_context(fill_opacity=0.08):
+        pdf.set_fill_color(*GOLD)
+        _circle(pdf, cx, cy, 66, style="F")
+    pdf.set_draw_color(*GOLD)
+    pdf.set_line_width(0.3)
+    with pdf.local_context(stroke_opacity=0.5):
+        pdf.line(cx - 36, cy, cx - 10, cy)
+        pdf.line(cx + 10, cy, cx + 36, cy)
+    # leuchtender Kern
+    with pdf.local_context(fill_opacity=0.45):
+        pdf.set_fill_color(*GOLD)
+        _circle(pdf, cx, cy, 8, style="F")
+    with pdf.local_context(fill_opacity=0.9):
+        pdf.set_fill_color(*GOLD)
+        _circle(pdf, cx, cy, 3.6, style="F")
+    pdf.set_fill_color(255, 250, 240)
+    _circle(pdf, cx, cy, 1.5, style="F")
+    # flankierende Sternchen
+    for dx, dy, col, op, d in [(-46, -2, LILAC, 0.8, 1.7), (46, -2, GOLD, 0.8, 1.7),
+                               (-58, 3, GOLD, 0.5, 1.2), (58, 3, LILAC, 0.5, 1.2),
+                               (-24, -9, GOLD, 0.55, 1.1), (24, -9, LILAC, 0.55, 1.1)]:
+        with pdf.local_context(fill_opacity=op):
+            pdf.set_fill_color(*col)
+            _circle(pdf, cx + dx, cy + dy, d, style="F")
+
+
 def _closing(pdf, full):
     """Abschlussseite: der warme Schlusstext, der spirituelle Lieblingsspruch
     und der Instagram-Auftritt."""
@@ -1161,6 +1191,8 @@ def _closing(pdf, full):
         pdf.set_draw_color(*LILAC)
         pdf.set_line_width(0.3)
         _circle(pdf, cx, 40, 150)
+    # Inhalt etwas nach unten ruecken, damit die Seite ausgewogen wirkt
+    pdf.set_y(44)
     _heading_block(pdf, "Abschluss", "Zum Schluss", on_dark=True)
     _para(pdf, full.get("closing"), font="Cormo", style="I", size=14,
           color=INK_L, h=7.0, after=6)
@@ -1213,6 +1245,8 @@ def _closing(pdf, full):
     if full.get("note"):
         pdf.ln(6)
         _para(pdf, full["note"], size=8.5, color=INK_SOFT, h=4.6, after=0, align="C")
+    # zarter Sternen-Abschluss unten, damit die Seite ausgewogen ausklingt
+    _signoff(pdf, max(pdf.get_y() + 20, 252))
 
 
 def _render(result, toc_entries):
