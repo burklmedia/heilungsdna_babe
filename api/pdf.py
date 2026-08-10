@@ -372,6 +372,58 @@ def _ritual_wheel(pdf, cx, cy, R):
     _circle(pdf, cx, cy, 2.6, style="F")
 
 
+def _abstract_emblem(pdf, cx, cy, R):
+    """Abstraktes Sternen-Emblem: zwei Ringe, die zwoelf Tierkreiszeichen zart
+    angedeutet, ein verbindendes Sternennetz und ein leuchtender Kern – ein
+    Bild, das alle Systeme miteinander verwebt."""
+    def pt(r, deg):
+        a = math.radians(deg - 90)
+        return (cx + r * math.cos(a), cy + r * math.sin(a))
+
+    with pdf.local_context(fill_opacity=0.10):
+        pdf.set_fill_color(*GOLD)
+        _circle(pdf, cx, cy, R * 2.7, style="F")
+    pdf.set_line_width(0.5)
+    with pdf.local_context(stroke_opacity=0.6):
+        pdf.set_draw_color(*GOLD)
+        _circle(pdf, cx, cy, R * 2)
+    pdf.set_line_width(0.3)
+    with pdf.local_context(stroke_opacity=0.4):
+        pdf.set_draw_color(*LILAC)
+        _circle(pdf, cx, cy, R * 1.28)
+    # Tierkreiszeichen zart auf dem aeusseren Band
+    for k in range(12):
+        gp = pt(R * 0.85, k * 30 + 15)
+        with pdf.local_context(fill_opacity=0.8):
+            _glyph(pdf, gp[0], gp[1], SIGN_GLYPH[k], 8, GOLD)
+    # verbindendes Sternennetz (verbindet alles miteinander)
+    net = [(0.92, 22), (0.62, 70), (0.86, 128), (0.5, 175), (0.9, 214),
+           (0.66, 262), (0.44, 312), (0.8, 340)]
+    nodes = [pt(R * f, d) for f, d in net]
+    links = [(0, 1), (1, 2), (2, 3), (3, 4), (4, 5), (5, 6), (6, 7), (7, 0),
+             (0, 2), (2, 4), (4, 6), (6, 0)]
+    pdf.set_line_width(0.3)
+    with pdf.local_context(stroke_opacity=0.32):
+        pdf.set_draw_color(*LILAC)
+        for a, b in links:
+            pdf.line(nodes[a][0], nodes[a][1], nodes[b][0], nodes[b][1])
+    for i, (nx, ny) in enumerate(nodes):
+        if i % 2 == 0:
+            _spark(pdf, nx, ny, 1.9, GOLD)
+        else:
+            pdf.set_fill_color(*LILAC)
+            _circle(pdf, nx, ny, 1.7, style="F")
+    # leuchtender Kern
+    with pdf.local_context(fill_opacity=0.5):
+        pdf.set_fill_color(*GOLD)
+        _circle(pdf, cx, cy, 10, style="F")
+    with pdf.local_context(fill_opacity=0.9):
+        pdf.set_fill_color(*GOLD)
+        _circle(pdf, cx, cy, 5, style="F")
+    pdf.set_fill_color(255, 250, 240)
+    _circle(pdf, cx, cy, 2.2, style="F")
+
+
 def _cover(pdf, birth, name):
     pdf.theme = "cover"
     pdf.add_page()
@@ -423,8 +475,8 @@ def _cover(pdf, birth, name):
     for ang, col in [(45, GOLD), (135, LILAC), (225, GOLD), (315, LILAC)]:
         a = math.radians(ang)
         _spark(pdf, cx + 45 * math.cos(a), wy + 45 * math.sin(a), 2.4, col)
-    # Sternenrad in der Mitte
-    _ritual_wheel(pdf, cx, wy, Rw)
+    # Abstraktes, verbindendes Sternen-Emblem in der Mitte
+    _abstract_emblem(pdf, cx, wy, Rw)
 
     # Geburtszeile UNTER dem Kreis, in einer geschmeidigen Sternen-Kapsel
     parts = []
@@ -626,6 +678,7 @@ def _uebersicht(pdf, teaser, full):
         pdf.multi_cell(PW - pdf.l_margin - pdf.r_margin - 9, 5.2, safe(h.get("meaning") or ""),
                        new_x=XPos.LMARGIN, new_y=YPos.NEXT)
         pdf.ln(2.5)
+    _page_tail_accent(pdf)
 
 
 def _fold_head(pdf, title):
@@ -714,7 +767,11 @@ def _unit(pdf, title, meta, oneliner, body):
     h_ol = (5.6 * len(ol_lines) + 2.0) if ol_lines else 0.0
     h_bd = 5.7 * len(bd_lines)
     box_h = pad + h_title + h_meta + h_ol + h_bd + pad - 1
-    _keep(pdf, box_h + 6)
+    # Passt die Karte nicht mehr auf die Seite? Dann vorher den Rest mit einem
+    # zarten Sternen-Akzent fuellen, damit keine grosse Leere entsteht.
+    if pdf.get_y() + box_h + 6 > pdf.page_break_trigger:
+        _page_tail_accent(pdf, min_remaining=44)
+        pdf.add_page()
     top = pdf.get_y()
     pdf.set_fill_color(*CARD)
     pdf.set_draw_color(*LILAC)
@@ -994,6 +1051,7 @@ def _human_design(pdf, teaser, full):
         _kvrow_dark(pdf, "Inkarnationskreuz",
                     "%s/%s, %s/%s" % (cross.get("pers_sun"), cross.get("pers_earth"),
                                       cross.get("des_sun"), cross.get("des_earth")))
+    _page_tail_accent(pdf)
 
     # Die neun Zentren auf hellen Seiten
     pdf.theme = "dark"
@@ -1012,6 +1070,7 @@ def _human_design(pdf, teaser, full):
             body += ("\n" if body else "") + "Impuls: " + str(c["tip"])
         _unit(pdf, str(c.get("name") or ""), state,
               c.get("theme") or c.get("meaning"), body)
+    _page_tail_accent(pdf)
 
 
 def _natalchart(pdf, full):
@@ -1068,6 +1127,7 @@ def _natalchart(pdf, full):
         _para(pdf, "Für das Horoskop-Rad brauchen wir deine Geburtszeit. Die Positionen "
                    "von Sonne, Mond und den Planeten liest du trotzdem gleich.",
               font="Cormo", style="I", size=13, color=GOLD, h=6.4, after=4, align="C")
+    _page_tail_accent(pdf)
 
     # Positionen auf hellen Seiten
     pdf.theme = "dark"
@@ -1090,6 +1150,7 @@ def _natalchart(pdf, full):
                 meta += ", " + str(house) + ". Haus"
         _unit(pdf, str(p.get("label") or p.get("key") or ""), meta,
               p.get("meaning"), p.get("desc"))
+    _page_tail_accent(pdf)
 
 
 # ---------- Inhaltsverzeichnis ----------
@@ -1126,6 +1187,7 @@ def _toc_page(pdf, entries):
             pdf.set_line_width(0.2)
             pdf.line(x, y + 11.5, PW - pdf.r_margin, y + 11.5)
         pdf.set_y(y + 13.5)
+    _page_tail_accent(pdf, min_remaining=40)
 
 
 # ---------- Intuitionstyp ----------
@@ -1223,6 +1285,7 @@ def _intuition(pdf, it):
     if it.get("note"):
         pdf.ln(1)
         _para(pdf, it["note"], size=8.5, color=MUTE, h=4.6, after=0)
+    _page_tail_accent(pdf)
 
 
 # ---------- Deutung als ein Kapitel mit aufgeklappten Abschnitten ----------
@@ -1291,6 +1354,7 @@ def _deutung(pdf, sections):
                 pdf.multi_cell((PW - pdf.l_margin - pdf.r_margin) * 0.58, 6, safe(str(vf)),
                                align="R", new_x=XPos.LMARGIN, new_y=YPos.NEXT)
                 pdf.ln(1)
+    _page_tail_accent(pdf)
 
 
 def _lifepath_emblem(pdf, num):
@@ -1371,6 +1435,7 @@ def _numerology(pdf, full):
     if num.get("note"):
         pdf.ln(2)
         _para(pdf, num["note"], size=8.5, color=MUTE, h=4.6, after=0)
+    _page_tail_accent(pdf)
 
 
 def _instagram(pdf, x, y, s, color):
@@ -1414,6 +1479,29 @@ def _signoff(pdf, cy):
         with pdf.local_context(fill_opacity=op):
             pdf.set_fill_color(*col)
             _circle(pdf, cx + dx, cy + dy, d, style="F")
+
+
+def _page_tail_accent(pdf, min_remaining=50.0):
+    """Setzt einen zarten Sternen-Akzent in die untere Haelfte einer Seite,
+    wenn dort viel Leerraum ist – im Stil der Abschlussseite."""
+    remaining = pdf.page_break_trigger - pdf.get_y()
+    if remaining < min_remaining:
+        return
+    cx = PW / 2.0
+    cy = min(pdf.get_y() + remaining * 0.5, pdf.page_break_trigger - 18)
+    with pdf.local_context(fill_opacity=0.06):
+        pdf.set_fill_color(*GOLD)
+        _circle(pdf, cx, cy, 62, style="F")
+    pdf.set_draw_color(*GOLD)
+    pdf.set_line_width(0.3)
+    with pdf.local_context(stroke_opacity=0.4):
+        pdf.line(cx - 32, cy, cx - 9, cy)
+        pdf.line(cx + 9, cy, cx + 32, cy)
+    _spark(pdf, cx, cy, 2.6, GOLD)
+    for dx, dy, r, col in [(-19, -6, 1.6, LILAC), (20, -5, 1.7, GOLD),
+                           (-12, 8, 1.3, LILAC2), (13, 8, 1.4, GOLD),
+                           (-44, 1, 1.3, GOLD), (44, 1, 1.3, LILAC)]:
+        _spark(pdf, cx + dx, cy + dy, r, col)
 
 
 def _closing(pdf, full):
