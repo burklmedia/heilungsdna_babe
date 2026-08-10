@@ -285,25 +285,15 @@ def _cover(pdf, birth, name):
             pdf.set_fill_color(*col)
             _circle(pdf, sx, sy, sd, style="F")
 
-    # Wortmarke oben (ohne Unterzeile)
-    pdf.set_xy(0, 30)
-    pdf.set_font("Vibes", "", 30)
-    pdf.set_text_color(*GOLD)
-    pdf.cell(PW, 12, safe("Intuition mit Herz"), align="C",
-             new_x=XPos.LMARGIN, new_y=YPos.NEXT)
-
-    # Sternenrad wie die Ladeanimation
-    _ritual_wheel(pdf, cx, 94.0, 40.0)
-
-    # Titelblock, zur Mitte gerueckt
-    pdf.set_xy(0, 150)
+    # Titelblock oben: Titel, Name, Geburtszeile – ueber dem Sternenrad
+    pdf.set_xy(0, 28)
     pdf.set_font("Cormo", "", 40)
     pdf.set_text_color(*INK_L)
     pdf.cell(PW, 14, safe("Dein kosmischer"), align="C", new_x=XPos.LMARGIN, new_y=YPos.NEXT)
     pdf.set_x(0)
     pdf.cell(PW, 14, safe("Bauplan"), align="C", new_x=XPos.LMARGIN, new_y=YPos.NEXT)
     if name:
-        pdf.ln(3)
+        pdf.ln(2)
         pdf.set_x(0)
         pdf.set_font("Vibes", "", 27)
         pdf.set_text_color(*GOLD)
@@ -320,7 +310,7 @@ def _cover(pdf, birth, name):
     if birth.get("place"):
         parts.append(str(birth["place"]))
     line = "  ·  ".join(parts)
-    py = pdf.get_y() + 10
+    py = pdf.get_y() + 6
     pdf.set_font("Mul", "", 10.5)
     tw = pdf.get_string_width(line)
     pill_w = min(PW - 2 * MX, tw + 26)
@@ -335,17 +325,27 @@ def _cover(pdf, birth, name):
     with pdf.local_context(char_spacing=0.5):
         pdf.cell(pill_w, pill_h, safe(line), align="C")
 
-    # Fusszeile mit Satz
+    # Sternenrad wie die Ladeanimation, unter dem Titel
+    _ritual_wheel(pdf, cx, 152.0, 40.0)
+
+    # Spruch, sauber in Zeilen gesetzt (nicht abgeschnitten)
     pdf.set_fill_color(*GOLD)
     with pdf.local_context(fill_opacity=0.55):
-        pdf.rect(MX, 250, PW - 2 * MX, 0.3, style="F")
-    pdf.set_xy(MX, 256)
-    pdf.set_font("Cormo", "I", 14)
+        pdf.rect(cx - 24, 216, 48, 0.3, style="F")
+    pdf.set_xy(MX, 224)
+    pdf.set_font("Cormo", "I", 15)
     pdf.set_text_color(*INK_L)
-    pdf.multi_cell(PW - 2 * MX, 6.5,
-                   safe("Du musst nichts an dir reparieren. Auf den nächsten Seiten "
-                        "liest du nur noch, wie du gemeint bist."),
+    pdf.multi_cell(PW - 2 * MX, 7.4,
+                   safe("Du musst nichts an dir reparieren.\n"
+                        "Auf den nächsten Seiten liest du nur noch,\nwie du gemeint bist."),
                    align="C", new_x=XPos.LMARGIN, new_y=YPos.NEXT)
+
+    # Wortmarke ganz unten, wie auf den anderen Seiten – unter dem Spruch
+    pdf.set_xy(0, 262)
+    pdf.set_font("Vibes", "", 26)
+    pdf.set_text_color(*GOLD)
+    pdf.cell(PW, 10, safe("Intuition mit Herz"), align="C",
+             new_x=XPos.LMARGIN, new_y=YPos.NEXT)
 
 
 def _factrow(pdf, teaser, hd, y):
@@ -904,25 +904,40 @@ def _natalchart(pdf, full):
         def qv(k):
             p = by.get(k)
             return (p["sign"] + " " + p["deg"]) if p else "…"
-        cw = PW - pdf.l_margin - pdf.r_margin
-        pairs = [("Sonne", qv("Sonne")), ("Mond", qv("Mond")),
-                 ("Aszendent", qv("AC")), ("Deszendent", qv("DC"))]
-        for i in range(0, len(pairs), 2):
-            y0 = pdf.get_y()
-            for j in range(2):
-                if i + j >= len(pairs):
-                    break
-                lab, val = pairs[i + j]
-                x = pdf.l_margin + j * (cw / 2)
-                pdf.set_xy(x, y0)
-                pdf.set_font("Mul", "", 8)
-                pdf.set_text_color(*INK_SOFT)
-                pdf.cell(cw / 4, 6, safe(lab.upper()))
-                pdf.set_xy(x + cw / 4, y0)
-                pdf.set_font("Cormo", "", 13)
-                pdf.set_text_color(*LILAC)
-                pdf.cell(cw / 4 - 4, 6, safe(val))
-            pdf.ln(7)
+        # Eine Leerzeile unter dem Rad, dann die Werte untereinander in
+        # einer zentrierten Karte.
+        pdf.ln(6)
+        rows = [("Sonne", qv("Sonne")), ("Mond", qv("Mond")),
+                ("Aszendent", qv("AC")), ("Deszendent", qv("DC"))]
+        card_w = 122.0
+        card_x = (PW - card_w) / 2.0
+        pad = 8.0
+        row_h = 11.0
+        card_h = pad * 2 + row_h * len(rows)
+        cyc = pdf.get_y()
+        pdf.set_fill_color(*CARD)
+        pdf.set_draw_color(*LILAC)
+        pdf.set_line_width(0.3)
+        _round_rect(pdf, card_x, cyc, card_w, card_h, 4.0, style="DF", border_opacity=0.32)
+        pdf.set_fill_color(*GOLD2)
+        pdf.rect(card_x, cyc, 1.4, card_h, style="F")
+        for i, (lab, val) in enumerate(rows):
+            ry = cyc + pad + i * row_h
+            pdf.set_xy(card_x + pad + 2, ry)
+            pdf.set_font("Mul", "", 8.5)
+            pdf.set_text_color(*INK_SOFT)
+            with pdf.local_context(char_spacing=0.6):
+                pdf.cell(card_w * 0.42, row_h - 4, safe(lab.upper()))
+            pdf.set_xy(card_x + card_w * 0.42, ry)
+            pdf.set_font("Cormo", "", 15)
+            pdf.set_text_color(*LILAC)
+            pdf.cell(card_w * 0.58 - pad - 2, row_h - 4, safe(val), align="R")
+            if i < len(rows) - 1:
+                with pdf.local_context(stroke_opacity=0.18):
+                    pdf.set_draw_color(*LILAC)
+                    pdf.set_line_width(0.2)
+                    pdf.line(card_x + pad, ry + row_h - 2, card_x + card_w - pad, ry + row_h - 2)
+        pdf.set_y(cyc + card_h)
     else:
         _para(pdf, "Für das Horoskop-Rad brauchen wir deine Geburtszeit. Die Positionen "
                    "von Sonne, Mond und den Planeten liest du trotzdem gleich.",
@@ -1053,7 +1068,9 @@ def _deutung(pdf, sections):
           size=10.5, color=BODY_DK, h=6, after=3)
     for i, s in enumerate(sections):
         nr = ("0" + str(i + 1))[-2:]
-        _keep(pdf, 34)
+        # Genug Platz halten, damit Nummer, Titel und der Anfang zusammenbleiben
+        # und keine Ueberschrift einsam am Seitenende haengt.
+        _keep(pdf, 52)
         pdf.ln(3)
         pdf.set_draw_color(*LINE_CREAM)
         pdf.set_line_width(0.2)
