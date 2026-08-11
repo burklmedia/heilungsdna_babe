@@ -205,6 +205,16 @@ CENTER_INFO = {
                "jemand anderen mit? Lass die los, die nicht zu dir gehört.",
         "gift": "eine eigene, verlässliche Inspiration",
         "shadow": "das Zerdenken von Fragen, die gar nicht deine sind",
+        "says_def": "Dass in dir eine eigene Quelle für Inspiration sprudelt. Deine Gedanken und "
+                    "Ideen kommen aus dir selbst, in ihrem ganz eigenen Takt, und du musst nicht "
+                    "warten, bis dich jemand von außen anstößt. Menschen in deiner Nähe fangen oft an, "
+                    "größer und freier zu denken, ganz ohne dass du es merkst. Du bist ein stiller "
+                    "Funke für andere.",
+        "says_open": "Dass du ein neugieriger, offener Geist bist, der die Fragen der ganzen Welt in "
+                     "sich aufnimmt. Das ist eine Gabe, kein Defekt. Nur trägst du oft Denklasten mit "
+                     "dir herum, die gar nicht deine sind, und liegst nachts wach über Problemen, die "
+                     "sich am Morgen längst von selbst gelöst haben. Wenn du erkennst, welche Frage "
+                     "wirklich zu dir gehört, wird aus dem ewigen Grübeln eine echte, ruhige Weisheit.",
     },
     "Ajna": {
         "theme": "Denken und Verstehen",
@@ -216,6 +226,17 @@ CENTER_INFO = {
                "ist Weisheit, kein Makel.",
         "gift": "klare, verlässliche Überzeugungen",
         "shadow": "die Unsicherheit hinter vorgespielter Sicherheit",
+        "says_def": "Dass du innerlich einen festen Standpunkt hast, an dem sich andere festhalten "
+                    "können. In einer Welt voller schwankender Meinungen bist du der ruhige Pol, der "
+                    "weiß, was er denkt. Das gibt den Menschen um dich herum Halt und Sicherheit. Deine "
+                    "einzige Achtsamkeit: Lass deine Festigkeit nicht zur Sturheit werden, bleib "
+                    "bewusst offen für einen neuen Blickwinkel.",
+        "says_open": "Dass du kein sturer Kopf bist, sondern ein wunderbar beweglicher. Du kannst dich "
+                     "in die verschiedensten Sichtweisen hineindenken, das macht dich klug, offen und "
+                     "verständnisvoll. Der Preis dafür: Du fühlst dich innerlich oft unsicher und "
+                     "spielst dann nach außen Gewissheit vor, um nicht angreifbar zu sein. Du darfst "
+                     "ehrlich sagen: Ich weiß es noch nicht. Genau in dieser Offenheit reift deine "
+                     "Weisheit.",
     },
     "Kehle": {
         "theme": "Ausdruck und Manifestation",
@@ -227,6 +248,16 @@ CENTER_INFO = {
                "Wort echtes Gewicht.",
         "gift": "eine klare, tragende Stimme",
         "shadow": "das Reden aus Druck oder für Anerkennung",
+        "says_def": "Dass deine Stimme Gewicht hat. Wenn du etwas sagst, dann sitzt es, weil hinter "
+                    "deinen Worten etwas Festes steht. Du hast eine verlässliche Art, deine Gedanken "
+                    "in Worte zu fassen und Dinge in die Welt zu bringen. Menschen hören dir zu, weil "
+                    "sie spüren, dass du meinst, was du sagst. Vertrau darauf und red nicht lange "
+                    "drumherum.",
+        "says_open": "Dass du ein feines Gespür dafür hast, was in einem Raum gerade gesagt werden "
+                     "will. Deine Worte sind nicht immer gleich, sie passen sich an, und das ist eine "
+                     "Kunst, keine Schwäche. Nur gerätst du manchmal unter Druck, unbedingt etwas "
+                     "sagen zu müssen, um dazuzugehören, und fühlst dich danach unwohl. Deine "
+                     "stärksten Worte kommen, wenn man dich wirklich fragt. Dann wirst du gehört.",
     },
     "G": {
         "theme": "Identität, Liebe und Richtung",
@@ -238,6 +269,18 @@ CENTER_INFO = {
                "einfach die Umgebung, in der du dich am meisten nach dir selbst anfühlst.",
         "gift": "ein festes Gefühl für dich und deine Richtung",
         "shadow": "die Suche nach dir selbst im Außen",
+        "says_def": "Dass du einen inneren Kompass trägst, der auch dann nicht verlorengeht, wenn der "
+                    "Weg gerade unklar ist. Im tiefsten Kern weißt du, wer du bist und wohin du "
+                    "gehörst. Diese innere Konstante ist ein großes Geschenk, nach dem viele Menschen "
+                    "ihr Leben lang suchen. Du trägst sie schon in dir. Vertrau ihr, gerade wenn "
+                    "draußen alles wackelt.",
+        "says_open": "Dass du ein wandlungsfähiger Mensch bist, der sich über Orte und Beziehungen "
+                     "immer wieder neu erlebt, mal so, mal ganz anders. Das ist keine "
+                     "Identitätsschwäche, das ist eine seltene Beweglichkeit. Deine große Lebenslektion: "
+                     "Der richtige Ort verändert alles für dich. An den falschen Plätzen und neben den "
+                     "falschen Menschen verlierst du dich, an den richtigen findest du nach Hause. "
+                     "Wähle deine Umgebung mit größter Sorgfalt, sie formt dich mehr als bei jedem "
+                     "anderen.",
     },
     "Herz": {
         "theme": "Willenskraft und Selbstwert",
@@ -249,6 +292,16 @@ CENTER_INFO = {
                "einfach da.",
         "gift": "eine echte, verlässliche Willenskraft",
         "shadow": "das ständige Sich-beweisen-Müssen",
+        "says_def": "Dass du dir etwas vornehmen und es auch wirklich durchziehen kannst. Dein Wille "
+                    "ist verlässlich, dein Wort gilt, und tief in dir weißt du um deinen eigenen Wert, "
+                    "ohne ihn jedem beweisen zu müssen. Das ist eine seltene innere Stärke. Achte nur "
+                    "darauf, dich nicht ständig zu überfordern, nur weil du so viel tragen kannst.",
+        "says_open": "Dass du ein Mensch bist, dessen Wert nicht an Leistung hängt, auch wenn du oft "
+                     "trotzdem versuchst, es zu beweisen. Du kennst dieses Gefühl gut: dich zeigen "
+                     "müssen, mehr versprechen als guttut, immer wieder belegen, dass du genug bist. "
+                     "Aber hör kurz zu: Du bist längst genug. Dein Wert stand nie zur Debatte und "
+                     "hängt an keiner einzigen Bedingung. Du darfst aufhören zu kämpfen und dich "
+                     "einfach ausruhen.",
     },
     "Milz": {
         "theme": "Intuition, Gesundheit und Instinkt",
@@ -260,6 +313,17 @@ CENTER_INFO = {
                "sicher, loszulassen.",
         "gift": "ein feiner, gesunder Instinkt",
         "shadow": "das Festhalten aus Angst",
+        "says_def": "Dass du einen leisen, verlässlichen Wächter in dir trägst, der im Hier und Jetzt "
+                    "genau weiß, was dir guttut und was nicht. Ein feines Körperwissen, das dich "
+                    "schützt, sobald du ihm zuhörst. Viele Menschen haben diesen ruhigen inneren "
+                    "Instinkt nicht und müssen alles mühsam erdenken. Du spürst es einfach. Trau "
+                    "dieser stillen, ersten Ahnung.",
+        "says_open": "Dass du ein feinfühliger Mensch bist, der die Stimmung, die Gesundheit und das "
+                     "Wohl anderer stark mitbekommt. Deine Herausforderung: Du hältst manchmal aus "
+                     "Angst an Dingen, Menschen oder Gewohnheiten fest, die dir längst nicht mehr "
+                     "guttun, nur weil das Vertraute sich sicherer anfühlt als das Loslassen. Aber "
+                     "vieles von dieser Angst ist gar nicht deine, du hast sie nur aufgenommen. Wenn "
+                     "du das erkennst, wirst du erstaunlich frei und mutig im Loslassen.",
     },
     "Sakral": {
         "theme": "Lebenskraft und Arbeitsenergie",
@@ -271,6 +335,17 @@ CENTER_INFO = {
                "sein.",
         "gift": "eine tiefe, tragende Lebenskraft",
         "shadow": "das Nicht-Spüren, wann genug ist",
+        "says_def": "Dass in dir ein kraftvoller, erneuerbarer Motor steckt. Wenn du das tust, was "
+                    "dich wirklich anzieht, kennst du kaum Müdigkeit, und diese Ausdauer ist ein "
+                    "Geschenk, um das viele dich beneiden. Deine einzige Aufgabe: auf dein klares Ja "
+                    "und Nein aus dem Bauch zu hören und dich nie zu Dingen zu zwingen, die dich "
+                    "auslaugen. Was dich anspringt, füllt dich. Was du dir abringst, leert dich.",
+        "says_open": "Dass du nicht dafür gebaut bist, wie eine Maschine durchzuarbeiten, und das ist "
+                     "völlig in Ordnung. Du hast keine gleichbleibende Arbeitsenergie, dafür aber eine "
+                     "besondere Weisheit über Energie selbst und darüber, wann etwas genug ist. Deine "
+                     "Lektion: rechtzeitig aufzuhören, statt dich bis zur Erschöpfung durchzuschleppen, "
+                     "nur um mitzuhalten. Du musst dich nicht leeren, um wertvoll zu sein. Ruhe ist bei "
+                     "dir kein Versagen, sie ist Teil deiner Natur.",
     },
     "Solarplexus": {
         "theme": "Emotionen und Gefühlswellen",
@@ -282,6 +357,18 @@ CENTER_INFO = {
                "kurz auf Abstand, dann klärt es sich.",
         "gift": "eine tiefe, echte Gefühlswelt",
         "shadow": "das Aufnehmen fremder Emotionen und das Meiden von Konflikt",
+        "says_def": "Dass du ein tief fühlender Mensch mit einem ganz eigenen emotionalen Rhythmus "
+                    "bist. Deine Gefühle kommen in Wellen, mal hoch, mal tief, und das ist deine "
+                    "normale, gesunde Art zu fühlen, kein Makel und keine Launenhaftigkeit. Deine "
+                    "Klarheit reift mit der Zeit, nie im Sturm. Triff darum nichts Wichtiges mitten in "
+                    "der Welle, sondern erst, wenn Ruhe eingekehrt ist. Dann trägt deine Entscheidung.",
+        "says_open": "Dass du ein außergewöhnlich empathischer Mensch bist, der die Gefühle im Raum "
+                     "aufnimmt wie ein Schwamm. Du spürst sofort, wie es anderen geht, oft bevor sie "
+                     "es selbst merken. Deine Herausforderung: Du hältst fremde Stimmungen schnell für "
+                     "deine eigenen und meidest Streit, nur um bloß die Harmonie zu wahren. Frag dich "
+                     "öfter ehrlich: Ist dieses Gefühl gerade wirklich meins? Und trau dich, auch das "
+                     "Unbequeme auszusprechen. Deine Feinfühligkeit ist eine Gabe, wenn du bei dir "
+                     "bleibst.",
     },
     "Wurzel": {
         "theme": "Antrieb, Druck und Stress",
@@ -293,6 +380,17 @@ CENTER_INFO = {
                "dir Zeit lassen.",
         "gift": "ein ruhiger, tragender Antrieb",
         "shadow": "das Hetzen, um den Druck loszuwerden",
+        "says_def": "Dass du mit Druck und Stress umgehen kannst, ohne dich davon jagen zu lassen. Du "
+                    "hast einen eigenen, gleichmäßigen Antrieb, der dich verlässlich in Bewegung "
+                    "hält. Wo andere unter Druck kopflos und hektisch werden, bleibst du in deinem "
+                    "Takt. Das ist eine stille, verlässliche Stärke, auf die sich auch die Menschen um "
+                    "dich herum stützen können.",
+        "says_open": "Dass du ein Mensch bist, der viel Energie aus dem Wunsch zieht, den Druck "
+                     "endlich loszuwerden, immer noch schnell dies, noch rasch das. Nur ist dieser "
+                     "Druck meistens geliehen, er gehört gar nicht dir, du hast ihn nur aufgenommen. "
+                     "Deine Lektion: Nichts muss sofort. Wenn du den fremden Druck bewusst herausnimmst "
+                     "und eins nach dem anderen machst, hört das ständige Gehetztsein auf, und du "
+                     "findest zu einer Ruhe, die dir vorher unmöglich schien.",
     },
 }
 
@@ -381,83 +479,148 @@ CHIRON_SIGN = {
               "tief fühlst, tröstest du andere allein durch deine Gegenwart.",
 }
 
+# Ein konkreter, liebevoller Tipp, wie man mit der jeweiligen Chiron-Wunde arbeitet.
+CHIRON_HEAL_TIP = {
+    "Widder": "Übe das Wollen in kleinen Dosen. Sag dir einmal am Tag, laut oder leise, was du gerade "
+              "möchtest, ganz ohne Rechtfertigung. Diese Wunde heilt nicht durch Nachdenken, sondern "
+              "indem du dir immer wieder erlaubst, Platz einzunehmen, bis es sich normal anfühlt. Sei "
+              "dabei geduldig mit dir, du lernst gerade etwas, das dir früh abtrainiert wurde.",
+    "Stier": "Erinnere dich täglich an deinen Wert jenseits von Leistung und Besitz. Leg abends eine "
+             "Hand aufs Herz und sag dir: Ich bin genug, einfach weil es mich gibt. Und übe, im Kleinen "
+             "zu genießen, was schon da ist, statt ständig mehr abzusichern. Jeder Moment echter "
+             "Ruhe ist ein Schritt der Heilung.",
+    "Zwillinge": "Fang klein an, deiner Stimme wieder zu trauen. Sprich einen Gedanken aus, den du "
+                 "sonst geschluckt hättest, auch wenn deine Stimme dabei zittert. Es muss nicht laut "
+                 "sein und nicht perfekt. Jedes Mal, wenn du dich hörbar machst, heilt ein Stück dieser "
+                 "alten Wunde, und du merkst: Deine Worte zählen doch.",
+    "Krebs": "Werde dir selbst zum sicheren Ort. Sorge einmal am Tag ganz bewusst für dich, so "
+             "liebevoll, wie du es sonst für andere tust. Diese Wunde heilt, wenn du die Geborgenheit, "
+             "die du überall im Außen gesucht hast, langsam in dir selbst aufbaust. Du darfst dein "
+             "eigenes Zuhause werden.",
+    "Löwe": "Zeig dich in kleinen Schritten, ohne auf Applaus zu warten. Tu etwas, das dir wirklich "
+            "Freude macht, und lass dich dabei sehen. Diese Wunde heilt, wenn dein Strahlen aus deiner "
+            "eigenen Freude kommt und nicht mehr von der Bestätigung anderer abhängt. Fang bei den "
+            "Menschen an, bei denen du dich sicher fühlst.",
+    "Jungfrau": "Übe, das Unfertige liebevoll anzunehmen. Sag dir, wenn der innere Kritiker anspringt: "
+                "Ich genüge schon jetzt, genau so. Behandle dich so nachsichtig, wie du einen guten "
+                "Freund behandeln würdest, der einen Fehler macht. Diese Wunde heilt in der "
+                "Sanftheit, nie im Perfektionieren.",
+    "Waage": "Übe, in der Nähe zu anderen bei dir selbst zu bleiben. Sprich eine ehrliche Meinung aus, "
+             "auch wenn sie unbequem ist und den Frieden kurz stört. Diese Wunde heilt, wenn du "
+             "erlebst: Eine echte Verbindung hält es aus, dass du du bist. Du musst dich nicht "
+             "kleinmachen, um geliebt zu werden.",
+    "Skorpion": "Übe, dem Wandel wieder zu vertrauen, erst mal in kleinen Dingen. Lass bewusst etwas "
+                "los, das du sonst festhältst, und schau, dass du es überlebst. Diese Wunde heilt, "
+                "wenn du erlebst, dass nach jedem Zerbrechen Raum für etwas Echteres entsteht. "
+                "Kontrolle war dein Schutz, Vertrauen wird deine Freiheit.",
+    "Schütze": "Such wieder nach dem, was sich von innen wahr anfühlt, statt nach übernommenen "
+               "Wahrheiten. Frag dich bei allem, was du glaubst: Ist das wirklich meins, oder wurde es "
+               "mir gesagt? Diese Wunde heilt, wenn du deiner eigenen inneren Richtung folgst und dir "
+               "erlaubst, wieder an etwas zu glauben, das dich von innen wärmt.",
+    "Steinbock": "Übe, dich auszuruhen, ohne schlechtes Gewissen. Erlaub dir, mal nichts zu leisten "
+                 "und trotzdem wertvoll zu sein. Diese Wunde heilt, wenn du im Körper spürst: Du musst "
+                 "dir Liebe nicht durch Erfolg verdienen. Fang mit kleinen Pausen an, in denen du "
+                 "einfach nur da sein darfst.",
+    "Wassermann": "Feiere dein Anderssein, statt es zu verstecken oder zu überspielen. Zeig dich genau "
+                  "da, wo du dich sonst fremd fühlst, und finde die Menschen, bei denen du nicht "
+                  "dazupassen musst. Diese Wunde heilt, wenn du begreifst: Genau dein anderer Blick "
+                  "ist dein Geschenk an die Welt, nicht dein Makel.",
+    "Fische": "Übe, dich sanft abzugrenzen, ohne dich dabei schuldig zu fühlen. Frag dich öfter: Ist "
+              "dieses Gefühl gerade meins, oder habe ich es aufgenommen? Und schenk dein großes "
+              "Mitgefühl zuerst dir selbst. Dann trägt es dich, statt dich zu erschöpfen. Grenzen sind "
+              "für dich keine Härte, sondern Selbstschutz.",
+}
+
 # Mondknoten-Achse (nach Nordknoten-Zeichen):
 #   higher = Higher Self (Nordknoten, wohin du wächst)
 #   lower  = Lower Self (Südknoten, dein vertrautes Rückfall-Muster)
 #   task   = Lebensaufgabe in einem Satz
-#   tools  = konkrete Impulse für den Alltag
+#   task_tip = konkreter Weg, wie man diese Lebensaufgabe erfüllt
+#   tools  = konkrete Impulse für den Alltag (5-6 pro Achse)
 NODE_AXIS = {
     "Widder": {
         "higher": "Du bist hier, um für dich selbst einzustehen. Um deine eigenen Impulse ernst zu nehmen und den Schritt nach vorn zu wagen, auch wenn ihn dir niemand abnimmt. Es geht darum, endlich du zu sein, laut und lebendig, statt immer die nette, angepasste Version.",
         "lower": "Dein vertrautes Muster ist Anpassung. Du willst gefallen, glättest jeden Konflikt und schaust zuerst, was die anderen brauchen. Wahrscheinlich hast du früh gelernt, dass du geliebt wirst, wenn du pflegeleicht bist. Das fühlt sich sicher an. Aber am Ende bist du für alle da, nur nicht für dich.",
         "task": "Deine Lebensaufgabe: dich selbst an die erste Stelle setzen, ohne schlechtes Gewissen.",
-        "tools": ["Frag dich bei Entscheidungen zuerst: Was will eigentlich ich?", "Übe kleine, klare Ansagen im Alltag, statt dich anzupassen und später innerlich zu grollen.", "Mach den ersten Schritt bewusst allein. Mut wächst im Tun."],
+        "task_tip": "Fang klein an. Du erfüllst diese Aufgabe nicht mit einem großen Befreiungsschlag, sondern in den vielen leisen Momenten, in denen du dich fragst „Und was will eigentlich ich?“ und dann danach handelst. Jedes ehrliche Nein zu anderen ist ein Ja zu dir. Je öfter du das übst, desto natürlicher fühlt es sich an, für dich selbst da zu sein.",
+        "tools": ["Frag dich bei Entscheidungen zuerst: Was will eigentlich ich?", "Übe kleine, klare Ansagen im Alltag, statt dich anzupassen und später innerlich zu grollen.", "Mach den ersten Schritt bewusst allein. Mut wächst im Tun.", "Sag einmal am Tag bewusst nein, ohne dich lang zu erklären.", "Merk dir Momente, in denen du dich übergangen fühlst, das sind deine Übungsfelder.", "Beweg deinen Körper, wenn Wut hochkommt, statt sie herunterzuschlucken."],
     },
     "Stier": {
         "higher": "Du wächst über Ruhe, Beständigkeit und Selbstwert. Du darfst deinem eigenen Tempo vertrauen, das Einfache genießen und Dinge bauen, die bleiben. Weniger Drama, mehr Boden unter den Füßen.",
         "lower": "Dein vertrautes Muster sucht Intensität, Krise und Kontrolle. Du hinterfragst alles bis auf den Grund und misstraust der Ruhe, als wäre sie nur die Stille vor dem Sturm. Diese Daueranspannung kennst du gut. Sie hat dich einmal beschützt. Heute erschöpft sie dich nur noch.",
         "task": "Deine Lebensaufgabe: spüren, dass Sicherheit und Genuss erlaubt sind und nicht erkämpft werden müssen.",
-        "tools": ["Bau dir feste kleine Routinen, die dir guttun.", "Wenn du ins Grübeln kippst, komm zurück in den Körper: Natur, Essen, Berührung.", "Vertrau darauf, dass etwas auch dann bleibt, wenn du es nicht kontrollierst."],
+        "task_tip": "Geh diesen Weg über deinen Körper, nicht über den Kopf. Deine Aufgabe erfüllt sich immer dann, wenn du innehältst und etwas einfach genießt, ohne es dir vorher verdienen zu müssen. Übe, in Ruhe auszuhalten, dass gerade nichts brennt und trotzdem alles gut ist. Genau in diesen stillen Momenten wächst du.",
+        "tools": ["Bau dir feste kleine Routinen, die dir guttun.", "Wenn du ins Grübeln kippst, komm zurück in den Körper: Natur, Essen, Berührung.", "Vertrau darauf, dass etwas auch dann bleibt, wenn du es nicht kontrollierst.", "Genieß bewusst eine Sache am Tag mit allen Sinnen, ganz ohne Ziel.", "Wenn Misstrauen hochkommt, frag dich: Ist die Gefahr echt oder nur ein alter Reflex?", "Bleib bei einer guten Sache, statt sie aus Unruhe zu zerreden."],
     },
     "Zwillinge": {
         "higher": "Du wächst über Neugier und Nähe im Alltag. Du bist hier, um Fragen zu stellen, wirklich zuzuhören und in den vielen kleinen Verbindungen präsent zu sein. Das Leben findet im Kleinen statt, direkt vor dir.",
         "lower": "Dein vertrautes Muster will recht haben und die große Wahrheit verkünden. Du weißt schon Bescheid, belehrst und überspringst das Detail. Vielleicht fühlst du dich sicherer, wenn du der bist, der die Antwort hat. Aber genau das entfernt dich vom echten Gegenüber.",
         "task": "Deine Lebensaufgabe: mehr fragen als dozieren und im Nahen ankommen.",
-        "tools": ["Stell echte Fragen und hör zu Ende zu, bevor du deine Meinung sagst.", "Sammle konkrete Fakten statt fertiger Überzeugungen.", "Pflege die kleinen Kontakte in deinem Alltag, dort liegt gerade dein Wachstum."],
+        "task_tip": "Übe dich zuerst im Zuhören, bevor du im Reden gut sein willst. Deine Aufgabe erfüllt sich in den kleinen, echten Gesprächen deines Alltags, wenn du wirklich neugierig bleibst, statt die Antwort schon zu kennen. Stell eine Frage mehr, als dir angenehm ist, und lass dich von der Antwort überraschen.",
+        "tools": ["Stell echte Fragen und hör zu Ende zu, bevor du deine Meinung sagst.", "Sammle konkrete Fakten statt fertiger Überzeugungen.", "Pflege die kleinen Kontakte in deinem Alltag, dort liegt gerade dein Wachstum.", "Frag heute jemanden etwas und frag dann noch einmal nach.", "Lass ein Gespräch offen enden, ohne das letzte Wort zu haben.", "Notier dir konkrete Beobachtungen aus deinem Tag statt großer Theorien."],
     },
     "Krebs": {
         "higher": "Du wächst über Gefühl und Nähe. Du darfst dich selbst nähren, verletzlich sein und dich anlehnen. Du musst nicht die Starke sein, die alles allein trägt.",
         "lower": "Dein vertrautes Muster greift zu Kontrolle, Pflicht und Härte gegen dich selbst. Du trägst alles allein und organisierst deine Gefühle weg, weil du gelernt hast, dass Schwäche gefährlich ist. Diese Rüstung ist schwer. Und einsam.",
         "task": "Deine Lebensaufgabe: dich lehnen und fühlen dürfen, ohne die Kontrolle zu verlieren.",
-        "tools": ["Frag dich öfter: Wie geht es mir gerade? statt: Was muss ich noch leisten?", "Lass Nähe zu und bitte um Hilfe, auch wenn es ungewohnt ist.", "Gönn dir Fürsorge, ohne sie dir erst zu verdienen."],
+        "task_tip": "Diese Aufgabe erfüllst du nicht durch mehr Leisten, sondern durch mehr Zulassen. Fang damit an, dich selbst zu fragen, wie es dir gerade wirklich geht, bevor du für alle anderen sorgst. Jedes Mal, wenn du Hilfe annimmst, statt alles allein zu tragen, kommst du deiner Aufgabe ein Stück näher.",
+        "tools": ["Frag dich öfter: Wie geht es mir gerade? statt: Was muss ich noch leisten?", "Lass Nähe zu und bitte um Hilfe, auch wenn es ungewohnt ist.", "Gönn dir Fürsorge, ohne sie dir erst zu verdienen.", "Erlaub dir einmal am Tag, verletzlich zu sein statt stark.", "Sag jemandem ehrlich, wie es dir geht, ohne es abzuschwächen.", "Wenn du in Kontrolle kippst, atme und frag: Was fühle ich gerade?"],
     },
     "Löwe": {
         "higher": "Du wächst über Sichtbarkeit und Herz. Du bist hier, um aus dir heraus zu schaffen, Freude auszudrücken und deine eigene Bühne einzunehmen. Dein Strahlen darf gesehen werden.",
         "lower": "Dein vertrautes Muster versteckt dich in der Gruppe. Du bleibst cool, distanziert und willst bloß nicht auffallen. Vielleicht ist es dir sicherer, einer von vielen zu sein, als dich einzeln zu zeigen und vielleicht abgelehnt zu werden. Aber im Verstecken verkümmert dein Herz.",
         "task": "Deine Lebensaufgabe: dich zeigen und dein Herz sprechen lassen, auch wenn es sich exponiert anfühlt.",
-        "tools": ["Erlaub dir, im Mittelpunkt zu stehen, statt dich hinter dem Wir zu verstecken.", "Schaff etwas, das wirklich von dir kommt, und zeig es.", "Sag öfter ich statt man, vor allem bei deinen Wünschen."],
+        "task_tip": "Deine Aufgabe wächst mit jedem kleinen Mut, sichtbar zu sein. Warte nicht, bis du dich sicher genug fühlst, das Gefühl kommt erst durch das Tun. Zeig etwas von dir, auch wenn dein Herz dabei klopft. Genau in diesen Momenten wirst du zu dem Menschen, der du sein sollst.",
+        "tools": ["Erlaub dir, im Mittelpunkt zu stehen, statt dich hinter dem Wir zu verstecken.", "Schaff etwas, das wirklich von dir kommt, und zeig es.", "Sag öfter ich statt man, vor allem bei deinen Wünschen.", "Teil heute etwas, das von Herzen von dir kommt, mit einem Menschen.", "Nimm ein Kompliment an, ohne es kleinzureden.", "Tu etwas, das dir Freude macht, ganz ohne Nutzen."],
     },
     "Jungfrau": {
         "higher": "Du wächst über Struktur und geerdete Fürsorge. Du darfst im Alltag ankommen, dir mit klaren, kleinen Schritten helfen und im Konkreten wirken. Ordnung im Außen bringt Ruhe in dein Innen.",
         "lower": "Dein vertrautes Muster verliert sich, flüchtet oder lässt sich treiben. Grenzen verschwimmen, und du rutschst schnell in das Gefühl, dass das Leben einfach mit dir passiert. Der Rückzug ins Diffuse fühlt sich weich an. Aber er hält dich davon ab, dein Leben wirklich anzupacken.",
         "task": "Deine Lebensaufgabe: im Alltag ankommen und dir mit klaren Schritten selbst helfen.",
-        "tools": ["Bring Ordnung in eine kleine Ecke deines Lebens, das erdet dich sofort.", "Setz klare Grenzen, statt in allem zu verschwimmen.", "Kümmere dich konkret um deinen Körper und deinen Alltag, Schritt für Schritt."],
+        "task_tip": "Diese Aufgabe erfüllt sich im Konkreten, nicht im großen Plan. Nimm dir eine kleine Sache vor und bring sie zu Ende, das erdet dich mehr als jede gute Absicht. Kümmere dich Schritt für Schritt um deinen Körper, deinen Raum, deinen Tag. Ordnung im Kleinen bringt Ruhe ins Große.",
+        "tools": ["Bring Ordnung in eine kleine Ecke deines Lebens, das erdet dich sofort.", "Setz klare Grenzen, statt in allem zu verschwimmen.", "Kümmere dich konkret um deinen Körper und deinen Alltag, Schritt für Schritt.", "Bring heute eine einzige Sache zu Ende, egal wie klein.", "Sorg konkret für deinen Körper: Wasser, Schlaf, Bewegung.", "Wenn du dich verlierst, mach eine kleine, greifbare Aufgabe."],
     },
     "Waage": {
         "higher": "Du wächst über Beziehung und Ausgleich. Du bist hier, um andere einzubeziehen, fair zu sein und gemeinsam zu gehen, statt alles allein zu stemmen. Verbindung macht dich nicht schwächer, sie macht dich reicher.",
         "lower": "Dein vertrautes Muster zieht alles im Alleingang durch. Du bist ungeduldig, gehst zu schnell vor und übergehst die anderen. Wahrscheinlich hast du gelernt, dass du dich auf niemanden verlassen kannst, außer auf dich. Das macht dich stark, aber auch sehr einsam.",
         "task": "Deine Lebensaufgabe: den anderen wirklich mitdenken und gemeinsam statt gegeneinander handeln.",
-        "tools": ["Hol dir vor Entscheidungen bewusst die Sicht des anderen ein.", "Übe Geduld, wenn dich der Impuls packt, sofort allein loszurennen.", "Such Kompromisse aktiv, statt sie als Niederlage zu sehen."],
+        "task_tip": "Deine Aufgabe erfüllt sich, sobald du andere wirklich mit an den Tisch holst, statt alles allein zu stemmen. Übe, um eine Meinung zu bitten, bevor du entscheidest, und auszuhalten, dass es dadurch langsamer geht. Verbindung ist hier dein Wachstum, nicht deine Schwäche.",
+        "tools": ["Hol dir vor Entscheidungen bewusst die Sicht des anderen ein.", "Übe Geduld, wenn dich der Impuls packt, sofort allein loszurennen.", "Such Kompromisse aktiv, statt sie als Niederlage zu sehen.", "Bitte heute jemanden um seine Sicht, bevor du entscheidest.", "Halt einmal inne, wenn du am liebsten sofort allein loslegst.", "Lass dir helfen und nimm die Hilfe wirklich an."],
     },
     "Skorpion": {
         "higher": "Du wächst über Tiefe und echte Verbindung. Du darfst dich einlassen, teilen, die Kontrolle loslassen und dich verwandeln. Erst wenn du dich wirklich zeigst, wird Nähe echt.",
         "lower": "Dein vertrautes Muster hält fest. An Besitz, an Gewohntem, an dem, was sicher ist. Veränderung fühlt sich teuer und bedrohlich an, also bleibst du lieber beim Bekannten, auch wenn es dich längst nicht mehr nährt. Diese Bequemlichkeit ist ein weiches Gefängnis.",
         "task": "Deine Lebensaufgabe: dich einlassen und loslassen, auch wenn es unbequem wird.",
-        "tools": ["Lass bewusst etwas los, an dem du aus Gewohnheit festhältst.", "Wag echte Tiefe, statt an der Oberfläche sicher zu bleiben.", "Frag dich: Halte ich das, weil es stimmt, oder nur, weil es vertraut ist?"],
+        "task_tip": "Diese Aufgabe erfüllt sich im bewussten Loslassen. Fang mit etwas Kleinem an, das du nur aus Gewohnheit festhältst, und lass es gehen. Jedes Mal, wenn du dem Wandel vertraust, statt festzuklammern, wirst du freier. Was echt ist, bleibt auch ohne deinen festen Griff.",
+        "tools": ["Lass bewusst etwas los, an dem du aus Gewohnheit festhältst.", "Wag echte Tiefe, statt an der Oberfläche sicher zu bleiben.", "Frag dich: Halte ich das, weil es stimmt, oder nur, weil es vertraut ist?", "Lass heute eine Kleinigkeit los, an der du hängst.", "Sag einem Menschen etwas Echtes, das du sonst für dich behältst.", "Vertrau darauf, dass nach einem Ende Platz für Neues entsteht."],
     },
     "Schütze": {
         "higher": "Du wächst über Sinn, Weite und Vertrauen. Du bist hier, um für deine eigene Wahrheit einzustehen und das große Bild zu sehen. Nicht jede Kleinigkeit muss belegt sein, manches darfst du einfach glauben.",
         "lower": "Dein vertrautes Muster verzettelt sich. Du sammelst alle Meinungen, bleibst an der Oberfläche und legst dich bloß nicht fest. Solange du dich nicht entscheidest, kann nichts schiefgehen, denkst du. Aber diese ständige Unverbindlichkeit lässt dich nie irgendwo ankommen.",
         "task": "Deine Lebensaufgabe: dich auf deine eigene Wahrheit festlegen und ihr folgen.",
-        "tools": ["Triff eine Entscheidung und bleib eine Weile dran, statt neu zu sammeln.", "Frag nach dem Warum hinter den Fakten, nicht nur nach mehr Fakten.", "Vertrau deiner inneren Richtung, auch ohne alle Informationen."],
+        "task_tip": "Deine Aufgabe erfüllst du, indem du dich entscheidest und dranbleibst, statt ewig weiterzusammeln. Wähl eine Richtung, die sich von innen richtig anfühlt, und geh sie eine Weile, auch ohne alle Informationen. Vertrauen wächst, wenn du dich festlegst, nicht davor.",
+        "tools": ["Triff eine Entscheidung und bleib eine Weile dran, statt neu zu sammeln.", "Frag nach dem Warum hinter den Fakten, nicht nur nach mehr Fakten.", "Vertrau deiner inneren Richtung, auch ohne alle Informationen.", "Triff heute eine Entscheidung, die du schon zu lange aufschiebst.", "Bleib eine Weile bei einer Sache, bevor du Neues suchst.", "Frag dich: Fühlt sich das von innen wahr an? und folge dem."],
     },
     "Steinbock": {
         "higher": "Du wächst über Verantwortung und Struktur. Du darfst erwachsen werden, dir sichtbare Ziele setzen und erwachsen und verlässlich für dich selbst sorgen. Du darfst dein Leben in die Hand nehmen.",
         "lower": "Dein vertrautes Muster macht dich klein und abhängig. Du verkriechst dich im Vertrauten und wartest leise, dass jemand kommt und es für dich löst. Vielleicht fühlt sich Verantwortung wie eine zu große Last an. Aber im Warten bleibst du in einer Rolle, die dir längst zu eng ist.",
         "task": "Deine Lebensaufgabe: selbst die verantwortliche, erwachsene Person in deinem Leben sein und deine Ziele ernst nehmen.",
-        "tools": ["Setz dir ein konkretes Ziel und geh es in kleinen, festen Schritten an.", "Übernimm Verantwortung für deine Lage, statt zu warten.", "Tröste dich selbst und mach dann den nächsten Schritt."],
+        "task_tip": "Diese Aufgabe erfüllst du, indem du aufhörst zu warten, dass jemand kommt und es für dich löst. Nimm eine Sache in deinem Leben ganz in die Hand, so klein sie auch ist. Setz dir ein echtes Ziel und geh den ersten Schritt. Du darfst dir selbst der verlässliche Erwachsene sein, den du dir früher gewünscht hättest.",
+        "tools": ["Setz dir ein konkretes Ziel und geh es in kleinen, festen Schritten an.", "Übernimm Verantwortung für deine Lage, statt zu warten.", "Tröste dich selbst und mach dann den nächsten Schritt.", "Übernimm heute für eine Sache selbst die volle Verantwortung.", "Mach den ersten kleinen Schritt auf ein Ziel zu, noch heute.", "Frag dich: Worauf warte ich gerade? und werde selbst aktiv."],
     },
     "Wassermann": {
         "higher": "Du wächst über Gemeinschaft und Freiheit. Du bist hier, um mit genau deinem Anderssein zu etwas Größerem beizutragen. Du gehörst dazu, ohne dich verbiegen zu müssen.",
         "lower": "Dein vertrautes Muster braucht Anerkennung und den Mittelpunkt. Es geht schnell um dich, um dein Bild, um die Frage, wie du dastehst. Wahrscheinlich hast du gelernt, dass du nur zählst, wenn du besonders bist. Aber dieser Hunger nach Applaus macht nie wirklich satt.",
         "task": "Deine Lebensaufgabe: Teil von etwas Größerem sein, ohne ständig gesehen werden zu müssen.",
-        "tools": ["Trag zu einer Sache bei, ohne auf Applaus zu warten.", "Freu dich am Erfolg anderer, statt ihn mit deinem zu vergleichen.", "Steh zu deinem Anderssein, es ist dein Beitrag, nicht dein Makel."],
+        "task_tip": "Deine Aufgabe erfüllt sich, sobald du etwas beiträgst, ohne auf Applaus zu schielen. Such dir eine Sache, die größer ist als du, und gib dich hinein. Die Erfüllung liegt nicht im Gesehenwerden, sondern im Dazugehören, ganz als der eigene Mensch, der du bist.",
+        "tools": ["Trag zu einer Sache bei, ohne auf Applaus zu warten.", "Freu dich am Erfolg anderer, statt ihn mit deinem zu vergleichen.", "Steh zu deinem Anderssein, es ist dein Beitrag, nicht dein Makel.", "Trag heute zu etwas bei, ohne dass es jemand mitbekommt.", "Freu dich ehrlich über den Erfolg eines anderen Menschen.", "Schließ dich einer Sache an, die größer ist als du."],
     },
     "Fische": {
         "higher": "Du wächst über Vertrauen und Mitgefühl. Du darfst loslassen, weich werden und dich mit etwas Größerem verbinden. Du musst nicht alles im Griff haben, um sicher zu sein.",
         "lower": "Dein vertrautes Muster perfektioniert und kontrolliert. Du verlierst dich in Kritik, Sorge und Analyse, weil dir das ein Gefühl von Kontrolle gibt. Solange du an allem arbeitest, kann dich nichts überraschen, glaubst du. Aber dieses ständige Anspannen raubt dir die Leichtigkeit.",
         "task": "Deine Lebensaufgabe: vertrauen und loslassen, statt alles kontrollieren zu wollen.",
-        "tools": ["Lass bewusst etwas unperfekt und schau, dass die Welt trotzdem trägt.", "Nimm dir Momente der Stille, in denen du nichts optimieren musst.", "Sei so sanft mit dir, wie du es mit einem lieben Menschen wärst."],
+        "task_tip": "Diese Aufgabe erfüllst du, indem du bewusst etwas unperfekt lässt und dann merkst: Die Welt trägt trotzdem. Übe, die Kontrolle für Momente aus der Hand zu geben und einfach zu vertrauen. Deine Weichheit ist keine Schwäche, sie ist dein Weg. Je öfter du loslässt, desto leichter wird dein Leben.",
+        "tools": ["Lass bewusst etwas unperfekt und schau, dass die Welt trotzdem trägt.", "Nimm dir Momente der Stille, in denen du nichts optimieren musst.", "Sei so sanft mit dir, wie du es mit einem lieben Menschen wärst.", "Lass heute bewusst eine Sache unfertig und beobachte, was passiert.", "Nimm dir zehn Minuten Stille, in denen nichts verbessert werden muss.", "Gib die Kontrolle über eine Kleinigkeit ab und vertrau darauf."],
     },
 }
 
@@ -1835,6 +1998,7 @@ def full_analysis(chart):
             "headline": f"Von {sk['sign']} nach {nk['sign']}",
             "body": _lifebody,
             "takeaway": axis.get("task", ""),
+            "tip": ("So gehst du deine Lebensaufgabe an", axis.get("task_tip", "")),
             "facts": [("Kommst du her von", f"{sk['sign']} {sk['text']}"),
                       ("Wächst du hin zu", f"{nk['sign']} {nk['text']}")],
         })
@@ -1861,6 +2025,7 @@ def full_analysis(chart):
                      "spürst du ihn bei anderen sofort. Du bist der Mensch, der einem anderen sagen "
                      "kann: Du bist genug. Und der es auch so meint. Deine Wunde und deine Gabe sind "
                      "dieselbe Stelle. Du heilst genau durch sie."),
+            "tip": ("So arbeitest du mit dieser Wunde", CHIRON_HEAL_TIP.get(chi["sign"], "")),
             "facts": facts,
         })
 
@@ -1970,6 +2135,7 @@ def full_analysis(chart):
             "tip": info.get("tip", ""),
             "gift": info.get("gift", ""),
             "shadow": info.get("shadow", ""),
+            "says": info.get("says_def", "") if is_def else info.get("says_open", ""),
         })
 
     houses = [{"nr": i, "title": HOUSE_TITLE[i], "meaning": HOUSE_MEANING.get(i, "")}

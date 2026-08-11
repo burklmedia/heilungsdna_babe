@@ -529,6 +529,8 @@
   .acc-b p { color: var(--ink-soft); font-size: 15px; line-height: 1.66; margin: 0 0 10px; max-width: 64ch; }
   .acc-b p:last-child { margin-bottom: 0; }
   .acc-take { margin-top: 12px; border-left: 2px solid var(--gold); background: rgba(245,197,107,.06); border-radius: 0 10px 10px 0; padding: 12px 16px; color: var(--ink); font-family: var(--serif); font-size: 16px; line-height: 1.5; }
+  .acc-tip { margin-top: 12px; border: 1px solid var(--line); background: rgba(201,164,255,.06); border-radius: 12px; padding: 14px 16px; color: var(--ink-soft); font-size: 14.5px; line-height: 1.62; }
+  .acc-tip-l { display: block; font-size: 10px; letter-spacing: .12em; text-transform: uppercase; color: var(--accent); margin-bottom: 6px; }
   .acc-facts { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
   .acc-facts span { font-size: 13px; color: var(--ink-soft); background: rgba(255,255,255,.03); border: 1px solid var(--line); border-radius: 8px; padding: 5px 11px; }
   /* Häuser-Übersicht */
@@ -1776,16 +1778,15 @@
   /* HD-Zentrum-Karte: geht in die Tiefe, was offen/definiert wirklich heißt */
   function hdCenterCard(c){
     var def=c.defined, theme=c.theme||c.meaning||'', detail=c.detail||'', tip=c.tip||'';
-    var gift=c.gift||'', shadow=c.shadow||'';
+    var gift=c.gift||'', shadow=c.shadow||'', says=c.says||'';
     var blocks='';
     blocks+='<div class="pblk"><span class="plbl">Was das bei dir bedeutet</span><div class="ptxt">'+esc(detail)+'</div></div>';
     if(def){
       blocks+='<div class="pblk"><span class="plbl">Was du damit machst</span><div class="ptxt">Vertrau dieser festen Energie und lebe sie sichtbar. Sie ist immer da, du musst sie nicht suchen. Andere dürfen sich an deiner Beständigkeit hier ausrichten.</div></div>';
-      if(gift) blocks+='<div class="pblk"><span class="plbl">Was es über dich aussagt</span><div class="ptxt">Das ist eine deiner verlässlichen Gaben: '+esc(gift)+'. Sie ist fest in dir verankert und trägt dich, auch wenn um dich herum alles wackelt.</div></div>';
     } else {
       if(tip) blocks+='<div class="pblk"><span class="plbl">Was du damit machst</span><div class="ptxt">'+esc(tip)+'</div></div>';
-      blocks+='<div class="pblk"><span class="plbl">Was es über dich aussagt</span><div class="ptxt">Offen heißt nicht schwach, offen heißt weise. Hier nimmst du feinfühlig wahr und lernst ein Leben lang dazu.'+(shadow?(' Pass nur auf '+esc(shadow)+'. Das ist nicht deins, das hast du nur aufgenommen.'):'')+'</div></div>';
     }
+    if(says) blocks+='<div class="pblk"><span class="plbl">Was es über dich aussagt</span><div class="ptxt">'+esc(says)+'</div></div>';
     var stateChip='<span class="pstate '+(def?'on':'off')+'">'+(def?'Definiert':'Offen')+'</span>';
     return '<div class="pcard big"><div class="ph">'+
       '<div class="pico">'+(def?'●':'○')+'</div>'+
@@ -1913,11 +1914,12 @@
         var paras=String(s.body||'').split('\n\n').map(function(p){return '<p>'+esc(p)+'</p>';}).join('');
         var lead=s.headline?'<div class="acc-lead">'+esc(s.headline)+'</div>':'';
         var take=s.takeaway?'<div class="acc-take">'+esc(s.takeaway)+'</div>':'';
+        var tip=(s.tip&&s.tip[1])?'<div class="acc-tip"><span class="acc-tip-l">'+esc(s.tip[0])+'</span>'+esc(s.tip[1])+'</div>':'';
         var facts=(s.facts&&s.facts.length)?'<div class="acc-facts">'+s.facts.map(function(ft){return '<span><strong>'+esc(ft[0])+':</strong> '+esc(ft[1])+'</span>';}).join('')+'</div>':'';
         var sub=s.subtitle?'<small>'+esc(s.subtitle)+'</small>':'';
         return '<details class="acc" name="deut">'+
           '<summary class="acc-h"><span class="acc-nr">'+nr+'</span><span class="acc-t">'+esc(s.title)+sub+'</span><span class="acc-x">+</span></summary>'+
-          '<div class="acc-b">'+lead+paras+take+facts+'</div></details>';
+          '<div class="acc-b">'+lead+paras+take+tip+facts+'</div></details>';
       }).join('')+'</div>'+
       '<div class="closing">'+esc(f.closing)+'</div>';
 
