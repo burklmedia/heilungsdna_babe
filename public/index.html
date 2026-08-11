@@ -1778,11 +1778,11 @@
   /* HD-Zentrum-Karte: geht in die Tiefe, was offen/definiert wirklich heißt */
   function hdCenterCard(c){
     var def=c.defined, theme=c.theme||c.meaning||'', detail=c.detail||'', tip=c.tip||'';
-    var gift=c.gift||'', shadow=c.shadow||'', says=c.says||'';
+    var gift=c.gift||'', shadow=c.shadow||'', says=c.says||'', useDef=c.use_def||'';
     var blocks='';
     blocks+='<div class="pblk"><span class="plbl">Was das bei dir bedeutet</span><div class="ptxt">'+esc(detail)+'</div></div>';
     if(def){
-      blocks+='<div class="pblk"><span class="plbl">Was du damit machst</span><div class="ptxt">Vertrau dieser festen Energie und lebe sie sichtbar. Sie ist immer da, du musst sie nicht suchen. Andere dürfen sich an deiner Beständigkeit hier ausrichten.</div></div>';
+      blocks+='<div class="pblk"><span class="plbl">Was du damit machst</span><div class="ptxt">'+esc(useDef||'Vertrau dieser festen Energie und lebe sie sichtbar. Sie ist immer da, du musst sie nicht suchen.')+'</div></div>';
     } else {
       if(tip) blocks+='<div class="pblk"><span class="plbl">Was du damit machst</span><div class="ptxt">'+esc(tip)+'</div></div>';
     }

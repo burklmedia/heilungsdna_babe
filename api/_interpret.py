@@ -103,6 +103,22 @@ AUTHORITY_INFO = {
         "dir deine Richtung.",
 }
 
+# Autorität in einer Form, die sich sauber mitten in einen Satz einfügt.
+# (Reines .lower() würde das Substantiv "Autorität" fälschlich kleinschreiben.)
+AUTHORITY_PHRASE = {
+    "Emotionale Autorität": "emotionale Autorität",
+    "Sakrale Autorität": "sakrale Autorität",
+    "Milz-Autorität (Splenisch)": "Milz-Autorität",
+    "Ego-/Herz-Autorität": "Herz-Autorität",
+    "Selbst-projizierte Autorität": "selbst-projizierte Autorität",
+    "Mond-Autorität (Reflektor)": "Mond-Autorität",
+    "Mentale Autorität (Umgebung)": "mentale Autorität",
+}
+
+def auth_phrase(auth):
+    """Autorität, klein eingebettet in einen Fließsatz, aber grammatisch korrekt."""
+    return AUTHORITY_PHRASE.get(auth, auth)
+
 PROFILE_LINES = {
     1: "Fundament", 2: "Rückzug", 3: "Erfahrung",
     4: "Netzwerk", 5: "Lösung", 6: "Vorbild",
@@ -149,6 +165,33 @@ CENTER_MEANING = {
     "Herz": "Willenskraft und Selbstwert", "Milz": "Intuition, Gesundheit und Instinkt",
     "Sakral": "Lebenskraft und Arbeitsenergie", "Solarplexus": "Emotionen und Gefühlswellen",
     "Wurzel": "Antrieb, Druck und Stress",
+}
+
+# "Was du damit machst" für ein DEFINIERTES Zentrum, je Zentrum konkret.
+# (Für offene Zentren dient das jeweilige "tip"-Feld aus CENTER_INFO als Handlung.)
+CENTER_USE_DEF = {
+    "Kopf": "Vertrau deinen eigenen Fragen und Ideen und teile sie ruhig. Du musst sie nicht "
+            "rechtfertigen, sie stecken andere ganz von selbst an. Lass dir von außen keine fremden "
+            "Denkaufgaben aufdrücken, du hast genug eigene.",
+    "Ajna": "Steh zu deiner Meinung und sprich sie klar aus, sie gibt anderen Halt. Bleib dabei "
+            "bewusst neugierig auf andere Blickwinkel, damit aus deiner Festigkeit nie Sturheit wird.",
+    "Kehle": "Sprich, wenn du wirklich etwas zu sagen hast, und red nicht lange drumherum. Deine "
+             "Worte tragen. Nutze diese Stimme bewusst, statt sie mit ständigem Reden zu verbrauchen.",
+    "G": "Folge deinem inneren Kompass, auch wenn andere zweifeln. Im Kern weißt du, wer du bist und "
+         "wohin du willst. Triff deine Richtungsentscheidungen aus diesem Gefühl heraus, nicht nach "
+         "der Meinung anderer.",
+    "Herz": "Setz deine Willenskraft gezielt für das ein, was dir wirklich wichtig ist, und halte "
+            "deine Versprechen. Pass nur auf, dich nicht ständig zu überfordern, nur weil du so viel "
+            "durchziehen kannst. Gönn dir auch Ruhe.",
+    "Milz": "Hör auf dein erstes, leises Bauchgefühl, es ist meist richtig. Handle im Moment danach, "
+            "statt es lange zu zerdenken. Dieser Instinkt schützt dich, wenn du ihm vertraust.",
+    "Sakral": "Setz deine Energie für das ein, was dich wirklich anzieht, und hör bei einem klaren "
+              "Nein aus dem Bauch auf. So bleibt deine Kraft erhalten. Zwing dich zu nichts, das dich "
+              "innerlich leer macht.",
+    "Solarplexus": "Gib deinen Gefühlen Zeit und triff Wichtiges nie mitten in der Welle. Schlaf über "
+                   "Entscheidungen und warte, bis Ruhe einkehrt. Dann ist deine Klarheit da.",
+    "Wurzel": "Nutze deinen inneren Antrieb, um Dinge Schritt für Schritt anzugehen, ohne dich hetzen "
+              "zu lassen. Du kannst Druck in ruhige Bewegung verwandeln, das ist deine stille Stärke.",
 }
 
 # Was definiert und offen wirklich bedeuten, je Zentrum.
@@ -1799,6 +1842,8 @@ def full_analysis(chart):
                  "Melodie zu leben, die gar nicht deine ist.\n\nWenn du deiner eigenen Art vertraust, "
                  "ändert sich etwas Leises, aber Tiefes. Das Leben fühlt sich weniger nach Widerstand "
                  "an. Es fängt an, dich zu tragen."),
+        "takeaway": ("Das Wichtigste zuerst: Deine Strategie ist " + t.get("strategy", "").lower()
+                     + ". Vertrau ihr, dann fühlt sich das Leben weniger nach Kampf an."),
         "facts": [
             ("Strategie", t.get("strategy", "")),
             ("Innere Autorität", hd["authority"]),
@@ -1817,6 +1862,8 @@ def full_analysis(chart):
                  "Sie hat versucht, mit dir zu reden.\n\nDein Kopf ist ein guter Berater. Aber er "
                  "sollte nicht am Ende entscheiden. Wenn du dieser tieferen Stimme wieder traust, "
                  "hörst du auf, gegen dich selbst zu leben."),
+        "takeaway": ("Merk dir das: Entscheide über deine " + auth_phrase(hd["authority"]) + ", nicht "
+                     "über den Kopf. Dann lebst du nicht mehr gegen dich selbst."),
         "facts": [],
     })
     sections.append({
@@ -1829,6 +1876,8 @@ def full_analysis(chart):
                  + "\n\nVielleicht erkennst du dich in beiden Seiten wieder. Und du hast dich manchmal "
                  "gefragt, warum du so widersprüchlich sein kannst. Das ist kein Widerspruch. Das ist "
                  "dein Design. Wenn du beide Seiten in dir sein lässt, wirst du ganz."),
+        "takeaway": ("Am Ende gilt: Du darfst beide Seiten deines Profils sein. Erst zusammen ergeben "
+                     "sie dich ganz."),
         "facts": [("Definition", hd["definition"]),
                   ("Definierte Zentren", ", ".join(hd["defined_centers"]) or "keine")],
     })
@@ -1849,6 +1898,9 @@ def full_analysis(chart):
                  "verstehst, welche Räume bei dir offen sind, ist das oft ein echter Befreiungsmoment. "
                  "Du merkst: Vieles, was du für dein Problem gehalten hast, war nie deins. Du hast es "
                  "nur aufgenommen."),
+        "takeaway": ("Kurz gesagt: Deine definierten Zentren sind dein fester Halt, deine offenen "
+                     "deine Lernräume. Vieles, was du für dein Problem hieltest, hast du nur "
+                     "aufgenommen."),
         "facts": [("Definiert", ", ".join(defined) or "keine"),
                   ("Offen", ", ".join(open_c) or "keine")],
     })
@@ -1870,13 +1922,13 @@ def full_analysis(chart):
         "body": ("Zwei Dinge zusammen ergeben deinen sichersten Weg zu jeder Entscheidung.\n\n"
                  f"Der erste Schritt ist deine Strategie: {strat.lower()}. So kommst du überhaupt "
                  "erst mit dem Richtigen in Berührung.\n\n"
-                 f"Der zweite Schritt ist deine innere Autorität, deine {auth.lower()}. Sie sagt dir, "
+                 f"Der zweite Schritt ist deine innere Autorität, deine {auth_phrase(auth)}. Sie sagt dir, "
                  "ob ein Ja auch wirklich deins ist.\n\n"
                  "Erinnerst du dich, wie oft du schnell aus dem Kopf entschieden und dich danach "
                  "gefragt hast, warum sich alles falsch anfühlt? In dieser Reihenfolge kann dir das "
                  "nicht mehr passieren. Erst in Berührung kommen, dann von innen prüfen, und du "
                  "triffst Entscheidungen, die du nicht mehr bereust."),
-        "takeaway": f"Kurz gesagt: {strat}. Und dann ehrlich auf deine {auth} hören.",
+        "takeaway": f"Dein roter Faden: {strat}. Und dann ehrlich auf deine {auth} hören.",
         "facts": [("Strategie", strat), ("Autorität", auth)],
     })
 
@@ -1894,6 +1946,8 @@ def full_analysis(chart):
                  "Aus deinem Human Design: Deine Signatur im Flow ist " + sig.lower() + ". Immer wenn "
                  "du die in dir spürst, bist du genau richtig unterwegs." + staerken_ext + "\n\n"
                  "Deine feste Basis:" + staerken_basis),
+        "takeaway": ("Vergiss das nie: Deine größten Gaben fühlen sich für dich selbstverständlich an. "
+                     "Genau deshalb übersiehst du sie. Fang an, sie bewusst zu leben."),
         "facts": [("Sonne", sun_sign), ("Signatur", sig)],
     })
 
@@ -1911,10 +1965,10 @@ def full_analysis(chart):
                  + heraus_open + "\n\n"
                  "Und wie du sie meisterst: Frag dich immer wieder ehrlich, ob ein Gefühl gerade "
                  "wirklich deins ist oder nur aufgenommen. Geh raus aus Räumen und Gesprächen, die "
-                 "dich leer machen. Und entscheide über deine " + auth.lower() + ", nicht über deinen "
+                 "dich leer machen. Und entscheide über deine " + auth_phrase(auth) + ", nicht über deinen "
                  "Kopf. So findest du jedes Mal zu dir zurück."),
-        "takeaway": "Dein Frühwarnsystem: Sobald sich " + nots.lower() + " meldet, halt inne und komm "
-                    "zu deiner eigenen Natur zurück.",
+        "takeaway": "Dein Frühwarnsystem: Sobald sich " + nots.replace(" & ", " und ") + " meldet, halt "
+                    "inne und komm zu deiner eigenen Natur zurück.",
         "facts": [("Nicht-Selbst-Thema", nots)],
     })
 
@@ -1951,7 +2005,8 @@ def full_analysis(chart):
                      "Das ist kein Zufall. Es ist der Teil in dir, der genau weiß, wozu du hier bist. "
                      "Jedes Mal, wenn du ihm folgst, auch nur einen kleinen Schritt, kommst du ein "
                      "Stück mehr nach Hause. Zu dir."),
-            "takeaway": axis.get("task", ""),
+            "takeaway": (f"Denk immer daran: Dein Wachstum zeigt Richtung {nk['sign']}. Jeder kleine "
+                         "Schritt dorthin bringt dich mehr zu dir."),
             "facts": f,
         })
     if sk and axis:
@@ -1970,6 +2025,8 @@ def full_analysis(chart):
                      "Schutz, der seine Zeit hatte.\n\nDu musst dich dafür nicht schämen. Du musst es "
                      "nur sehen. Ein Muster, das du klar erkennst, verliert seine heimliche Macht "
                      "über dich."),
+            "takeaway": ("Sei sanft mit dir: Dein altes Muster ist kein Feind, sondern ein alter "
+                         "Schutz. Erkenne ihn, dann verliert er seine heimliche Macht."),
             "facts": [("Südknoten", f"{sk['sym']} {sk['sign']} {sk['text']}")],
         })
     if nk and sk and axis:
@@ -2025,6 +2082,8 @@ def full_analysis(chart):
                      "spürst du ihn bei anderen sofort. Du bist der Mensch, der einem anderen sagen "
                      "kann: Du bist genug. Und der es auch so meint. Deine Wunde und deine Gabe sind "
                      "dieselbe Stelle. Du heilst genau durch sie."),
+            "takeaway": ("Wenn du nur einen Satz behältst: An dir ist nichts kaputt. Deine Wunde und "
+                         "deine Gabe sind dieselbe Stelle."),
             "tip": ("So arbeitest du mit dieser Wunde", CHIRON_HEAL_TIP.get(chi["sign"], "")),
             "facts": facts,
         })
@@ -2074,7 +2133,7 @@ def full_analysis(chart):
                f"etwas falsch. Du hast dich nur lange an einen Ort angepasst, der nicht für dich "
                f"gebaut war. Kein Wunder, dass du müde bist. Du darfst deiner eigenen Art wieder "
                f"vertrauen. Lebe deine Strategie, {t.get('strategy','').lower()}, und hör auf deine "
-               f"{hd['authority'].lower()}. Immer wenn sich etwas von innen richtig anfühlt, geh da "
+               f"{auth_phrase(hd['authority'])}. Immer wenn sich etwas von innen richtig anfühlt, geh da "
                f"hin. Auch wenn dein Weg kurviger ist als der von anderen. Er ist deiner. Und er war "
                f"die ganze Zeit schon in dir. 🤍")
 
@@ -2136,6 +2195,7 @@ def full_analysis(chart):
             "gift": info.get("gift", ""),
             "shadow": info.get("shadow", ""),
             "says": info.get("says_def", "") if is_def else info.get("says_open", ""),
+            "use_def": CENTER_USE_DEF.get(c, ""),
         })
 
     houses = [{"nr": i, "title": HOUSE_TITLE[i], "meaning": HOUSE_MEANING.get(i, "")}
