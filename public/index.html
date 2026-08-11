@@ -75,13 +75,10 @@
     --shadow: 0 30px 70px -34px rgba(10,4,30,0.78);
   }
   * { box-sizing: border-box; }
-  html { scroll-behavior: smooth; overscroll-behavior-x: none;
-    overflow-x: clip; width: 100%; max-width: 100%;
-    /* waagerechtes Verschieben der ganzen Seite unterbinden (auch auf html-Ebene) */
-    touch-action: pan-y pinch-zoom; }
+  html { scroll-behavior: smooth; overscroll-behavior-x: none; }
   body { margin: 0; background: var(--ground); color: var(--ink);
     font-family: var(--sans); font-size: 17px; line-height: 1.62; -webkit-font-smoothing: antialiased;
-    overflow-x: clip; overscroll-behavior-x: none; width: 100%; max-width: 100%; position: relative;
+    overflow-x: clip; overscroll-behavior-x: none;
     /* nur senkrecht scrollen (+ Zoom); waagerechtes Verschieben der Seite unterbinden */
     touch-action: pan-y pinch-zoom; }
   #analyse { scroll-margin-top: 20px; }
@@ -780,18 +777,20 @@
     /* Merkmal-Chips als kompakte, zentrierte Reihe */
     .traits { justify-content: center; gap: 8px; margin-top: 20px; }
     .traits span { font-size: 12.5px; padding: 8px 13px; }
-    /* Reiter-Leiste: immer erreichbar (klebt oben) und komplett sichtbar.
-       Alle Reiter brechen zentriert um und stehen nebeneinander, statt in einer
-       seitlich verschiebbaren Zeile zu liegen. */
+    /* Reiter-Leiste: immer erreichbar (klebt oben) und in einer sauberen,
+       wischbaren Reihe statt als gestapelter Haufen. overflow-x:clip hält den
+       seitlichen Rand sauber, ohne das Sticky-Verhalten zu brechen. */
     .report { overflow-x: clip; overflow-y: visible; }
     .rtabs { position: sticky; top: 8px; z-index: 60; overflow: hidden;
       margin: 14px 0 20px; padding: 8px;
       background: rgba(22,14,46,.94); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
       border: 1px solid var(--line); border-radius: 16px;
       box-shadow: 0 12px 28px -16px rgba(10,4,30,.85); }
-    .rtabs-track { flex-wrap: wrap; justify-content: center;
-      overflow: visible; gap: 7px; padding: 2px; touch-action: pan-y pinch-zoom; }
-    .rtab { flex: 0 1 auto; }
+    .rtabs-track { flex-wrap: nowrap; justify-content: flex-start;
+      overflow-x: auto; overflow-y: hidden; -webkit-overflow-scrolling: touch; touch-action: pan-x;
+      scroll-snap-type: x proximity; scrollbar-width: none; padding: 2px; }
+    .rtabs-track::-webkit-scrollbar { display: none; }
+    .rtab { flex: 0 0 auto; scroll-snap-align: start; }
   }
   @media (max-width: 560px) {
     body { font-size: 16px; }
@@ -805,12 +804,6 @@
        damit "Monat" und lange Monatsnamen nicht mit dem Pfeil kollidieren */
     .row3 select, .row2 select { font-size: 14.5px; padding-right: 24px; padding-left: 11px;
       background-position: right 8px center; text-overflow: ellipsis; }
-    /* Reiter auf kleinen Screens etwas kompakter, damit sie sauber nebeneinander umbrechen */
-    .rtab { font-size: 13px; padding: 8px 12px; }
-  }
-  /* Auf Handy/Tablet brauchen die Reiter keine Scroll-Pfeile mehr, sie stehen alle sichtbar da */
-  @media (max-width: 900px) {
-    .rtabs-hint::before, .rtabs-hint::after { content: none; }
   }
   /* Desktop / Tablet: alle Reiter in EINER Reihe (kein Umbruch in zwei Zeilen) */
   @media (min-width: 901px) {
@@ -1260,7 +1253,7 @@
         <p class="report-greeting" id="a-greeting"></p>
         <div class="report-rule"></div>
       </div>
-      <div class="rtabs-hint"><span class="hint-scroll">Tippe dich durch alle Themengebiete deines Bauplans</span><span class="hint-click">Klicke dich hier durch alle Themengebiete deines Bauplans</span></div>
+      <div class="rtabs-hint"><span class="hint-scroll">Scrolle dich hier durch alle Themengebiete deines Bauplans</span><span class="hint-click">Klicke dich hier durch alle Themengebiete deines Bauplans</span></div>
       <nav class="rtabs" id="rtabs">
         <div class="rtabs-track">
           <button class="rtab active" data-rtab="ov" type="button">✦ Übersicht</button>
