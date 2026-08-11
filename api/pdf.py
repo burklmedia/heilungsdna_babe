@@ -372,6 +372,40 @@ def _chapter(pdf, kap, section):
             pdf.ln(2)
     if section.get("takeaway"):
         _merksatz(pdf, section["takeaway"])
+    if section.get("tip"):
+        tp = section["tip"]
+        try:
+            label, text = tp[0], tp[1]
+        except Exception:  # noqa
+            label, text = "Tipp", str(tp)
+        if text:
+            _tipp(pdf, label, text)
+
+
+def _tipp(pdf, label, text):
+    """Sanft abgesetzter Tipp-Kasten (Flieder), passend zur Website."""
+    _keep(pdf, 34)
+    pdf.ln(3)
+    x = pdf.l_margin
+    w = PW - pdf.l_margin - pdf.r_margin
+    top = pdf.get_y()
+    inner = w - 14
+    pdf.set_font("Mul", "", 10)
+    lines = pdf.multi_cell(inner, 5.6, safe(text), dry_run=True, output="LINES")
+    th = 5.6 * max(1, len(lines))
+    box_h = 8 + 6 + th + 8
+    pdf.set_fill_color(*QUOTE_BG)
+    _round_rect(pdf, x, top, w, box_h, 3, style="F")
+    pdf.set_fill_color(*LILAC2)
+    pdf.rect(x, top, 1.2, box_h, style="F")
+    pdf.set_xy(x + 7, top + 8)
+    _eyebrow(pdf, label, MUTE, size=7.5, spacing=1.1)
+    pdf.set_xy(x + 7, pdf.get_y() + 2)
+    pdf.set_font("Mul", "", 10)
+    pdf.set_text_color(*BODY_DK)
+    pdf.multi_cell(inner, 5.6, safe(text), new_x=XPos.LMARGIN, new_y=YPos.NEXT)
+    pdf.set_y(top + box_h)
+    pdf.ln(3)
 
 
 def _merksatz(pdf, text):
@@ -498,8 +532,13 @@ def build_pdf(result):
         for c in centers:
             state = "definiert" if c.get("defined") else "offen"
             body = str(c.get("detail") or "")
-            if c.get("tip"):
-                body += ("\n" if body else "") + "Impuls: " + str(c["tip"])
+            # Was du damit machst: definiert -> use_def, offen -> tip
+            do = str(c.get("use_def") or "") if c.get("defined") else str(c.get("tip") or "")
+            if do:
+                body += ("\n\n" if body else "") + "Was du damit machst: " + do
+            # Was es über dich aussagt
+            if c.get("says"):
+                body += ("\n\n" if body else "") + "Was es über dich aussagt: " + str(c["says"])
             _unit(pdf, str(c.get("name") or ""), state,
                   c.get("theme") or c.get("meaning"), body)
 
