@@ -2,9 +2,10 @@
 
 Eine kostenlose Web-Analyse: Menschen geben **Name, Geschlecht, Geburtsdatum,
 Geburtszeit und Geburtsort** ein und bekommen ihren **kosmischen Bauplan**
-(Human Design plus Natalchart), exakt berechnet und liebevoll erklärt. Sie
-lesen ihn direkt auf der Seite und können ihn als gebrandetes **PDF**
-herunterladen. Im Gegenzug hinterlassen sie ihre E-Mail (Lead-Magnet).
+(Human Design, Natalchart, Intuitionstyp und Numerologie), exakt berechnet und
+liebevoll erklärt. Sie lesen ihn direkt auf der Seite und können ihn als
+gebrandetes **PDF** herunterladen. Im Gegenzug hinterlassen sie ihre E-Mail
+(Lead-Magnet).
 
 ## Warum das zu 100 % korrekt ist
 
@@ -15,6 +16,7 @@ Deshalb trennen wir sauber:
 |---|---|---|
 | Planeten, Aszendent, Häuser exakt berechnen | **Swiss Ephemeris** (Code) | 0 € |
 | Human Design (Typ, Autorität, Profil, Tore, Kanäle) | deterministischer Code | 0 € |
+| Numerologie (Lebenszahl, Persönliches Jahr) | deterministischer Code | 0 € |
 | Der schöne, persönliche Text | Textbausteine im Code | ~0 € |
 
 Die Engine wurde gegen reale, handkorrigierte Charts (Denise und Tobias)
@@ -43,12 +45,15 @@ api/
     ├─ _engine.py       Swiss-Ephemeris-Rechenkern (Moshier, Chiron via seas_18.se1)
     ├─ _interpret.py    Textbausteine für Teaser und Vollanalyse
     └─ _geo.py          Offline-Städte-Fallback (geonamescache + timezonefinder)
-  pdf.py                rendert den kompletten Bauplan als gebrandetes PDF (fpdf2)
+  pdf.py                rendert den kompletten Bauplan als PDF (fpdf2), Design
+                        wie die Website-Reiter: Medaillon-Deckblatt aus Chart +
+                        Bodygraph, Inhaltsverzeichnis, Uebersicht, Kapitel, Abschluss
   subscribe.py          traegt E-Mail in MailerLite ein, setzt den PDF-Link
   track.py              cookiefreies Zaehlen der Funnel-Schritte
   stats.py              passwortgeschuetzte Statistik-Seite
   _store.py             Mini-Redis-Helfer (Upstash/Vercel KV) fuer die Statistik
-  _assets/fonts/        Schriften fuers PDF (Cormorant, Mulish, Great Vibes)
+  _assets/fonts/        Schriften fuers PDF (Cormorant, Mulish, Great Vibes,
+                        AstroSymbols fuer die Tierkreis- und Planetenzeichen)
 
 dev.py                  lokaler Server, bedient Frontend + API wie Vercel
 vercel.json             Routing + Python-Builds (includeFiles: api/**)
