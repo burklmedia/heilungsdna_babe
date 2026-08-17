@@ -763,14 +763,30 @@
   .scrolltop.show { opacity: 1; pointer-events: auto; transform: translateY(0); }
   @media (min-width: 901px) { .scrolltop { display: none; } }
   /* Einklappbare Blöcke in der Übersicht (Handy): "Was bedeutet was?" & Häuser */
-  .ov-fold { border: 1px solid var(--line); border-radius: 16px; background: rgba(255,255,255,.02); margin-top: 18px; overflow: hidden; }
+  .ov-fold { border: 1px solid var(--line); border-radius: 16px; background: rgba(255,255,255,.02); margin-top: 18px; overflow: hidden; position: relative; }
   .ov-fold > summary { list-style: none; cursor: pointer; display: flex; align-items: center; justify-content: space-between; gap: 12px;
-    padding: 16px 18px; font-size: 11px; letter-spacing: .26em; text-transform: uppercase; color: var(--gold); }
+    padding: 16px 18px; font-size: 11px; letter-spacing: .26em; text-transform: uppercase; color: var(--gold); position: relative; z-index: 1; }
   .ov-fold > summary::-webkit-details-marker { display: none; }
   .ov-fold > summary .ov-fold-x { font-size: 20px; line-height: 1; transition: transform .3s ease; flex: none; }
   .ov-fold[open] > summary .ov-fold-x { transform: rotate(45deg); }
   .ov-fold-b { padding: 2px 18px 18px; }
   .ov-fold-b .legend-intro { margin-top: 0; }
+  /* Sanftes Blinken/Glühen wie beim Freischalt-Feld, damit die geschlossenen Blöcke auffallen */
+  .ov-fold:not([open]) { animation: ovglow 2.6s ease-in-out infinite; }
+  @keyframes ovglow {
+    0%,100% { box-shadow: 0 0 0 1px rgba(245,197,107,.3), 0 0 22px -14px var(--glow);
+              border-color: rgba(245,197,107,.45); }
+    50%     { box-shadow: 0 0 0 1px rgba(245,197,107,.75), 0 0 54px -6px var(--glow);
+              border-color: rgba(245,197,107,.9); }
+  }
+  .ov-fold:not([open])::after { content: ""; position: absolute; top: 0; left: -60%; width: 55%; height: 100%;
+    background: linear-gradient(100deg, transparent, rgba(255,235,190,.2), transparent);
+    transform: skewX(-16deg); animation: ovsheen 3.4s ease-in-out infinite; pointer-events: none; z-index: 0; }
+  @keyframes ovsheen { 0% { left: -60%; } 55%,100% { left: 130%; } }
+  @media (prefers-reduced-motion: reduce) {
+    .ov-fold:not([open]) { animation: none; box-shadow: 0 0 0 1px rgba(245,197,107,.5), 0 0 34px -10px var(--glow); }
+    .ov-fold:not([open])::after { display: none; }
+  }
 
   @media (max-width: 900px) {
     .hero-grid { grid-template-columns: 1fr; gap: 40px; }
@@ -778,8 +794,10 @@
     .benefits-grid { grid-template-columns: 1fr; gap: 34px; }
     .photo { max-width: 360px; }
     .example-grid { grid-template-columns: 1fr; gap: 30px; }
-    .about-box { grid-template-columns: 1fr; gap: 28px; padding: 40px 30px; }
-    .about-portrait { max-width: 220px; }
+    .about-box { grid-template-columns: 1fr; gap: 28px; padding: 40px 30px; justify-items: center; }
+    .about-portrait { max-width: 240px; width: 100%; justify-self: center; margin-inline: auto; }
+    .about { text-align: left; }
+    .about .abeyebrow, .about h2 { text-align: center; }
     .grid2 { grid-template-columns: 1fr; }
     /* Startseite kompakter: weniger Leerraum zwischen den Abschnitten */
     section.band { padding: 56px 0; }
@@ -1862,13 +1880,13 @@
     var rt=document.getElementById('rtabs'), track=rt&&rt.querySelector('.rtabs-track'), act=track&&track.querySelector('.rtab.active');
     // aktiven Reiter in der wischbaren Leiste mittig zeigen
     if(track&&act){ track.scrollTo({left: act.offsetLeft-(track.clientWidth-act.offsetWidth)/2, behavior:'smooth'}); }
-    // beim Antippen (Handy wie Desktop): zum Anfang des neuen Reiters springen, damit man oben bleibt
+    // Beim Antippen (Handy wie Desktop): die Inhalte nicht unter die klebende Reiter-
+    // Leiste quetschen, sondern die Leiste an ihre ursprüngliche Position holen, mit
+    // etwas Luft nach oben. Erst beim echten Weiterscrollen wandert die Leiste dann mit.
     if(userClick && rt){
-      var pane=document.getElementById('pane-'+id);
-      if(pane){ var h=rt.getBoundingClientRect().height;
-        var top=pane.getBoundingClientRect().top+window.scrollY-h-(window.innerWidth<=900?24:20);
-        window.scrollTo({top:Math.max(0,top), behavior:'auto'}); }
-    }
+      var anchor=document.querySelector('.rtabs-hint')||rt;
+      var top=anchor.getBoundingClientRect().top+window.scrollY-(window.innerWidth<=900?18:24);
+      window.scrollTo({top:Math.max(0,top), behavior:'auto'}); }
   }
 
   /* Dezente goldene Funkelsterne links und rechts einer Grafik */
@@ -2156,29 +2174,48 @@
     var GOLD='var(--gold)', ACC='var(--accent)', INK='var(--ink)', SOFT='var(--ink-soft)', MUTE='var(--ink-mute)', LINE='var(--line-strong)';
     var SS=['♈','♉','♊','♋','♌','♍','♎','♏','♐','♑','♒','♓'];
     function pt(r,L){ var a=(180+(L-asc))*Math.PI/180; return [C+r*Math.cos(a), C-r*Math.sin(a)]; }
-    var s='<svg viewBox="0 0 360 360" aria-hidden="true">';
-    s+='<circle cx="180" cy="180" r="'+R1+'" fill="none" stroke="'+GOLD+'" stroke-width="1" opacity=".6"/>';
-    s+='<circle cx="180" cy="180" r="'+R2+'" fill="none" stroke="'+GOLD+'" stroke-width="1" opacity=".3"/>';
+    var s='<svg viewBox="0 0 360 360" aria-hidden="true">'+
+      '<defs>'+
+        '<filter id="nGlow" x="-60%" y="-60%" width="220%" height="220%">'+
+          '<feDropShadow dx="0" dy="0" stdDeviation="2.2" flood-color="#f5c56b" flood-opacity="0.9"/></filter>'+
+        '<filter id="nGlowSoft" x="-80%" y="-80%" width="260%" height="260%">'+
+          '<feDropShadow dx="0" dy="0" stdDeviation="2.8" flood-color="#f5d78c" flood-opacity="0.7"/></filter>'+
+        '<radialGradient id="nCore" cx="50%" cy="46%" r="60%">'+
+          '<stop offset="0%" stop-color="rgba(245,197,107,.14)"/><stop offset="100%" stop-color="rgba(245,197,107,0)"/></radialGradient>'+
+      '</defs>';
+    // sanft leuchtender Kern in der Mitte
+    s+='<circle cx="180" cy="180" r="'+R1+'" fill="url(#nCore)"/>';
+    // goldene Ringe mit Schimmer
+    s+='<g filter="url(#nGlow)">'+
+       '<circle cx="180" cy="180" r="'+R1+'" fill="none" stroke="'+GOLD+'" stroke-width="1.1" opacity=".75"/>'+
+       '<circle cx="180" cy="180" r="'+R2+'" fill="none" stroke="'+GOLD+'" stroke-width="1" opacity=".45"/>'+
+       '</g>';
     s+='<circle cx="180" cy="180" r="'+R4+'" fill="none" stroke="'+LINE+'" stroke-width="1"/>';
     var signStart=Math.floor(asc/30)*30;
+    var glyphs='';
     for(var k=0;k<12;k++){
       var Lc=signStart+30*k, a=pt(R4,Lc), b=pt(R1,Lc);
       s+='<line x1="'+a[0].toFixed(1)+'" y1="'+a[1].toFixed(1)+'" x2="'+b[0].toFixed(1)+'" y2="'+b[1].toFixed(1)+'" stroke="'+LINE+'" stroke-width="1"/>';
       var si=(Math.round(signStart/30)+k)%12, gp=pt((R1+R2)/2, Lc+15);
-      s+='<text x="'+gp[0].toFixed(1)+'" y="'+(gp[1]+4).toFixed(1)+'" text-anchor="middle" font-size="13" fill="'+GOLD+'">'+tp(SS[si])+'</text>';
+      // Tierkreiszeichen leuchten golden (gesammelt und am Ende gefiltert gerendert)
+      glyphs+='<text x="'+gp[0].toFixed(1)+'" y="'+(gp[1]+4).toFixed(1)+'" text-anchor="middle" font-size="13.5" fill="'+GOLD+'">'+tp(SS[si])+'</text>';
       var hn=pt(R4+13, Lc+15);
       s+='<text x="'+hn[0].toFixed(1)+'" y="'+(hn[1]+3).toFixed(1)+'" text-anchor="middle" font-size="9" fill="'+MUTE+'">'+(k+1)+'</text>';
     }
+    s+='<g filter="url(#nGlow)">'+glyphs+'</g>';
     function axis(L1,L2,l1,l2,col){
       var a=pt(R1,L1), b=pt(R1,L2);
-      s+='<line x1="'+a[0].toFixed(1)+'" y1="'+a[1].toFixed(1)+'" x2="'+b[0].toFixed(1)+'" y2="'+b[1].toFixed(1)+'" stroke="'+col+'" stroke-width="1.3" opacity=".85"/>';
+      s+='<g filter="url(#nGlow)">'+
+         '<line x1="'+a[0].toFixed(1)+'" y1="'+a[1].toFixed(1)+'" x2="'+b[0].toFixed(1)+'" y2="'+b[1].toFixed(1)+'" stroke="'+col+'" stroke-width="1.3" opacity=".9"/>';
       var t1=pt(R1+11,L1), t2=pt(R1+11,L2);
       s+='<text x="'+t1[0].toFixed(1)+'" y="'+(t1[1]+3).toFixed(1)+'" text-anchor="middle" font-size="10" fill="'+col+'" font-weight="600">'+l1+'</text>';
-      s+='<text x="'+t2[0].toFixed(1)+'" y="'+(t2[1]+3).toFixed(1)+'" text-anchor="middle" font-size="10" fill="'+col+'" font-weight="600">'+l2+'</text>';
+      s+='<text x="'+t2[0].toFixed(1)+'" y="'+(t2[1]+3).toFixed(1)+'" text-anchor="middle" font-size="10" fill="'+col+'" font-weight="600">'+l2+'</text>'+
+         '</g>';
     }
     axis(geo.asc,geo.dc,'AC','DC',ACC);
     axis(geo.mc,geo.ic,'MC','IC',GOLD);
     var placed=[], ps=geo.planets.slice().sort(function(x,y){return x.lon-y.lon;});
+    var glyphP='';
     ps.forEach(function(p){
       var r=98, guard=0;
       while(guard<8){ var clash=false;
@@ -2187,10 +2224,12 @@
         if(!clash) break; r-=13; guard++; }
       placed.push({lon:p.lon,r:r});
       var t1=pt(R2,p.lon), t2=pt(R2-6,p.lon);
-      s+='<line x1="'+t1[0].toFixed(1)+'" y1="'+t1[1].toFixed(1)+'" x2="'+t2[0].toFixed(1)+'" y2="'+t2[1].toFixed(1)+'" stroke="'+SOFT+'" stroke-width="1"/>';
+      s+='<line x1="'+t1[0].toFixed(1)+'" y1="'+t1[1].toFixed(1)+'" x2="'+t2[0].toFixed(1)+'" y2="'+t2[1].toFixed(1)+'" stroke="'+GOLD+'" stroke-width="1" opacity=".6"/>';
       var g=pt(r,p.lon);
-      s+='<text x="'+g[0].toFixed(1)+'" y="'+(g[1]+5).toFixed(1)+'" text-anchor="middle" font-size="15" fill="'+INK+'">'+tp(p.sym)+'</text>';
+      // Planetensymbole mit warmem Schimmer
+      glyphP+='<text x="'+g[0].toFixed(1)+'" y="'+(g[1]+5).toFixed(1)+'" text-anchor="middle" font-size="15.5" fill="'+INK+'">'+tp(p.sym)+'</text>';
     });
+    s+='<g filter="url(#nGlowSoft)">'+glyphP+'</g>';
     return s+'</svg>';
   }
   document.querySelectorAll('[data-goto]').forEach(function(b){ b.addEventListener('click',function(){show(b.getAttribute('data-goto'));}); });
