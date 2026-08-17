@@ -812,8 +812,15 @@
     .promise { margin-left: auto; margin-right: auto; }
     .herolead { margin-left: auto; margin-right: auto; }
     .card h3, .card .hint { text-align: center; }
-    /* Chip oben zentriert; die mittige Achse kommt vom Elternteil */
-    .hero .chip { text-align: center; }
+    /* Chip oben zentriert; die mittige Achse kommt vom Elternteil.
+       Die vier Schlagworte bleiben IMMER in einer Reihe (sonst rutscht
+       "Numerologie" allein in die naechste Zeile). Die Schrift skaliert
+       mit der Bildschirmbreite, damit die Pille auch auf schmalen Handys
+       sauber in eine einzige Zeile passt; ab ~430px steht sie bei 12.5px. */
+    .hero .chip { text-align: center; white-space: nowrap; letter-spacing: .01em;
+      font-size: clamp(9px, calc(3.4vw - 2.4px), 12.5px);
+      padding-left: 13px; padding-right: 13px; }
+    .hero .chip .chip-sub { white-space: normal; }
     /* Merkmal-Chips als kompakte, zentrierte Reihe */
     .traits { justify-content: center; gap: 8px; margin-top: 20px; }
     .traits span { font-size: 12.5px; padding: 8px 13px; }
