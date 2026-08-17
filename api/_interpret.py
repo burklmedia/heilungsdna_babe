@@ -1485,7 +1485,7 @@ def _name_number(name):
 
 
 def build_numerology(chart):
-    """Lebenszahl aus dem Geburtsdatum, Namenszahl aus dem Vornamen. Rein arithmetisch."""
+    """Lebenszahl aus dem Geburtsdatum und persönliches Jahr. Rein arithmetisch."""
     bd = chart.get("birth_date")
     if not bd:
         return None
@@ -1588,7 +1588,7 @@ def teaser(chart):
             "Dein Entscheidungsweg, deine größte Stärke und deine größte Herausforderung, und wie du sie meisterst",
             "Deine Lebensaufgabe aus deiner Mondknoten-Achse und dein Chiron, deine Wunde und Heilkraft",
             "Dein Intuitionstyp, über welchen Kanal deine innere Führung zu dir spricht",
-            "Deine Lebenszahl und Namenszahl aus der Numerologie, dein roter Faden in einer Zahl",
+            "Deine Lebenszahl und dein persönliches Jahr aus der Numerologie, dein roter Faden in einer Zahl",
             "Konkrete Werkzeuge und Handlungsempfehlungen, ganz auf dich zugeschnitten",
         ],
     }
@@ -1704,8 +1704,10 @@ def _element_section(nat, asc, mc):
             if counts[low] == 0 else
             "Am wenigsten ausgeprägt ist bei dir das Element " + low + ". Das heißt: " + ELEMENT_WEAK[low])
     body = (
-        "Wenn man deine Planeten nach den vier Elementen ordnet, wird ein Muster sichtbar, das viel "
-        "über dich erzählt.\n\n"
+        "Für dieses Bild werden alle deine zehn Planeten sowie dein Aszendent und dein MC nach den "
+        "vier Elementen sortiert. So entsteht eine Gesamtverteilung, nicht das Bild eines einzelnen "
+        "Punktes. Dein Deszendent taucht hier bewusst nicht auf, denn er liegt immer genau gegenüber "
+        "deinem Aszendenten und würde dieselbe Achse nur ein zweites Mal zählen.\n\n"
         f"Am stärksten ist bei dir das Element {dom}. In dir wirkt vor allem {ELEMENT_STRONG[dom]}. "
         "Das ist deine natürliche Sprache, die Art, wie du am liebsten durchs Leben gehst und dich "
         "am lebendigsten fühlst.\n\n"
@@ -1717,7 +1719,7 @@ def _element_section(nat, asc, mc):
     return {
         "title": "Deine Elemente-Balance",
         "subtitle": "Feuer, Erde, Luft und Wasser in deinem Chart",
-        "headline": f"Deine Stärke liegt im {dom}",
+        "headline": f"Deine Stärke liegt im Element {dom}",
         "body": body,
         "facts": [("Feuer", str(counts["Feuer"])), ("Erde", str(counts["Erde"])),
                   ("Luft", str(counts["Luft"])), ("Wasser", str(counts["Wasser"]))],
@@ -2013,7 +2015,7 @@ def full_analysis(chart):
         sections.append({
             "title": "Dein Lower Self",
             "subtitle": f"Südknoten in {sk['sign']}, dein vertrautes Muster",
-            "headline": f"Deine Komfortzone liegt im {sk['sign']}",
+            "headline": f"Deine Komfortzone liegt im Zeichen {sk['sign']}",
             "body": ("Dein Lower Self ist kein Feind. Es ist der Teil von dir, der sich am sichersten "
                      "anfühlt. Du kennst ihn schon lange, oft seit deiner Kindheit.\n\n"
                      + axis.get("lower", "") + "\n\nKennst du diese Momente, in denen du unter Druck "

@@ -2,7 +2,7 @@
 <html lang="de">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Dein Kosmischer Bauplan, Intuition mit Herz</title>
 <meta name="description" content="Entdecke, wer du wirklich bist: Human Design & Natalchart, exakt aus deinem Geburtshimmel berechnet und liebevoll erklärt. Kostenlos.">
 <link rel="canonical" href="https://heilungsdna-babe-b9oo-inky.vercel.app/">
@@ -81,6 +81,8 @@
     overflow-x: clip; overscroll-behavior-x: none;
     /* nur senkrecht scrollen (+ Zoom); waagerechtes Verschieben der Seite unterbinden */
     touch-action: pan-y pinch-zoom; }
+  /* Fixiert: während Ladevorgang / Bauplan-Öffnen kein Zoom und kein Verschieben */
+  html.zoomlock, html.zoomlock body { touch-action: pan-y; overflow-x: hidden; }
   #analyse { scroll-margin-top: 20px; }
   #aura, #stars, #orb { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
   #aura { background:
@@ -404,6 +406,13 @@
   .preview-body { position: relative; max-height: 560px; overflow: hidden;
     -webkit-mask-image: linear-gradient(to bottom, #000 60%, transparent 98%);
             mask-image: linear-gradient(to bottom, #000 60%, transparent 98%); }
+  /* Kleiner Hinweis über den Pills: „Tippe auf einen Bereich…" */
+  .preview-body .pv-hint { display: flex; align-items: center; justify-content: center; gap: 7px;
+    font-size: 12.5px; font-weight: 600; letter-spacing: .01em; color: var(--gold);
+    margin: 0 0 12px; text-align: center; }
+  .preview-body .pv-hint .pv-hint-ic { font-size: 12px; animation: pvhintpulse 2.4s ease-in-out infinite; }
+  @keyframes pvhintpulse { 0%,100% { opacity: .5; transform: scale(.9); } 50% { opacity: 1; transform: scale(1.15); } }
+  @media (prefers-reduced-motion: reduce) { .preview-body .pv-hint .pv-hint-ic { animation: none; opacity: .9; } }
   /* Vorschau-Pills: alle nebeneinander, nicht wischbar (bricht bei sehr wenig Platz sauber um) */
   .preview-body .pv-pills { display: flex; flex-wrap: wrap; justify-content: center; gap: 5px; margin-bottom: 18px; }
   .preview-body .pv-pill { font-size: 10.5px; font-weight: 600; color: var(--ink-soft); background: rgba(201,164,255,.08);
@@ -430,18 +439,31 @@
     font-size: 22px; background: rgba(22,14,46,.92); border: 1px solid rgba(245,197,107,.5); box-shadow: 0 0 26px -4px var(--glow); }
   .preview-seal .seal-text { font-family: var(--serif); color: var(--ink); font-size: 16.5px; }
   .preview-seal .seal-sub { color: var(--ink-mute); font-size: 13px; margin-top: 4px; }
-  /* "Das steckt dahinter" als aufklappbares Feld */
-  .locked-fold { max-width: 640px; margin: 34px auto 0; text-align: left; border: 1px solid rgba(245,197,107,.4);
-    border-radius: 16px; background: rgba(245,197,107,.05); overflow: hidden; }
-  .locked-attn { animation: lockglow 3.2s ease-in-out infinite; }
+  /* "Das steckt dahinter" als aufklappbares Feld – leuchtend & pulsierend, damit es auffällt */
+  .locked-fold { max-width: 640px; margin: 34px auto 0; text-align: left; border: 1px solid rgba(245,197,107,.5);
+    border-radius: 16px; overflow: hidden; position: relative;
+    background: linear-gradient(180deg, rgba(245,197,107,.12), rgba(245,197,107,.05)); }
+  .locked-attn { animation: lockglow 2.6s ease-in-out infinite; }
   @keyframes lockglow {
-    0%,100% { box-shadow: 0 0 0 1px rgba(245,197,107,.28), 0 0 26px -12px var(--glow); }
-    50%     { box-shadow: 0 0 0 1px rgba(245,197,107,.55), 0 0 46px -6px var(--glow); }
+    0%,100% { box-shadow: 0 0 0 1px rgba(245,197,107,.35), 0 0 26px -14px var(--glow);
+              border-color: rgba(245,197,107,.5); }
+    50%     { box-shadow: 0 0 0 1px rgba(245,197,107,.8), 0 0 60px -4px var(--glow);
+              border-color: rgba(245,197,107,.9); }
+  }
+  /* Sanft wandernder Lichtschimmer über dem geschlossenen Feld */
+  .locked-fold:not([open])::after { content: ""; position: absolute; top: 0; left: -60%; width: 55%; height: 100%;
+    background: linear-gradient(100deg, transparent, rgba(255,235,190,.22), transparent);
+    transform: skewX(-16deg); animation: locksheen 3.4s ease-in-out infinite; pointer-events: none; }
+  @keyframes locksheen { 0% { left: -60%; } 55%,100% { left: 130%; } }
+  @media (prefers-reduced-motion: reduce) {
+    .locked-attn { animation: none; box-shadow: 0 0 0 1px rgba(245,197,107,.55), 0 0 40px -10px var(--glow); }
+    .locked-fold:not([open])::after { display: none; }
   }
   .locked-fold > summary { list-style: none; cursor: pointer; display: flex; align-items: center; justify-content: center;
-    gap: 10px; padding: 16px 20px; font-size: 12px; letter-spacing: .06em; text-transform: uppercase; color: var(--gold); }
+    gap: 10px; padding: 17px 20px; font-size: 12.5px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--gold);
+    text-shadow: 0 0 18px rgba(245,197,107,.35); position: relative; z-index: 1; }
   .locked-fold > summary::-webkit-details-marker { display: none; }
-  .locked-fold .lf-x { font-size: 20px; line-height: 1; transition: transform .3s ease; flex: none; }
+  .locked-fold .lf-x { font-size: 22px; line-height: 1; transition: transform .3s ease; flex: none; }
   .locked-fold[open] .lf-x { transform: rotate(45deg); }
   .locked-fold #g-locked { padding: 0 20px 6px; }
   /* Vorteile am E-Mail-Feld */
@@ -1072,7 +1094,7 @@
               <div class="mock-group">
                 <div class="mgh">Numerologie</div>
                 <div class="mrow gold"><span>Lebenszahl</span><b>7, der Weg der Tiefe</b></div>
-                <div class="mrow"><span>Namenszahl</span><b>3, Ausdruck &amp; Freude</b></div>
+                <div class="mrow"><span>Persönliches Jahr</span><b>3, Ausdruck &amp; Freude</b></div>
               </div>
               <div class="mock-group">
                 <div class="mgh">Deine persönliche Deutung</div>
@@ -1229,7 +1251,7 @@
       </div>
 
       <details class="locked-fold locked-attn">
-        <summary><span>🔒 Das steckt in deinem kompletten kosmischen Bauplan</span><span class="lf-x">+</span></summary>
+        <summary><span>✦ Hier antippen: Was steckt alles in deinem Bauplan?</span><span class="lf-x">+</span></summary>
         <div id="g-locked"></div>
       </details>
     </div>
@@ -1307,6 +1329,21 @@
 <script>
 (function(){
   var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* ── Zoom-Steuerung ──
+     Während des Ladevorgangs (Ritual) und im Moment, in dem der Bauplan aufgeht,
+     setzen wir die Seite auf 1x zurück und fixieren sie (kein Rein-/Rauszoomen,
+     kein seitliches Verschieben). Danach darf der Nutzer seinen Text wieder frei
+     heranzoomen. */
+  var vpMeta = document.querySelector('meta[name=viewport]');
+  var VP_FREE = 'width=device-width, initial-scale=1, viewport-fit=cover';
+  var VP_LOCK = 'width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, viewport-fit=cover';
+  function lockZoom(){ if(vpMeta) vpMeta.setAttribute('content', VP_LOCK);
+    document.documentElement.classList.add('zoomlock'); }
+  function freeZoom(){ if(vpMeta) vpMeta.setAttribute('content', VP_FREE);
+    document.documentElement.classList.remove('zoomlock'); }
+  /* Auf 1x zurücksetzen (falls vorher reingezoomt war) und danach Zoom wieder freigeben. */
+  function resetZoomThenFree(){ lockZoom(); setTimeout(freeZoom, 450); }
 
   /* ── Cookie-Hinweis: nur einmal zeigen, kein Tracking ── */
   (function(){
@@ -1426,6 +1463,7 @@
 
   function show(id){ document.querySelectorAll('.step').forEach(function(s){s.classList.remove('active');});
     document.getElementById(id).classList.add('active');
+    freeZoom();   // Grundzustand: Zoom erlaubt (Ritual/Bauplan setzen danach ggf. kurz zurück)
     // sofort nach ganz oben springen (kein weiches Scrollen, das am Handy oft abbricht)
     window.scrollTo({top:0,left:0,behavior:'instant'});
     requestAnimationFrame(function(){ window.scrollTo(0,0); }); }
@@ -1543,6 +1581,7 @@
     var wheel=document.getElementById('wheel'),st=document.getElementById('ritual-status'),
         sub=document.getElementById('ritual-sub'),rw=document.getElementById('ritualwrap');
     document.getElementById('glimpse').classList.remove('show');
+    lockZoom();   // Ladevorgang: auf 1x zurücksetzen und fixieren (kein Zoom, kein Verschieben)
     wheel.classList.remove('draw'); rw.style.display=''; st.style.opacity=1; sub.style.opacity=1;
     seed(); ritualOn=true; if(!reduce) rrender(); void wheel.offsetWidth; wheel.classList.add('draw');
     var step=1,total=reduce?1:STATUS.length;
@@ -1553,7 +1592,8 @@
         st.style.opacity=1; sub.style.opacity=1; step++; tick(); },FADE); },HOLD); })();
   }
   function endRitual(){ ritualOn=false; document.getElementById('ritualwrap').style.display='none';
-    document.getElementById('glimpse').classList.add('show'); window.scrollTo({top:0,left:0,behavior:'instant'}); }
+    document.getElementById('glimpse').classList.add('show'); window.scrollTo({top:0,left:0,behavior:'instant'});
+    resetZoomThenFree(); }   // Vorschau-Seite bei 1x zeigen, Zoom danach wieder freigeben
 
   /* ── Flow: Schritt 1 → Ritual → Teaser ── */
   // Datums- und Zeit-Dropdowns befüllen (mobilfreundlich, kein Tippen nötig)
@@ -1629,7 +1669,7 @@
   function finish(d,t0,err,netMsg){
     var wait=Math.max(0, MIN_RITUAL-(Date.now()-t0));
     setTimeout(function(){
-      if(netMsg || !d || !d.ok){ document.getElementById('ritualwrap').style.display='none'; show('step1');
+      if(netMsg || !d || !d.ok){ document.getElementById('ritualwrap').style.display='none'; freeZoom(); show('step1');
         err.textContent=netMsg||(d&&d.error)||'Etwas ist schiefgelaufen. Bitte prüfe deine Angaben.'; return; }
       state.result=d; fillGlimpse(d); endRitual(); track('teaser');
     },wait);
@@ -1705,7 +1745,7 @@
           return '<div class="num-big" style="font-size:clamp(46px,12vw,68px)">'+esc(String(nu.lifepath))+'</div>'+
             '<div class="pv-sub">'+esc(nu.title)+' · '+esc(nu.tagline)+'</div>'+
             (nu.calc?'<div style="text-align:center;margin-top:6px"><span class="num-calc">'+esc(nu.calc)+'</span></div>':'')+
-            '<p class="pv-tease">Deine Lebenszahl, deine Namenszahl und dein persönliches Jahr, dein roter Faden in Zahlen.</p>';
+            '<p class="pv-tease">Deine Lebenszahl und dein persönliches Jahr, dein roter Faden in Zahlen.</p>';
         }
         if(key==='de'){
           var secs=f.sections||[];
@@ -1719,6 +1759,7 @@
       var PV=[['hd','Human Design'],['na','Natalchart'],['in','Intuitionstyp'],['nu','Numerologie'],['de','Deutung']];
       var pills=PV.map(function(p,ix){ return '<span class="pv-pill'+(ix===0?' on':'')+'" data-pv="'+p[0]+'" role="button" tabindex="0">'+p[1]+'</span>'; }).join('');
       document.getElementById('g-preview-body').innerHTML=
+        '<div class="pv-hint"><span class="pv-hint-ic">✦</span>Tippe auf einen Bereich, um eine Vorschau zu sehen</div>'+
         '<div class="pv-pills">'+pills+'</div>'+
         '<div id="g-preview-panel">'+pvTeaser('hd')+'</div>';
       var pvBody=document.getElementById('g-preview-body');
@@ -1755,7 +1796,7 @@
     var payload={name:name,email:email}; var pp=pdfParam(); if(pp) payload.d=pp;
     fetch(API+'/api/subscribe',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)})
       .then(function(r){return r.json();}).catch(function(){return {ok:true};})
-      .then(function(){ renderFull(state.result); show('step3'); track('bauplan'); btn.disabled=false; btn.textContent='Meinen kosmischen Bauplan zeigen ✦'; showCalm(); });
+      .then(function(){ renderFull(state.result); show('step3'); resetZoomThenFree(); track('bauplan'); btn.disabled=false; btn.textContent='Meinen kosmischen Bauplan zeigen ✦'; showCalm(); });
   });
 
   var pdfbtn=document.getElementById('pdfbtn');
@@ -2042,17 +2083,33 @@
   function kv(k,v){ return '<div class="kv"><span class="k">'+esc(k)+'</span><span class="v">'+esc(v)+'</span></div>'; }
   // Tab-Wechsel + aufklappbare Karten (einmalig, Delegation)
   document.getElementById('rtabs').addEventListener('click',function(e){ var t=e.target.closest('.rtab'); if(t) setRTab(t.getAttribute('data-rtab'), true); });
+  // Beim Öffnen eines Reiters an seinen Anfang springen (nicht am Ende des Textes hängen bleiben).
+  // "delay" gibt der Auf-/Zuklapp-Animation Zeit, damit der vorher offene Reiter (der sich
+  // gleichzeitig schließt) das Layout fertig verschoben hat und wir präzise landen.
+  function scrollToOpen(el, delay){
+    if(!el) return;
+    var rt=document.getElementById('rtabs');
+    setTimeout(function(){
+      var barH=(rt && getComputedStyle(rt).position==='sticky') ? rt.getBoundingClientRect().height : 0;
+      var top=el.getBoundingClientRect().top + window.scrollY - barH - (window.innerWidth<=900?18:16);
+      window.scrollTo({top:Math.max(0,top), behavior:'smooth'});
+    }, delay||0);
+  }
   document.getElementById('step3').addEventListener('click',function(e){
     var h=e.target.closest('.pcard .ph'); if(!h) return;
     var card=h.parentNode, wasOpen=card.classList.contains('open');
     var scope=card.closest('.rpane')||document;
     scope.querySelectorAll('.pcard.open').forEach(function(o){ if(o!==card) o.classList.remove('open'); });
     card.classList.toggle('open', !wasOpen);
+    // frisch geöffnet → nach der max-height-Animation (0,4 s) an den Anfang der Karte springen
+    if(!wasOpen) scrollToOpen(card, reduce?0:420);
   });
   // Deutung: nur ein Reiter offen (Fallback, falls das name-Attribut nicht greift)
   document.getElementById('pane-de').addEventListener('toggle',function(e){
     var d=e.target; if(!d||d.tagName!=='DETAILS'||!d.open||d.getAttribute('name')!=='deut') return;
     document.querySelectorAll('#pane-de details.acc[name="deut"]').forEach(function(o){ if(o!==d) o.open=false; });
+    // native <details> klappen sofort auf/zu → nächster Frame reicht, dann an den Anfang springen
+    scrollToOpen(d, 40);
   }, true);
 
   /* ── Bodygraph (Human-Design-Zentren, datengenau offen/definiert) ── */
