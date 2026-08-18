@@ -870,22 +870,22 @@
   .hf-svg { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 0;
     overflow: visible; pointer-events: none; }
   .hf-ring { fill: none; vector-effect: non-scaling-stroke; stroke-linejoin: round; }
-  .hf-ring-main { stroke-width: 2;
-    filter: drop-shadow(0 0 4px rgba(245,197,107,.55)) drop-shadow(0 0 12px rgba(214,156,255,.28));
-    animation: hfBreath 11s ease-in-out infinite; }
-  .hf-ring-mid   { stroke: rgba(245,197,107,.3); stroke-width: 4; filter: blur(3px); }
-  .hf-ring-outer { stroke: rgba(200,150,255,.18); stroke-width: 9; filter: blur(9px); }
+  .hf-ring-main { stroke-width: 1.3; stroke-opacity: .4;
+    filter: drop-shadow(0 0 3px rgba(245,197,107,.28));
+    animation: hfBreath 13s ease-in-out infinite; }
+  .hf-ring-mid   { stroke: rgba(245,197,107,.13); stroke-width: 4; filter: blur(3px); }
+  .hf-ring-outer { stroke: rgba(200,150,255,.08); stroke-width: 8; filter: blur(9px); }
   @keyframes hfBreath {
-    0%,100% { filter: drop-shadow(0 0 3px rgba(245,197,107,.45)) drop-shadow(0 0 9px rgba(214,156,255,.2)); }
-    50%     { filter: drop-shadow(0 0 6px rgba(245,197,107,.62)) drop-shadow(0 0 16px rgba(214,156,255,.32)); }
+    0%,100% { filter: drop-shadow(0 0 2px rgba(245,197,107,.2)); }
+    50%     { filter: drop-shadow(0 0 4px rgba(245,197,107,.3)); }
   }
-  .hf-neb { transform-origin: center; animation: hfNebPulse 12s ease-in-out infinite; }
-  @keyframes hfNebPulse { 0%,100% { opacity: .5; transform: scale(.99); } 50% { opacity: .72; transform: scale(1.02); } }
-  .hf-star { fill: #fff5df; transform-box: fill-box; transform-origin: center; animation: hfTw 5.2s ease-in-out infinite; }
-  @keyframes hfTw { 0%,100% { opacity: .22; transform: scale(.75); } 50% { opacity: .8; transform: scale(1); } }
-  .hf-spark { opacity: .7; transform-box: fill-box; transform-origin: center;
-    filter: drop-shadow(0 0 3px rgba(255,240,200,.7)); animation: hfTws 6.5s ease-in-out infinite; }
-  @keyframes hfTws { 0%,100% { opacity: .12; } 50% { opacity: .7; } }
+  .hf-neb { transform-origin: center; animation: hfNebPulse 13s ease-in-out infinite; }
+  @keyframes hfNebPulse { 0%,100% { opacity: .28; transform: scale(.99); } 50% { opacity: .42; transform: scale(1.02); } }
+  .hf-star { fill: #fff5df; transform-box: fill-box; transform-origin: center; animation: hfTw 5.6s ease-in-out infinite; }
+  @keyframes hfTw { 0%,100% { opacity: .1; transform: scale(.75); } 50% { opacity: .38; transform: scale(1); } }
+  .hf-spark { opacity: .4; transform-box: fill-box; transform-origin: center;
+    filter: drop-shadow(0 0 2px rgba(255,240,200,.5)); animation: hfTws 7s ease-in-out infinite; }
+  @keyframes hfTws { 0%,100% { opacity: .08; } 50% { opacity: .4; } }
   @media (max-width: 900px) { .hero-frame { padding: 40px 26px; } }
   @media (max-width: 560px) { .hero-frame { padding: 34px 16px; } }
   @media (prefers-reduced-motion: reduce) {
