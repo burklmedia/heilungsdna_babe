@@ -743,6 +743,234 @@ SIGN_EMOTION = {
               "Fühlen zum Geschenk, ohne dich zu überfluten.",
 }
 
+# Mehrere gleichwertige Fassungen je Sternzeichen. Stehen bei jemandem drei Planeten
+# im selben Zeichen, bekam bisher jeder wortwörtlich denselben Text. Jetzt rotiert die
+# Deutung durch, sodass sich innerhalb eines Bauplans nichts wiederholt.
+# Fassung 0 ist jeweils der bisherige Text aus SIGN_EMOTION.
+SIGN_VOICES = {
+    "Widder": [
+        "Du trägst ein Feuer in dir, das losgehen will, sobald es etwas spürt. Warten fällt dir "
+        "schwer, und manchmal bist du schneller unterwegs, als dein Umfeld folgen kann. Genau "
+        "diese mutige Direktheit bringt Bewegung in dein Leben und erlaubt dir, für dich "
+        "einzustehen, wenn es darauf ankommt.",
+        "In dir sitzt ein Startimpuls, der keine langen Vorreden mag. Du merkst sofort, wenn etwas "
+        "dran ist, und bist oft schon unterwegs, während andere noch überlegen. Diese Klarheit im "
+        "Handeln ist deine Kraft, auch wenn sie hin und wieder anecken darf.",
+        "Du bist am lebendigsten, wenn etwas anfängt. Stillstand macht dich unruhig, und du sagst "
+        "lieber einmal zu deutlich, was du willst, als es hinunterzuschlucken. Genau dieser Mut "
+        "zur ersten Bewegung öffnet dir Türen, vor denen andere stehen bleiben.",
+        "Deine Energie will nach vorn. Du gehst Dinge frontal an, ohne Umweg, und ziehst andere "
+        "durch dein Tempo einfach mit. Wenn du lernst, kurz innezuhalten, bevor du losläufst, wird "
+        "aus deinem Feuer eine Kraft, die trägt statt zu verbrennen.",
+    ],
+    "Stier": [
+        "Du sehnst dich nach Ruhe, Sicherheit und Dingen, die bleiben. Du genießt mit allen Sinnen "
+        "und brauchst festen Boden unter den Füßen, um dich wirklich fallen zu lassen. Menschen "
+        "fühlen sich bei dir geborgen, weil du eine Verlässlichkeit ausstrahlst, auf die man sich "
+        "stützen kann.",
+        "Du brauchst Dinge, die halten. Schnelle Wechsel machen dich nicht schneller, sie machen "
+        "dich müde, denn deine Kraft kommt aus dem, was bleibt. Was du einmal aufgebaut hast, hat "
+        "Bestand, und darauf können sich Menschen wirklich stützen.",
+        "In dir wohnt eine ruhige Beharrlichkeit, die sich nicht hetzen lässt. Du nimmst dir Zeit "
+        "für Schönes, für gutes Essen, für Berührung, für alles, was der Körper versteht. Diese "
+        "Sinnlichkeit ist keine Nebensache, sie ist deine Art, im Leben anzukommen.",
+        "Du bist ein Mensch mit Bodenhaftung. Erst wenn du sicher stehst, kannst du dich wirklich "
+        "öffnen, und dieses Bedürfnis nach festem Grund ist völlig berechtigt. Wenn du deinen "
+        "Boden hast, wirst du großzügig, warm und erstaunlich unerschütterlich.",
+    ],
+    "Zwillinge": [
+        "Dein Geist ist ständig in Bewegung, neugierig auf alles, was es zu entdecken und zu "
+        "bereden gibt. Du kommst über Worte in Verbindung und bringst Leichtigkeit dorthin, wo es "
+        "sonst schwer würde. Manchmal springst du von Thema zu Thema, und genau diese wache "
+        "Vielseitigkeit ist dein Geschenk.",
+        "Du denkst in Verbindungen. Wo andere ein Thema sehen, siehst du drei, und du bringst "
+        "Menschen und Ideen zusammen, die sonst nie voneinander gehört hätten. Diese schnelle "
+        "Auffassungsgabe ist ein Geschenk, auch wenn sie dich manchmal selbst überholt.",
+        "Sprache ist dein Zuhause. Du klärst dich, indem du redest, und ein gutes Gespräch tut dir "
+        "oft mehr als jede Ruhepause. Deine Leichtigkeit nimmt schweren Momenten die Wucht, und "
+        "das merken die Menschen um dich herum sofort.",
+        "Du langweilst dich schneller als andere, und das ist keine Unart. Dein Kopf braucht "
+        "Futter, Wechsel und neue Eindrücke, um wach zu bleiben. Wenn du dir erlaubst, viele Dinge "
+        "gleichzeitig zu lieben, statt dich zu einer Sache zu zwingen, blühst du auf.",
+    ],
+    "Krebs": [
+        "Du fühlst tiefer, als du es oft nach außen zeigst, und Nähe ist für dich wie ein Zuhause. "
+        "Du spürst feinfühlig, was andere brauchen, oft bevor sie es selbst wissen. In deiner "
+        "Gegenwart fühlen sich Menschen sicher und gehalten, weil du Räume schaffst, in denen man "
+        "einfach sein darf.",
+        "Du nimmst Stimmungen auf wie ein Schwamm, oft ohne es zu wollen. Zuhause ist für dich "
+        "kein Ort, sondern ein Gefühl, und du baust es überall dort, wo du dich sicher fühlst. "
+        "Diese Fähigkeit, Geborgenheit herzustellen, haben nur wenige Menschen.",
+        "Dein Panzer ist echt, und dahinter liegt etwas sehr Weiches. Du zeigst es nicht jedem, "
+        "und das ist auch richtig so. Wer es sehen darf, erlebt eine Zärtlichkeit und eine Treue, "
+        "die selten geworden sind.",
+        "Du erinnerst dich an Dinge, die andere längst vergessen haben, an Sätze, an Blicke, an "
+        "kleine Verletzungen. Dieses Gedächtnis des Herzens macht dich verletzlich und zugleich "
+        "unglaublich fürsorglich. Achte darauf, dass du auch dich selbst mit dieser Sorgfalt "
+        "behandelst.",
+    ],
+    "Löwe": [
+        "In dir wohnt eine Wärme, die gesehen werden will und andere zum Leuchten bringt. Wenn du "
+        "aus dem Herzen heraus lebst, ziehst du Menschen an und schenkst ihnen Mut. Du bist am "
+        "schönsten, wenn du dich traust, groß zu sein, ganz ohne dich dafür zu entschuldigen.",
+        "Du hast eine natürliche Ausstrahlung, die einen Raum wärmer macht. Wenn du dich "
+        "zurücknimmst, um bloß niemanden zu überstrahlen, wird es für alle grauer, nicht nur für "
+        "dich. Dein Leuchten ist kein Egoismus, es ist ein Geschenk an andere.",
+        "In dir steckt eine große Freigebigkeit. Du gibst gern, du feierst gern, und du gönnst "
+        "anderen ihren Moment von Herzen. Was du dafür brauchst, ist echte Anerkennung, und die "
+        "darfst du ruhig einfordern, statt heimlich darauf zu warten.",
+        "Du willst mit dem Herzen bei der Sache sein, sonst geht es nicht. Halbe Dinge langweilen "
+        "dich, und Verstellung fällt dir schwer. Genau diese Echtheit ist der Grund, warum "
+        "Menschen dir folgen, lange bevor du irgendetwas beweisen musst.",
+    ],
+    "Jungfrau": [
+        "Du hast ein feines Gespür für das, was noch besser werden kann, und einen echten Wunsch "
+        "zu helfen. Deine Liebe zeigt sich im Detail, in der Sorgfalt und in der stillen Art, für "
+        "andere da zu sein. Wenn du diese Güte auch dir selbst schenkst, wird deine Gabe zur "
+        "Quelle statt zur Last.",
+        "Du siehst die Details, die anderen entgehen. Was für dich selbstverständlich ist, "
+        "empfinden andere als große Aufmerksamkeit, und deine Hilfe kommt fast immer genau dort "
+        "an, wo sie gebraucht wird. Nur der Maßstab, den du an dich selbst legst, darf "
+        "freundlicher werden.",
+        "Ordnung ist für dich kein Zwang, sie ist Beruhigung. Wenn außen etwas an seinem Platz "
+        "ist, wird es innen leiser, und aus dieser Klarheit heraus bewegst du erstaunlich viel. "
+        "Deine Sorgfalt ist eine Form von Liebe, die selten laut wird.",
+        "Du willst Dinge richtig machen, nicht schnell. Das kostet dich manchmal Nerven, bringt "
+        "aber eine Verlässlichkeit hervor, auf die sich Menschen blind verlassen. Erlaube dir "
+        "zwischendurch, etwas gut sein zu lassen, bevor es perfekt ist.",
+    ],
+    "Waage": [
+        "Du sehnst dich nach Harmonie, Schönheit und einem Miteinander auf Augenhöhe. Du spürst "
+        "Ungleichgewicht sofort und hast die Gabe, zwischen Menschen wieder Frieden zu stiften. "
+        "Deine Aufgabe ist, dabei nie dich selbst zu vergessen, denn echte Harmonie schließt dich "
+        "mit ein.",
+        "Du merkst sofort, wenn zwischen Menschen etwas kippt. Diese Antenne macht dich zu "
+        "jemandem, bei dem Gespräche wieder möglich werden, und du bringst Leichtigkeit in "
+        "Situationen, die festgefahren wirken. Achte nur darauf, dass du dabei eine eigene Meinung "
+        "behalten darfst.",
+        "Schönheit ist für dich kein Luxus. Ein stimmiger Raum, ein guter Ton zwischen Menschen, "
+        "ein Bild, das passt, all das nährt dich wirklich. Du gestaltest, wo andere nur "
+        "einrichten, und das spürt jeder, der zu dir kommt.",
+        "Entscheidungen fallen dir schwer, weil du beide Seiten wirklich siehst. Das ist keine "
+        "Schwäche, das ist Gerechtigkeitssinn. Wenn du übst, dich trotzdem zu entscheiden, auch "
+        "wenn nicht alle zufrieden sind, wächst du weit über dich hinaus.",
+    ],
+    "Skorpion": [
+        "Du gehst dorthin in die Tiefe, wo es echt wird und andere lieber wegschauen. Deine "
+        "Intensität kann verwandeln, und du hast die Kraft, aus Krisen gestärkt hervorzugehen. "
+        "Menschen spüren, dass sie dir nichts vormachen können, und genau das macht dich zu "
+        "jemandem, dem man wirklich vertraut.",
+        "Oberflächliches hält dich nicht. Du willst wissen, was wirklich läuft, und du merkst es "
+        "meistens, bevor es jemand ausspricht. Diese Klarheit kann unbequem sein, sie macht dich "
+        "aber zu einem Menschen, dem man die Wahrheit zutraut.",
+        "Du hast schon mehr als einmal etwas hinter dir gelassen und bist als jemand anderes "
+        "wieder aufgetaucht. Diese Fähigkeit, dich zu häuten, ist deine größte Kraft. Was dich "
+        "fast umgeworfen hat, ist am Ende zu deinem Fundament geworden.",
+        "Deine Gefühle sind kein Rinnsal, sie sind ein Strom. Du liebst, misstraust und schützt "
+        "mit ganzer Wucht, und halbe Sachen gibt es bei dir nicht. Solange du diese Kraft nicht "
+        "gegen dich selbst richtest, ist sie eine echte Verwandlungskraft.",
+    ],
+    "Schütze": [
+        "In dir lebt eine Weite, die nach Sinn, Freiheit und dem großen Ganzen sucht. Du brauchst "
+        "Horizont, um zu atmen, und steckst andere mit deinem Vertrauen ins Leben an. Wenn du "
+        "deiner eigenen Wahrheit folgst, wirst du zu dem Menschen, der anderen wieder Hoffnung "
+        "gibt.",
+        "Du brauchst das Gefühl, dass es weitergeht. Enge Räume, enge Regeln und enge Gedanken "
+        "rauben dir Luft, und du findest fast immer eine Tür, wo andere eine Wand sehen. Dieser "
+        "Optimismus ist keine Naivität, er ist gelebtes Vertrauen.",
+        "Dich zieht die große Frage, nicht das Kleingedruckte. Du willst verstehen, wofür das "
+        "alles gut ist, und teilst deine Erkenntnisse gern und laut. Menschen kommen zu dir, wenn "
+        "sie den Blick wieder heben wollen.",
+        "Ehrlichkeit ist dir wichtiger als Höflichkeit, und das eckt hin und wieder an. Dafür weiß "
+        "jeder, woran er bei dir ist. Wenn du deine Direktheit mit ein wenig Wärme umhüllst, wird "
+        "sie zu genau dem, was andere brauchen.",
+    ],
+    "Steinbock": [
+        "Du trägst eine stille Kraft und Ausdauer in dir, die über Jahre etwas Bleibendes aufbaut. "
+        "Verantwortung schreckt dich nicht, und auf dein Wort kann man sich verlassen. Dein "
+        "wichtiger Lernweg ist, dir zu erlauben, auch mal zu ruhen, ohne dich dafür schuldig zu "
+        "fühlen.",
+        "Du denkst in Jahren, nicht in Wochen. Was du beginnst, soll tragen, und dafür nimmst du "
+        "Umwege und Mühe in Kauf, die andere längst gescheut hätten. Diese Geduld ist der Grund, "
+        "warum bei dir etwas entsteht, das bleibt.",
+        "Verantwortung hast du oft früh übernommen, vielleicht früher als nötig. Du bist der "
+        "Mensch, der die Dinge trägt, wenn es eng wird, und das wissen alle um dich herum. Dir "
+        "selbst darfst du dieselbe Nachsicht schenken, die du anderen so leicht gibst.",
+        "Nach außen wirkst du ruhig und gefasst, während innen ein hoher Anspruch arbeitet. Erfolg "
+        "fühlt sich für dich selten nach genug an. Erlaube dir, das Erreichte wirklich "
+        "anzuschauen, bevor du schon das Nächste angehst.",
+    ],
+    "Wassermann": [
+        "Du bist auf eine schöne Weise anders und siehst die Welt von einem Punkt aus, den sonst "
+        "kaum jemand einnimmt. Deine Freiheit ist dir heilig, und dein eigener Weg macht auch "
+        "anderen Mut, sie selbst zu sein. Genau da, wo du dich manchmal fremd gefühlt hast, liegt "
+        "dein wertvollster Beitrag.",
+        "Du denkst um die Ecke, und zwar ohne es zu üben. Regeln überzeugen dich nur, wenn sie "
+        "einen Sinn haben, und du fragst nach, wo andere nicken. Dieser eigene Kopf hat dich "
+        "manchmal einsam gemacht und bringt dich am Ende immer weiter.",
+        "Du siehst schon, wohin es geht, während andere noch beim Jetzt sind. Dieses Vorausdenken "
+        "macht dich zu jemandem, der Dinge in Bewegung bringt, auch wenn es erst viel später "
+        "jemand versteht. Bleibe deinem Blick treu, auch wenn er unbequem ist.",
+        "Freiheit ist für dich keine Laune, sie ist eine Lebensbedingung. Nähe geht bei dir nur "
+        "mit Luft zum Atmen, und wer das versteht, bekommt eine ungewöhnlich treue Verbundenheit. "
+        "Deine Art, anders zu sein, gibt anderen die Erlaubnis, es auch zu sein.",
+    ],
+    "Fische": [
+        "Du spürst mehr, als sich in Worte fassen lässt, und trägst ein großes Mitgefühl in dir. "
+        "Deine Weichheit ist eine Stärke, und deine Fantasie öffnet Türen zu einer Welt hinter der "
+        "sichtbaren. Wenn du lernst, dich sanft abzugrenzen, wird dein tiefes Fühlen zum Geschenk, "
+        "ohne dich zu überfluten.",
+        "Die Grenze zwischen dir und anderen ist dünn. Du fühlst mit, ohne es zu entscheiden, und "
+        "trägst dann Stimmungen mit dir herum, die nie deine waren. Dieselbe Durchlässigkeit ist "
+        "der Grund, warum Menschen sich bei dir verstanden fühlen.",
+        "In dir lebt eine reiche innere Welt, in die du dich zurückziehen kannst. Musik, Bilder, "
+        "Träume und Stille sind für dich keine Flucht, sie sind Nahrung. Aus dieser Quelle kommt "
+        "eine Schöpferkraft, um die viele dich beneiden.",
+        "Du sehnst dich nach etwas, das größer ist als der Alltag, und diese Sehnsucht "
+        "verschwindet nie ganz. Sie macht dich weich und manchmal auch traurig. Wenn du ihr einen "
+        "Platz gibst, statt sie zu betäuben, wird sie zu deinem tiefsten Kompass.",
+    ],
+}
+
+
+def sign_voice(sign, seen=None):
+    """Zeichentext für eine Position. `seen` zählt mit, wie oft ein Zeichen im
+    selben Bauplan schon vorkam, damit jede Position eine eigene Fassung bekommt."""
+    voices = SIGN_VOICES.get(sign) or [SIGN_EMOTION.get(sign, "")]
+    if seen is None:
+        return voices[0]
+    i = seen.get(sign, 0)
+    seen[sign] = i + 1
+    return voices[i % len(voices)]
+
+
+
+# Kurzform der Zeichenstärke für das Kapitel "Deine größten Stärken". Dort stand
+# vorher der komplette SIGN_EMOTION-Absatz, also wortgleich das, was ohnehin schon
+# auf der Sonnen-Karte im Natalchart steht.
+SIGN_STRENGTH = {
+    "Widder": "dein Mut, den ersten Schritt zu machen, und deine Fähigkeit, für dich einzustehen, "
+        "wenn es darauf ankommt",
+    "Stier": "deine Verlässlichkeit und die Ruhe, mit der du etwas aufbaust, das wirklich hält",
+    "Zwillinge": "deine wache Neugier und die Leichtigkeit, mit der du Menschen und Gedanken "
+        "verbindest",
+    "Krebs": "dein feines Gespür für das, was andere brauchen, und deine Gabe, Geborgenheit zu "
+        "schaffen",
+    "Löwe": "deine Herzenswärme und die Kraft, andere zum Leuchten zu bringen, einfach weil du da "
+        "bist",
+    "Jungfrau": "dein Blick fürs Detail und die stille Sorgfalt, mit der du für andere da bist",
+    "Waage": "dein Sinn für Ausgleich und Schönheit und die Gabe, zwischen Menschen wieder Frieden "
+        "zu stiften",
+    "Skorpion": "deine Tiefe und die seltene Kraft, aus Krisen gestärkt hervorzugehen",
+    "Schütze": "deine Weite, dein Vertrauen ins Leben und die Art, wie du anderen wieder Hoffnung "
+        "machst",
+    "Steinbock": "deine Ausdauer und die stille Kraft, über Jahre etwas Bleibendes zu bauen",
+    "Wassermann": "dein eigener Blick auf die Welt und der Mut, anders zu sein und andere darin zu "
+        "bestärken",
+    "Fische": "dein großes Mitgefühl und deine Fantasie, die Türen öffnet, wo andere nur Wände "
+        "sehen",
+}
+
 PLANET_MEANING = {
     "Sonne": "Wesenskern und Lebensenergie", "Mond": "Gefühlswelt und innerer Hafen",
     "Merkur": "Denken und Sprache", "Venus": "Liebe und Werte",
@@ -948,7 +1176,7 @@ PLANET_HOUSE = {
 }
 
 
-def _pos_desc(key, sign, house):
+def _pos_desc(key, sign, house, seen=None):
     if key == "Chiron":
         full = CHIRON_SIGN.get(sign, "")
         first = full.split(". ", 1)[0].strip()
@@ -957,14 +1185,43 @@ def _pos_desc(key, sign, house):
                     "„Dein Chiron, Wunde und Heilung“ im Reiter Deutung.")
         return ("Chiron zeigt, wo du verletzlich bist, und genau dort liegt deine besondere Kraft, "
                 "andere zu heilen.")
-    base = PLANET_INTRO.get(key, "") + " " + SIGN_EMOTION.get(sign, "")
+    base = PLANET_INTRO.get(key, "") + " " + sign_voice(sign, seen)
     ph = PLANET_HOUSE.get(key, {}).get(house)
+    hm = HOUSE_MEANING.get(house, "diesen Bereich")
+    # Auch der Haus-Satz wird durchgetauscht. Stehen zwei Planeten im selben Haus,
+    # stand sonst zweimal derselbe Rahmensatz auf zwei Karten untereinander.
+    def _frame(frames):
+        """Rahmensatz durchtauschen. Ein gemeinsamer Zähler über alle Häuser, damit
+        er von Karte zu Karte wechselt und nicht nur bei zwei Planeten im selben Haus."""
+        if seen is None:
+            return frames[0]
+        i = seen.get("_haus", 0)
+        seen["_haus"] = i + 1
+        return frames[i % len(frames)]
     if ph:
-        base += (f" Weil das bei dir im {house}. Haus steht, dem Lebensfeld für "
-                 f"{HOUSE_MEANING.get(house, 'diesen Bereich')}, zeigt es sich ganz konkret so: {ph}.")
+        frames = [
+            f" Weil das bei dir im {house}. Haus steht, dem Lebensfeld für {hm}, zeigt es sich "
+            f"ganz konkret so: {ph}.",
+            f" Bei dir liegt das im {house}. Haus, deinem Lebensfeld für {hm}. Ganz konkret heißt "
+            f"das: {ph}.",
+            f" Sein Platz ist bei dir das {house}. Haus, wo es um {hm} geht. Im Alltag zeigt sich "
+            f"das so: {ph}.",
+            f" In deinem Chart fällt das ins {house}. Haus, dein Lebensfeld für {hm}. Das sieht bei "
+            f"dir so aus: {ph}.",
+            f" Das Ganze wirkt bei dir im {house}. Haus, dem Lebensfeld für {hm}. Und zwar so: "
+            f"{ph}.",
+        ]
+        base += _frame(frames)
     elif house and key not in _ANGLES:
-        base += (f" In deinem Leben spielt sich das vor allem im {house}. Haus ab, deinem "
-                 f"Lebensfeld für {HOUSE_MEANING.get(house, 'diesen Bereich')}.")
+        frames = [
+            f" In deinem Leben spielt sich das vor allem im {house}. Haus ab, deinem Lebensfeld "
+            f"für {hm}.",
+            f" Der Ort dafür ist bei dir das {house}. Haus, dein Lebensfeld für {hm}.",
+            f" Wirksam wird das vor allem dort, wo es um {hm} geht, in deinem {house}. Haus.",
+            f" In deinem Chart fällt das ins {house}. Haus, dein Lebensfeld für {hm}.",
+            f" Das Ganze wirkt bei dir im {house}. Haus, dem Lebensfeld für {hm}.",
+        ]
+        base += _frame(frames)
     return base.strip()
 
 
@@ -1978,7 +2235,7 @@ def full_analysis(chart):
     sections.append({
         "title": "Dein Entscheidungsweg",
         "subtitle": "Wie du Entscheidungen triffst, die halten",
-        "headline": f"{strat}, dann auf deine {auth} hören",
+        "headline": f"{strat}, danach auf deine {auth_phrase(auth)} hören",
         "body": ("Zwei Dinge zusammen ergeben deinen sichersten Weg zu jeder Entscheidung.\n\n"
                  f"Der erste Schritt ist deine Strategie: {strat_phrase(strat)}. So kommst du überhaupt "
                  "erst mit dem Richtigen in Berührung.\n\n"
@@ -1988,11 +2245,12 @@ def full_analysis(chart):
                  "gefragt hast, warum sich alles falsch anfühlt? In dieser Reihenfolge kann dir das "
                  "nicht mehr passieren. Erst in Berührung kommen, dann von innen prüfen, und du "
                  "triffst Entscheidungen, die du nicht mehr bereust."),
-        "takeaway": f"Dein roter Faden: {strat}. Und dann ehrlich auf deine {auth} hören.",
+        "takeaway": f"Dein roter Faden: {strat}. Und dann ehrlich auf deine {auth_phrase(auth)} hören.",
         "facts": [("Strategie", strat), ("Autorität", auth)],
     })
 
-    staerken_ext = (" Und aus deinem Geburtshoroskop: " + SIGN_EMOTION.get(sun_sign, "")) if sun_sign else ""
+    staerken_ext = ((" Und aus deinem Geburtshoroskop kommt " + SIGN_STRENGTH.get(sun_sign, "")
+                     + ".") if sun_sign and SIGN_STRENGTH.get(sun_sign) else "")
     staerken_basis = ((" Diese Zentren geben dir eine feste, verlässliche Kraft: " + ", ".join(dcs)
                        + ". Hier kannst du dich immer auf dich verlassen, egal was um dich herum "
                        "passiert.") if dcs else " Deine Kraft liegt gerade darin, offen und "
@@ -2025,8 +2283,8 @@ def full_analysis(chart):
                  + heraus_open + "\n\n"
                  "Und wie du sie meisterst: Frage dich immer wieder ehrlich, ob ein Gefühl gerade "
                  "wirklich deins ist oder nur aufgenommen. Gehe raus aus Räumen und Gesprächen, die "
-                 "dich leer machen. Und entscheide über deine " + auth_phrase(auth) + ", nicht über deinen "
-                 "Kopf. So findest du jedes Mal zu dir zurück."),
+                 "dich leer machen. Und lass die Entscheidung von innen kommen, so wie du es bei "
+                 "deiner Autorität schon gelesen hast. So findest du jedes Mal zu dir zurück."),
         "takeaway": "Dein Frühwarnsystem: Sobald sich " + amp_phrase(nots) + " meldet, halte "
                     "inne und komm zu deiner eigenen Natur zurück.",
         "facts": [("Nicht-Selbst-Thema", nots)],
@@ -2140,8 +2398,8 @@ def full_analysis(chart):
                      "ganzes Leben gewünscht hast: An dir ist nichts kaputt und war es nie. Diese "
                      "Wunde macht dich nicht schwächer. Sie macht dich weich. Weil du diesen Schmerz so gut kennst, "
                      "spürst du ihn bei anderen sofort. Du bist der Mensch, der einem anderen sagen "
-                     "kann: Du bist genug. Und der es auch so meint. Deine Wunde und deine Gabe sind "
-                     "dieselbe Stelle. Du heilst genau durch sie."),
+                     "kann: Du bist genug. Und der es auch so meint. Du heilst andere durch genau "
+                     "die Stelle, an der du selbst verletzt wurdest."),
             "takeaway": ("Wenn du nur einen Satz behältst: An dir ist nichts kaputt. Deine Wunde und "
                          "deine Gabe sind dieselbe Stelle."),
             "tip": ("So arbeitest du mit dieser Wunde", CHIRON_HEAL_TIP.get(chi["sign"], "")),
@@ -2213,6 +2471,8 @@ def full_analysis(chart):
     # Aufklappbare Positionskarten (Natal). Reihenfolge: Sonne, Mond, AC, DC, MC, IC, dann Planeten.
     positions = []
 
+    _sign_seen = {}
+
     def _pos(key, label, p, house):
         return {
             "key": key, "label": label, "sym": p.get("sym_body", key) if key not in _ANGLES else key,
@@ -2220,7 +2480,8 @@ def full_analysis(chart):
             "element": SIGN_ELEMENT.get(p["sign"], ""), "house": house,
             "house_pl": p.get("house_pl", house),
             "house_meaning": HOUSE_MEANING.get(house, "") if house else "",
-            "meaning": PLANET_MEANING.get(key, ""), "desc": _pos_desc(key, p["sign"], house),
+            "meaning": PLANET_MEANING.get(key, ""),
+            "desc": _pos_desc(key, p["sign"], house, _sign_seen),
         }
 
     if nat.get("Sonne"):
