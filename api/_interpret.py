@@ -2272,8 +2272,8 @@ def full_analysis(chart):
                  "Du merkst: Vieles, was du für dein Problem gehalten hast, war nie deins. Du hast es "
                  "nur aufgenommen."),
         "takeaway": ("Kurz gesagt: Deine definierten Zentren sind dein fester Halt, deine offenen "
-                     "deine Lernräume. Vieles, was du für dein Problem hieltest, hast du nur "
-                     "aufgenommen."),
+                     "sind deine Lernräume. Und vieles, was du für dein Problem gehalten hast, "
+                     "hast du nur aufgenommen."),
         "facts": [("Definiert", ", ".join(defined) or "keine"),
                   ("Offen", ", ".join(open_c) or "keine")],
     })
@@ -2343,8 +2343,9 @@ def full_analysis(chart):
                  "wirklich deins ist oder nur aufgenommen. Gehe raus aus Räumen und Gesprächen, die "
                  "dich leer machen. Und lass die Entscheidung von innen kommen, so wie du es bei "
                  "deiner Autorität schon gelesen hast. So findest du jedes Mal zu dir zurück."),
-        "takeaway": "Dein Frühwarnsystem: Sobald sich " + amp_phrase(nots) + " meldet, halte "
-                    "inne und komm zu deiner eigenen Natur zurück.",
+        "takeaway": ("Dein Frühwarnsystem: Sobald sich " + amp_phrase(nots)
+                     + (" melden" if " und " in amp_phrase(nots) else " meldet")
+                     + ", halte inne und komme zu deiner eigenen Natur zurück."),
         "facts": [("Nicht-Selbst-Thema", nots)],
     })
 
