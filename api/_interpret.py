@@ -136,6 +136,14 @@ def strat_phrase(strat):
     return STRATEGY_PHRASE.get(strat, strat)
 
 
+def aufzaehlung(items):
+    """Aufzählung mit "und" statt einer langen Kommakette am Ende."""
+    items = [str(x) for x in items if x]
+    if len(items) <= 1:
+        return items[0] if items else ""
+    return ", ".join(items[:-1]) + " und " + items[-1]
+
+
 def amp_phrase(text):
     """Kaufmanns-Und gehört in eine Tabelle, nicht in einen Fließtext."""
     return str(text or "").replace(" & ", " und ")
@@ -1200,10 +1208,10 @@ def _pos_desc(key, sign, house, seen=None):
         return frames[i % len(frames)]
     if ph:
         frames = [
-            f" Weil das bei dir im {house}. Haus steht, dem Lebensfeld für {hm}, zeigt es sich "
-            f"ganz konkret so: {ph}.",
-            f" Bei dir liegt das im {house}. Haus, deinem Lebensfeld für {hm}. Ganz konkret heißt "
-            f"das: {ph}.",
+            f" Bei dir steht das im {house}. Haus, deinem Lebensfeld für {hm}. Ganz konkret zeigt "
+            f"es sich so: {ph}.",
+            f" Sein Ort ist bei dir das {house}. Haus. Da geht es um {hm}. Bei dir heißt das: "
+            f"{ph}.",
             f" Sein Platz ist bei dir das {house}. Haus, wo es um {hm} geht. Im Alltag zeigt sich "
             f"das so: {ph}.",
             f" In deinem Chart fällt das ins {house}. Haus, dein Lebensfeld für {hm}. Das sieht bei "
@@ -1411,7 +1419,7 @@ def build_intuition(chart):
                 for e in order],
         "note": "Der Intuitionstyp ist kein klassisches Human-Design- oder Astrologie-System, "
                 "sondern ein eigenes Deutungsbild von Intuition mit Herz. Er entsteht aus deinem "
-                "Mond, aus Neptun und Pluto und aus deinen Wasserhäusern (4, 8 und 12), also aus den "
+                "Mond, aus Neptun und Pluto und aus deinen Wasserhäusern 4, 8 und 12. Das sind die "
                 "Stellen im Chart, die in der Astrologie traditionell mit Gefühl, Tiefe und "
                 "Wahrnehmung verbunden sind. Verstehe ihn als ein Bild zur Selbstreflexion, das dich "
                 "an deine eigene innere Stimme erinnert.",
@@ -1448,9 +1456,9 @@ def build_intuition(chart):
     facets = []
     if mh:
         facets.append({"title": "Wo deine Intuition am wachsten ist",
-            "text": f"Dein Mond steht in deinem {mh}. Lebensfeld. Hier, wo es um "
-                    f"{HOUSE_MEANING.get(mh, 'diesen Bereich')} geht, ist deine Intuition am "
-                    f"wachsten, und deinem Gefühl kannst du in diesen Themen besonders trauen."})
+            "text": f"Dein Mond steht in deinem {mh}. Lebensfeld. Hier geht es um "
+                    f"{HOUSE_MEANING.get(mh, 'diesen Bereich')}. Genau in diesen Themen ist deine "
+                    f"Intuition am wachsten, und deinem Gefühl darfst du hier besonders trauen."})
     if (nep and (nep.get("house") == 12 or nep["sign"] == "Fische")) or \
             mn in ("Konjunktion", "Opposition", "Trigon"):
         facets.append({"title": "Deine feinfühlige, fast mediale Ader",
@@ -2249,10 +2257,12 @@ def full_analysis(chart):
         "facts": [("Strategie", strat), ("Autorität", auth)],
     })
 
-    staerken_ext = ((" Und aus deinem Geburtshoroskop kommt " + SIGN_STRENGTH.get(sun_sign, "")
-                     + ".") if sun_sign and SIGN_STRENGTH.get(sun_sign) else "")
-    staerken_basis = ((" Diese Zentren geben dir eine feste, verlässliche Kraft: " + ", ".join(dcs)
-                       + ". Hier kannst du dich immer auf dich verlassen, egal was um dich herum "
+    staerken_ext = ((" Und dein Geburtshoroskop legt noch etwas dazu: "
+                     + SIGN_STRENGTH.get(sun_sign, "") + ".")
+                    if sun_sign and SIGN_STRENGTH.get(sun_sign) else "")
+    staerken_basis = ((" " + aufzaehlung(dcs) + (" sind bei dir definiert." if len(dcs) > 1
+                       else " ist bei dir definiert.")
+                       + " Hier kannst du dich immer auf dich verlassen, egal was um dich herum "
                        "passiert.") if dcs else " Deine Kraft liegt gerade darin, offen und "
                       "beweglich zu bleiben und andere fein zu spüren.")
     sections.append({
@@ -2269,8 +2279,8 @@ def full_analysis(chart):
         "facts": [("Sonne", sun_sign), ("Signatur", sig)],
     })
 
-    heraus_open = ((" Dazu kommen deine offenen Zentren (" + ", ".join(ocs) + "), die du oben schon "
-                    "kennengelernt hast. Genau dort nimmst du fremden Druck am leichtesten für deinen "
+    heraus_open = ((" Dazu kommen deine offenen Zentren: " + aufzaehlung(ocs) + ". Die hast du oben schon "
+                    "kennengelernt. Genau dort nimmst du fremden Druck am leichtesten für deinen "
                     "eigenen und erschöpfst dich, ohne zu wissen, warum.") if ocs else "")
     sections.append({
         "title": "Deine größte Herausforderung",
@@ -2358,9 +2368,9 @@ def full_analysis(chart):
             f"lässt. Es hält dich klein und nennt es Schutz.\n\n"
             f"Jetzt kommt der Teil, den du nicht überspringen darfst, das Wie: Du wächst da nicht "
             f"rein, indem du darüber nachdenkst. Du wächst rein, indem du im echten Leben immer wieder "
-            f"anders handelst als sonst. Als {hd['type']} gelingt dir das über genau den "
-            f"Entscheidungsweg, den du weiter oben schon entdeckt hast: erst dein eigener Impuls, dann "
-            f"die ruhige Prüfung von innen, statt aus dem alten Reflex heraus. Jedes Mal, wenn du "
+            f"anders handelst als sonst. Als {hd['type']} gelingt dir das über den Entscheidungsweg, "
+            f"den du weiter oben schon entdeckt hast. Erst dein eigener Impuls, dann die ruhige "
+            f"Prüfung von innen. Und eben nicht der alte Reflex. Jedes Mal, wenn du "
             f"dich in einem dieser Momente für den ungewohnten, den {nk['sign']}-Weg entscheidest, "
             f"erfüllst du ein Stück deiner Lebensaufgabe. Es sind keine großen Gesten. Es sind die "
             f"kleinen, unbequemen Entscheidungen, in denen du dich für dich entscheidest.\n\n"
