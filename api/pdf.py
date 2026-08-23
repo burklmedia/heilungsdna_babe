@@ -589,7 +589,7 @@ def _uebersicht(pdf, teaser, full):
     _heading_block(pdf, "Übersicht", "Auf einen Blick", on_dark=True)
     _para(pdf, (name + ", " if name else "") +
           "was du gleich liest, ist kein Test und kein Urteil. Es ist ein Blick auf das, "
-          "was in dir angelegt ist, seit dem ersten Moment deines Lebens. Prüf beim Lesen "
+          "was in dir angelegt ist, seit dem ersten Moment deines Lebens. Prüfe beim Lesen "
           "immer selbst, was sich stimmig anfühlt. Was nicht passt, darfst du liegen lassen.",
           font="Mul", size=10, color=INK_SOFT, h=5.8, after=5)
 
@@ -1244,6 +1244,8 @@ def _intuition(pdf, it):
         pdf.ln(2)
         _para(pdf, depth.get("summary"), font="Cormo", style="I", size=13,
               color=GOLD_DK, h=6.4, after=4)
+        if depth.get("caveat"):
+            _para(pdf, depth["caveat"], size=10.5, color=BODY_DK, h=5.9, after=4)
         for fc in depth.get("facets", []):
             _unit(pdf, fc.get("title") or "", "", None, fc.get("text") or "")
     if it.get("tools"):
@@ -1317,7 +1319,7 @@ def _deutung(pdf, sections):
     pdf.add_page()
     _heading_block(pdf, "Deutung", "Deine Deutung", on_dark=True)
     _para(pdf, "Hier ist alles in Klartext für dich gedeutet, ein Abschnitt nach dem "
-               "anderen. Prüf beim Lesen immer selbst, was sich stimmig anfühlt. Was "
+               "anderen. Prüfe beim Lesen immer selbst, was sich stimmig anfühlt. Was "
                "nicht passt, darfst du liegen lassen.",
           size=10.5, color=BODY_DK, h=6, after=3)
     for i, s in enumerate(sections):
