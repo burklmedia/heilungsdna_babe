@@ -6,6 +6,7 @@ Ton: warm, klar, gefühlvoll, in Du-Form. Ohne Gedankenstriche, ohne
 "nicht ... sondern"-Konstruktionen. Menschen sollen sich wiedererkennen.
 Die Zahlen bleiben immer die exakt berechneten aus _engine.py.
 """
+import re
 from datetime import date
 
 TYPE_INFO = {
@@ -134,6 +135,17 @@ STRATEGY_PHRASE = {
 def strat_phrase(strat):
     """Strategie, klein eingebettet in einen Fließsatz, Substantive bleiben groß."""
     return STRATEGY_PHRASE.get(strat, strat)
+
+
+# Kurzform der zwölf Häuser für den Fließtext. Die ausführliche HOUSE_MEANING-Fassung
+# zählt drei Begriffe auf und wiederholte damit fast immer ein Wort aus dem Satz daneben
+# ("dem Lebensfeld für deinen Alltag … deine Stimmung hängt stark an deinem Alltag").
+HOUSE_SHORT = {
+    1: "dein Selbst", 2: "Werte und Sicherheit", 3: "Denken und Austausch",
+    4: "Wurzeln und Zuhause", 5: "Ausdruck und Freude", 6: "Alltag und Gesundheit",
+    7: "deine Beziehungen", 8: "Tiefe und Wandlung", 9: "Sinn und Weite",
+    10: "deine Berufung", 11: "Gemeinschaft und Zukunft", 12: "Rückzug und Verborgenes",
+}
 
 
 def aufzaehlung(items):
@@ -727,8 +739,8 @@ SIGN_EMOTION = {
                 "wird deine Gabe zur Quelle statt zur Last.",
     "Waage": "Du sehnst dich nach Harmonie, Schönheit und einem Miteinander auf Augenhöhe. Du "
              "spürst Ungleichgewicht sofort und hast die Gabe, zwischen Menschen wieder Frieden zu "
-             "stiften. Deine Aufgabe ist, dabei nie dich selbst zu vergessen, denn echte Harmonie "
-             "schließt dich mit ein.",
+             "stiften. Deine Aufgabe ist, dabei nie dich selbst zu vergessen, denn ein echter "
+             "Ausgleich schließt dich mit ein.",
     "Skorpion": "Du gehst dorthin in die Tiefe, wo es echt wird und andere lieber wegschauen. Deine "
                 "Intensität kann verwandeln, und du hast die Kraft, aus Krisen gestärkt "
                 "hervorzugehen. Menschen spüren, dass sie dir nichts vormachen können, und genau das "
@@ -755,12 +767,11 @@ SIGN_EMOTION = {
 # im selben Zeichen, bekam bisher jeder wortwörtlich denselben Text. Jetzt rotiert die
 # Deutung durch, sodass sich innerhalb eines Bauplans nichts wiederholt.
 # Fassung 0 ist jeweils der bisherige Text aus SIGN_EMOTION.
-SIGN_VOICES = {
+# Weitere gleichwertige Fassungen je Sternzeichen. Stehen bei jemandem drei Planeten
+# im selben Zeichen, bekam bisher jeder wortwörtlich denselben Text. Zusammen mit
+# SIGN_EMOTION ergibt das vier Fassungen, durch die die Deutung durchrotiert.
+SIGN_VOICES_EXTRA = {
     "Widder": [
-        "Du trägst ein Feuer in dir, das losgehen will, sobald es etwas spürt. Warten fällt dir "
-        "schwer, und manchmal bist du schneller unterwegs, als dein Umfeld folgen kann. Genau "
-        "diese mutige Direktheit bringt Bewegung in dein Leben und erlaubt dir, für dich "
-        "einzustehen, wenn es darauf ankommt.",
         "In dir sitzt ein Startimpuls, der keine langen Vorreden mag. Du merkst sofort, wenn etwas "
         "dran ist, und bist oft schon unterwegs, während andere noch überlegen. Diese Klarheit im "
         "Handeln ist deine Kraft, auch wenn sie hin und wieder anecken darf.",
@@ -772,10 +783,6 @@ SIGN_VOICES = {
         "aus deinem Feuer eine Kraft, die trägt statt zu verbrennen.",
     ],
     "Stier": [
-        "Du sehnst dich nach Ruhe, Sicherheit und Dingen, die bleiben. Du genießt mit allen Sinnen "
-        "und brauchst festen Boden unter den Füßen, um dich wirklich fallen zu lassen. Menschen "
-        "fühlen sich bei dir geborgen, weil du eine Verlässlichkeit ausstrahlst, auf die man sich "
-        "stützen kann.",
         "Du brauchst Dinge, die halten. Schnelle Wechsel machen dich nicht schneller, sie machen "
         "dich müde, denn deine Kraft kommt aus dem, was bleibt. Was du einmal aufgebaut hast, hat "
         "Bestand, und darauf können sich Menschen wirklich stützen.",
@@ -787,10 +794,6 @@ SIGN_VOICES = {
         "Boden hast, wirst du großzügig, warm und erstaunlich unerschütterlich.",
     ],
     "Zwillinge": [
-        "Dein Geist ist ständig in Bewegung, neugierig auf alles, was es zu entdecken und zu "
-        "bereden gibt. Du kommst über Worte in Verbindung und bringst Leichtigkeit dorthin, wo es "
-        "sonst schwer würde. Manchmal springst du von Thema zu Thema, und genau diese wache "
-        "Vielseitigkeit ist dein Geschenk.",
         "Du denkst in Verbindungen. Wo andere ein Thema sehen, siehst du drei, und du bringst "
         "Menschen und Ideen zusammen, die sonst nie voneinander gehört hätten. Diese schnelle "
         "Auffassungsgabe ist ein Geschenk, auch wenn sie dich manchmal selbst überholt.",
@@ -802,10 +805,6 @@ SIGN_VOICES = {
         "gleichzeitig zu lieben, statt dich zu einer Sache zu zwingen, blühst du auf.",
     ],
     "Krebs": [
-        "Du fühlst tiefer, als du es oft nach außen zeigst, und Nähe ist für dich wie ein Zuhause. "
-        "Du spürst feinfühlig, was andere brauchen, oft bevor sie es selbst wissen. In deiner "
-        "Gegenwart fühlen sich Menschen sicher und gehalten, weil du Räume schaffst, in denen man "
-        "einfach sein darf.",
         "Du nimmst Stimmungen auf wie ein Schwamm, oft ohne es zu wollen. Zuhause ist für dich "
         "kein Ort, sondern ein Gefühl, und du baust es überall dort, wo du dich sicher fühlst. "
         "Diese Fähigkeit, Geborgenheit herzustellen, haben nur wenige Menschen.",
@@ -818,9 +817,6 @@ SIGN_VOICES = {
         "behandelst.",
     ],
     "Löwe": [
-        "In dir wohnt eine Wärme, die gesehen werden will und andere zum Leuchten bringt. Wenn du "
-        "aus dem Herzen heraus lebst, ziehst du Menschen an und schenkst ihnen Mut. Du bist am "
-        "schönsten, wenn du dich traust, groß zu sein, ganz ohne dich dafür zu entschuldigen.",
         "Du hast eine natürliche Ausstrahlung, die einen Raum wärmer macht. Wenn du dich "
         "zurücknimmst, um bloß niemanden zu überstrahlen, wird es für alle grauer, nicht nur für "
         "dich. Dein Leuchten ist kein Egoismus, es ist ein Geschenk an andere.",
@@ -832,10 +828,6 @@ SIGN_VOICES = {
         "Menschen dir folgen, lange bevor du irgendetwas beweisen musst.",
     ],
     "Jungfrau": [
-        "Du hast ein feines Gespür für das, was noch besser werden kann, und einen echten Wunsch "
-        "zu helfen. Deine Liebe zeigt sich im Detail, in der Sorgfalt und in der stillen Art, für "
-        "andere da zu sein. Wenn du diese Güte auch dir selbst schenkst, wird deine Gabe zur "
-        "Quelle statt zur Last.",
         "Du siehst die Details, die anderen entgehen. Was für dich selbstverständlich ist, "
         "empfinden andere als große Aufmerksamkeit, und deine Hilfe kommt fast immer genau dort "
         "an, wo sie gebraucht wird. Nur der Maßstab, den du an dich selbst legst, darf "
@@ -848,10 +840,6 @@ SIGN_VOICES = {
         "zwischendurch, etwas gut sein zu lassen, bevor es perfekt ist.",
     ],
     "Waage": [
-        "Du sehnst dich nach Harmonie, Schönheit und einem Miteinander auf Augenhöhe. Du spürst "
-        "Ungleichgewicht sofort und hast die Gabe, zwischen Menschen wieder Frieden zu stiften. "
-        "Deine Aufgabe ist, dabei nie dich selbst zu vergessen, denn echte Harmonie schließt dich "
-        "mit ein.",
         "Du merkst sofort, wenn zwischen Menschen etwas kippt. Diese Antenne macht dich zu "
         "jemandem, bei dem Gespräche wieder möglich werden, und du bringst Leichtigkeit in "
         "Situationen, die festgefahren wirken. Achte nur darauf, dass du dabei eine eigene Meinung "
@@ -864,10 +852,6 @@ SIGN_VOICES = {
         "wenn nicht alle zufrieden sind, wächst du weit über dich hinaus.",
     ],
     "Skorpion": [
-        "Du gehst dorthin in die Tiefe, wo es echt wird und andere lieber wegschauen. Deine "
-        "Intensität kann verwandeln, und du hast die Kraft, aus Krisen gestärkt hervorzugehen. "
-        "Menschen spüren, dass sie dir nichts vormachen können, und genau das macht dich zu "
-        "jemandem, dem man wirklich vertraut.",
         "Oberflächliches hält dich nicht. Du willst wissen, was wirklich läuft, und du merkst es "
         "meistens, bevor es jemand ausspricht. Diese Klarheit kann unbequem sein, sie macht dich "
         "aber zu einem Menschen, dem man die Wahrheit zutraut.",
@@ -879,10 +863,6 @@ SIGN_VOICES = {
         "gegen dich selbst richtest, ist sie eine echte Verwandlungskraft.",
     ],
     "Schütze": [
-        "In dir lebt eine Weite, die nach Sinn, Freiheit und dem großen Ganzen sucht. Du brauchst "
-        "Horizont, um zu atmen, und steckst andere mit deinem Vertrauen ins Leben an. Wenn du "
-        "deiner eigenen Wahrheit folgst, wirst du zu dem Menschen, der anderen wieder Hoffnung "
-        "gibt.",
         "Du brauchst das Gefühl, dass es weitergeht. Enge Räume, enge Regeln und enge Gedanken "
         "rauben dir Luft, und du findest fast immer eine Tür, wo andere eine Wand sehen. Dieser "
         "Optimismus ist keine Naivität, er ist gelebtes Vertrauen.",
@@ -894,10 +874,6 @@ SIGN_VOICES = {
         "sie zu genau dem, was andere brauchen.",
     ],
     "Steinbock": [
-        "Du trägst eine stille Kraft und Ausdauer in dir, die über Jahre etwas Bleibendes aufbaut. "
-        "Verantwortung schreckt dich nicht, und auf dein Wort kann man sich verlassen. Dein "
-        "wichtiger Lernweg ist, dir zu erlauben, auch mal zu ruhen, ohne dich dafür schuldig zu "
-        "fühlen.",
         "Du denkst in Jahren, nicht in Wochen. Was du beginnst, soll tragen, und dafür nimmst du "
         "Umwege und Mühe in Kauf, die andere längst gescheut hätten. Diese Geduld ist der Grund, "
         "warum bei dir etwas entsteht, das bleibt.",
@@ -909,10 +885,6 @@ SIGN_VOICES = {
         "anzuschauen, bevor du schon das Nächste angehst.",
     ],
     "Wassermann": [
-        "Du bist auf eine schöne Weise anders und siehst die Welt von einem Punkt aus, den sonst "
-        "kaum jemand einnimmt. Deine Freiheit ist dir heilig, und dein eigener Weg macht auch "
-        "anderen Mut, sie selbst zu sein. Genau da, wo du dich manchmal fremd gefühlt hast, liegt "
-        "dein wertvollster Beitrag.",
         "Du denkst um die Ecke, und zwar ohne es zu üben. Regeln überzeugen dich nur, wenn sie "
         "einen Sinn haben, und du fragst nach, wo andere nicken. Dieser eigene Kopf hat dich "
         "manchmal einsam gemacht und bringt dich am Ende immer weiter.",
@@ -924,10 +896,6 @@ SIGN_VOICES = {
         "Deine Art, anders zu sein, gibt anderen die Erlaubnis, es auch zu sein.",
     ],
     "Fische": [
-        "Du spürst mehr, als sich in Worte fassen lässt, und trägst ein großes Mitgefühl in dir. "
-        "Deine Weichheit ist eine Stärke, und deine Fantasie öffnet Türen zu einer Welt hinter der "
-        "sichtbaren. Wenn du lernst, dich sanft abzugrenzen, wird dein tiefes Fühlen zum Geschenk, "
-        "ohne dich zu überfluten.",
         "Die Grenze zwischen dir und anderen ist dünn. Du fühlst mit, ohne es zu entscheiden, und "
         "trägst dann Stimmungen mit dir herum, die nie deine waren. Dieselbe Durchlässigkeit ist "
         "der Grund, warum Menschen sich bei dir verstanden fühlen.",
@@ -940,16 +908,37 @@ SIGN_VOICES = {
     ],
 }
 
+# Fassung 0 ist immer der Text aus SIGN_EMOTION, damit beide nie auseinanderlaufen.
+SIGN_VOICES = {sg: [txt] + SIGN_VOICES_EXTRA.get(sg, [])
+               for sg, txt in SIGN_EMOTION.items()}
 
-def sign_voice(sign, seen=None):
-    """Zeichentext für eine Position. `seen` zählt mit, wie oft ein Zeichen im
-    selben Bauplan schon vorkam, damit jede Position eine eigene Fassung bekommt."""
+
+_ECHO_STOP = {"deine", "deiner", "deinem", "deinen", "menschen", "leben", "andere",
+              "anderen", "dinge", "dingen", "diese", "dieser"}
+
+
+def _schlagworte(text):
+    """Sinntragende Substantive eines Textes, klein und ohne Füllwörter."""
+    return {w.lower() for w in re.findall(r"[A-ZÄÖÜ][a-zäöüß]{4,}", text or "")} - _ECHO_STOP
+
+
+def sign_voice(sign, seen=None, ohne_echo=""):
+    """Zeichentext für eine Position.
+
+    `seen` merkt sich die schon vergebenen Fassungen, damit zwei Planeten im selben
+    Zeichen nie denselben Text bekommen. `ohne_echo` ist der Text, der direkt davor
+    steht, also die Planeteneinleitung. Wo es geht, wird eine Fassung gewählt, die
+    kein Wort daraus wiederholt, sonst steht "Feuer" oder "Kraft" zweimal im Absatz.
+    """
     voices = SIGN_VOICES.get(sign) or [SIGN_EMOTION.get(sign, "")]
     if seen is None:
         return voices[0]
-    i = seen.get(sign, 0)
-    seen[sign] = i + 1
-    return voices[i % len(voices)]
+    benutzt = seen.setdefault("_zeichen", {}).setdefault(sign, [])
+    frei = [i for i in range(len(voices)) if i not in benutzt] or list(range(len(voices)))
+    echo = _schlagworte(ohne_echo)
+    wahl = next((i for i in frei if not (_schlagworte(voices[i]) & echo)), frei[0])
+    benutzt.append(wahl)
+    return voices[wahl]
 
 
 
@@ -997,13 +986,14 @@ PLANET_INTRO = {
     "Merkur": "Merkur ist deine Art zu denken, zu reden und die Welt in Worte zu fassen.",
     "Venus": "Venus ist deine Art zu lieben, zu genießen und zu spüren, was dir wirklich kostbar "
              "ist.",
-    "Mars": "Mars ist dein Feuer, dein Antrieb und die Art, wie du für dich einstehst und Dinge ins "
-            "Rollen bringst.",
+    "Mars": "Mars ist dein Antrieb, deine Durchsetzungskraft und die Art, wie du für dich "
+            "einstehst und etwas ins Rollen bringst.",
     "Jupiter": "Jupiter ist der Ort in dir, an dem du wächst, vertraust und das Leben größer "
                "denkst.",
     "Saturn": "Saturn ist dein innerer Lehrmeister, der zeigt, wo du reifst, Verantwortung "
               "übernimmst und etwas Tragfähiges baust.",
-    "Uranus": "Uranus ist der Teil von dir, der frei sein will, der aufbricht und Dinge neu denkt.",
+    "Uranus": "Uranus ist der Teil von dir, der frei sein will, der aufbricht und alles neu "
+              "denkt.",
     "Neptun": "Neptun ist deine Sehnsucht, deine Fantasie und deine Verbindung zu etwas Größerem.",
     "Pluto": "Pluto ist deine Tiefe, deine Wandlungskraft und die Fähigkeit, dich immer wieder neu "
              "zu erschaffen.",
@@ -1129,7 +1119,7 @@ PLANET_HOUSE = {
         1: "du wirkst ernst und diszipliniert, dein Selbstvertrauen blüht erst spät richtig auf",
         2: "Sorgen um Sicherheit sind dein Lernfeld, du baust langsam, aber dauerhaft auf",
         3: "du denkst gründlich, und aus frühen Lernhürden wird mit der Zeit echte Expertise",
-        4: "in deiner Herkunft lag viel Verantwortung, du kommst innerlich eher spät an",
+        4: "in deiner Herkunft lag früh viel auf deinen Schultern, du kommst innerlich eher spät an",
         5: "dein Selbstausdruck ist erst gehemmt, deine Kreativität reift zu etwas Ernstem",
         6: "du bist sehr pflichtbewusst und brauchst Disziplin für deine Gesundheit",
         7: "deine Bindungen sind ernst und dauerhaft, Beziehung ist für dich ein Reifeweg",
@@ -1171,7 +1161,7 @@ PLANET_HOUSE = {
         1: "du hast eine intensive, fast magnetische Präsenz",
         2: "du wandelst deinen Selbstwert und findest Kraft über deine Ressourcen",
         3: "dein Denken ist durchdringend, und deine Worte haben echtes Gewicht",
-        4: "in deiner Herkunft wirkten tiefe Kräfte, deine Familie durchläuft Wandlung",
+        4: "in deiner Herkunft wirkten starke Kräfte, deine Familie hat viel Umbruch erlebt",
         5: "dein Selbstausdruck ist intensiv, und deine Lieben verwandeln dich",
         6: "du wandelst zwanghafte Alltagsmuster und regenerierst dich aus der Tiefe",
         7: "deine Beziehungen sind intensiv, Macht und Kontrolle sind ein echtes Thema",
@@ -1189,15 +1179,15 @@ def _pos_desc(key, sign, house, seen=None):
         full = CHIRON_SIGN.get(sign, "")
         first = full.split(". ", 1)[0].strip()
         if first:
-            return (first + ". Die ganze Deutung deiner Wunde und Heilkraft findest du im Kapitel "
-                    "„Dein Chiron, Wunde und Heilung“ im Reiter Deutung.")
+            return (first + ". Ausführlich liest du das im Reiter Deutung, im Kapitel über "
+                    "deinen Chiron.")
         return ("Chiron zeigt, wo du verletzlich bist, und genau dort liegt deine besondere Kraft, "
                 "andere zu heilen.")
-    base = PLANET_INTRO.get(key, "") + " " + sign_voice(sign, seen)
+    intro = PLANET_INTRO.get(key, "")
     ph = PLANET_HOUSE.get(key, {}).get(house)
-    hm = HOUSE_MEANING.get(house, "diesen Bereich")
-    # Auch der Haus-Satz wird durchgetauscht. Stehen zwei Planeten im selben Haus,
-    # stand sonst zweimal derselbe Rahmensatz auf zwei Karten untereinander.
+    kurz = HOUSE_SHORT.get(house, "diesen Bereich")
+    base = intro + " " + sign_voice(sign, seen, intro + " " + (ph or ""))
+
     def _frame(frames):
         """Rahmensatz durchtauschen. Ein gemeinsamer Zähler über alle Häuser, damit
         er von Karte zu Karte wechselt und nicht nur bei zwei Planeten im selben Haus."""
@@ -1206,29 +1196,56 @@ def _pos_desc(key, sign, house, seen=None):
         i = seen.get("_haus", 0)
         seen["_haus"] = i + 1
         return frames[i % len(frames)]
+
+    def _echo(label, *texte):
+        """Taucht ein Begriff aus dem Hausnamen im Text daneben schon auf?"""
+        rest = set()
+        for t in texte:
+            rest |= {w.lower() for w in re.findall(r"[A-Za-zÄÖÜäöüß]{4,}", t or "")}
+        return bool(_schlagworte(label) & rest)
+
     if ph:
-        frames = [
-            f" Bei dir steht das im {house}. Haus, deinem Lebensfeld für {hm}. Ganz konkret zeigt "
-            f"es sich so: {ph}.",
-            f" Sein Ort ist bei dir das {house}. Haus. Da geht es um {hm}. Bei dir heißt das: "
-            f"{ph}.",
-            f" Sein Platz ist bei dir das {house}. Haus, wo es um {hm} geht. Im Alltag zeigt sich "
-            f"das so: {ph}.",
-            f" In deinem Chart fällt das ins {house}. Haus, dein Lebensfeld für {hm}. Das sieht bei "
-            f"dir so aus: {ph}.",
-            f" Das Ganze wirkt bei dir im {house}. Haus, dem Lebensfeld für {hm}. Und zwar so: "
-            f"{ph}.",
-        ]
+        if _echo(kurz, base, ph):
+            frames = [
+                f" Bei dir steht das im {house}. Haus. Ganz konkret zeigt es sich so: {ph}.",
+                f" Sein Ort ist bei dir das {house}. Haus. Bei dir heißt das: {ph}.",
+                f" Angesiedelt ist das bei dir im {house}. Haus. Ganz praktisch sieht das so "
+                f"aus: {ph}.",
+                f" In deinem Chart fällt das ins {house}. Haus. Und zwar so: {ph}.",
+                f" Das Ganze wirkt bei dir im {house}. Haus. Konkret heißt das: {ph}.",
+            ]
+        else:
+            frames = [
+                f" Bei dir steht das im {house}. Haus, deinem Lebensfeld für {kurz}. Ganz konkret "
+                f"zeigt es sich so: {ph}.",
+                f" Sein Ort ist bei dir das {house}. Haus. Da geht es um {kurz}. Bei dir heißt "
+                f"das: {ph}.",
+                f" Angesiedelt ist das bei dir im {house}. Haus, wo es um {kurz} geht. Ganz "
+                f"praktisch sieht das so aus: {ph}.",
+                f" In deinem Chart fällt das ins {house}. Haus, dein Lebensfeld für {kurz}. Und "
+                f"zwar so: {ph}.",
+                f" Das Ganze wirkt bei dir im {house}. Haus, dem Lebensfeld für {kurz}. Konkret "
+                f"heißt das: {ph}.",
+            ]
         base += _frame(frames)
     elif house and key not in _ANGLES:
-        frames = [
-            f" In deinem Leben spielt sich das vor allem im {house}. Haus ab, deinem Lebensfeld "
-            f"für {hm}.",
-            f" Der Ort dafür ist bei dir das {house}. Haus, dein Lebensfeld für {hm}.",
-            f" Wirksam wird das vor allem dort, wo es um {hm} geht, in deinem {house}. Haus.",
-            f" In deinem Chart fällt das ins {house}. Haus, dein Lebensfeld für {hm}.",
-            f" Das Ganze wirkt bei dir im {house}. Haus, dem Lebensfeld für {hm}.",
-        ]
+        if _echo(kurz, base):
+            frames = [
+                f" In deinem Leben spielt sich das vor allem im {house}. Haus ab.",
+                f" Der Ort dafür ist bei dir das {house}. Haus.",
+                f" Wirksam wird das bei dir vor allem im {house}. Haus.",
+                f" In deinem Chart fällt das ins {house}. Haus.",
+                f" Das Ganze wirkt bei dir im {house}. Haus.",
+            ]
+        else:
+            frames = [
+                f" In deinem Leben spielt sich das vor allem im {house}. Haus ab, deinem "
+                f"Lebensfeld für {kurz}.",
+                f" Der Ort dafür ist bei dir das {house}. Haus, dein Lebensfeld für {kurz}.",
+                f" Wirksam wird das vor allem dort, wo es um {kurz} geht, in deinem {house}. Haus.",
+                f" In deinem Chart fällt das ins {house}. Haus, dein Lebensfeld für {kurz}.",
+                f" Das Ganze wirkt bei dir im {house}. Haus, dem Lebensfeld für {kurz}.",
+            ]
         base += _frame(frames)
     return base.strip()
 
@@ -1934,6 +1951,11 @@ _ELEMENT_ADJ = {"Feuer": "lebendig und tatkräftig", "Erde": "geerdet und verlä
                 "Luft": "wach und verbindend", "Wasser": "tief und feinfühlig"}
 _ASPECTS = [(0, 7, "Konjunktion"), (60, 5, "Sextil"), (90, 6, "Quadrat"),
             (120, 7, "Trigon"), (180, 7, "Opposition"), (150, 3, "Quinkunx")]
+# "ein Konjunktion" war falsch: Konjunktion und Opposition sind feminin.
+_ASPECT_ARTIKEL = {
+    "Konjunktion": "eine", "Opposition": "eine",
+    "Sextil": "ein", "Quadrat": "ein", "Trigon": "ein", "Quinkunx": "ein",
+}
 _ASPECT_QUAL = {
     "Konjunktion": "Diese beiden Kräfte verschmelzen in dir zu einer einzigen, sie sind fast untrennbar.",
     "Sextil": "Hier liegt ein leichtes Talent bereit, das du aktiv nutzen darfst.",
@@ -1941,6 +1963,16 @@ _ASPECT_QUAL = {
     "Quadrat": "Das ist eine echte innere Reibung, und genau an ihr wächst du am meisten.",
     "Opposition": "Zwei Pole in dir, die nach Ausgleich suchen, oft spielst du sie über deine Beziehungen aus.",
     "Quinkunx": "Zwei fremde Kräfte, die ständig feine Justierung brauchen, bis sie zusammenfinden.",
+}
+# Zweite Fassung, damit bei zwei gleichen Aspekten nicht zweimal derselbe Satz steht.
+_ASPECT_QUAL2 = {
+    "Konjunktion": "Diese beiden Kräfte sitzen bei dir aufeinander und wirken fast wie eine.",
+    "Sextil": "Eine Begabung, die bereitliegt und darauf wartet, dass du sie in die Hand nimmst.",
+    "Trigon": "Das fällt dir so leicht, dass du es kaum für eine Leistung hältst.",
+    "Quadrat": "Hier reibt es sich in dir, und genau diese Reibung bringt dich weiter.",
+    "Opposition": "Zwei Enden in dir, die um Ausgleich ringen, oft sichtbar in deinen Beziehungen.",
+    "Quinkunx": "Zwei Kräfte, die nicht recht zueinanderpassen und trotzdem miteinander "
+                "auskommen müssen.",
 }
 _PLANETS10 = ["Sonne", "Mond", "Merkur", "Venus", "Mars", "Jupiter", "Saturn",
               "Uranus", "Neptun", "Pluto"]
@@ -2067,8 +2099,8 @@ def _stellium_section(nat):
         f"Themen von {s}: {SIGN_CORE.get(s, '')}. Ob du willst oder nicht, dieses Thema zieht sich "
         f"wie ein roter Faden durch dein ganzes Leben.\n\n"
         f"Hier liegt eine deiner größten Gaben. Und zugleich das Feld, in dem du am meisten lernst "
-        f"und über dich hinauswächst. Menschen mit einem Stellium wirken auf diesem einen Gebiet oft "
-        f"wie Expertinnen von Geburt an. Wahrscheinlich kennst du dieses Gefühl an dir.")
+        f"und über dich hinauswächst. Menschen mit einem Stellium wirken auf diesem einen Gebiet "
+        f"oft, als wären sie damit geboren. Wahrscheinlich kennst du das von dir.")
     return {
         "title": "Ein Lebensschwerpunkt",
         "subtitle": f"Dein {s}-Stellium, {len(ps)} Planeten in einem Zeichen",
@@ -2093,12 +2125,28 @@ def _aspects_section(nat):
     if not found:
         return None
     found.sort(key=lambda x: x[0])
+    # Die Themen sind selbst Wortgruppen mit "und" ("Gefühlswelt und innerer Hafen").
+    # Deshalb braucht jede Fassung einen klaren Trenner und den Nominativ, sonst
+    # entstehen und-Ketten oder falsche Fälle ("mit innerer Hafen").
+    schluss = [
+        "Zwei Themen sind bei dir eng miteinander verwoben: {a} auf der einen Seite, {b} auf "
+        "der anderen.",
+        "Zwei Felder gehören bei dir zusammen: einmal {a}, einmal {b}.",
+        "Das eine Thema heißt {a}, das andere {b}. Bei dir laufen die beiden zusammen.",
+        "Bei dir berühren sich zwei Themen: einerseits {a}, andererseits {b}.",
+    ]
+    genau = [", fast auf den Punkt genau.", ", und das fast gradgenau.",
+             ", beinahe exakt.", ", ziemlich genau sogar."]
     lines = []
-    for o, a, b, nm in found[:4]:
+    gesehen = {}
+    for i, (o, a, b, nm) in enumerate(found[:4]):
+        art = _ASPECT_ARTIKEL.get(nm, "ein")
+        wie = gesehen.get(nm, 0)
+        gesehen[nm] = wie + 1
+        qual = _ASPECT_QUAL[nm] if wie == 0 else _ASPECT_QUAL2.get(nm, _ASPECT_QUAL[nm])
         lines.append(
-            f"Zwischen {a} und {b} liegt ein {nm}, fast auf den Punkt genau. {_ASPECT_QUAL[nm]} "
-            f"Dein Thema {meaning_phrase(a)} und dein Thema "
-            f"{meaning_phrase(b)} sind bei dir eng miteinander verwoben.")
+            f"Zwischen {a} und {b} liegt {art} {nm}{genau[i % len(genau)]} {qual} "
+            + schluss[i % len(schluss)].format(a=meaning_phrase(a), b=meaning_phrase(b)))
     body = (
         "Deine Planeten stehen nicht für sich allein. Sie stehen in bestimmten Winkeln zueinander "
         "und führen so etwas wie Gespräche miteinander. Diese Aspekte gehören zu den "
