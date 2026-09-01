@@ -34,6 +34,7 @@ public/
   index.html            Frontend: Formular, magischer Moment, Teaser, Vollanalyse
   impressum.html        Rechtsseiten
   datenschutz.html
+  feedback.html         gebrandete Feedback-Seite (Formular -> POST /api/feedback)
   fonts/                lokal gehostete Schriften (Cormorant, Mulish) -> kein Google
   greatvibes*.woff2     Wortmarken-Schrift
   favicon.svg, ...      Favicon + Apple-Touch-Icon
@@ -51,7 +52,9 @@ api/
   subscribe.py          traegt E-Mail in MailerLite ein, setzt den PDF-Link
   track.py              cookiefreies Zaehlen der Funnel-Schritte
   stats.py              passwortgeschuetzte Statistik-Seite
-  _store.py             Mini-Redis-Helfer (Upstash/Vercel KV) fuer die Statistik
+  feedback.py           Feedback zum Bauplan: speichert Antworten in der KV und
+                        setzt in MailerLite feedback_given=yes (Zuordnung ueber Token)
+  _store.py             Mini-Redis-Helfer (Upstash/Vercel KV), Statistik + Feedback
   _assets/fonts/        Schriften fuers PDF (Cormorant, Mulish, Great Vibes,
                         AstroSymbols fuer die Tierkreis- und Planetenzeichen)
 
@@ -69,6 +72,8 @@ requirements.txt        pyswisseph, timezonefinder, geonamescache, tzdata, fpdf2
 | `POST /api/subscribe` | E-Mail zu MailerLite, speichert PDF-Link im Feld `bauplan_pdf` |
 | `POST /api/track` | anonymer Funnel-Zaehler (visit, himmel, teaser, email, bauplan, scroll, pdf) |
 | `GET /api/stats?pw=…` | Statistik-Seite (Funnel + 14-Tage-Verlauf) |
+| `POST /api/feedback` | Feedback zum Bauplan (Token `t`), speichert in der KV, setzt `feedback_given=yes` |
+| `GET /api/feedback?pw=…` | geschuetzte Ansicht aller Rueckmeldungen (Passwort `STATS_PASSWORD`) |
 
 ## Der Funnel
 
@@ -131,6 +136,26 @@ gezählt. `api/stats.py` zeigt daraus einen Funnel mit Raten plus einen
 14-Tage-Verlauf, geschützt über `STATS_PASSWORD`. Der Speicher ist ein
 kostenloser Upstash-Redis (bzw. Vercel KV) über die REST-Schnittstelle; ohne
 Speicher läuft die Seite normal weiter, es werden nur keine Zahlen gezählt.
+
+## Feedback zum Bauplan
+
+Nach der Feedback-Mail kommt die Person auf die eigene, gebrandete Seite
+`public/feedback.html` (`/feedback`), nicht auf ein externes Formular. Die
+Zuordnung läuft über einen **opaken Zufalls-Token** (kein E-Mail-Bestandteil,
+nicht umkehrbar): `api/subscribe.py` erzeugt ihn beim Opt-in, legt das Mapping
+`imh:fbtok:<token> = E-Mail` in der KV ab und speichert den Token im MailerLite-
+Feld `feedback_token`. Der Mail-Link lautet dann
+`https://<domain>/feedback?t={$feedback_token}`.
+
+Beim Absenden löst `api/feedback.py` den Token zur E-Mail auf, legt genau einen
+Datensatz in der KV-Liste `imh:feedback` ab (die sieben Antworten, kein Verkauf,
+kein Testimonial) und setzt in MailerLite `feedback_given=yes` (Upsert per
+E-Mail). Doppel-Absenden ist verhindert (Browser-Merker plus serverseitige
+`SET NX`-Sperre `imh:fbdone:<token>`). Die Rückmeldungen liest man geschützt über
+`/api/feedback?pw=…` (gleiches Passwort wie die Statistik). MailerLite bekommt
+bewusst nur die zwei Zustände `feedback_token` und `feedback_given`, keine
+Freitexte. Nötige MailerLite-Custom-Fields: `feedback_token` und `feedback_given`
+(beide Typ Text).
 
 ## Datenschutz
 
