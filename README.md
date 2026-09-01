@@ -40,6 +40,8 @@ public/
   favicon.svg, ...      Favicon + Apple-Touch-Icon
   og-image.jpg          Social-Vorschaubild (Open Graph)
   denise.jpg            Foto Denise
+  robots.txt            Suchmaschinen-Regeln (verweist auf die Sitemap)
+  sitemap.xml           Sitemap (Startseite)
 
 api/
   analyze.py            berechnet Chart, liefert Teaser + Vollanalyse (JSON)
@@ -168,8 +170,10 @@ Freitexte. Nötige MailerLite-Custom-Fields: `feedback_token` und `feedback_give
 
 ## Nächste Ausbaustufen
 
-- **robots.txt, sitemap.xml, Canonical** und die Social-URLs auf die echte
-  Domain umstellen (aktuell Preview-Adresse).
+- **Domain:** Produktiv-Adresse ist `bauplan.intuitionmitherz.de` (Subdomain bei
+  Hostinger, CNAME auf Vercel). robots.txt, sitemap.xml, Canonical und die
+  Social-/E-Mail-URLs zeigen bereits darauf. Einmalig nötig: DNS-CNAME bei
+  Hostinger + Domain im Vercel-Projekt hinzufügen.
 - **Vollanalyse-Text per Claude** noch persönlicher (Zahlen bleiben exakt).
 - **Beziehungsanalyse (Synastrie)**, zwei Personen, wie im ursprünglichen
   Denise×Tobias-Artefakt, als Premium.
