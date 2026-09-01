@@ -406,7 +406,7 @@
   .preview-body { position: relative; max-height: 560px; overflow: hidden;
     -webkit-mask-image: linear-gradient(to bottom, #000 60%, transparent 98%);
             mask-image: linear-gradient(to bottom, #000 60%, transparent 98%); }
-  /* Kleiner Hinweis über den Pills: „Tippe auf einen Bereich…" */
+  /* Kleiner Hinweis über den Pills: „Tippe auf einen Bereich…“ */
   .preview-body .pv-hint { display: flex; align-items: center; justify-content: center; gap: 7px;
     font-size: 12.5px; font-weight: 600; letter-spacing: .01em; color: var(--gold);
     margin: 0 0 12px; text-align: center; }
@@ -553,6 +553,16 @@
   .acc-take { margin-top: 12px; border-left: 2px solid var(--gold); background: rgba(245,197,107,.06); border-radius: 0 10px 10px 0; padding: 12px 16px; color: var(--ink); font-family: var(--serif); font-size: 16px; line-height: 1.5; }
   .acc-tip { margin-top: 12px; border: 1px solid var(--line); background: rgba(201,164,255,.06); border-radius: 12px; padding: 14px 16px; color: var(--ink-soft); font-size: 14.5px; line-height: 1.62; }
   .acc-tip-l { display: block; font-size: 10px; letter-spacing: .12em; text-transform: uppercase; color: var(--accent); margin-bottom: 6px; }
+  /* Vier-Schritt-Blöcke im Kapitel "Deine größten Schwierigkeiten" */
+  .dblock { margin: 20px 0; border: 1px solid var(--line); border-radius: 14px; padding: 18px 18px 6px; background: rgba(255,255,255,.02); }
+  .dblock-h { display: grid; grid-template-columns: auto 1fr; gap: 4px 12px; align-items: baseline; margin-bottom: 14px; }
+  .dblock-nr { grid-row: 1 / span 2; width: 26px; height: 26px; border-radius: 50%; display: grid; place-items: center; font-size: 12px; font-weight: 700; color: var(--gold); border: 1px solid rgba(245,197,107,.35); background: rgba(245,197,107,.08); }
+  .dblock-k { font-size: 10.5px; letter-spacing: .12em; text-transform: uppercase; color: var(--accent); }
+  .dblock-t { font-family: var(--serif); font-size: 19px; line-height: 1.25; color: var(--ink); }
+  .dstep { margin-bottom: 14px; }
+  .dstep-l { display: block; font-size: 10px; letter-spacing: .12em; text-transform: uppercase; color: var(--gold); margin-bottom: 5px; }
+  .dstep p { margin: 0; }
+  @media (max-width: 560px) { .dblock { padding: 15px 14px 4px; } .dblock-t { font-size: 17.5px; } }
   .acc-facts { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
   .acc-facts span { font-size: 13px; color: var(--ink-soft); background: rgba(255,255,255,.03); border: 1px solid var(--line); border-radius: 8px; padding: 5px 11px; }
   /* Häuser-Übersicht */
@@ -683,6 +693,7 @@
   .mdot.on { background: var(--gold); border-color: var(--gold); box-shadow: 0 0 10px -1px var(--glow); }
   .intu-level { font-family: var(--serif); font-style: italic; font-size: 19px; color: var(--gold); text-align: center; }
   .intu-sum { max-width: 56ch; margin: 8px auto 0; font-size: 14.5px; color: var(--ink-soft); line-height: 1.75; text-align: center; }
+  .intu-caveat { color: var(--ink-mute); font-size: 14.5px; line-height: 1.7; max-width: 56ch; margin: 12px auto 0; text-align: center; }
   .facets2 { display: flex; flex-direction: column; gap: 10px; text-align: left; }
   .facet2 { border: 1px solid var(--line); border-left: 2px solid var(--gold); border-radius: 12px; padding: 14px 16px; background: rgba(255,255,255,.02); }
   .facet2-t { font-family: var(--serif); font-size: 16px; color: var(--ink); margin-bottom: 5px; }
@@ -863,6 +874,12 @@
     .rtabs-hint .hint-scroll { display: none; }
     .rtabs-hint .hint-click { display: inline; }
   }
+  /* Versiegelte Vorschau: unter 781px stapelt das Grid, dann liegt das Feld darunter. */
+  .seal-sub .where-right { display: none; }
+  @media (min-width: 781px) {
+    .seal-sub .where-below { display: none; }
+    .seal-sub .where-right { display: inline; }
+  }
 
   /* ==================== Kosmisches Wellenmuster um die Hero-Headline ==================== */
   .hero-frame { position: relative; margin: 0 0 22px; padding: 44px 40px; isolation: isolate; }
@@ -904,7 +921,7 @@
 <section class="step active" id="step1">
   <div class="wrap brandbar">
     <div class="brand"><span class="b-script">Intuition</span> <span class="b-serif">mit Herz</span></div>
-    <a href="#analyse" class="navlink" data-scroll="analyse">Lern dich kennen ↓</a>
+    <a href="#analyse" class="navlink" data-scroll="analyse">Lerne dich kennen ↓</a>
   </div>
 
   <header class="hero" id="start">
@@ -1088,7 +1105,7 @@
         <div class="pain"><div class="dot">✦</div><p>Du triffst Entscheidungen oft mit dem Kopf und fragst dich später, warum sie sich trotzdem nicht richtig anfühlen.</p></div>
         <div class="pain"><div class="dot">✦</div><p>Du passt dich häufig an andere an und hast manchmal das Gefühl, dich selbst dabei zu verlieren.</p></div>
         <div class="pain"><div class="dot">✦</div><p>Du spürst, dass mehr in dir steckt, weißt aber nicht, wie du Zugang dazu findest.</p></div>
-        <div class="pain"><div class="dot">✦</div><p>Du hast Bücher gelesen und Tests gemacht. Trotzdem fehlt das Gefühl: „Jetzt verstehe ich mich wirklich."</p></div>
+        <div class="pain"><div class="dot">✦</div><p>Du hast Bücher gelesen und Tests gemacht. Trotzdem fehlt das Gefühl: „Jetzt verstehe ich mich wirklich.“</p></div>
       </div>
     </div>
   </section>
@@ -1180,7 +1197,7 @@
         <h2>So könnte dein persönlicher <span class="script">Bauplan</span> aussehen</h2>
       </div>
       <div class="intro" style="text-align:center;margin-bottom:46px">
-        <p>Stell dir vor, du siehst endlich, wer du schon immer warst, statt dich weiter zu fragen, wer du sein solltest.</p>
+        <p>Stelle dir vor, du siehst endlich, wer du schon immer warst, statt dich weiter zu fragen, wer du sein solltest.</p>
         <p>Dein persönlicher Bauplan verbindet verschiedene Systeme zu einem verständlichen Gesamtbild. Keine Rätsel, keine komplizierten Symbole. Nur klare Erkenntnisse, die du direkt in deinem Alltag anwenden kannst.</p>
       </div>
       <div class="example-grid">
@@ -1354,7 +1371,7 @@
             <div class="preview-seal">
               <div class="lock">🔒</div>
               <div class="seal-text">Deine vollständige Deutung ist noch versiegelt</div>
-              <div class="seal-sub">Trag dich rechts ein, dann öffnet sie sich ganz für dich</div>
+              <div class="seal-sub">Trage dich <span class="where-below">gleich hier darunter</span><span class="where-right">rechts</span> ein, dann öffnet sie sich ganz für dich</div>
             </div>
           </div>
 
@@ -1362,7 +1379,7 @@
 
         <div class="mailcard">
           <h3>Dein <span class="accent">kompletter</span> kosmischer Bauplan, kostenlos</h3>
-          <p>Trag dich ein und du hast sofort Zugriff, deinen kompletten Bauplan in Ruhe durchzulesen. Und du kannst ihn dir direkt als PDF herunterladen, damit du alles immer wieder in Ruhe nachlesen kannst.</p>
+          <p>Trage dich ein und du hast sofort Zugriff auf deinen kompletten Bauplan, den du in Ruhe durchlesen kannst. Du kannst ihn dir außerdem direkt als PDF herunterladen und jederzeit wieder nachlesen.</p>
           <div class="mail-perks"><span>✓ Sofort lesen</span><span>✓ Als PDF</span><span>✓ Kostenlos</span></div>
           <div class="field">
             <label for="g-name">Dein Vorname</label>
@@ -1449,8 +1466,8 @@
   <div class="cookie-card">
     <span class="spark">✦</span>
     <div class="ct">Ein Moment für dich</div>
-    <p>Was du gleich liest, ist mit viel Liebe ganz für dich gemacht. Es ist kein Text, den man mal eben zwischen Tür und Angel überfliegt. Atme einmal tief durch, mach dir vielleicht einen Tee und nimm dir eine ruhige Minute, in der dich nichts stört. Lies langsam, Zeile für Zeile, und spür beim Lesen immer wieder hin, was sich für dich stimmig anfühlt. Dein Bauplan läuft dir nicht weg. Er darf in aller Ruhe bei dir ankommen.</p>
-    <button class="cbtn" id="calm-ok" type="button">Alles klar, ich nehm mir alle Zeit, die ich brauche 🤍</button>
+    <p>Was du gleich liest, ist mit viel Liebe ganz für dich gemacht. Es ist kein Text, den man mal eben zwischen Tür und Angel überfliegt. Atme einmal tief durch, mache dir vielleicht einen Tee und nimm dir eine ruhige Minute, in der dich nichts stört. Lies langsam, Zeile für Zeile, und spüre beim Lesen immer wieder hin, was sich für dich stimmig anfühlt. Dein Bauplan läuft dir nicht weg. Er darf in aller Ruhe bei dir ankommen.</p>
+    <button class="cbtn" id="calm-ok" type="button">Alles klar, ich nehme mir alle Zeit, die ich brauche 🤍</button>
   </div>
 </div>
 
@@ -1951,7 +1968,7 @@
     var blocks='';
     blocks+='<div class="pblk"><span class="plbl">Was das bei dir bedeutet</span><div class="ptxt">'+esc(detail)+'</div></div>';
     if(def){
-      blocks+='<div class="pblk"><span class="plbl">Was du damit machst</span><div class="ptxt">'+esc(useDef||'Vertrau dieser festen Energie und lebe sie sichtbar. Sie ist immer da, du musst sie nicht suchen.')+'</div></div>';
+      blocks+='<div class="pblk"><span class="plbl">Was du damit machst</span><div class="ptxt">'+esc(useDef||'Vertraue dieser festen Energie und lebe sie sichtbar. Sie ist immer da, du musst sie nicht suchen.')+'</div></div>';
     } else {
       if(tip) blocks+='<div class="pblk"><span class="plbl">Was du damit machst</span><div class="ptxt">'+esc(tip)+'</div></div>';
     }
@@ -1977,7 +1994,7 @@
     ['Häuser','Zwölf Lebensfelder. Sie zeigen, in welchem Bereich deines Lebens ein Planet konkret wirkt.'],
     ['Elemente-Balance','Wie sich Feuer, Erde, Luft und Wasser in dir verteilen. Dein stärkstes Element geht dir am leichtesten von der Hand.'],
     ['Deine größte Stärke','Die Stelle, an der Human Design und Natalchart dasselbe sagen. Was dir mühelos gelingt.'],
-    ['Deine größte Herausforderung','Wo du am leichtesten von dir selbst abrutschst, aus Human Design und Chart gelesen, mit dem Weg, wie du sie meisterst.'],
+    ['Deine größten Schwierigkeiten','Die drei Stellen, an denen du am leichtesten von dir selbst abrutschst. Je Schwierigkeit: woran du sie erkennst, woher sie kommt, was sie dich kostet und wie du damit arbeitest.'],
     ['Intuitionstyp','Über welchen Kanal deine innere Führung zu dir spricht, abgeleitet aus deinem Mond.'],
     ['Chiron','Deine älteste Wunde und genau dort deine besondere Gabe, andere zu heilen.'],
     ['Mondknoten-Achse','Dein roter Faden. Woher du kommst (Südknoten) und wohin du wächst (Nordknoten), deine Lebensaufgabe.'],
@@ -2032,7 +2049,7 @@
     var ovLegend='<details class="ov-fold"><summary class="ov-fold-h"><span>Was bedeutet was?</span><span class="ov-fold-x">+</span></summary><div class="ov-fold-b legend">'+legendInner+'</div></details>';
     var ovHouses='<details class="ov-fold"><summary class="ov-fold-h"><span>Die zwölf Häuser, deine Lebensfelder</span><span class="ov-fold-x">+</span></summary><div class="ov-fold-b">'+housesInner+'</div></details>';
     document.getElementById('pane-ov').innerHTML=
-      '<p class="ov-intro">'+(b.name?(esc(b.name)+', '):'')+'was du gleich liest, ist kein Test und kein Urteil. Es ist ein Blick auf das, was in dir angelegt ist, seit dem ersten Moment deines Lebens. Vielleicht erkennst du dich an mancher Stelle so genau wieder, dass es kurz wehtut. Das ist gut so. Es heißt, du wirst gesehen. Prüf beim Lesen immer selbst, was sich für dich stimmig anfühlt. Was nicht passt, darfst du getrost liegen lassen.</p>'+
+      '<p class="ov-intro">'+(b.name?(esc(b.name)+', '):'')+'was du gleich liest, ist kein Test und kein Urteil. Es ist ein Blick auf das, was in dir angelegt ist, seit dem ersten Moment deines Lebens. Vielleicht erkennst du dich an mancher Stelle so genau wieder, dass es kurz wehtut. Das ist gut so. Es heißt, du wirst gesehen. Prüfe beim Lesen immer selbst, was sich für dich stimmig anfühlt. Was nicht passt, darfst du getrost liegen lassen.</p>'+
       '<div class="factrow">'+
         '<div class="f"><div class="l">Typ</div><div class="v">'+esc(hd.type_display||hd.type)+'</div></div>'+
         '<div class="f"><div class="l">Autorität</div><div class="v">'+esc(shorten(hd.authority))+'</div></div>'+
@@ -2086,9 +2103,21 @@
         var tip=(s.tip&&s.tip[1])?'<div class="acc-tip"><span class="acc-tip-l">'+esc(s.tip[0])+'</span>'+esc(s.tip[1])+'</div>':'';
         var facts=(s.facts&&s.facts.length)?'<div class="acc-facts">'+s.facts.map(function(ft){return '<span><strong>'+esc(ft[0])+':</strong> '+esc(ft[1])+'</span>';}).join('')+'</div>':'';
         var sub=s.subtitle?'<small>'+esc(s.subtitle)+'</small>':'';
+        /* Vier-Schritt-Blöcke, aktuell im Kapitel "Deine größten Schwierigkeiten" */
+        var blocks=(s.blocks&&s.blocks.length)?s.blocks.map(function(b,bi){
+          return '<div class="dblock">'+
+            '<div class="dblock-h"><span class="dblock-nr">'+(bi+1)+'</span>'+
+              '<span class="dblock-k">'+esc(b.kicker)+': '+esc(b.label)+'</span>'+
+              '<span class="dblock-t">'+esc(b.title)+'</span></div>'+
+            (b.parts||[]).map(function(pt){
+              return '<div class="dstep"><span class="dstep-l">'+esc(pt[0])+'</span><p>'+esc(pt[1])+'</p></div>';
+            }).join('')+
+          '</div>';
+        }).join(''):'';
+        var after=s.after_blocks?'<p>'+esc(s.after_blocks)+'</p>':'';
         return '<details class="acc" name="deut">'+
           '<summary class="acc-h"><span class="acc-nr">'+nr+'</span><span class="acc-t">'+esc(s.title)+sub+'</span><span class="acc-x">+</span></summary>'+
-          '<div class="acc-b">'+lead+paras+take+tip+facts+'</div></details>';
+          '<div class="acc-b">'+lead+paras+blocks+after+take+tip+facts+'</div></details>';
       }).join('')+'</div>'+
       '<div class="closing">'+esc(f.closing)+'</div>';
 
@@ -2104,6 +2133,7 @@
           '<div class="intu-meter">'+meter+'</div>'+
           '<div class="intu-level">'+esc(it.depth.level)+'</div>'+
           '<p class="intu-sum">'+esc(it.depth.summary)+'</p>'+
+          (it.depth.caveat?'<p class="intu-caveat">'+esc(it.depth.caveat)+'</p>':'')+
           ((it.depth.facets&&it.depth.facets.length)?
             '<div class="cap2" style="margin-top:24px">Deine intuitiven Kräfte</div>'+
             '<div class="facets2">'+

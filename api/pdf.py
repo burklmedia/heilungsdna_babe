@@ -89,7 +89,7 @@ LEGEND = [
     ("Häuser", "Zwölf Lebensfelder. Sie zeigen, in welchem Bereich deines Lebens ein Planet konkret wirkt."),
     ("Elemente-Balance", "Wie sich Feuer, Erde, Luft und Wasser in dir verteilen. Dein stärkstes Element geht dir am leichtesten von der Hand."),
     ("Deine größte Stärke", "Die Stelle, an der Human Design und Natalchart dasselbe sagen. Was dir mühelos gelingt."),
-    ("Deine größte Herausforderung", "Wo du am leichtesten von dir selbst abrutschst, aus Human Design und Chart gelesen, mit dem Weg, wie du sie meisterst."),
+    ("Deine größten Schwierigkeiten", "Die drei Stellen, an denen du am leichtesten von dir selbst abrutschst. Je Schwierigkeit: woran du sie erkennst, woher sie kommt, was sie dich kostet und wie du damit arbeitest."),
     ("Intuitionstyp", "Über welchen Kanal deine innere Führung zu dir spricht, abgeleitet aus deinem Mond."),
     ("Chiron", "Deine älteste Wunde und genau dort deine besondere Gabe, andere zu heilen."),
     ("Mondknoten-Achse", "Dein roter Faden. Woher du kommst (Südknoten) und wohin du wächst (Nordknoten), deine Lebensaufgabe."),
@@ -589,7 +589,7 @@ def _uebersicht(pdf, teaser, full):
     _heading_block(pdf, "Übersicht", "Auf einen Blick", on_dark=True)
     _para(pdf, (name + ", " if name else "") +
           "was du gleich liest, ist kein Test und kein Urteil. Es ist ein Blick auf das, "
-          "was in dir angelegt ist, seit dem ersten Moment deines Lebens. Prüf beim Lesen "
+          "was in dir angelegt ist, seit dem ersten Moment deines Lebens. Prüfe beim Lesen "
           "immer selbst, was sich stimmig anfühlt. Was nicht passt, darfst du liegen lassen.",
           font="Mul", size=10, color=INK_SOFT, h=5.8, after=5)
 
@@ -825,6 +825,75 @@ def _unit(pdf, title, meta, oneliner, body):
         pdf.set_font("Mul", "", 10.3)
         pdf.set_text_color(*BODY_DK)
         pdf.multi_cell(iw, 5.7, safe(body), new_x=XPos.LMARGIN, new_y=YPos.NEXT, align="J")
+    pdf.set_y(top + box_h)
+    pdf.ln(4)
+
+
+def _dblock(pdf, kicker, label, title, parts):
+    """Eine Schwierigkeit im Vier-Schritt-Aufbau: gerahmte Karte mit Kicker,
+    Titel und je Schritt einer goldenen Marke plus Text."""
+    x = pdf.l_margin
+    w = PW - pdf.l_margin - pdf.r_margin
+    pad = 6.5
+    iw = w - 2 * pad - 2
+    h_lbl, h_txt, gap = 4.8, 5.7, 3.0
+
+    # Hoehe vormessen
+    gemessen = []
+    for lbl, txt in parts:
+        pdf.set_font("Mul", "", 10.3)
+        zeilen = pdf.multi_cell(iw, h_txt, safe(txt), dry_run=True, output="LINES")
+        gemessen.append((lbl, txt, len(zeilen)))
+    h_kick = 5.0 if (kicker or label) else 0.0
+    h_titel = 8.0 + 2.5   # etwas Luft zwischen Titel und der ersten Marke
+    box_h = pad + h_titel + h_kick + sum(h_lbl + h_txt * n + gap for _, _, n in gemessen) + pad - gap
+
+    if box_h > 225:   # Notbremse: passt nicht auf eine Seite, dann ohne Rahmen
+        _eyebrow(pdf, safe(((kicker + ": ") if kicker else "") + (label or "")), MUTE, size=8)
+        pdf.ln(1)
+        pdf.set_font("Cormo", "", 19)
+        pdf.set_text_color(*INK_L)
+        pdf.multi_cell(0, 8, safe(title), new_x=XPos.LMARGIN, new_y=YPos.NEXT)
+        for lbl, txt, _n in gemessen:
+            _eyebrow(pdf, safe(lbl), GOLD, size=7.5)
+            _para(pdf, txt, size=10.3, color=BODY_DK, h=h_txt, after=2.5)
+        pdf.ln(3)
+        return
+
+    _break_with_accent(pdf, box_h + 6)
+    top = pdf.get_y()
+    pdf.set_fill_color(*CARD)
+    pdf.set_draw_color(*LILAC)
+    pdf.set_line_width(0.3)
+    _round_rect(pdf, x, top, w, box_h, 3.5, style="DF", border_opacity=0.32)
+    pdf.set_fill_color(*GOLD2)
+    pdf.rect(x, top, 1.4, box_h, style="F")
+
+    yy = top + pad
+    if h_kick:
+        pdf.set_xy(x + pad, yy)
+        pdf.set_font("Mul", "", 8)
+        pdf.set_text_color(*LILAC)
+        with pdf.local_context(char_spacing=0.9):
+            pdf.cell(iw, h_kick, safe((((kicker + ": ") if kicker else "") + (label or "")).upper()))
+        yy += h_kick
+    pdf.set_xy(x + pad, yy)
+    pdf.set_font("Cormo", "", 19)
+    pdf.set_text_color(*INK_L)
+    pdf.cell(iw, 8.0, safe(title), new_x=XPos.LMARGIN, new_y=YPos.NEXT)
+    yy += h_titel
+    for lbl, txt, _n in gemessen:
+        pdf.set_xy(x + pad, yy)
+        pdf.set_font("Mul", "B", 7.5)
+        pdf.set_text_color(*GOLD)
+        with pdf.local_context(char_spacing=0.9):
+            pdf.cell(iw, h_lbl, safe(str(lbl).upper()))
+        yy += h_lbl
+        pdf.set_xy(x + pad, yy)
+        pdf.set_font("Mul", "", 10.3)
+        pdf.set_text_color(*BODY_DK)
+        pdf.multi_cell(iw, h_txt, safe(txt), new_x=XPos.LMARGIN, new_y=YPos.NEXT, align="J")
+        yy = pdf.get_y() + gap
     pdf.set_y(top + box_h)
     pdf.ln(4)
 
@@ -1244,6 +1313,8 @@ def _intuition(pdf, it):
         pdf.ln(2)
         _para(pdf, depth.get("summary"), font="Cormo", style="I", size=13,
               color=GOLD_DK, h=6.4, after=4)
+        if depth.get("caveat"):
+            _para(pdf, depth["caveat"], size=10.5, color=BODY_DK, h=5.9, after=4)
         for fc in depth.get("facets", []):
             _unit(pdf, fc.get("title") or "", "", None, fc.get("text") or "")
     if it.get("tools"):
@@ -1317,7 +1388,7 @@ def _deutung(pdf, sections):
     pdf.add_page()
     _heading_block(pdf, "Deutung", "Deine Deutung", on_dark=True)
     _para(pdf, "Hier ist alles in Klartext für dich gedeutet, ein Abschnitt nach dem "
-               "anderen. Prüf beim Lesen immer selbst, was sich stimmig anfühlt. Was "
+               "anderen. Prüfe beim Lesen immer selbst, was sich stimmig anfühlt. Was "
                "nicht passt, darfst du liegen lassen.",
           size=10.5, color=BODY_DK, h=6, after=3)
     for i, s in enumerate(sections):
@@ -1357,6 +1428,12 @@ def _deutung(pdf, sections):
             p = para.strip()
             if p:
                 _para(pdf, p, size=10.5, color=BODY_DK, h=5.9, after=3.5)
+        # Vier-Schritt-Bloecke (Kapitel "Deine groessten Schwierigkeiten")
+        for b in s.get("blocks") or []:
+            _dblock(pdf, b.get("kicker"), b.get("label"),
+                    str(b.get("title") or ""), b.get("parts") or [])
+        if s.get("after_blocks"):
+            _para(pdf, s["after_blocks"], size=10.5, color=BODY_DK, h=5.9, after=3.5)
         if s.get("takeaway"):
             _merksatz(pdf, s["takeaway"])
         if s.get("facts"):
