@@ -1,0 +1,67 @@
+<!--
+  VORLAGE für alle "Intuition mit Herz"-E-Mails (fester Marken-Look, an die Website angeglichen).
+  Immer diese Struktur/Tokens verwenden, damit die Mails aus einem Guss sind:
+
+  - Hintergrund dunkelviolett #160e2e + sanfter Glow oben (radial-gradient).
+  - Kopf: goldene Wortmarke email-wordmark.png (KEINE "Human Design & Astrologie"-Zeile).
+  - Karte: #241848, 1px Rahmen rgba(245,197,107,.40), radius 22, padding 36/34.
+  - Eyebrow: Arial, uppercase, letter-spacing 2px, Gold #f5c56b.
+  - Ueberschrift: Georgia (Cormorant-Ersatz), #f3eefe, ~28px.
+  - Fliesstext: Arial (Mulish-Ersatz), #c9c0e6, 16px, line-height 1.72.
+  - Betonte Zeile / Zitat: Georgia italic, Gold #f5c56b, ~18px.
+  - Button: Gold-Verlauf (bgcolor #f5c56b Fallback), Text #3a2410, radius 14.
+  - Signatur: email-signature-gold.png (helles Gold fuer dunklen Grund).
+  - Fuss: Arial 12px, #8f83b3, Abmelden-Link {$unsubscribe}.
+  - Breite fluid: max-width 600, width 100%.
+  - Merge-Tags: {$name} (Anrede, Fallback im MailerLite-Editor setzen),
+    {$bauplan_pdf} (persoenlicher PDF-Link, immer als https://<domain>/api/pdf?d={$bauplan_pdf}),
+    {$unsubscribe} (Abmeldelink).
+  - Sprache: KEINE Gedankenstriche, KEIN "nicht ... sondern", einfache, warme Du-Ansprache.
+  - Bilder sind live gehostet unter https://heilungsdna-babe-b9oo-inky.vercel.app/
+    (bei echter Domain die vier URLs hier + in den Mails anpassen).
+
+  Zum Erstellen einer neuen Mail: diese Datei kopieren und nur den Inhalt der
+  Karte (Eyebrow, Ueberschrift, Absaetze, Button-Label, optionales P.S.) ersetzen.
+-->
+<!doctype html>
+<html lang="de"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="dark light"><meta name="supported-color-schemes" content="dark light">
+</head>
+<body style="margin:0;padding:0;background:#160e2e;">
+<span style="display:none!important;visibility:hidden;opacity:0;height:0;width:0;overflow:hidden;mso-hide:all;">HIER VORSCHAUTEXT (1 kurzer Satz)</span>
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#160e2e;background-image:radial-gradient(70% 45% at 50% 0%, rgba(140,92,220,.30) 0%, rgba(22,14,46,0) 62%);">
+<tr><td align="center" style="padding:34px 12px 44px;">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="width:100%;max-width:600px;">
+    <tr><td align="center" style="padding:4px 0 22px;">
+      <img src="https://heilungsdna-babe-b9oo-inky.vercel.app/email-wordmark.png" width="250" alt="Intuition mit Herz" style="display:block;border:0;width:250px;max-width:74%;height:auto;">
+    </td></tr>
+    <tr><td style="background:#241848;border:1px solid rgba(245,197,107,.40);border-radius:22px;padding:36px 34px 34px;">
+
+      <div style="font-family:Arial,Helvetica,sans-serif;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:#f5c56b;margin-bottom:10px;">EYEBROW</div>
+      <h1 style="margin:0 0 20px;font-family:Georgia,'Times New Roman',serif;font-weight:normal;font-size:28px;line-height:1.2;color:#f3eefe;">Ueberschrift.</h1>
+
+      <p style="margin:0 0 16px;font-family:Arial,Helvetica,sans-serif;font-size:16px;line-height:1.72;color:#c9c0e6;">Hallo {$name},</p>
+      <p style="margin:0 0 16px;font-family:Arial,Helvetica,sans-serif;font-size:16px;line-height:1.72;color:#c9c0e6;">Fliesstext-Absatz.</p>
+
+      <!-- Betonte Zeile / Zitat (optional):
+      <p style="margin:0 0 16px;font-family:Georgia,'Times New Roman',serif;font-style:italic;font-size:18px;line-height:1.5;color:#f5c56b;">Betonter Satz.</p> -->
+
+      <!-- Trenner zwischen Bloecken (optional):
+      <div style="border-top:1px solid rgba(201,164,255,.16);margin:22px 0 14px;"></div> -->
+
+      <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin:2px 0 24px;"><tr><td align="center" bgcolor="#f5c56b" style="border-radius:14px;background:linear-gradient(135deg,#f5c56b,#eab24d);"><a href="https://heilungsdna-babe-b9oo-inky.vercel.app/api/pdf?d={$bauplan_pdf}" target="_blank" style="display:inline-block;padding:16px 32px;font-family:Arial,Helvetica,sans-serif;font-size:16px;font-weight:bold;color:#3a2410;text-decoration:none;border-radius:14px;">Button-Label &#10022;</a></td></tr></table>
+
+      <img src="https://heilungsdna-babe-b9oo-inky.vercel.app/email-signature-gold.png" width="188" alt="Von Herzen, Denise" style="display:block;margin:6px 0 0;border:0;width:188px;height:auto;">
+
+      <!-- P.S. (optional):
+      <p style="margin:22px 0 0;font-family:Georgia,serif;font-style:italic;font-size:15px;line-height:1.6;color:#9a8fc0;">P.S. ...</p> -->
+
+    </td></tr>
+    <tr><td align="center" style="padding:22px 16px 0;font-family:Arial,Helvetica,sans-serif;font-size:12px;line-height:1.7;color:#8f83b3;">
+      Du bekommst diese Mail, weil du dir deinen kosmischen Bauplan geholt hast.<br>
+      <a href="{$unsubscribe}" style="color:#b3a8d4;text-decoration:underline;">Abmelden</a> &nbsp;&middot;&nbsp; Intuition mit Herz
+    </td></tr>
+  </table>
+</td></tr></table>
+</body></html>

@@ -114,6 +114,15 @@ Willkommensmail baut man einen Button mit der Verlinkung
 eigenen Bauplan als PDF. Ohne konfigurierten Key nimmt die Funktion die
 Adresse an und antwortet ok (Brevo ist als Fallback vorhanden).
 
+Die Willkommens- und Automations-Mails liegen als fertige HTML-Dateien in
+`emails/`. Alle Mails nutzen denselben, an die Website angeglichenen Look
+(dunkles Violett, goldene Wortmarke, gold gerahmte Karte, Gold-Button,
+Signatur). Vorlage: `emails/_TEMPLATE.html`; Referenz: `emails/mail-1.html`
+(Tag 0) und `emails/mail-2.html` (Tag 1). Bilder (`email-wordmark.png`,
+`email-signature-gold.png`) liegen in `public/`. Merge-Tags: `{$name}`,
+`{$bauplan_pdf}`, `{$unsubscribe}`. Zum Einsetzen in MailerLite den HTML-Code
+in einen Custom-HTML-Block kopieren.
+
 ## Eigenes Tracking (cookiefrei)
 
 `api/track.py` zählt anonym die Funnel-Schritte: keine Cookies, keine Namen,
