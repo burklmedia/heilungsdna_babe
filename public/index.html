@@ -613,6 +613,15 @@
   .rpane.active { display: block; animation: rise .5s cubic-bezier(.2,.7,.2,1) both; }
   .cap2 { font-size: 11px; letter-spacing: .2em; text-transform: uppercase; color: var(--ink-mute); text-align: center; margin: 4px 0 16px; }
   .ov-intro { text-align: center; color: var(--ink-soft); max-width: 60ch; margin: 0 auto 24px; font-size: 16.5px; line-height: 1.8; font-style: italic; }
+  .ov-start { max-width: 60ch; margin: 0 auto 24px; border: 1px solid var(--line-strong); border-left: 2px solid var(--gold);
+    border-radius: 14px; background: rgba(245,197,107,.06); padding: 15px 18px; }
+  .ov-start-h { font-family: var(--serif); font-weight: 600; font-size: 1.2rem; color: var(--gold); margin-bottom: 4px; }
+  .ov-start-p { color: var(--ink-soft); font-size: 14px; line-height: 1.55; margin: 0 0 12px; }
+  .ov-start-btns { display: flex; flex-wrap: wrap; gap: 10px; }
+  .ov-start-b { background: rgba(245,197,107,.1); color: var(--gold); border: 0; box-shadow: 0 0 0 1px rgba(245,197,107,.45);
+    border-radius: 12px; padding: 10px 14px; font-family: var(--sans); font-weight: 700; font-size: 13.5px; line-height: 1;
+    cursor: pointer; transition: background .18s ease, box-shadow .18s ease; }
+  .ov-start-b:hover { background: rgba(245,197,107,.18); box-shadow: 0 0 0 1px rgba(245,197,107,.7); }
   .factrow { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-bottom: 26px; }
   .factrow .f { background: rgba(245,197,107,.06); border: 1px solid rgba(245,197,107,.34); border-radius: 14px;
     padding: 12px 18px; text-align: center; min-width: 116px; box-shadow: 0 0 26px -8px var(--glow); }
@@ -2052,6 +2061,15 @@
     var ovHouses='<details class="ov-fold"><summary class="ov-fold-h"><span>Die zwölf Häuser, deine Lebensfelder</span><span class="ov-fold-x">+</span></summary><div class="ov-fold-b">'+housesInner+'</div></details>';
     document.getElementById('pane-ov').innerHTML=
       '<p class="ov-intro">'+(b.name?(esc(b.name)+', '):'')+'was du gleich liest, ist kein Test und kein Urteil. Es ist ein Blick auf das, was in dir angelegt ist, seit dem ersten Moment deines Lebens. Vielleicht erkennst du dich an mancher Stelle so genau wieder, dass es kurz wehtut. Das ist gut so. Es heißt, du wirst gesehen. Prüfe beim Lesen immer selbst, was sich für dich stimmig anfühlt. Was nicht passt, darfst du getrost liegen lassen.</p>'+
+      '<div class="ov-start">'+
+        '<div class="ov-start-h">Hier anfangen</div>'+
+        '<p class="ov-start-p">Du musst nicht alles auf einmal lesen. Wenn du nur drei Dinge liest, beginne hier.</p>'+
+        '<div class="ov-start-btns">'+
+          '<button type="button" class="ov-start-b" data-start="in">✦ Dein Intuitionstyp</button>'+
+          '<button type="button" class="ov-start-b" data-start="de|Dein Entscheidungsweg">✦ Dein Entscheidungsweg</button>'+
+          '<button type="button" class="ov-start-b" data-start="de|Deine größten Schwierigkeiten">✦ Deine größten Schwierigkeiten</button>'+
+        '</div>'+
+      '</div>'+
       '<div class="factrow">'+
         '<div class="f"><div class="l">Typ</div><div class="v">'+esc(hd.type_display||hd.type)+'</div></div>'+
         '<div class="f"><div class="l">Autorität</div><div class="v">'+esc(shorten(hd.authority))+'</div></div>'+
@@ -2271,6 +2289,26 @@
     // native <details> klappen sofort auf/zu → nächster Frame reicht, dann an den Anfang springen
     scrollToOpen(d, 40);
   }, true);
+  // "Hier anfangen"-Startpunkte: oeffnen den passenden Reiter (und in der Deutung das Kapitel).
+  // Reine Wiederverwendung: setRTab + natives details.open + bestehender pane-de-toggle-Handler.
+  document.getElementById('pane-ov').addEventListener('click',function(e){
+    var b=e.target.closest('[data-start]'); if(!b) return;
+    var parts=(b.getAttribute('data-start')||'').split('|'), tab=parts[0], title=parts[1];
+    if(tab==='de'){ setRTab('de'); openDeutung(title); }
+    else { setRTab(tab, true); }
+  });
+  function openDeutung(title){
+    if(!title) return;
+    var items=document.querySelectorAll('#pane-de details.acc'), i, t;
+    for(i=0;i<items.length;i++){
+      t=items[i].querySelector('.acc-t');
+      if(t && t.textContent.trim().indexOf(title)===0){
+        if(items[i].open){ scrollToOpen(items[i], 40); } else { items[i].open=true; }
+        return;
+      }
+    }
+    // Kapitel nicht gefunden: nur der Deutung-Reiter bleibt offen, kein Fehler fuer den Nutzer.
+  }
 
   /* ── Bodygraph (Human-Design-Zentren, datengenau offen/definiert) ── */
   function buildBodygraph(hd){
