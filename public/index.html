@@ -553,6 +553,16 @@
   .acc-take { margin-top: 12px; border-left: 2px solid var(--gold); background: rgba(245,197,107,.06); border-radius: 0 10px 10px 0; padding: 12px 16px; color: var(--ink); font-family: var(--serif); font-size: 16px; line-height: 1.5; }
   .acc-tip { margin-top: 12px; border: 1px solid var(--line); background: rgba(201,164,255,.06); border-radius: 12px; padding: 14px 16px; color: var(--ink-soft); font-size: 14.5px; line-height: 1.62; }
   .acc-tip-l { display: block; font-size: 10px; letter-spacing: .12em; text-transform: uppercase; color: var(--accent); margin-bottom: 6px; }
+  /* Vier-Schritt-Blöcke im Kapitel "Deine größten Schwierigkeiten" */
+  .dblock { margin: 20px 0; border: 1px solid var(--line); border-radius: 14px; padding: 18px 18px 6px; background: rgba(255,255,255,.02); }
+  .dblock-h { display: grid; grid-template-columns: auto 1fr; gap: 4px 12px; align-items: baseline; margin-bottom: 14px; }
+  .dblock-nr { grid-row: 1 / span 2; width: 26px; height: 26px; border-radius: 50%; display: grid; place-items: center; font-size: 12px; font-weight: 700; color: var(--gold); border: 1px solid rgba(245,197,107,.35); background: rgba(245,197,107,.08); }
+  .dblock-k { font-size: 10.5px; letter-spacing: .12em; text-transform: uppercase; color: var(--accent); }
+  .dblock-t { font-family: var(--serif); font-size: 19px; line-height: 1.25; color: var(--ink); }
+  .dstep { margin-bottom: 14px; }
+  .dstep-l { display: block; font-size: 10px; letter-spacing: .12em; text-transform: uppercase; color: var(--gold); margin-bottom: 5px; }
+  .dstep p { margin: 0; }
+  @media (max-width: 560px) { .dblock { padding: 15px 14px 4px; } .dblock-t { font-size: 17.5px; } }
   .acc-facts { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
   .acc-facts span { font-size: 13px; color: var(--ink-soft); background: rgba(255,255,255,.03); border: 1px solid var(--line); border-radius: 8px; padding: 5px 11px; }
   /* Häuser-Übersicht */
@@ -1984,7 +1994,7 @@
     ['Häuser','Zwölf Lebensfelder. Sie zeigen, in welchem Bereich deines Lebens ein Planet konkret wirkt.'],
     ['Elemente-Balance','Wie sich Feuer, Erde, Luft und Wasser in dir verteilen. Dein stärkstes Element geht dir am leichtesten von der Hand.'],
     ['Deine größte Stärke','Die Stelle, an der Human Design und Natalchart dasselbe sagen. Was dir mühelos gelingt.'],
-    ['Deine größte Herausforderung','Wo du am leichtesten von dir selbst abrutschst, aus Human Design und Chart gelesen, mit dem Weg, wie du sie meisterst.'],
+    ['Deine größten Schwierigkeiten','Die drei Stellen, an denen du am leichtesten von dir selbst abrutschst. Je Schwierigkeit: woran du sie erkennst, woher sie kommt, was sie dich kostet und wie du damit arbeitest.'],
     ['Intuitionstyp','Über welchen Kanal deine innere Führung zu dir spricht, abgeleitet aus deinem Mond.'],
     ['Chiron','Deine älteste Wunde und genau dort deine besondere Gabe, andere zu heilen.'],
     ['Mondknoten-Achse','Dein roter Faden. Woher du kommst (Südknoten) und wohin du wächst (Nordknoten), deine Lebensaufgabe.'],
@@ -2093,9 +2103,21 @@
         var tip=(s.tip&&s.tip[1])?'<div class="acc-tip"><span class="acc-tip-l">'+esc(s.tip[0])+'</span>'+esc(s.tip[1])+'</div>':'';
         var facts=(s.facts&&s.facts.length)?'<div class="acc-facts">'+s.facts.map(function(ft){return '<span><strong>'+esc(ft[0])+':</strong> '+esc(ft[1])+'</span>';}).join('')+'</div>':'';
         var sub=s.subtitle?'<small>'+esc(s.subtitle)+'</small>':'';
+        /* Vier-Schritt-Blöcke, aktuell im Kapitel "Deine größten Schwierigkeiten" */
+        var blocks=(s.blocks&&s.blocks.length)?s.blocks.map(function(b,bi){
+          return '<div class="dblock">'+
+            '<div class="dblock-h"><span class="dblock-nr">'+(bi+1)+'</span>'+
+              '<span class="dblock-k">'+esc(b.kicker)+': '+esc(b.label)+'</span>'+
+              '<span class="dblock-t">'+esc(b.title)+'</span></div>'+
+            (b.parts||[]).map(function(pt){
+              return '<div class="dstep"><span class="dstep-l">'+esc(pt[0])+'</span><p>'+esc(pt[1])+'</p></div>';
+            }).join('')+
+          '</div>';
+        }).join(''):'';
+        var after=s.after_blocks?'<p>'+esc(s.after_blocks)+'</p>':'';
         return '<details class="acc" name="deut">'+
           '<summary class="acc-h"><span class="acc-nr">'+nr+'</span><span class="acc-t">'+esc(s.title)+sub+'</span><span class="acc-x">+</span></summary>'+
-          '<div class="acc-b">'+lead+paras+take+tip+facts+'</div></details>';
+          '<div class="acc-b">'+lead+paras+blocks+after+take+tip+facts+'</div></details>';
       }).join('')+'</div>'+
       '<div class="closing">'+esc(f.closing)+'</div>';
 

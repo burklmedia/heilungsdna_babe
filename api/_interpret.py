@@ -213,6 +213,299 @@ CENTER_MEANING = {
     "Wurzel": "Antrieb, Druck und Stress",
 }
 
+# ── Kapitel "Deine größten Schwierigkeiten" ──────────────────────────────────
+# Je Schwierigkeit vier Schritte: woran man sie im Alltag erkennt, woher sie kommt,
+# was sie kostet und wie man konkret damit arbeitet. Vorher stand dazu nur ein
+# kurzer, allgemeiner Absatz in einem Kapitel "Deine größte Herausforderung".
+#
+# Wie laut ein offenes Zentrum im Alltag ist, von laut nach leise. Danach wählt
+# das Kapitel die beiden Zentren aus, auf die es ausführlich eingeht.
+CENTER_LOUDNESS = ["Solarplexus", "Sakral", "Wurzel", "Herz", "Milz", "G",
+                   "Kehle", "Ajna", "Kopf"]
+
+DIFFICULTY_CENTER = {
+    "Kopf": {
+        "titel": "Der Denkdruck, der nicht deiner ist",
+        "erkennst": "Du liegst nachts wach und drehst Fragen, auf die es gerade keine Antwort "
+                    "gibt. Im Gespräch übernimmst du das Problem des anderen und denkst tagelang "
+                    "darüber nach. Du liest, recherchierst, fragst herum und fühlst dich danach "
+                    "nicht klarer, nur voller.",
+        "woher": "Dein Kopfzentrum hat keinen eigenen, festen Takt. Es nimmt den Denkdruck deiner "
+                 "Umgebung auf und verstärkt ihn. Was du für deine Grübelei hältst, sind zu einem "
+                 "großen Teil die offenen Fragen der Menschen um dich herum.",
+        "kostet": "Schlaf. Und die Kraft, die du für deine eigenen Fragen bräuchtest. Weil du "
+                  "ständig fremde Fragen bearbeitest, kommst du zu deinen eigenen kaum durch.",
+        "arbeiten": "Schreibe eine Woche lang jeden Abend die Frage auf, die dich gerade umtreibt, "
+                    "und setze ein Häkchen dahinter, wenn du sie selbst beantworten musst. Du "
+                    "wirst sehen, wie wenige das sind. Und wenn dich nachts eine Frage packt, sage "
+                    "dir innerlich: Die ist nicht meine. Das fühlt sich anfangs falsch an und "
+                    "wirkt trotzdem.",
+    },
+    "Ajna": {
+        "titel": "Die Sicherheit, die du vorspielst",
+        "erkennst": "Du sagst „auf jeden Fall“, obwohl du innerlich schwankst. In Diskussionen "
+                    "vertrittst du eine Meinung fester, als du sie hast, und ärgerst dich danach. "
+                    "Oder du sagst gar nichts, weil du dir nicht sicher genug bist.",
+        "woher": "Dein Ajna hat keine feste Denkweise. Du kannst dich in jede Sicht hineindenken, "
+                 "und genau das macht dich innerlich unsicher. Weil Unsicherheit in unserer Welt "
+                 "als Schwäche gilt, hast du früh gelernt, sie zu überspielen.",
+        "kostet": "Deine Glaubwürdigkeit vor dir selbst. Du weißt ja, dass du gerade sicherer "
+                  "klingst, als du bist, und das nagt jedes Mal ein Stück.",
+        "arbeiten": "Übe einen einzigen Satz: Ich weiß es noch nicht. Sage ihn einmal am Tag laut "
+                    "zu einem Menschen. Und wenn du merkst, dass du eine Meinung gerade fester "
+                    "machst, als sie ist, halte mitten im Satz an und sage stattdessen, was du "
+                    "wirklich denkst.",
+    },
+    "Kehle": {
+        "titel": "Das Reden, um dazuzugehören",
+        "erkennst": "In einer Runde redest du und weißt hinterher nicht genau, warum. Stille im "
+                    "Gespräch macht dich unruhig, also füllst du sie. Und danach gehst du nach "
+                    "Hause und denkst: Warum habe ich das eigentlich erzählt?",
+        "woher": "Deine Kehle hat keinen eigenen, gleichmäßigen Ausdruck. Sie nimmt auf, was im "
+                 "Raum gesagt werden will, und drängt dich zu sprechen, damit du dazugehörst und "
+                 "gesehen wirst.",
+        "kostet": "Gewicht. Je mehr du redest, um da zu sein, desto weniger hört man dir wirklich "
+                  "zu. Und du fühlst dich hinterher regelmäßig unwohl in deiner Haut.",
+        "arbeiten": "Nimm dir im nächsten Gespräch vor, drei Sekunden zu warten, bevor du "
+                    "antwortest. Nur drei. Und achte eine Woche lang darauf, wie es sich anfühlt, "
+                    "wenn man dich fragt, statt dass du dich hineindrängst. Der Unterschied ist "
+                    "körperlich spürbar, und genau der ist dein Kompass.",
+    },
+    "G": {
+        "titel": "Die Suche nach dir selbst im Außen",
+        "erkennst": "Mit einem Menschen bist du ein ganz anderer Mensch als mit dem nächsten, und "
+                    "keine der beiden Seiten fühlt sich falsch an. Nach einem Umzug oder einem "
+                    "Jobwechsel weißt du eine Weile nicht mehr, wer du eigentlich bist. Und auf "
+                    "die Frage, was du wirklich willst, findest du keine feste Antwort.",
+        "woher": "Dein G-Zentrum hat keine feste Identität und keine feste Richtung. Beides "
+                 "bekommst du über deine Umgebung. Das ist keine Leere, das ist Beweglichkeit. Es "
+                 "fühlt sich nur wie ein Mangel an, weil alle anderen so tun, als wüssten sie "
+                 "genau, wer sie sind.",
+        "kostet": "Ruhe. Du suchst nach einer Antwort, die es für dich in dieser Form nicht gibt, "
+                  "und hältst dabei an falschen Orten und neben falschen Menschen viel zu lange "
+                  "fest.",
+        "arbeiten": "Höre auf zu fragen, wer du bist, und fange an zu prüfen, wo du bist. Gehe "
+                    "eine Woche lang jeden Abend durch: An welchem Ort und neben welchem Menschen "
+                    "habe ich mich heute am meisten nach mir selbst angefühlt? Nach ein paar Tagen "
+                    "siehst du ein Muster. Triff deine nächste Entscheidung nach diesem Muster, "
+                    "nicht nach einer Idee von dir.",
+    },
+    "Herz": {
+        "titel": "Das Beweisen, das nie fertig wird",
+        "erkennst": "Du sagst zu, obwohl dein Kalender voll ist, weil ein Nein sich anfühlt, als "
+                    "wärst du zu wenig. Du erzählst beiläufig von deinen Erfolgen und schämst dich "
+                    "danach ein bisschen dafür. Und du gehst über deine Kraft hinaus, um zu "
+                    "zeigen, dass du es kannst.",
+        "woher": "Dein Herzzentrum hat keine gleichbleibende Willenskraft. Trotzdem misst du dich "
+                 "an Menschen, die eine haben, und versuchst mitzuhalten. Daraus wird ein "
+                 "Beweisen, das nie fertig wird, weil der Maßstab nicht deiner ist.",
+        "kostet": "Deine Gesundheit, ganz ehrlich. Menschen mit offenem Herzzentrum überziehen "
+                  "sich am zuverlässigsten. Und der Wert, den du dir damit erkaufst, hält immer "
+                  "nur bis zum nächsten Mal.",
+        "arbeiten": "Sage diese Woche einmal ab, ohne einen Grund zu nennen. Nur: Das schaffe ich "
+                    "nicht. Und schreibe dir drei Dinge auf, die an dir wertvoll sind, ohne dass "
+                    "du dafür etwas leisten musst. Lies sie an dem Tag, an dem du dich wieder "
+                    "beweisen willst.",
+    },
+    "Milz": {
+        "titel": "Das Festhalten aus Angst",
+        "erkennst": "Du bleibst in Dingen, von denen du längst weißt, dass sie dir nicht guttun: "
+                    "in einem Job, in einer Beziehung, in einer Gewohnheit. Du schiebst "
+                    "Entscheidungen, bis sie sich von selbst erledigen. Und du kennst ein diffuses "
+                    "Sorgengefühl, das sich an nichts Konkretem festmachen lässt.",
+        "woher": "Deine Milz nimmt die Ängste deiner Umgebung auf und verstärkt sie. Was sich "
+                 "anfühlt wie deine tiefe Angst, ist zu einem großen Teil geliehen. Und weil das "
+                 "Vertraute sich immer sicherer anfühlt als das Unbekannte, hältst du daran fest, "
+                 "auch wenn es dich klein hält.",
+        "kostet": "Zeit. Manchmal ganze Jahre. Und die Kraft, die das Festhalten Tag für Tag "
+                  "verbraucht.",
+        "arbeiten": "Frage dich bei einer konkreten Sache, die du festhältst: Wovor genau habe ich "
+                    "Angst, wenn ich loslasse? Schreibe die Antwort auf und prüfe dann, ob diese "
+                    "Angst wirklich deine ist oder ob du sie von jemandem kennst. Und übe das "
+                    "Loslassen im Kleinen, bevor du es im Großen musst. Gib etwas weg, das du "
+                    "nicht brauchst, und sieh, dass nichts passiert.",
+    },
+    "Sakral": {
+        "titel": "Das Nicht-Spüren, wann genug ist",
+        "erkennst": "Du machst weiter, obwohl du längst leer bist, und merkst es erst, wenn du "
+                    "umfällst. Du vergleichst dein Tempo mit Menschen, die einfach mehr Energie "
+                    "haben. Und du bekommst ein schlechtes Gewissen, wenn du dich ausruhst.",
+        "woher": "Du hast keine eigene, gleichbleibende Arbeitsenergie. Du nimmst die Energie der "
+                 "Menschen um dich auf und verstärkst sie, deshalb fühlst du dich in ihrer Nähe "
+                 "leistungsfähiger, als du bist. Das Bremssignal, das andere haben, fehlt dir "
+                 "schlicht.",
+        "kostet": "Eine Erschöpfung, die tiefer sitzt als Müdigkeit. Und ein Leben, das sich am "
+                  "Leistungsmaßstab anderer ausrichtet statt an deinem.",
+        "arbeiten": "Höre auf, bevor du leer bist, nicht danach. Setze dir für die nächsten Tage "
+                    "eine feste Uhrzeit, zu der Schluss ist, egal wo du stehst. Und lege dich nach "
+                    "jedem langen Tag zehn Minuten allein hin, ohne Handy. Wenn dann eine "
+                    "Müdigkeit hochkommt, die vorher nicht da war, weißt du, dass sie die ganze "
+                    "Zeit da war.",
+    },
+    "Solarplexus": {
+        "titel": "Die Gefühle, die gar nicht deine sind",
+        "erkennst": "Du betrittst einen Raum und deine Stimmung kippt, ohne dass etwas passiert "
+                    "ist. Du gehst Konflikten aus dem Weg und stimmst zu, obwohl du anders denkst. "
+                    "Und nach Begegnungen mit bestimmten Menschen bist du wie ausgelaugt, ohne "
+                    "sagen zu können, warum.",
+        "woher": "Dein Solarplexus nimmt die Gefühle anderer auf und verstärkt sie, oft stärker, "
+                 "als der andere sie selbst spürt. Du hältst sie dann für deine. Und weil Streit "
+                 "die aufgenommene Welle noch größer macht, hast du früh gelernt, die Harmonie zu "
+                 "wahren, egal was sie kostet.",
+        "kostet": "Deine Wahrhaftigkeit. Du sagst nicht, was ist, um die Stimmung zu halten, und "
+                  "ziehst dich dafür selbst zurück. Auf Dauer weiß niemand mehr, wie es dir "
+                  "wirklich geht, du selbst am wenigsten.",
+        "arbeiten": "Frage dich bei jedem starken Gefühl zuerst: Ist das gerade meins, oder habe "
+                    "ich es aufgenommen? Gehe dann für fünf Minuten allein raus. Was bleibt, ist "
+                    "deins. Was verschwindet, war fremd. Und sprich diese Woche eine unangenehme "
+                    "Wahrheit aus, klein, bei einem Menschen, dem du vertraust.",
+    },
+    "Wurzel": {
+        "titel": "Der Druck, der geliehen ist",
+        "erkennst": "Du hetzt durch Aufgaben, nur damit sie vom Tisch sind, und die Liste wird "
+                    "trotzdem nicht kürzer. Du erledigst Dinge schnell statt gut. Und selbst im "
+                    "Urlaub dauert es Tage, bis der innere Motor endlich leiser wird.",
+        "woher": "Deine Wurzel nimmt den Druck deiner Umgebung auf und verstärkt ihn. Was sich "
+                 "anfühlt wie dein eigener Antrieb, ist zum großen Teil der Stress der anderen. "
+                 "Und weil du glaubst, der Druck hört auf, sobald alles erledigt ist, machst du "
+                 "immer weiter.",
+        "kostet": "Deine Gelassenheit. Und die Qualität von dem, was du tust, denn Eile bringt "
+                  "selten das Beste hervor.",
+        "arbeiten": "Nimm dir morgen genau drei Dinge vor, mehr nicht. Was übrig bleibt, bleibt "
+                    "übrig. Und wenn der Druck hochkommt, frage dich: Muss das jetzt sein, oder "
+                    "fühlt es sich nur so an? Fast immer ist es das Zweite. Der Druck geht nicht "
+                    "weg, wenn du schneller wirst. Er geht weg, wenn du ihn als geliehen erkennst.",
+    },
+}
+
+DIFFICULTY_TYPE = {
+    "Frustration": {
+        "titel": "Frustration als Kontrollleuchte",
+        "erkennst": "Du bist gereizt, ohne genau sagen zu können, warum. Dinge, die dich sonst "
+                    "nicht stören, gehen dir auf die Nerven. Du fängst Sachen an und verlierst "
+                    "schnell die Lust, oder du ziehst sie zäh durch und fühlst dich danach leer.",
+        "woher": "Frustration ist bei dir kein Charakterzug, sie ist eine Anzeige. Sie meldet "
+                 "sich, wenn du dich in etwas hineingestürzt hast, statt zu warten, bis dich etwas "
+                 "wirklich anzieht. Als Generator bist du gebaut, um zu antworten, und nicht, um "
+                 "loszurennen.",
+        "kostet": "Deine Energie und deine Freude. Ein Generator, der dauerhaft gegen seine eigene "
+                  "Antwort lebt, wird auf eine Art müde, die kein Schlaf mehr repariert.",
+        "arbeiten": "Behandle Frustration wie eine Kontrollleuchte. Wenn sie angeht, halte an und "
+                    "frage: Wollte ich das wirklich, oder habe ich es mir eingeredet? Und übe das "
+                    "Antworten im Kleinen. Lass dich diese Woche dreimal etwas fragen und achte "
+                    "darauf, ob dein Bauch mit einem Ja oder einem Nein reagiert, noch bevor dein "
+                    "Kopf sich einschaltet.",
+    },
+    "Frustration & Wut": {
+        "titel": "Frustration und Wut als doppelte Anzeige",
+        "erkennst": "Du bist gereizt und ungeduldig zugleich. Du springst von einer Sache zur "
+                    "nächsten und ärgerst dich, dass nichts fertig wird. Und du eckst an, weil du "
+                    "losgelegt hast, ohne jemandem vorher Bescheid zu sagen.",
+        "woher": "Bei dir treffen zwei Signale zusammen. Frustration meldet sich, wenn du dich in "
+                 "etwas gestürzt hast, das dich nicht wirklich anzieht. Wut meldet sich, wenn du "
+                 "losgelaufen bist, ohne dein Umfeld mitzunehmen. Beides sind Anzeigen, keine "
+                 "Charakterfehler.",
+        "kostet": "Kraft an zwei Stellen. Du verbrennst Energie in Dingen, die nicht deine sind, "
+                  "und zusätzlich in einem Widerstand, den du dir selbst erzeugst.",
+        "arbeiten": "Zwei kleine Gewohnheiten reichen. Erstens: Bevor du zusagst, warte kurz und "
+                    "spüre, ob dein Bauch wirklich Ja sagt. Zweitens: Bevor du loslegst, sage "
+                    "einem Menschen in einem Satz, was du vorhast. Das kostet dich zehn Sekunden "
+                    "und nimmt dir überraschend viel Reibung ab.",
+    },
+    "Wut": {
+        "titel": "Wut als Hinweis auf den Widerstand",
+        "erkennst": "Du wirst wütend, wenn dir jemand reinredet oder dich ausbremst. Menschen "
+                    "reagieren auf dich verschlossener, als du es verdient hast, und du weißt "
+                    "nicht recht, warum. Und irgendwann ziehst du dich zurück, nur um diesen Ärger "
+                    "nicht wieder zu erleben.",
+        "woher": "Deine Aura ist stoßend, sie wirkt auf andere, bevor du ein Wort gesagt hast. "
+                 "Wenn du einfach loslegst, fühlen sich Menschen überrollt und stellen sich quer. "
+                 "Ihr Widerstand macht dich wütend, und deine Wut macht sie noch vorsichtiger. Der "
+                 "Kreis fängt aber bei dir an, und genau deshalb kannst du ihn auch bei dir "
+                 "durchbrechen.",
+        "kostet": "Deine Freiheit, ausgerechnet die, die dir am wichtigsten ist. Du hast dich "
+                  "vermutlich schon oft klein gemacht, nur um diesem Ärger auszuweichen.",
+        "arbeiten": "Informieren ist bei dir kein Um-Erlaubnis-Fragen, es ist ein Türöffner. Sage "
+                    "vor deiner nächsten Entscheidung einem einzigen betroffenen Menschen, was du "
+                    "vorhast, und zwar bevor du es tust. Nicht, um dich abzusichern. Nur, damit er "
+                    "nicht überrascht wird. Du wirst merken, wie viel weniger Widerstand "
+                    "zurückkommt.",
+    },
+    "Bitterkeit": {
+        "titel": "Bitterkeit als Zeichen fehlender Einladung",
+        "erkennst": "Du siehst genau, was jemand bräuchte, sagst es, und es kommt nicht an. Du "
+                    "strengst dich an und wirst trotzdem übersehen. Und irgendwann denkst du: "
+                    "Warum merkt eigentlich niemand, was ich kann?",
+        "woher": "Bitterkeit meldet sich, wenn du dich angeboten hast, ohne dass man dich gefragt "
+                 "hat. Deine Gabe ist echt, aber sie wirkt nur dort, wo sie erkannt und eingeladen "
+                 "wird. Ungefragt gegeben klingt sie für den anderen wie Kritik, egal wie "
+                 "liebevoll du sie meinst.",
+        "kostet": "Ausgerechnet die Anerkennung, die du suchst. Je mehr du dich anbietest, desto "
+                  "weniger wirst du gesehen. Dazu deine Energie, weil du dich an einem Tempo "
+                  "misst, für das du nicht gebaut bist.",
+        "arbeiten": "Warte auf die Einladung und mache dich in der Zwischenzeit sichtbar, statt "
+                    "dich anzubieten. Der Unterschied ist entscheidend: Sichtbar heißt, dass "
+                    "Menschen mitbekommen, was du kannst. Anbieten heißt, dass du es ihnen "
+                    "hinstellst. Und wenn Bitterkeit hochkommt, frage dich: Wurde ich hier "
+                    "eigentlich gefragt?",
+    },
+    "Enttäuschung": {
+        "titel": "Enttäuschung als Hinweis auf den Ort",
+        "erkennst": "Du erwartest etwas von einem Ort oder einem Menschen, und es wird nicht "
+                    "erfüllt. An manchen Tagen fühlst du dich wie ein anderer Mensch als gestern "
+                    "und hältst das für Unbeständigkeit. Und in bestimmten Umgebungen geht es dir "
+                    "spürbar schlechter, ohne dass du es benennen kannst.",
+        "woher": "Du spiegelst deine Umgebung, stärker als alle anderen. Was du fühlst, ist oft "
+                 "der Zustand des Ortes und der Menschen darin, nicht deiner. Enttäuschung meldet "
+                 "sich, wenn du an einem Ort bleibst, der dir nicht guttut, oder wenn du zu "
+                 "schnell entschieden hast.",
+        "kostet": "Dein Vertrauen in dich selbst. Weil du dich so verschieden erlebst, glaubst du "
+                  "irgendwann, du wüsstest nicht, wer du bist. Dabei bist du einfach ein sehr "
+                  "feines Messinstrument.",
+        "arbeiten": "Gib wichtigen Entscheidungen einen vollen Mondzyklus, also gut vier Wochen. "
+                    "Sprich in dieser Zeit mit verschiedenen Menschen darüber und höre dir selbst "
+                    "beim Reden zu. Und führe eine einfache Liste: An welchen Orten und neben "
+                    "welchen Menschen ging es mir diese Woche gut? Deine Umgebung ist bei dir "
+                    "keine Nebensache, sie ist die Hauptsache.",
+    },
+}
+
+DIFFICULTY_STEPS = [
+    ("Woran du sie erkennst", "erkennst"),
+    ("Woher sie kommt", "woher"),
+    ("Was sie dich kostet", "kostet"),
+    ("Wie du damit arbeitest", "arbeiten"),
+]
+
+
+def difficulty_blocks(nots, open_centers, anzahl=2):
+    """Die größten Schwierigkeiten mit je vier Schritten.
+
+    Immer zuerst das Nicht-Selbst-Thema des Typs, danach die lautesten offenen
+    Zentren. Jeder Block trägt dieselben vier Schritte, damit das Kapitel einem
+    festen Rhythmus folgt und nicht wie eine lose Sammlung wirkt.
+    """
+    quellen = []
+    typ = DIFFICULTY_TYPE.get(nots)
+    if typ:
+        quellen.append(("Dein Grundmuster", amp_phrase(nots), typ))
+    laut = [c for c in CENTER_LOUDNESS if c in set(open_centers or [])]
+    for name in laut[:anzahl]:
+        eintrag = DIFFICULTY_CENTER.get(name)
+        if eintrag:
+            quellen.append(("Dein offenes Zentrum", name, eintrag))
+
+    blocks = []
+    for kicker, label, daten in quellen:
+        blocks.append({
+            "kicker": kicker,
+            "label": label,
+            "title": daten["titel"],
+            "parts": [(schritt, daten[key]) for schritt, key in DIFFICULTY_STEPS],
+        })
+    return blocks
+
+
 # "Was du damit machst" für ein DEFINIERTES Zentrum, je Zentrum konkret.
 # (Für offene Zentren dient das jeweilige "tip"-Feld aus CENTER_INFO als Handlung.)
 CENTER_USE_DEF = {
@@ -1908,7 +2201,8 @@ def teaser(chart):
             "Deine Elemente-Balance und dein persönlicher Lebensschwerpunkt",
             "Dein Human-Design-Typ, deine innere Autorität und dein Profil im Klartext",
             "Deine definierten und offenen Zentren, wo du Kraft schöpfst und wo du dich verlierst",
-            "Dein Entscheidungsweg, deine größte Stärke und deine größte Herausforderung, und wie du sie meisterst",
+            "Dein Entscheidungsweg, deine größten Stärken und deine drei größten Schwierigkeiten, "
+            "jede mit einem konkreten Weg, wie du damit arbeitest",
             "Deine Lebensaufgabe aus deiner Mondknoten-Achse und dein Chiron, deine Wunde und Heilkraft",
             "Dein Intuitionstyp, über welchen Kanal deine innere Führung zu dir spricht",
             "Deine Lebenszahl und dein persönliches Jahr aus der Numerologie, dein roter Faden in einer Zahl",
@@ -2327,22 +2621,36 @@ def full_analysis(chart):
         "facts": [("Sonne", sun_sign), ("Signatur", sig)],
     })
 
-    heraus_open = ((" Dazu kommen deine offenen Zentren: " + aufzaehlung(ocs) + ". Die hast du oben schon "
-                    "kennengelernt. Genau dort nimmst du fremden Druck am leichtesten für deinen "
-                    "eigenen und erschöpfst dich, ohne zu wissen, warum.") if ocs else "")
+    heraus_blocks = difficulty_blocks(nots, ocs)
+    _zahlwort = {1: "die größte davon", 2: "die zwei größten davon",
+                 3: "die drei größten davon"}.get(len(heraus_blocks), "die größten davon")
+    heraus_rest = [c for c in ocs if c not in {b["label"] for b in heraus_blocks}]
+    heraus_ende = ""
+    if len(heraus_rest) == 1:
+        heraus_ende = (" Dein übriges offenes Zentrum, " + heraus_rest[0] + ", arbeitet nach "
+                       "demselben Muster. Was du oben darüber gelesen hast, kannst du genauso "
+                       "behandeln wie das hier.")
+    elif heraus_rest:
+        heraus_ende = (" Deine übrigen offenen Zentren, " + aufzaehlung(heraus_rest) + ", arbeiten "
+                       "nach demselben Muster. Was du oben über sie gelesen hast, kannst du "
+                       "genauso behandeln wie das hier.")
     sections.append({
-        "title": "Deine größte Herausforderung",
-        "subtitle": "Und wie du sie meisterst",
-        "headline": "Deine wunde Stelle, ehrlich benannt",
-        "body": ("Jeder Mensch hat eine Stelle, an der es immer wieder schwer wird. Sie zu kennen, "
-                 "nimmt ihr schon die halbe Macht.\n\n"
-                 "Dein deutlichstes Warnsignal heißt " + amp_phrase(nots) + ". Immer wenn du das in dir spürst, "
-                 "lebst du gerade nicht deine eigene Natur. Du lebst die Erwartungen anderer."
-                 + heraus_open + "\n\n"
-                 "Und wie du sie meisterst: Frage dich immer wieder ehrlich, ob ein Gefühl gerade "
-                 "wirklich deins ist oder nur aufgenommen. Gehe raus aus Räumen und Gesprächen, die "
-                 "dich leer machen. Und lass die Entscheidung von innen kommen, so wie du es bei "
-                 "deiner Autorität schon gelesen hast. So findest du jedes Mal zu dir zurück."),
+        "title": "Deine größten Schwierigkeiten",
+        "subtitle": "Woran du sie erkennst und wie du mit ihnen arbeitest",
+        "headline": "Deine wunden Stellen, ehrlich benannt",
+        "body": ("Jeder Mensch hat Stellen, an denen es immer wieder schwer wird. Bei dir sind sie "
+                 "nicht zufällig. Sie stehen genau da, wo dein Bauplan offen und formbar ist. Und "
+                 "sie zu kennen, nimmt ihnen schon die halbe Macht.\n\n"
+                 "Wir gehen jetzt auf " + _zahlwort + " wirklich ein. Für jede siehst du, woran du "
+                 "sie im Alltag erkennst, woher sie kommt, was sie dich kostet und was du konkret "
+                 "damit machen kannst. Lies langsam. Wahrscheinlich erkennst du dich an mehr "
+                 "Stellen wieder, als dir lieb ist, und genau das ist der Punkt."),
+        "blocks": heraus_blocks,
+        "after_blocks": ("Keine dieser Schwierigkeiten ist ein Fehler in dir. Sie entstehen alle "
+                         "an den Stellen, an denen du offen und durchlässig bist, und genau diese "
+                         "Offenheit ist der Grund, warum du andere so fein wahrnimmst. Du sollst "
+                         "sie nicht loswerden. Du sollst nur aufhören, sie für dich zu "
+                         "halten." + heraus_ende),
         "takeaway": ("Dein Frühwarnsystem: Sobald sich " + amp_phrase(nots)
                      + (" melden" if " und " in amp_phrase(nots) else " meldet")
                      + ", halte inne und komme zu deiner eigenen Natur zurück."),
