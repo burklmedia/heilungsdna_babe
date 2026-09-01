@@ -98,3 +98,76 @@ def mget(keys):
         except (TypeError, ValueError):
             out.append(0)
     return out
+
+
+# --- einfache Schluessel/Wert-Helfer (fuer die Feedback-Zuordnung) ---------
+
+def kv_set(key, value, ttl=None):
+    """Speichert einen einzelnen Wert, optional mit Ablauf in Sekunden.
+    Rueckgabe True bei Erfolg, sonst False (z. B. kein Speicher verbunden)."""
+    try:
+        cmd = ["SET", key, value]
+        if ttl:
+            cmd += ["EX", int(ttl)]
+        res = _request("", cmd)
+        return res is not None
+    except Exception:  # noqa
+        return False
+
+
+def kv_get(key):
+    """Liest einen einzelnen Wert. Nicht vorhanden/Fehler -> None."""
+    try:
+        res = _request("", ["GET", key])
+        return (res or {}).get("result")
+    except Exception:  # noqa
+        return None
+
+
+def kv_setnx(key, value, ttl=None):
+    """Setzt den Wert nur, wenn der Schluessel noch nicht existiert (atomar).
+    Rueckgabe True, wenn NEU gesetzt wurde; False, wenn schon vorhanden oder
+    kein Speicher verbunden ist."""
+    try:
+        cmd = ["SET", key, value, "NX"]
+        if ttl:
+            cmd += ["EX", int(ttl)]
+        res = _request("", cmd)
+        # Upstash: result == "OK" wenn gesetzt, None wenn bereits vorhanden
+        return bool(res) and (res.get("result") == "OK")
+    except Exception:  # noqa
+        return False
+
+
+def kv_del(key):
+    """Loescht einen Schluessel (best effort)."""
+    try:
+        _request("", ["DEL", key])
+        return True
+    except Exception:  # noqa
+        return False
+
+
+def push_feedback(record, key="imh:feedback"):
+    """Haengt einen Feedback-Datensatz (dict) als JSON an die Liste an."""
+    try:
+        res = _request("", ["RPUSH", key, json.dumps(record, ensure_ascii=False)])
+        return res is not None
+    except Exception:  # noqa
+        return False
+
+
+def list_feedback(key="imh:feedback"):
+    """Liest alle Feedback-Datensaetze als Liste von dicts (aelteste zuerst)."""
+    try:
+        res = _request("", ["LRANGE", key, 0, -1])
+        raw = (res or {}).get("result") or []
+    except Exception:  # noqa
+        raw = []
+    out = []
+    for item in raw:
+        try:
+            out.append(json.loads(item))
+        except Exception:  # noqa
+            pass
+    return out

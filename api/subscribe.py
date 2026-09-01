@@ -22,9 +22,36 @@ Alternativ Brevo (kostenloser Tarif):
 from http.server import BaseHTTPRequestHandler
 import json
 import os
+import secrets
+import sys
 import urllib.request
 
+# Damit der Sibling-Import (_store) auf Vercel und lokal funktioniert.
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+try:
+    from _store import kv_set
+except Exception:  # noqa
+    def kv_set(*a, **k):
+        return False
+
 # (redeploy-trigger, damit Vercel die MailerLite-Env-Variablen zieht)
+
+# So lange gilt die Zuordnung Feedback-Token -> E-Mail (in der KV).
+_FB_TOKEN_TTL = 120 * 24 * 3600
+
+
+def _feedback_token_for(email):
+    """Erzeugt einen opaken Zufalls-Token (kein E-Mail-Bestandteil, nicht
+    umkehrbar), legt das Mapping Token->E-Mail serverseitig in der KV ab und gibt
+    den Token zurueck. Ohne verbundenen Speicher -> None (dann wird kein Token
+    gesetzt, der ohnehin nicht aufloesbar waere)."""
+    try:
+        token = secrets.token_urlsafe(18)
+        if kv_set("imh:fbtok:" + token, email, ttl=_FB_TOKEN_TTL):
+            return token
+    except Exception:  # noqa
+        pass
+    return None
 
 
 def _mailerlite(name, email, extra_fields=None):
@@ -136,6 +163,12 @@ class handler(BaseHTTPRequestHandler):
             d = (body.get("d") or "").strip()
             if d:
                 extra["bauplan_pdf"] = d
+            # Opaker Feedback-Token: Mapping in der KV, Token als MailerLite-Feld
+            # (fuer den spaeteren Feedback-Link). Rein additiv, aendert den
+            # bestehenden Ablauf nicht.
+            tok = _feedback_token_for(email)
+            if tok:
+                extra["feedback_token"] = tok
             ok, msg = subscribe_contact(name, email, extra or None)
             self._send(200, {"ok": True, "stored": ok, "message": msg})
         except Exception as e:  # noqa

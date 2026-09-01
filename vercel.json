@@ -6,6 +6,7 @@
     { "src": "api/pdf.py", "use": "@vercel/python", "config": { "includeFiles": "api/**" } },
     { "src": "api/track.py", "use": "@vercel/python", "config": { "includeFiles": "api/**" } },
     { "src": "api/stats.py", "use": "@vercel/python", "config": { "includeFiles": "api/**" } },
+    { "src": "api/feedback.py", "use": "@vercel/python", "config": { "includeFiles": "api/**" } },
     { "src": "public/**", "use": "@vercel/static" }
   ],
   "routes": [
@@ -14,7 +15,9 @@
     { "src": "/api/pdf", "dest": "/api/pdf.py" },
     { "src": "/api/track", "dest": "/api/track.py" },
     { "src": "/api/stats", "dest": "/api/stats.py" },
+    { "src": "/api/feedback", "dest": "/api/feedback.py" },
     { "src": "/", "dest": "/public/index.html" },
+    { "src": "/feedback", "dest": "/public/feedback.html" },
     { "src": "/(.*)", "dest": "/public/$1" }
   ]
 }
