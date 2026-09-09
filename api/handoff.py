@@ -101,6 +101,19 @@ SIGN = {
 }
 
 
+# Erlaubte Rueckgabeziele. Der Aufrufer liefert nur einen Schluessel, nie eine
+# URL. Ueber die Umgebung kann fuer kontrollierte interne Tests ein anderes Ziel
+# gesetzt werden, ohne Wegwerf-URLs im Repository abzulegen. Nur https.
+DEFAULT_RETURN_HEILUNGSDNA = "https://intuition-paidproduct.vercel.app/app/"
+
+
+def _return_targets():
+    url = (os.environ.get("HANDOFF_RETURN_HEILUNGSDNA") or "").strip() or DEFAULT_RETURN_HEILUNGSDNA
+    if not url.startswith("https://"):
+        url = DEFAULT_RETURN_HEILUNGSDNA
+    return {"heilungsdna": url}
+
+
 def _enabled():
     return os.environ.get("HANDOFF_ENABLED") == "1"
 
@@ -268,6 +281,7 @@ class handler(BaseHTTPRequestHandler):
             "secret_present": bool(_secret()),
             "kv_configured": bool(configured()) if not _IMPORT_ERROR else False,
             "contractVersion": CONTRACT_VERSION,
+            "returnTargets": _return_targets(),
         }
         # Optionaler, isolierter KV-Rundlauf mit synthetischem Schluessel.
         want = (parse_qs(urlparse(self.path).query).get("selftest") or [""])[0]

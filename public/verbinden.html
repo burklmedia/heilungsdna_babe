@@ -101,23 +101,33 @@
 <script>
 (function () {
   "use strict";
-  // Feste Rueckgabeziele. Es wird NIE eine vom Aufrufer gelieferte URL benutzt,
-  // sondern nur ein Schluessel gegen diese Allowlist aufgeloest.
-  var RETURN_TARGETS = {
-    heilungsdna: "https://intuition-paidproduct.vercel.app/app/"
-  };
-
+  // Rueckgabeziele kommen vom eigenen Server. Der Aufrufer liefert NIE eine URL,
+  // sondern nur einen Schluessel, der serverseitig aufgeloest wird.
   var q = new URLSearchParams(location.search);
   var challenge = (q.get("c") || "").trim();
-  var target = RETURN_TARGETS[q.get("r") || ""];
+  var targetKey = q.get("r") || "";
   var mode = q.get("m") === "create" ? "create" : "connect";
+  var target = null;
 
-  // Ohne gueltigen Vorgang wird nichts angeboten.
-  if (!challenge || challenge.length < 32 || challenge.length > 64 || !target) {
+  function invalid() {
     document.getElementById("invalid").hidden = false;
+  }
+
+  if (!challenge || challenge.length < 32 || challenge.length > 64 || !targetKey) {
+    invalid();
     return;
   }
-  document.getElementById("app").hidden = false;
+
+  // Ziel serverseitig aufloesen; erst danach wird das Formular angeboten.
+  fetch("/api/handoff").then(function (r) { return r.json(); }).then(function (info) {
+    var t = info && info.returnTargets ? info.returnTargets[targetKey] : null;
+    if (!info || info.enabled !== true || !t || t.indexOf("https://") !== 0) {
+      invalid();
+      return;
+    }
+    target = t;
+    document.getElementById("app").hidden = false;
+  }).catch(invalid);
 
   var tabLink = document.getElementById("tab-link");
   var tabNew = document.getElementById("tab-new");
