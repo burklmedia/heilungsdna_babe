@@ -42,16 +42,22 @@
   .msg.err{display:block;background:rgba(240,166,178,.12);border:1px solid rgba(240,166,178,.4);color:var(--err)}
   .msg.info{display:block;background:rgba(245,197,107,.10);border:1px solid var(--line);color:var(--ink-soft)}
   .note{font-size:13px;color:var(--ink-soft);margin-top:16px}
+  .back{color:var(--gold);text-decoration:underline}
   [hidden]{display:none!important}
 </style>
 </head>
 <body>
 <div class="wrap">
-  <h1>Bauplan verbinden</h1>
-  <p id="lead">Hier kannst du die Ergebnisse deines kostenlosen Kosmischen Bauplans an die Heilungs-DNA übergeben.</p>
+  <!-- Titel und Erklaerung erscheinen ERST, wenn ein gueltiger, aktiver Vorgang
+       bestaetigt ist. Ein Direktaufruf sieht ausschliesslich den neutralen Block
+       unten: keine Produktnennung, kein Angebot, kein Weiterverkauf. -->
+  <h1 id="title" hidden>Bauplan verbinden</h1>
+  <p id="lead" hidden>Hier kannst du die Ergebnisse deines kostenlosen Kosmischen Bauplans übergeben.</p>
 
-  <div id="invalid" class="msg err" hidden>
-    Dieser Link gehört zu keinem gültigen Verbindungsvorgang. Bitte starte die Verbindung erneut in der Heilungs-DNA.
+  <div id="invalid" hidden>
+    <h1>Seite nicht verfügbar</h1>
+    <p>Diese Seite gehört zu einem Vorgang, der hier nicht gestartet werden kann.</p>
+    <p><a class="back" href="/">Zurück zum Kosmischen Bauplan</a></p>
   </div>
 
   <div id="app" hidden>
@@ -126,6 +132,8 @@
       return;
     }
     target = t;
+    document.getElementById("title").hidden = false;
+    document.getElementById("lead").hidden = false;
     document.getElementById("app").hidden = false;
   }).catch(invalid);
 
