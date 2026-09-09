@@ -1,0 +1,226 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="referrer" content="no-referrer">
+<meta name="robots" content="noindex, nofollow">
+<title>Bauplan verbinden</title>
+<style>
+  :root{
+    --ground:#160e2e; --card:#241848; --gold:#f5c56b; --ink:#faf7fc;
+    --ink-soft:#c9bfe0; --line:rgba(201,164,255,.25); --err:#f0a6b2;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0; padding:24px 18px 48px; background:var(--ground); color:var(--ink);
+    font:16px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+  }
+  .wrap{max-width:520px;margin:0 auto}
+  h1{font-size:22px;margin:0 0 6px}
+  p{margin:0 0 14px;color:var(--ink-soft);font-size:15px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px;margin-top:18px}
+  label{display:block;font-size:14px;margin:14px 0 6px;color:var(--ink)}
+  input[type=text]{
+    width:100%;padding:12px 14px;border-radius:12px;border:1px solid var(--line);
+    background:rgba(255,255,255,.04);color:var(--ink);font:inherit;font-size:15px;
+  }
+  .tabs{display:flex;gap:8px;margin-top:6px}
+  .tab{
+    flex:1;padding:10px;border-radius:12px;border:1px solid var(--line);cursor:pointer;
+    background:rgba(255,255,255,.03);color:var(--ink);font:inherit;font-size:14px;
+  }
+  .tab[aria-selected=true]{border-color:var(--gold);background:rgba(245,197,107,.14);color:var(--gold);font-weight:700}
+  .btn{
+    width:100%;min-height:52px;margin-top:18px;border:0;border-radius:14px;cursor:pointer;
+    font:inherit;font-weight:700;color:#3a2410;background:linear-gradient(135deg,var(--gold),#eab24d);
+  }
+  .btn[disabled]{opacity:.5;cursor:default}
+  .consent{display:flex;gap:10px;align-items:flex-start;margin-top:18px;font-size:14px}
+  .consent input{width:20px;height:20px;margin-top:2px;flex:none}
+  .msg{margin-top:14px;padding:12px 14px;border-radius:12px;font-size:14px;display:none}
+  .msg.err{display:block;background:rgba(240,166,178,.12);border:1px solid rgba(240,166,178,.4);color:var(--err)}
+  .msg.info{display:block;background:rgba(245,197,107,.10);border:1px solid var(--line);color:var(--ink-soft)}
+  .note{font-size:13px;color:var(--ink-soft);margin-top:16px}
+  [hidden]{display:none!important}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Bauplan verbinden</h1>
+  <p id="lead">Hier kannst du die Ergebnisse deines kostenlosen Kosmischen Bauplans an die Heilungs-DNA übergeben.</p>
+
+  <div id="invalid" class="msg err" hidden>
+    Dieser Link gehört zu keinem gültigen Verbindungsvorgang. Bitte starte die Verbindung erneut in der Heilungs-DNA.
+  </div>
+
+  <div id="app" hidden>
+    <div class="card">
+      <div class="tabs" role="tablist">
+        <button class="tab" id="tab-link" role="tab" aria-selected="true" type="button">Ich habe meinen Bauplan schon</button>
+        <button class="tab" id="tab-new" role="tab" aria-selected="false" type="button">Neu berechnen</button>
+      </div>
+
+      <div id="pane-link">
+        <label for="pdflink">Dein persönlicher Bauplan-Link aus der Willkommensmail</label>
+        <input type="text" id="pdflink" autocomplete="off" spellcheck="false"
+               placeholder="https://bauplan.intuitionmitherz.de/api/pdf?d=...">
+        <p class="note">Der Link enthält deine Geburtsangaben. Sie bleiben hier und werden nicht an die Heilungs-DNA übergeben.</p>
+      </div>
+
+      <div id="pane-new" hidden>
+        <label for="name">Vorname</label>
+        <input type="text" id="name" autocomplete="given-name">
+        <label for="date">Geburtsdatum (TT.MM.JJJJ)</label>
+        <input type="text" id="date" inputmode="numeric" autocomplete="off" placeholder="01.01.1990">
+        <label for="time">Geburtszeit (HH:MM, optional)</label>
+        <input type="text" id="time" inputmode="numeric" autocomplete="off" placeholder="unbekannt lassen ist ok">
+        <label for="place">Geburtsort</label>
+        <input type="text" id="place" autocomplete="off" placeholder="Stadt">
+        <p class="note">Ohne Geburtszeit wird kein Aszendent berechnet. Das ist in Ordnung.</p>
+      </div>
+
+      <div class="consent">
+        <input type="checkbox" id="consent">
+        <label for="consent" style="margin:0">
+          Ich möchte, dass die abgeleiteten Ergebnisse (zum Beispiel Typ, Autorität, Profil, Sonne und Mond)
+          an die Heilungs-DNA übergeben werden. Meine Geburtsdaten werden nicht übergeben.
+        </label>
+      </div>
+
+      <button class="btn" id="go" type="button" disabled>Ergebnisse übergeben</button>
+      <div id="msg" class="msg"></div>
+    </div>
+
+    <p class="note">
+      Die Übergabe ist freiwillig. Du kannst dieses Fenster jederzeit schließen und die Heilungs-DNA auch ohne Bauplan nutzen.
+    </p>
+  </div>
+</div>
+
+<script>
+(function () {
+  "use strict";
+  // Feste Rueckgabeziele. Es wird NIE eine vom Aufrufer gelieferte URL benutzt,
+  // sondern nur ein Schluessel gegen diese Allowlist aufgeloest.
+  var RETURN_TARGETS = {
+    heilungsdna: "https://intuition-paidproduct.vercel.app/app/"
+  };
+
+  var q = new URLSearchParams(location.search);
+  var challenge = (q.get("c") || "").trim();
+  var target = RETURN_TARGETS[q.get("r") || ""];
+  var mode = q.get("m") === "create" ? "create" : "connect";
+
+  // Ohne gueltigen Vorgang wird nichts angeboten.
+  if (!challenge || challenge.length < 32 || challenge.length > 64 || !target) {
+    document.getElementById("invalid").hidden = false;
+    return;
+  }
+  document.getElementById("app").hidden = false;
+
+  var tabLink = document.getElementById("tab-link");
+  var tabNew = document.getElementById("tab-new");
+  var paneLink = document.getElementById("pane-link");
+  var paneNew = document.getElementById("pane-new");
+  var consent = document.getElementById("consent");
+  var go = document.getElementById("go");
+  var msg = document.getElementById("msg");
+
+  function selectTab(useNew) {
+    tabNew.setAttribute("aria-selected", String(useNew));
+    tabLink.setAttribute("aria-selected", String(!useNew));
+    paneNew.hidden = !useNew;
+    paneLink.hidden = useNew;
+  }
+  tabLink.addEventListener("click", function () { selectTab(false); });
+  tabNew.addEventListener("click", function () { selectTab(true); });
+  if (mode === "create") selectTab(true);
+
+  consent.addEventListener("change", function () { go.disabled = !consent.checked; });
+
+  function show(kind, text) {
+    msg.className = "msg " + kind;
+    msg.textContent = text;
+  }
+
+  // Der persoenliche PDF-Link enthaelt die Geburtsangaben base64url-kodiert.
+  // Er dient hier ausschliesslich als Wiederherstellungsweg, damit der Nutzer
+  // nicht alles erneut eintippen muss. Er ist KEIN Identitaetsnachweis.
+  function birthFromLink(value) {
+    var d = "";
+    try {
+      var u = new URL(value.trim());
+      d = u.searchParams.get("d") || "";
+    } catch (e) {
+      d = value.trim();
+    }
+    if (!d) return null;
+    try {
+      var b64 = d.replace(/-/g, "+").replace(/_/g, "/");
+      while (b64.length % 4) b64 += "=";
+      var json = decodeURIComponent(escape(atob(b64)));
+      var o = JSON.parse(json);
+      return o && o.date ? o : null;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  function birthFromForm() {
+    var name = document.getElementById("name").value.trim();
+    var date = document.getElementById("date").value.trim();
+    var time = document.getElementById("time").value.trim();
+    var place = document.getElementById("place").value.trim();
+    if (!date || !place) return null;
+    return { name: name, date: date, time: time, place: place };
+  }
+
+  go.addEventListener("click", function () {
+    var useNew = tabNew.getAttribute("aria-selected") === "true";
+    var birth = useNew ? birthFromForm() : birthFromLink(document.getElementById("pdflink").value);
+
+    if (!birth) {
+      show("err", useNew
+        ? "Bitte gib mindestens Geburtsdatum und Geburtsort an."
+        : "Dieser Link konnte nicht gelesen werden. Prüfe ihn oder wechsle auf „Neu berechnen“.");
+      return;
+    }
+
+    go.disabled = true;
+    show("info", "Einen Moment, dein Bauplan wird berechnet.");
+
+    var payload = {
+      name: birth.name || "", date: birth.date, time: birth.time || "",
+      place: birth.place || "", gender: birth.gender || "",
+      challenge: challenge
+    };
+    if (birth.lat != null) payload.lat = birth.lat;
+    if (birth.lon != null) payload.lon = birth.lon;
+    if (birth.tz) payload.tz = birth.tz;
+
+    fetch("/api/handoff", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
+    }).then(function (r) {
+      return r.json().then(function (data) { return { status: r.status, data: data }; });
+    }).then(function (res) {
+      if (res.status === 200 && res.data && res.data.ok && res.data.token) {
+        // Nur der opake Token verlaesst diese Seite. Keine Geburtsdaten in der URL.
+        location.replace(target + "?bp=" + encodeURIComponent(res.data.token));
+        return;
+      }
+      go.disabled = false;
+      if (res.status === 429) return show("err", "Zu viele Versuche. Bitte versuche es in ein paar Minuten erneut.");
+      if (res.status === 503) return show("err", "Die Übergabe ist gerade nicht verfügbar. Bitte später erneut versuchen.");
+      show("err", (res.data && res.data.error) ? res.data.error : "Das hat nicht geklappt. Bitte prüfe deine Angaben.");
+    }).catch(function () {
+      go.disabled = false;
+      show("err", "Verbindung fehlgeschlagen. Bitte versuche es erneut.");
+    });
+  });
+})();
+</script>
+</body>
+</html>

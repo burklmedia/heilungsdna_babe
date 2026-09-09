@@ -124,6 +124,20 @@ def kv_get(key):
         return None
 
 
+def kv_incr_ttl(key, ttl):
+    """Zaehler erhoehen und beim ersten Mal mit einer Lebensdauer versehen.
+    Rueckgabe: der neue Zaehlerstand, oder None wenn kein Speicher verbunden ist
+    (dann findet keine Begrenzung statt und der Aufrufer entscheidet selbst).
+    Wird fuer einfache Rate Limits genutzt."""
+    try:
+        res = _request("/pipeline", [["INCR", key], ["EXPIRE", key, int(ttl), "NX"]])
+        if isinstance(res, list) and res:
+            return int((res[0] or {}).get("result"))
+    except Exception:  # noqa
+        return None
+    return None
+
+
 def kv_getdel(key):
     """Liest einen Wert und loescht ihn in EINER atomaren Operation (Redis
     GETDEL, ab Redis 6.2). Damit ist eine Einmal-Abholung ohne Race moeglich:

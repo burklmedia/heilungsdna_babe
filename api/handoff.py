@@ -38,7 +38,7 @@ Aktivierung (beide muessen gesetzt sein, sonst 503 und die Funktion ist inert):
   HANDOFF_SHARED_SECRET  = <starkes Zufallsgeheimnis>
 """
 from http.server import BaseHTTPRequestHandler
-from urllib.parse import urlparse
+from urllib.parse import urlparse, parse_qs
 import json
 import os
 import sys
@@ -52,7 +52,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 _IMPORT_ERROR = None
 try:
     from analyze import build_result
-    from _store import kv_set, kv_getdel, configured
+    from _store import kv_set, kv_getdel, kv_incr_ttl, configured
 except Exception:  # noqa
     import traceback
     _IMPORT_ERROR = traceback.format_exc()
@@ -63,6 +63,12 @@ CONTRACT_VERSION = 1
 TOKEN_TTL_SECONDS = 600          # 10 Minuten
 MAX_BODY_BYTES = 8 * 1024        # Payload-Begrenzung
 KEY_PREFIX = "imh:bp:"
+
+# Rate Limits pro Client und Zeitfenster. Bewusst grosszuegig fuer echte Nutzer,
+# aber eng genug gegen automatisiertes Durchprobieren von Tokens.
+RATE_WINDOW_SECONDS = 300
+RATE_LIMIT_START = 10            # Berechnungen sind teuer
+RATE_LIMIT_CLAIM = 30
 
 # Stabile, sprachunabhaengige Codes. Die deutschen Anzeigestrings des Freebies
 # bleiben dort; der Vertrag zum Paid Product ist bewusst entkoppelt.
@@ -106,6 +112,39 @@ def _secret():
 def _b64url_sha256(value):
     digest = hashlib.sha256(value.encode("utf-8")).digest()
     return base64.urlsafe_b64encode(digest).decode("ascii").rstrip("=")
+
+
+def _client_key(headers):
+    """Grober Client-Schluessel fuer das Rate Limit. Nur der erste Eintrag aus
+    X-Forwarded-For; wird ausschliesslich gehasht als Zaehlerschluessel benutzt
+    und nirgends gespeichert oder geloggt."""
+    raw = (headers.get("x-forwarded-for") or headers.get("x-real-ip") or "unknown")
+    first = raw.split(",")[0].strip() or "unknown"
+    return hashlib.sha256(first.encode("utf-8")).hexdigest()[:16]
+
+
+def _rate_limited(headers, bucket, limit):
+    """True, wenn das Limit ueberschritten ist. Ohne Speicher: keine Begrenzung
+    moeglich, dann wird durchgelassen (die Funktion ist ohne KV ohnehin inert)."""
+    key = "imh:rl:%s:%s" % (bucket, _client_key(headers))
+    count = kv_incr_ttl(key, RATE_WINDOW_SECONDS)
+    if count is None:
+        return False
+    return count > limit
+
+
+def _same_origin_ok(headers):
+    """Der Start wird von der eigenen Uebergabeseite aufgerufen. Wenn der Browser
+    einen Origin schickt, muss er zum eigenen Host passen. Fehlt der Header
+    (z. B. serverseitige Aufrufe), greift weiterhin das Rate Limit."""
+    origin = headers.get("origin")
+    if not origin:
+        return True
+    host = (headers.get("host") or "").lower()
+    try:
+        return urlparse(origin).netloc.lower() == host
+    except Exception:  # noqa
+        return False
 
 
 def _map_list(values, table):
@@ -183,6 +222,24 @@ def build_subset(result, time_known):
     return subset
 
 
+def _kv_selftest():
+    """Synthetischer KV-Rundlauf: schreiben, ATOMAR abholen, pruefen dass der
+    Schluessel danach weg ist. Isolierter Zufallsschluessel mit kurzer TTL, raeumt
+    sich selbst auf. Gibt ausschliesslich Booleans zurueck, nie Werte oder
+    Zugangsdaten. Belegt zugleich, dass GETDEL verfuegbar ist."""
+    key = KEY_PREFIX + "selftest:" + secrets.token_urlsafe(8)
+    marker = secrets.token_urlsafe(8)
+    wrote = bool(kv_set(key, marker, ttl=60))
+    got = kv_getdel(key) if wrote else None
+    gone = kv_getdel(key) is None
+    return {
+        "write": wrote,
+        "atomic_read": got == marker,
+        "deleted_after_read": bool(gone),
+        "getdel_supported": got == marker and bool(gone),
+    }
+
+
 class handler(BaseHTTPRequestHandler):
     # --- Antwort-Helfer -----------------------------------------------------
     def _send(self, code, payload):
@@ -204,14 +261,22 @@ class handler(BaseHTTPRequestHandler):
 
     def do_GET(self):
         # Nicht-sensitive Diagnose: nur Konfigurationsstatus, keine Werte.
-        self._send(200, {
+        info = {
             "ok": True,
             "service": "Bauplan-Handoff",
             "enabled": _enabled(),
             "secret_present": bool(_secret()),
             "kv_configured": bool(configured()) if not _IMPORT_ERROR else False,
             "contractVersion": CONTRACT_VERSION,
-        })
+        }
+        # Optionaler, isolierter KV-Rundlauf mit synthetischem Schluessel.
+        want = (parse_qs(urlparse(self.path).query).get("selftest") or [""])[0]
+        if want == "1" and not _IMPORT_ERROR and configured():
+            if _rate_limited(self.headers, "selftest", 5):
+                info["kv_selftest"] = {"skipped": "rate_limited"}
+            else:
+                info["kv_selftest"] = _kv_selftest()
+        self._send(200, info)
 
     def do_POST(self):
         if _IMPORT_ERROR:
@@ -228,6 +293,10 @@ class handler(BaseHTTPRequestHandler):
 
     # --- Schritt 1: Start ---------------------------------------------------
     def _start(self):
+        if not _same_origin_ok(self.headers):
+            return self._send(403, {"ok": False, "error": "Ungültige Herkunft."})
+        if _rate_limited(self.headers, "start", RATE_LIMIT_START):
+            return self._send(429, {"ok": False, "error": "Zu viele Versuche. Bitte später erneut."})
         try:
             body = self._read_body()
         except Exception:  # noqa
@@ -259,6 +328,8 @@ class handler(BaseHTTPRequestHandler):
 
     # --- Schritt 2: Abholung (Server zu Server) -----------------------------
     def _claim(self):
+        if _rate_limited(self.headers, "claim", RATE_LIMIT_CLAIM):
+            return self._send(429, {"ok": False, "error": "Zu viele Versuche. Bitte später erneut."})
         expected = _secret()
         provided = self.headers.get("X-Handoff-Secret") or ""
         if not expected or not hmac.compare_digest(expected, provided):
