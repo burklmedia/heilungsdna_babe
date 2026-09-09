@@ -124,6 +124,19 @@ def kv_get(key):
         return None
 
 
+def kv_getdel(key):
+    """Liest einen Wert und loescht ihn in EINER atomaren Operation (Redis
+    GETDEL, ab Redis 6.2). Damit ist eine Einmal-Abholung ohne Race moeglich:
+    zwei gleichzeitige Abrufe koennen nicht beide denselben Wert erhalten.
+    Rueckgabe: der Wert oder None (nicht vorhanden, bereits abgeholt, oder kein
+    Speicher verbunden)."""
+    try:
+        res = _request("", ["GETDEL", key])
+        return (res or {}).get("result")
+    except Exception:  # noqa
+        return None
+
+
 def kv_setnx(key, value, ttl=None):
     """Setzt den Wert nur, wenn der Schluessel noch nicht existiert (atomar).
     Rueckgabe True, wenn NEU gesetzt wurde; False, wenn schon vorhanden oder

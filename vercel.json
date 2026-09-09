@@ -8,6 +8,7 @@
     { "src": "api/stats.py", "use": "@vercel/python", "config": { "includeFiles": "api/**" } },
     { "src": "api/feedback.py", "use": "@vercel/python", "config": { "includeFiles": "api/**" } },
     { "src": "api/topic.py", "use": "@vercel/python", "config": { "includeFiles": "api/**" } },
+    { "src": "api/handoff.py", "use": "@vercel/python", "config": { "includeFiles": "api/**" } },
     { "src": "public/**", "use": "@vercel/static" }
   ],
   "routes": [
@@ -18,6 +19,8 @@
     { "src": "/api/stats", "dest": "/api/stats.py" },
     { "src": "/api/feedback", "dest": "/api/feedback.py" },
     { "src": "/api/topic", "dest": "/api/topic.py" },
+    { "src": "/api/handoff/claim", "dest": "/api/handoff.py" },
+    { "src": "/api/handoff", "dest": "/api/handoff.py" },
     { "src": "/", "dest": "/public/index.html" },
     { "src": "/feedback", "dest": "/public/feedback.html" },
     { "src": "/thema", "dest": "/public/thema.html" },
