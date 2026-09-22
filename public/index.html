@@ -745,13 +745,26 @@
     background: linear-gradient(135deg, var(--gold), var(--gold-deep)); border: none; border-radius: 999px; padding: 13px 36px;
     cursor: pointer; box-shadow: 0 0 0 1px rgba(245,197,107,.4), 0 10px 30px -8px var(--glow); }
   .cookie-card .cbtn:hover { filter: brightness(1.04); }
-  #calm { position: fixed; inset: 0; z-index: 9998; display: none; align-items: center; justify-content: center; padding: 20px;
+  #calm, #sent { position: fixed; inset: 0; z-index: 9998; display: none; align-items: center; justify-content: center; padding: 20px;
     background: rgba(10,4,30,.6); backdrop-filter: blur(4px); }
-  #calm.show { display: flex; animation: cookieFade .35s ease both; }
-  #calm .cookie-card { width: min(520px, 100%); }
-  #calm .cookie-card .spark { font-size: 22px; color: var(--gold); display: block; margin-bottom: 6px; }
+  #calm.show, #sent.show { display: flex; animation: cookieFade .35s ease both; }
+  #calm .cookie-card, #sent .cookie-card { width: min(520px, 100%); }
+  #calm .cookie-card .spark, #sent .cookie-card .spark { font-size: 22px; color: var(--gold); display: block; margin-bottom: 6px; }
   #calm .cookie-card p { font-size: 15.5px; line-height: 1.72; margin-bottom: 24px; }
-  #calm .cookie-card .cbtn { line-height: 1.35; padding: 14px 30px; }
+  #calm .cookie-card .cbtn, #sent .cookie-card .cbtn { line-height: 1.35; padding: 14px 30px; }
+  /* Hinweis nach dem Absenden: die Auswertung kommt per E-Mail */
+  #sent .cookie-card .st { font-family: var(--serif); font-weight: 500; font-size: clamp(24px,4.2vw,29px); line-height: 1.2; color: var(--ink); margin-bottom: 14px; }
+  #sent .cookie-card .st em { font-style: normal; color: var(--gold); }
+  #sent .cookie-card p { font-size: 15.5px; line-height: 1.72; margin-bottom: 14px; }
+  #sent .cookie-card p b { color: var(--ink); font-weight: 700; overflow-wrap: anywhere; }
+  #sent .cookie-card .sent-hint { font-size: 13.5px; color: var(--ink-mute); margin-bottom: 24px; }
+  /* E-Mail-Karte nach dem Absenden */
+  .mailcard .mail-sent { display: none; }
+  .mailcard.is-sent .field, .mailcard.is-sent #go2, .mailcard.is-sent .form-note, .mailcard.is-sent .mail-perks, .mailcard.is-sent .err { display: none; }
+  .mailcard.is-sent .mail-sent { display: block; margin-top: 8px; padding: 16px 18px; border-radius: 14px; font-size: 15px; line-height: 1.6;
+    background: rgba(245,197,107,.08); border: 1px solid rgba(245,197,107,.45); color: var(--ink-soft); }
+  .mailcard.is-sent .mail-sent b { color: var(--ink); overflow-wrap: anywhere; }
+  .mailcard.is-sent .mail-sent .ok { color: var(--gold); font-weight: 700; }
 
   /* Lese-Fortschrittsbalken (dünne goldene Linie ganz oben) */
   #progressbar { position: fixed; top: 0; left: 0; height: 3px; width: 0; z-index: 9999; pointer-events: none;
@@ -1354,9 +1367,9 @@
 
         <div class="mailcard">
           <h3>Dein Bauplan ist fertig.</h3>
-          <div class="mail-sub">Öffne jetzt deine vollständige persönliche Deutung.</div>
+          <div class="mail-sub">Ich schicke dir deine vollständige persönliche Deutung per E-Mail.</div>
           <p>Dein Typ ist erst der Anfang. Entdecke, wie deine Intuition mit dir spricht, wie du stimmige Entscheidungen triffst, wo deine größten Stärken liegen, und welche Muster dich immer wieder von dir selbst wegführen.</p>
-          <div class="mail-perks"><span>✓ Sofort freigeschaltet</span><span>✓ Persönlich berechnet</span><span>✓ Als PDF speicherbar</span><span>✓ Kostenlos</span></div>
+          <div class="mail-perks"><span>✓ Kommt per E-Mail</span><span>✓ Persönlich berechnet</span><span>✓ Als PDF speicherbar</span><span>✓ Kostenlos</span></div>
           <div class="field">
             <label for="g-name">Dein Vorname</label>
             <input id="g-name" type="text" placeholder="Vorname" autocomplete="given-name">
@@ -1365,8 +1378,9 @@
             <label for="g-mail">Deine E-Mail</label>
             <input id="g-mail" type="email" placeholder="du@beispiel.de" autocomplete="email">
           </div>
-          <button class="btn" id="go2" type="button">Meinen vollständigen Bauplan öffnen ✦</button>
+          <button class="btn" id="go2" type="button">Meinen Bauplan per E-Mail erhalten ✦</button>
           <div class="err" id="err2"></div>
+          <div class="mail-sent" id="mail-sent" role="status"><span class="ok">✓ Ist unterwegs.</span> Die E-Mail an <b id="mail-sent-to"></b> ist verschickt. Bitte bestätige darin kurz deine Adresse, danach kommt dein vollständiger Bauplan als PDF.</div>
           <p class="form-note">Mit dem Absenden meldest du dich zu meinem kostenlosen Newsletter an und erhältst deine Analyse. Jederzeit mit einem Klick abbestellbar. Es gilt meine <a href="/datenschutz.html" style="color:var(--gold)">Datenschutzerklärung</a>.</p>
         </div>
       </div>
@@ -1447,6 +1461,16 @@
   </div>
 </div>
 
+<div id="sent" role="dialog" aria-modal="true" aria-labelledby="sent-title">
+  <div class="cookie-card">
+    <span class="spark">✦</span>
+    <div class="st" id="sent-title">Deine komplette Auswertung kommt <em>per E-Mail</em></div>
+    <p>Ich habe dir gerade eine E-Mail an <b id="sent-to"></b> geschickt. Bitte bestätige darin kurz deine E-Mail-Adresse, danach bekommst du deinen vollständigen Bauplan als PDF.</p>
+    <p class="sent-hint">Keine Mail da? Schau auch im Spam- oder Werbung-Ordner nach.</p>
+    <button class="cbtn" id="sent-ok" type="button">Alles klar</button>
+  </div>
+</div>
+
 <script>
 (function(){
   var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -1510,7 +1534,7 @@
       var show=false;
       var g=document.getElementById('glimpse');
       var card=g && g.querySelector('.mailcard');
-      if(onStep2() && g && g.classList.contains('show') && card && innerWidth<=780){
+      if(onStep2() && g && g.classList.contains('show') && card && !card.classList.contains('is-sent') && innerWidth<=780){
         var r=card.getBoundingClientRect();
         // Button zeigen, solange das Anmelde-Feld nicht sichtbar ist
         show = (r.bottom < 90 || r.top > innerHeight-60);
@@ -1916,15 +1940,34 @@
     track('email');
     var payload={name:name,email:email}; var pp=pdfParam(); if(pp) payload.d=pp;
     fetch(API+'/api/subscribe',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)})
-      .then(function(r){return r.json();}).catch(function(){return {ok:true};})
-      .then(function(){ renderFull(state.result); show('step3'); resetZoomThenFree(); track('bauplan'); btn.disabled=false; btn.textContent='Meinen vollständigen Bauplan öffnen ✦'; showCalm(); });
+      .then(function(r){ return r.json().catch(function(){ return {}; }); })
+      .catch(function(){ return {}; })
+      .then(function(d){
+        // Die Auswertung kommt ausschliesslich per E-Mail. Den Hinweis gibt es nur,
+        // wenn MailerLite die Adresse angenommen hat; sonst erneut versuchen lassen.
+        if(!d || !d.ok || d.stored===false){
+          err.textContent='Das hat gerade nicht geklappt. Bitte prüfe deine E-Mail-Adresse und versuche es noch einmal.';
+          btn.disabled=false; btn.textContent='Meinen Bauplan per E-Mail erhalten ✦'; return;
+        }
+        markSent(email);
+      });
   });
+
+  function markSent(email){
+    var card=document.querySelector('#glimpse .mailcard'); if(card) card.classList.add('is-sent');
+    var to=document.getElementById('mail-sent-to'); if(to) to.textContent=email;
+    var st=document.getElementById('sent-to'); if(st) st.textContent=email;
+    var fc=document.getElementById('floatcta2'); if(fc) fc.classList.remove('show');
+    var m=document.getElementById('sent'); if(m) m.classList.add('show');
+  }
+  var sentOk=document.getElementById('sent-ok');
+  if(sentOk) sentOk.addEventListener('click',function(){
+    var m=document.getElementById('sent'); if(m) m.classList.remove('show'); });
 
   var pdfbtn=document.getElementById('pdfbtn');
   if(pdfbtn) pdfbtn.addEventListener('click',function(){
     var p=pdfParam();
     if(!p){ return; }
-    track('pdf');
     window.open(API+'/api/pdf?d='+p,'_blank');
   });
 

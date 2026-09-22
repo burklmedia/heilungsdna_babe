@@ -1799,6 +1799,18 @@ def _filename(name):
     return ("Kosmischer-Bauplan-" + base + ".pdf") if base else "Kosmischer-Bauplan.pdf"
 
 
+def _count_pdf_open():
+    """Erhoeht den anonymen Zaehler 'pdf' mit denselben Schluesseln wie /api/track.
+    Speichert keine personenbezogenen Daten; Fehler werden ignoriert."""
+    try:
+        from datetime import datetime, timezone
+        from _store import incr
+        day = datetime.now(timezone.utc).strftime("%Y-%m-%d")
+        incr(["imh:t:pdf", "imh:d:" + day + ":pdf"])
+    except Exception:  # noqa
+        pass
+
+
 class handler(BaseHTTPRequestHandler):
     def _err(self, code, msg, detail=None):
         payload = {"ok": False, "error": msg}
@@ -1829,6 +1841,9 @@ class handler(BaseHTTPRequestHandler):
             self.send_header("Cache-Control", "no-store")
             self.end_headers()
             self.wfile.write(pdf_bytes)
+            # Anonym mitzaehlen, dass ein Bauplan-PDF geoeffnet wurde. Erst nach dem
+            # Senden, damit der Download nicht wartet.
+            _count_pdf_open()
         except ValueError as e:
             self._err(400, str(e))
         except Exception as e:  # noqa

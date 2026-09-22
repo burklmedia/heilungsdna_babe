@@ -29,12 +29,11 @@ STEPS = [
     ("himmel", "„Meinen Himmel“ geklickt"),
     ("teaser", "Vorschau erreicht"),
     ("email", "E-Mail eingetragen"),
-    ("bauplan", "Bauplan gesehen"),
 ]
 
 EXTRA = [
     ("scroll", "Startseite gelesen (>60%)"),
-    ("pdf", "PDF geöffnet"),
+    ("pdf", "Bauplan-PDF aus der E-Mail geöffnet (Aufrufe)"),
 ]
 
 PAGE_CSS = """
