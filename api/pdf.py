@@ -1412,6 +1412,14 @@ def _deutung(pdf, sections):
         pdf.set_text_color(*INK_DARK)
         pdf.multi_cell(PW - pdf.l_margin - pdf.r_margin - 12, 9, safe(s.get("title") or ""),
                        new_x=XPos.LMARGIN, new_y=YPos.NEXT)
+        # Lese-Marker: was dieses Kapitel beitraegt. Verhindert das Gefuehl der Doppelung,
+        # wenn ein Motiv (altes Muster, Spueren, Entscheiden) erneut vorkommt.
+        if s.get("focus"):
+            pdf.set_x(pdf.l_margin + 12)
+            pdf.set_font("Mul", "B", 9)
+            pdf.set_text_color(*GOLD_DK)
+            pdf.multi_cell(PW - pdf.l_margin - pdf.r_margin - 12, 5, safe(s["focus"]),
+                           new_x=XPos.LMARGIN, new_y=YPos.NEXT)
         if s.get("subtitle"):
             pdf.set_x(pdf.l_margin + 12)
             pdf.set_font("Mul", "", 9)
@@ -1419,6 +1427,14 @@ def _deutung(pdf, sections):
             pdf.multi_cell(PW - pdf.l_margin - pdf.r_margin - 12, 5, safe(s["subtitle"]),
                            new_x=XPos.LMARGIN, new_y=YPos.NEXT)
         pdf.ln(3)
+        if s.get("builds_on"):
+            pdf.set_font("Cormo", "I", 10)  # Mulish hat keinen Italic-Schnitt
+            pdf.set_text_color(*MUTE)
+            pdf.multi_cell(0, 4.8,
+                           safe("Knüpft an \u201e" + s["builds_on"] + "\u201c an, hier aus einem "
+                                "anderen Blickwinkel."),
+                           new_x=XPos.LMARGIN, new_y=YPos.NEXT)
+            pdf.ln(2)
         if s.get("headline"):
             pdf.set_font("Cormo", "I", 14)
             pdf.set_text_color(*GOLD_DK)

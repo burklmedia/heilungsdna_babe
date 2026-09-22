@@ -545,6 +545,17 @@
   .acc-nr { font-family: var(--sans); font-size: 11px; font-weight: 700; letter-spacing: .18em; color: var(--gold); margin-top: 5px; flex: none; }
   .acc-t { flex: 1; font-family: var(--serif); font-size: 19px; color: var(--ink); line-height: 1.2; }
   .acc-t small { display: block; font-family: var(--sans); font-size: 12px; color: var(--ink-mute); margin-top: 4px; letter-spacing: .02em; }
+  .de-note { max-width: 62ch; margin: 0 auto 22px; text-align: center; color: var(--ink-mute);
+    font-size: 13.5px; line-height: 1.65; }
+  /* Lese-Marker: was dieses Kapitel beitraegt, und worauf es aufbaut. */
+  .acc-focus { display: block; font-family: var(--sans); font-size: 12.5px; font-weight: 600;
+    color: var(--gold); margin-top: 5px; line-height: 1.35; letter-spacing: .01em; }
+  .acc-from { display: inline-flex; align-items: center; gap: 6px; margin: 0 0 14px;
+    background: rgba(201,164,255,.08); border: 1px solid var(--line); border-radius: 999px;
+    padding: 6px 13px; font-family: var(--sans); font-size: 12px; color: var(--ink-mute);
+    line-height: 1.3; cursor: pointer; text-align: left; transition: color .18s ease, border-color .18s ease; }
+  .acc-from:hover { color: var(--ink); border-color: var(--line-strong); }
+  .acc-from strong { color: var(--ink-soft); font-weight: 600; }
   .acc-x { flex: none; color: var(--gold); font-size: 24px; line-height: 1; transition: transform .22s ease; }
   .acc[open] .acc-x { transform: rotate(45deg); }
   .acc-b { padding: 2px 18px 20px; }
@@ -614,14 +625,21 @@
   .cap2 { font-size: 11px; letter-spacing: .2em; text-transform: uppercase; color: var(--ink-mute); text-align: center; margin: 4px 0 16px; }
   .ov-intro { text-align: center; color: var(--ink-soft); max-width: 60ch; margin: 0 auto 24px; font-size: 16.5px; line-height: 1.8; font-style: italic; }
   .ov-start { max-width: 60ch; margin: 0 auto 24px; border: 1px solid var(--line-strong); border-left: 2px solid var(--gold);
-    border-radius: 14px; background: rgba(245,197,107,.06); padding: 15px 18px; }
+    border-radius: 14px; background: rgba(245,197,107,.06); padding: 16px 18px; }
   .ov-start-h { font-family: var(--serif); font-weight: 600; font-size: 1.2rem; color: var(--gold); margin-bottom: 4px; }
-  .ov-start-p { color: var(--ink-soft); font-size: 14px; line-height: 1.55; margin: 0 0 12px; }
-  .ov-start-btns { display: flex; flex-wrap: wrap; gap: 10px; }
-  .ov-start-b { background: rgba(245,197,107,.1); color: var(--gold); border: 0; box-shadow: 0 0 0 1px rgba(245,197,107,.45);
-    border-radius: 12px; padding: 10px 14px; font-family: var(--sans); font-weight: 700; font-size: 13.5px; line-height: 1;
-    cursor: pointer; transition: background .18s ease, box-shadow .18s ease; }
-  .ov-start-b:hover { background: rgba(245,197,107,.18); box-shadow: 0 0 0 1px rgba(245,197,107,.7); }
+  .ov-start-p { color: var(--ink-soft); font-size: 14px; line-height: 1.55; margin: 0 0 14px; }
+  /* Karten immer nebeneinander (gleich breit, gleich hoch), erst am Handy untereinander. */
+  .ov-start-btns { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; align-items: stretch; }
+  .ov-start-b { display: flex; flex-direction: column; align-items: flex-start; justify-content: center; gap: 5px;
+    width: 100%; height: 100%; text-align: left; hyphens: auto;
+    background: rgba(245,197,107,.1); color: var(--gold); border: 0; box-shadow: 0 0 0 1px rgba(245,197,107,.45);
+    border-radius: 12px; padding: 12px 13px; font-family: var(--sans); font-weight: 700; font-size: 13.5px; line-height: 1.28;
+    cursor: pointer; transition: background .18s ease, box-shadow .18s ease, transform .18s ease; }
+  .ov-start-b small { font-family: var(--sans); font-weight: 500; font-size: 11.5px; line-height: 1.38;
+    color: var(--ink-soft); letter-spacing: .01em; }
+  .ov-start-b:hover { background: rgba(245,197,107,.18); box-shadow: 0 0 0 1px rgba(245,197,107,.7); transform: translateY(-1px); }
+  @media (max-width: 620px) { .ov-start-btns { grid-template-columns: 1fr; gap: 8px; }
+    .ov-start-b { padding: 12px 14px; } }
   .factrow { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-bottom: 26px; }
   .factrow .f { background: rgba(245,197,107,.06); border: 1px solid rgba(245,197,107,.34); border-radius: 14px;
     padding: 12px 18px; text-align: center; min-width: 116px; box-shadow: 0 0 26px -8px var(--glow); }
@@ -2060,15 +2078,11 @@
     var ovLegend='<details class="ov-fold"><summary class="ov-fold-h"><span>Was bedeutet was?</span><span class="ov-fold-x">+</span></summary><div class="ov-fold-b legend">'+legendInner+'</div></details>';
     var ovHouses='<details class="ov-fold"><summary class="ov-fold-h"><span>Die zwölf Häuser, deine Lebensfelder</span><span class="ov-fold-x">+</span></summary><div class="ov-fold-b">'+housesInner+'</div></details>';
     document.getElementById('pane-ov').innerHTML=
-      '<p class="ov-intro">'+(b.name?(esc(b.name)+', '):'')+'was du gleich liest, ist kein Test und kein Urteil. Es ist ein Blick auf das, was in dir angelegt ist, seit dem ersten Moment deines Lebens. Vielleicht erkennst du dich an mancher Stelle so genau wieder, dass es kurz wehtut. Das ist gut so. Es heißt, du wirst gesehen. Prüfe beim Lesen immer selbst, was sich für dich stimmig anfühlt. Was nicht passt, darfst du getrost liegen lassen.</p>'+
+      '<p class="ov-intro">'+(b.name?(esc(b.name)+', '):'')+'was du gleich liest, ist kein Test und kein Urteil. Es ist ein Blick auf das, was in dir angelegt ist, seit dem ersten Moment deines Lebens. Vielleicht erkennst du dich an mancher Stelle so genau wieder, dass es kurz wehtut. Das ist gut so. Es heißt, du wirst gesehen. Manche Themen begegnen dir mehrfach, jedes Mal aus einem anderen Blickwinkel. Prüfe beim Lesen immer selbst, was sich für dich stimmig anfühlt. Was nicht passt, darfst du getrost liegen lassen.</p>'+
       '<div class="ov-start">'+
         '<div class="ov-start-h">Hier anfangen</div>'+
         '<p class="ov-start-p">Du musst nicht alles auf einmal lesen. Wenn du nur drei Dinge liest, beginne hier.</p>'+
-        '<div class="ov-start-btns">'+
-          '<button type="button" class="ov-start-b" data-start="in">✦ Dein Intuitionstyp</button>'+
-          '<button type="button" class="ov-start-b" data-start="de|Dein Entscheidungsweg">✦ Dein Entscheidungsweg</button>'+
-          '<button type="button" class="ov-start-b" data-start="de|Deine größten Schwierigkeiten">✦ Deine größten Schwierigkeiten</button>'+
-        '</div>'+
+        startButtons(f)+
       '</div>'+
       '<div class="factrow">'+
         '<div class="f"><div class="l">Typ</div><div class="v">'+esc(hd.type_display||hd.type)+'</div></div>'+
@@ -2114,6 +2128,9 @@
 
     // ── DEUTUNG ──
     document.getElementById('pane-de').innerHTML=
+      '<p class="de-note">Einzelne Themen kehren hier wieder, das ist so gewollt. Was dich wirklich '+
+      'ausmacht, zeigt sich in mehreren Systemen gleichzeitig, und jedes Kapitel beleuchtet es von '+
+      'einer anderen Seite. In Gold steht über jedem Kapitel, was genau dort neu dazukommt.</p>'+
       '<div class="story">'+
       (f.sections||[]).map(function(s,i){
         var nr=('0'+(i+1)).slice(-2);
@@ -2123,6 +2140,10 @@
         var tip=(s.tip&&s.tip[1])?'<div class="acc-tip"><span class="acc-tip-l">'+esc(s.tip[0])+'</span>'+esc(s.tip[1])+'</div>':'';
         var facts=(s.facts&&s.facts.length)?'<div class="acc-facts">'+s.facts.map(function(ft){return '<span><strong>'+esc(ft[0])+':</strong> '+esc(ft[1])+'</span>';}).join('')+'</div>':'';
         var sub=s.subtitle?'<small>'+esc(s.subtitle)+'</small>':'';
+        /* Lese-Marker gegen das Gefuehl der Doppelung: eigener Beitrag + Anschluss. */
+        var focus=s.focus?'<span class="acc-focus">'+esc(s.focus)+'</span>':'';
+        var from=s.builds_on?'<button type="button" class="acc-from" data-jump="'+esc(s.builds_on)+'">'+
+          '↑ <span>Knüpft an <strong>'+esc(s.builds_on)+'</strong> an, hier aus einem anderen Blickwinkel.</span></button>':'';
         /* Vier-Schritt-Blöcke, aktuell im Kapitel "Deine größten Schwierigkeiten" */
         var blocks=(s.blocks&&s.blocks.length)?s.blocks.map(function(b,bi){
           return '<div class="dblock">'+
@@ -2136,8 +2157,8 @@
         }).join(''):'';
         var after=s.after_blocks?'<p>'+esc(s.after_blocks)+'</p>':'';
         return '<details class="acc" name="deut">'+
-          '<summary class="acc-h"><span class="acc-nr">'+nr+'</span><span class="acc-t">'+esc(s.title)+sub+'</span><span class="acc-x">+</span></summary>'+
-          '<div class="acc-b">'+lead+paras+blocks+after+take+tip+facts+'</div></details>';
+          '<summary class="acc-h"><span class="acc-nr">'+nr+'</span><span class="acc-t">'+esc(s.title)+focus+sub+'</span><span class="acc-x">+</span></summary>'+
+          '<div class="acc-b">'+from+lead+paras+blocks+after+take+tip+facts+'</div></details>';
       }).join('')+'</div>'+
       '<div class="closing">'+esc(f.closing)+'</div>';
 
@@ -2289,6 +2310,29 @@
     // native <details> klappen sofort auf/zu → nächster Frame reicht, dann an den Anfang springen
     scrollToOpen(d, 40);
   }, true);
+  /* "Hier anfangen": die drei Kapitel mit der groessten Sogwirkung fuer den ersten Blick.
+     Rangfolge von oben nach unten, genommen werden die ersten drei, die es in dieser
+     Deutung wirklich gibt. So zeigt kein Startpunkt ins Leere. */
+  var START_PICKS=[
+    {tab:'de', title:'Deine Lebensaufgabe',            sub:'Der rote Faden über allem'},
+    {tab:'de', title:'Deine größten Schwierigkeiten',  sub:'Was dich immer wieder ausbremst'},
+    {tab:'de', title:'Dein Lower Self',                sub:'Das Muster, das dich klein hält'},
+    {tab:'de', title:'Dein Chiron, Wunde und Heilung', sub:'Deine wunde Stelle und ihre Gabe'},
+    {tab:'de', title:'Dein Higher Self',               sub:'Wohin du wächst'},
+    {tab:'de', title:'Dein Entscheidungsweg',          sub:'Wie du dich richtig entscheidest'},
+    {tab:'in', title:'Dein Intuitionstyp',             sub:'Wie sich dein Bauchgefühl meldet'}
+  ];
+  function startButtons(f){
+    var have={}; (f.sections||[]).forEach(function(s){ have[s.title]=1; });
+    var picks=START_PICKS.filter(function(p){ return p.tab!=='de' || have[p.title]; }).slice(0,3);
+    if(!picks.length) return '';
+    return '<div class="ov-start-btns">'+picks.map(function(p){
+      var d=p.tab==='de'?(p.tab+'|'+p.title):p.tab;
+      return '<button type="button" class="ov-start-b" data-start="'+esc(d)+'">'+
+        '✦ '+esc(p.title)+'<small>'+esc(p.sub)+'</small></button>';
+    }).join('')+'</div>';
+  }
+
   // "Hier anfangen"-Startpunkte: oeffnen den passenden Reiter (und in der Deutung das Kapitel).
   // Reine Wiederverwendung: setRTab + natives details.open + bestehender pane-de-toggle-Handler.
   document.getElementById('pane-ov').addEventListener('click',function(e){
@@ -2296,6 +2340,11 @@
     var parts=(b.getAttribute('data-start')||'').split('|'), tab=parts[0], title=parts[1];
     if(tab==='de'){ setRTab('de'); openDeutung(title); }
     else { setRTab(tab, true); }
+  });
+  // Anschluss-Chip im Kapitel: springt zu dem Kapitel, auf dem dieses aufbaut.
+  document.getElementById('pane-de').addEventListener('click',function(e){
+    var b=e.target.closest('[data-jump]'); if(!b) return;
+    openDeutung(b.getAttribute('data-jump'));
   });
   function openDeutung(title){
     if(!title) return;

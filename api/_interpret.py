@@ -2482,6 +2482,56 @@ def _intuition_deutung_section(it):
     }
 
 
+# ── Lese-Marker je Kapitel ───────────────────────────────────────────────────
+# SECTION_FOCUS: der eigene Beitrag eines Kapitels, in einer Zeile. Steht unter der
+# Kapitelueberschrift und beantwortet die Frage "warum lese ich das jetzt nochmal?".
+SECTION_FOCUS = {
+    "Dein innerster Kern": "Wer du im Kern bist",
+    "Dein Human-Design-Typ": "Wie deine Energie arbeitet",
+    "Deine innere Autorität": "Woran du erkennst, was für dich stimmt",
+    "Dein Profil": "Welche Rolle du unter Menschen einnimmst",
+    "Deine Zentren": "Wo du fest bist und wo formbar",
+    "Dein Entscheidungsweg": "Dein Ablauf, Schritt für Schritt",
+    "Deine größten Stärken": "Was dir leichtfällt, ohne dass du es merkst",
+    "Deine größten Schwierigkeiten": "Was dich immer wieder ausbremst",
+    "Deine Elemente-Balance": "Deine Grundtemperatur",
+    "Ein Lebensschwerpunkt": "Wo sich dein Leben besonders ballt",
+    "Deine inneren Gespräche": "Die Kräfte, die in dir miteinander reden",
+    "Dein Intuitionstyp": "Wie sich dein Bauchgefühl meldet",
+    "Dein Higher Self": "Wohin du wächst",
+    "Dein Lower Self": "Woher dein altes Muster kommt",
+    "Deine Lebensaufgabe": "Der rote Faden über allem",
+    "Dein Chiron, Wunde und Heilung": "Deine wunde Stelle und ihre Gabe",
+    "Deine Tools und Impulse": "Was du ab morgen konkret tun kannst",
+}
+
+# SECTION_BUILDS_ON: Kapitel, die ein frueheres bewusst weiterdrehen. Der Verweis wird
+# nur gesetzt, wenn das genannte Kapitel in dieser Deutung auch wirklich vorkommt und
+# vorher steht. Aus "schon wieder das Muster" wird so "ach, das haengt zusammen".
+SECTION_BUILDS_ON = {
+    "Dein Entscheidungsweg": "Deine innere Autorität",
+    "Dein Lower Self": "Deine größten Schwierigkeiten",
+    "Deine Lebensaufgabe": "Dein Higher Self",
+    "Deine Tools und Impulse": "Deine Lebensaufgabe",
+    "Dein Chiron, Wunde und Heilung": "Dein Lower Self",
+}
+
+
+def _apply_reading_markers(sections):
+    """Setzt focus und builds_on. Rein additiv, der Text selbst bleibt unberuehrt."""
+    seen = set()
+    for sec in sections:
+        title = sec.get("title") or ""
+        focus = SECTION_FOCUS.get(title)
+        if focus:
+            sec["focus"] = focus
+        ref = SECTION_BUILDS_ON.get(title)
+        if ref and ref in seen:
+            sec["builds_on"] = ref
+        seen.add(title)
+    return sections
+
+
 def full_analysis(chart):
     """Die vollständige, liebevoll aufbereitete Analyse (nach der E-Mail)."""
     hd = chart["hd"]
@@ -2584,7 +2634,7 @@ def full_analysis(chart):
 
     sections.append({
         "title": "Dein Entscheidungsweg",
-        "subtitle": "Wie du Entscheidungen triffst, die halten",
+        "subtitle": "Strategie und Autorität im Zusammenspiel",
         "headline": f"{strat}, danach auf deine {auth_phrase(auth)} hören",
         "body": ("Zwei Dinge zusammen ergeben deinen sichersten Weg zu jeder Entscheidung.\n\n"
                  f"Der erste Schritt ist deine Strategie: {strat_phrase(strat)}. So kommst du überhaupt "
@@ -2679,7 +2729,7 @@ def full_analysis(chart):
             f.append(("Haus", f"H{nk['house']}"))
         sections.append({
             "title": "Dein Higher Self",
-            "subtitle": f"Nordknoten in {nk['sign']}, wohin du wächst",
+            "subtitle": f"Nordknoten in {nk['sign']}",
             "headline": f"Dein Wachstum zeigt Richtung {nk['sign']}",
             "body": ("Dein Higher Self ist niemand, der du erst noch werden musst. Es ist die Version "
                      "von dir, die längst in dir steckt. Sie wartet nur darauf, gelebt zu werden.\n\n"
@@ -2697,7 +2747,7 @@ def full_analysis(chart):
     if sk and axis:
         sections.append({
             "title": "Dein Lower Self",
-            "subtitle": f"Südknoten in {sk['sign']}, dein vertrautes Muster",
+            "subtitle": f"Südknoten in {sk['sign']}",
             "headline": f"Deine Komfortzone liegt im Zeichen {sk['sign']}",
             "body": ("Dein Lower Self ist kein Feind. Es ist der Teil von dir, der sich am sichersten "
                      "anfühlt. Du kennst ihn schon lange, oft seit deiner Kindheit.\n\n"
@@ -2777,7 +2827,7 @@ def full_analysis(chart):
         tool_lines = "\n\n".join("• " + x for x in axis["tools"])
         sections.append({
             "title": "Deine Tools und Impulse",
-            "subtitle": "Wie du gut mit dir und deiner Umwelt umgehst",
+            "subtitle": "Übungen für den Alltag",
             "headline": "Kleine Schritte, große Wirkung",
             "body": ("Ein paar konkrete Impulse, wie du dein Higher Self stärkst und dein altes Muster "
                      "früh erkennst:\n\n" + tool_lines + "\n\nUnd im Umgang mit anderen bleibt dein "
@@ -2785,6 +2835,16 @@ def full_analysis(chart):
                      "dann handeln. So bleibst du bei dir, auch wenn es um dich herum laut wird."),
             "facts": [],
         })
+
+    # ── Orientierung gegen das Gefuehl "das hatte ich doch schon" ──────────────
+    # Rueckmeldung von Leserinnen: Themen wie das alte Muster, das Spueren oder das
+    # Entscheiden kehren wieder. Wortgleich wiederholt sich nichts, aber die Motive
+    # ueberlappen, weil die Systeme dieselbe Person beschreiben. Darum bekommt jedes
+    # Kapitel zwei kurze Marker:
+    #   focus      = was genau dieses Kapitel beitraegt, in einer Zeile
+    #   builds_on  = auf welches frueher gelesene Kapitel es aufbaut
+    # Damit wird aus der gefuehlten Doppelung ein sichtbarer roter Faden.
+    _apply_reading_markers(sections)
 
     # Reihenfolge Natal: Sonne, Mond, dann die Achsen (AC/DC/MC/IC), dann die Planeten.
     natal_rows = []
