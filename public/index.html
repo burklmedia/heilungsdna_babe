@@ -765,6 +765,16 @@
     background: rgba(245,197,107,.08); border: 1px solid rgba(245,197,107,.45); color: var(--ink-soft); }
   .mailcard.is-sent .mail-sent b { color: var(--ink); overflow-wrap: anywhere; }
   .mailcard.is-sent .mail-sent .ok { color: var(--gold); font-weight: 700; }
+  /* Eigene Bauplan-Seite aus der E-Mail: Lade- und Fehleranzeige */
+  .open-wrap { min-height: 72vh; display: flex; align-items: center; justify-content: center; padding-top: 60px; padding-bottom: 60px; }
+  .open-card { max-width: 540px; text-align: center; }
+  .open-card[hidden] { display: none; }
+  .open-card .spark { display: block; font-size: 30px; color: var(--gold); margin-bottom: 14px; text-shadow: 0 0 26px var(--glow); animation: openPulse 1.8s ease-in-out infinite; }
+  .open-card h2 { font-family: var(--serif); font-weight: 500; font-size: clamp(26px,4.5vw,36px); line-height: 1.2; color: var(--ink); margin: 0 0 12px; }
+  .open-card p { color: var(--ink-soft); font-size: 16px; line-height: 1.7; margin: 0 0 22px; }
+  .open-card .btn { width: auto; }
+  @keyframes openPulse { 0%,100% { opacity: .55; transform: scale(.94); } 50% { opacity: 1; transform: scale(1.06); } }
+  @media (prefers-reduced-motion: reduce) { .open-card .spark { animation: none; } }
 
   /* Lese-Fortschrittsbalken (dünne goldene Linie ganz oben) */
   #progressbar { position: fixed; top: 0; left: 0; height: 3px; width: 0; z-index: 9999; pointer-events: none;
@@ -1393,6 +1403,23 @@
   </div>
 </section>
 
+<!-- ============ BAUPLAN AUS DER E-MAIL: Laden / Fehler (/mein-bauplan) ============ -->
+<section class="step" id="step-open">
+  <div class="wrap open-wrap">
+    <div class="open-card" id="open-loading" role="status">
+      <span class="spark">✦</span>
+      <h2>Dein Bauplan wird geöffnet …</h2>
+      <p>Einen kleinen Moment, ich berechne deinen Himmel noch einmal ganz frisch für dich.</p>
+    </div>
+    <div class="open-card" id="open-error" hidden>
+      <span class="spark">✦</span>
+      <h2>Das hat gerade nicht geklappt.</h2>
+      <p>Dein Bauplan konnte gerade nicht geöffnet werden. Bitte lade die Seite in einem Moment neu. Wenn es weiterhin nicht klappt, öffne den Link bitte noch einmal aus deiner E-Mail.</p>
+      <button class="btn" id="open-reload" type="button">Seite neu laden ✦</button>
+    </div>
+  </div>
+</section>
+
 <!-- ==================== STEP 3: VOLLANALYSE ==================== -->
 <section class="step" id="step3">
   <div class="wrap" style="padding-top:40px">
@@ -1597,9 +1624,12 @@
       else { fetch(API+'/api/track',{method:'POST',body:body,keepalive:true}); }
     }catch(_){}
   }
-  track('visit');
+  // Eigene Bauplan-Seite aus der E-Mail (/mein-bauplan?d=...): dort zaehlt weder ein
+  // neuer Besuch noch das Lesen der Startseite.
+  var MAIL_D = (function(){ try{ return new URLSearchParams(location.search).get('d')||''; }catch(e){ return ''; } })();
+  if(!MAIL_D) track('visit');
   // Scroll-Tiefe: wer mehr als 60% der Startseite liest, gilt als "gelesen"
-  window.addEventListener('scroll', function onScroll(){
+  if(!MAIL_D) window.addEventListener('scroll', function onScroll(){
     if((window.scrollY + window.innerHeight) >= document.body.scrollHeight * 0.6){
       track('scroll');
       window.removeEventListener('scroll', onScroll);
@@ -2421,6 +2451,31 @@
     return s+'</svg>';
   }
   document.querySelectorAll('[data-goto]').forEach(function(b){ b.addEventListener('click',function(){show(b.getAttribute('data-goto'));}); });
+
+  /* ── Eigene Bauplan-Seite aus der E-Mail: /mein-bauplan?d=… ──
+     d ist derselbe Parameter wie beim PDF (MailerLite-Feld bauplan_pdf). Damit wird
+     der Bauplan frisch berechnet und direkt als komplette Auswertung gezeigt. */
+  function openFromMail(dparam){
+    var birth=null;
+    try{
+      var s=dparam.replace(/-/g,'+').replace(/_/g,'/'); while(s.length%4) s+='=';
+      birth=JSON.parse(decodeURIComponent(escape(atob(s))));
+    }catch(e){ birth=null; }
+    show('step-open');
+    function fail(){ document.getElementById('open-loading').hidden=true; document.getElementById('open-error').hidden=false; }
+    if(!birth || !birth.date || !birth.place){ fail(); return; }
+    fetch(API+'/api/analyze',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(birth)})
+      .then(function(r){ return r.json(); })
+      .then(function(d){
+        if(!d || !d.ok){ fail(); return; }
+        try{ state.result=d; renderFull(d); }catch(e){ fail(); return; }
+        show('step3'); resetZoomThenFree(); track('bauplan'); showCalm();
+      })
+      .catch(fail);
+  }
+  var openReload=document.getElementById('open-reload');
+  if(openReload) openReload.addEventListener('click',function(){ location.reload(); });
+  if(MAIL_D) openFromMail(MAIL_D);
 
   /* ── Hintergrund-Sterne (Canvas, dezentes Funkeln) ── */
   var cv=document.getElementById('stars'),cx=cv.getContext('2d'),bstars=[],ph=0;

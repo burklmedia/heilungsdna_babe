@@ -24,6 +24,7 @@
     { "src": "/", "dest": "/public/index.html" },
     { "src": "/feedback", "dest": "/public/feedback.html" },
     { "src": "/thema", "dest": "/public/thema.html" },
+    { "src": "/mein-bauplan/?", "dest": "/public/index.html" },
     { "src": "/verbinden", "dest": "/public/verbinden.html" },
     { "src": "/(.*)", "dest": "/public/$1" }
   ]

@@ -31,7 +31,8 @@ eingegebenen Geburtsdaten.
 
 ```
 public/
-  index.html            Frontend: Formular, magischer Moment, Teaser, Vollanalyse
+  index.html            Frontend: Formular, magischer Moment, Teaser; Vollanalyse
+                        nur unter /mein-bauplan (Link aus der E-Mail)
   impressum.html        Rechtsseiten
   datenschutz.html
   feedback.html         gebrandete Feedback-Seite (Formular -> POST /api/feedback)
@@ -71,6 +72,7 @@ requirements.txt        pyswisseph, timezonefinder, geonamescache, tzdata, fpdf2
 |---|---|
 | `POST /api/analyze` | Geburtsdaten rein, Teaser + Vollanalyse als JSON raus |
 | `GET /api/pdf?d=…` | kompletter Bauplan als PDF (Daten base64url im Parameter `d`) |
+| `GET /mein-bauplan?d=…` | persönliche Bauplan-Seite (Link aus der E-Mail), komplette Auswertung + PDF-Button |
 | `POST /api/subscribe` | E-Mail zu MailerLite, speichert PDF-Link im Feld `bauplan_pdf` |
 | `POST /api/track` | anonymer Funnel-Zaehler (visit, himmel, teaser, email, bauplan, scroll, pdf) |
 | `GET /api/stats?pw=…` | Statistik-Seite (Funnel + 14-Tage-Verlauf) |
@@ -85,8 +87,11 @@ requirements.txt        pyswisseph, timezonefinder, geonamescache, tzdata, fpdf2
 3. **Teaser**: persönliche, dynamische Begrüßung mit echtem Astro-Fakt, dazu eine
    versiegelte Vorschau des fertigen Bauplans (Chart + Bodygraph).
 4. **E-Mail-Feld**: für den kompletten Bauplan. Trägt in MailerLite ein
-   (Double-Opt-in).
-5. **Vollanalyse** auf der Seite, plus Button **„Als PDF speichern"**.
+   (Double-Opt-in). Danach öffnet sich ein Hinweisfenster „Deine komplette
+   Auswertung kommt per E-Mail". Auf der Startseite wird vom Ergebnis nichts gezeigt.
+5. **Mail mit Link**: Nach der Bestätigung kommt Mail 1 mit dem Button zur
+   persönlichen Bauplan-Seite `/mein-bauplan?d=…` (komplette Auswertung mit
+   Reitern, dazu **„Als PDF speichern"**).
 
 ## Deployment auf Vercel
 
@@ -115,10 +120,10 @@ Nach dem Setzen jeweils **einmal neu deployen**.
 ## E-Mail-Sammlung (MailerLite, aktiv)
 
 `api/subscribe.py` legt jede Adresse in MailerLite an (Double-Opt-in) und
-speichert im Feld `bauplan_pdf` den persönlichen PDF-Parameter. In der
-Willkommensmail baut man einen Button mit der Verlinkung
-`https://<domain>/api/pdf?d={$bauplan_pdf}`, so bekommt jede Person ihren
-eigenen Bauplan als PDF. Ohne konfigurierten Key nimmt die Funktion die
+speichert im Feld `bauplan_pdf` den persönlichen Bauplan-Parameter. In den
+Mails führt der Button zu `https://<domain>/mein-bauplan?d={$bauplan_pdf}`,
+der persönlichen Bauplan-Seite; von dort lässt er sich als PDF speichern
+(`/api/pdf?d=…` funktioniert weiterhin direkt). Ohne konfigurierten Key nimmt die Funktion die
 Adresse an und antwortet ok (Brevo ist als Fallback vorhanden).
 
 Die Willkommens- und Automations-Mails liegen als fertige HTML-Dateien in
