@@ -29,6 +29,11 @@ import urllib.request
 
 TIMEOUT = 5
 
+# Eigene Kennung fuer alle Anfragen. Cloudflare vor burkl-media.activehosted.com
+# sperrt die Standardkennung von Python ("Python-urllib/...") mit Fehler 1010,
+# damit scheiterte am 24.09.2026 jede Anmeldung mit HTTP 403.
+USER_AGENT = "Mozilla/5.0 (compatible; IntuitionMitHerz-Bauplan/1.0; +https://bauplan.intuitionmitherz.de)"
+
 # Feld-IDs im Konto burkl-media, Liste 6 "Kosmischer Bauplan · Intuition mit
 # Herz". Sie aendern sich nur, wenn ein Feld geloescht und neu angelegt wird.
 FIELD_BAUPLAN_PDF = "4"      # %BAUPLAN_PDF%     Parameter d fuer /mein-bauplan
@@ -70,7 +75,7 @@ def configured():
 
 def _call(base, key, method, path, payload=None):
     data = None
-    headers = {"Api-Token": key, "Accept": "application/json"}
+    headers = {"Api-Token": key, "Accept": "application/json", "User-Agent": USER_AGENT}
     if payload is not None:
         data = json.dumps(payload).encode("utf-8")
         headers["Content-Type"] = "application/json"
@@ -129,7 +134,8 @@ def _mailerlite_existing(email, fields):
     key = os.environ.get("MAILERLITE_API_KEY", "").strip()
     if not key:
         return False, "nicht_konfiguriert"
-    headers = {"Authorization": "Bearer " + key, "Accept": "application/json"}
+    headers = {"Authorization": "Bearer " + key, "Accept": "application/json",
+               "User-Agent": USER_AGENT}
     base = "https://connect.mailerlite.com/api/subscribers"
     try:
         req = urllib.request.Request(base + "/" + urllib.parse.quote(email.strip(), safe=""),

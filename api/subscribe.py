@@ -36,7 +36,7 @@ try:
 except Exception:  # noqa
     def kv_set(*a, **k):
         return False
-from _ac import FIELD_BAUPLAN_PDF, FIELD_FEEDBACK_TOKEN, configured as ac_api_configured  # noqa: E402
+from _ac import FIELD_BAUPLAN_PDF, FIELD_FEEDBACK_TOKEN, USER_AGENT, configured as ac_api_configured  # noqa: E402
 
 AC_ENDPOINT = "https://burkl-media.activehosted.com/proc.php"
 
@@ -87,9 +87,11 @@ def _feedback_token_for(email):
 def _submit(fields):
     """Schickt die Felder an proc.php. Rueckgabe (ok, fehlercode)."""
     data = urllib.parse.urlencode(fields).encode("utf-8")
+    # Ohne eigene Kennung sperrt Cloudflare die Anfrage (403, Fehler 1010).
     req = urllib.request.Request(
         AC_ENDPOINT, data=data, method="POST",
-        headers={"Content-Type": "application/x-www-form-urlencoded"})
+        headers={"Content-Type": "application/x-www-form-urlencoded",
+                 "User-Agent": USER_AGENT})
     try:
         with urllib.request.urlopen(req, timeout=10) as r:
             text = r.read(8192).decode("utf-8", "replace")

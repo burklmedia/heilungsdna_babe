@@ -188,6 +188,9 @@ def test_subscribe_payload():
     check("Endpunkt ist proc.php von burkl-media",
           call["url"] == "https://burkl-media.activehosted.com/proc.php" and call["method"] == "POST")
     check("als Formular kodiert", call["headers"].get("content-type") == "application/x-www-form-urlencoded")
+    ua = call["headers"].get("user-agent", "")
+    check("eigene Kennung statt Python-urllib (Cloudflare sperrt sonst mit 1010)",
+          ua == _ac.USER_AGENT and "python" not in ua.lower())
     check("Formular-IDs u, f, or", sent.get("u") == "3" and sent.get("f") == "7"
           and sent.get("or") == "00000000-test-form")
     check("act=sub, v=2, jsonp=true", sent.get("act") == "sub" and sent.get("v") == "2" and sent.get("jsonp") == "true")
@@ -274,6 +277,8 @@ def test_set_fields_existing_contact():
     check("Suche per E-Mail, klein geschrieben und kodiert",
           get["method"] == "GET" and get["url"] == "https://burkl-media.api-us1.com/api/3/contacts?email=lena.test%40beispiel.de")
     check("Schluessel im Kopf Api-Token", get["headers"].get("api-token") == TEST_KEY)
+    check("eigene Kennung bei Suche und Aenderung",
+          all(c["headers"].get("user-agent") == _ac.USER_AGENT for c in fake.calls))
     check("PUT auf den passenden Kontakt 42", put["method"] == "PUT"
           and put["url"] == "https://burkl-media.api-us1.com/api/3/contacts/42")
     check("nur fieldValues im Body", json.loads(put["body"]) == {"contact": {"fieldValues": [{"field": "6", "value": "yes"}]}})
