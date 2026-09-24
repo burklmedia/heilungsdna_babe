@@ -1,0 +1,53 @@
+<!-- =====================================================================
+     ActiveCampaign · Kosmischer Bauplan · Mail 3a · Tag 3 · Eine Frage (Antwort per Mail), Ja-Zweig
+     Nur für alle, die in Mail 1 oder 2 den Bauplan-Link geklickt haben.
+     Quelle: MailerLite-Fassung, im Repo zuletzt als emails/mail-3.html in
+     Commit 909db66 (01.09.2026), danach dort von der Feedback-Mail ersetzt.
+     Text unverändert, Bilder auf bauplan.intuitionmitherz.de umgestellt.
+     Betreff:     wie in MailerLite (Mail 3 im Ja-Zweig)
+     Vorschau:    steckt schon im HTML (Nur eine einzige Frage. Ein, zwei Sätze reichen vollkommen.),
+                  das Vorschau-Feld in ActiveCampaign leer lassen.
+     Absender:    im Mail-Designer über das Zahnrad setzen. Antworten landen
+                  bei der Antwort-an-Adresse, also hallo@intuitionmitherz.de.
+     Einsetzen:   Mail im Designer öffnen, neben die Inhalte klicken,
+                  damit nichts markiert ist, dann "Code" und alles ersetzen.
+     Anschrift:   %SENDER-INFO-SINGLELINE% zieht Denises Adresse aus
+                  Einstellungen -> Adressen (der Bauplan-Liste zugeordnet,
+                  sonst in der Mail unter "Adresse" wählen). Nur wenn dieser
+                  Platzhalter UND %UNSUBSCRIBELINK% drinstehen, lässt AC
+                  seinen eigenen Fuß mit "Abbestellen" weg.
+     Platzhalter: %FIRSTNAME%, %UNSUBSCRIBELINK%, %SENDER-INFO-SINGLELINE%
+     ===================================================================== -->
+<!doctype html>
+<html lang="de"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="dark light"><meta name="supported-color-schemes" content="dark light">
+</head>
+<body style="margin:0;padding:0;background:#160e2e;">
+<span style="display:none!important;visibility:hidden;opacity:0;height:0;width:0;overflow:hidden;mso-hide:all;">Nur eine einzige Frage. Ein, zwei Sätze reichen vollkommen.</span>
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#160e2e;background-image:radial-gradient(70% 45% at 50% 0%, rgba(140,92,220,.30) 0%, rgba(22,14,46,0) 62%);">
+<tr><td align="center" style="padding:34px 12px 44px;">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="width:100%;max-width:600px;">
+    <tr><td align="center" style="padding:4px 0 22px;">
+      <img src="https://bauplan.intuitionmitherz.de/email-wordmark.png" width="250" alt="Intuition mit Herz" style="display:block;border:0;width:250px;max-width:74%;height:auto;">
+    </td></tr>
+    <tr><td style="background:#241848;border:1px solid rgba(245,197,107,.40);border-radius:22px;padding:36px 34px 34px;">
+      <div style="font-family:Arial,Helvetica,sans-serif;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:#f5c56b;margin-bottom:10px;">Eine kurze Frage</div>
+      <h1 style="margin:0 0 20px;font-family:Georgia,'Times New Roman',serif;font-weight:normal;font-size:28px;line-height:1.2;color:#f3eefe;">Eine Frage zu deinem Bauplan.</h1>
+      <p style="margin:0 0 16px;font-family:Arial,Helvetica,sans-serif;font-size:16px;line-height:1.72;color:#c9c0e6;">Hallo %FIRSTNAME%,</p>
+      <p style="margin:0 0 16px;font-family:Arial,Helvetica,sans-serif;font-size:16px;line-height:1.72;color:#c9c0e6;">du hattest jetzt ein bisschen Zeit, deinen kosmischen Bauplan zu entdecken.</p>
+      <p style="margin:0 0 16px;font-family:Arial,Helvetica,sans-serif;font-size:16px;line-height:1.72;color:#c9c0e6;">Und ich möchte dir heute nur eine einzige Frage stellen:</p>
+      <p style="margin:0 0 18px;font-family:Georgia,'Times New Roman',serif;font-style:italic;font-size:19px;line-height:1.5;color:#f5c56b;">An welcher Stelle hast du beim Lesen am stärksten gedacht: „Wow … das beschreibt mich wirklich“?</p>
+      <p style="margin:0 0 16px;font-family:Arial,Helvetica,sans-serif;font-size:16px;line-height:1.72;color:#c9c0e6;">Vielleicht war es dein Intuitionstyp. Dein Entscheidungsweg. Eine deiner Herausforderungen. Oder etwas völlig anderes.</p>
+      <p style="margin:0 0 16px;font-family:Arial,Helvetica,sans-serif;font-size:16px;line-height:1.72;color:#c9c0e6;">Antworte mir einfach direkt auf diese E-Mail. Ein oder zwei Sätze reichen vollkommen.</p>
+      <p style="margin:0 0 6px;font-family:Arial,Helvetica,sans-serif;font-size:16px;line-height:1.72;color:#c9c0e6;">Mich interessiert nicht nur, was schön klingt, auch das, was bei dir tatsächlich etwas ausgelöst hat.</p>
+      <img src="https://bauplan.intuitionmitherz.de/email-signature-gold.png" width="188" alt="Von Herzen, Denise" style="display:block;margin:24px 0 0;border:0;width:188px;height:auto;">
+    </td></tr>
+    <tr><td align="center" style="padding:22px 16px 0;font-family:Arial,Helvetica,sans-serif;font-size:12px;line-height:1.7;color:#8f83b3;">
+      Du bekommst diese Mail, weil du dir deinen kosmischen Bauplan geholt hast.<br>
+      %SENDER-INFO-SINGLELINE%<br>
+      <a href="https://bauplan.intuitionmitherz.de/impressum.html" style="color:#b3a8d4;text-decoration:underline;">Impressum</a> &nbsp;&middot;&nbsp; <a href="https://bauplan.intuitionmitherz.de/datenschutz.html" style="color:#b3a8d4;text-decoration:underline;">Datenschutz</a> &nbsp;&middot;&nbsp; <a href="%UNSUBSCRIBELINK%" style="color:#b3a8d4;text-decoration:underline;">Abmelden</a>
+    </td></tr>
+  </table>
+</td></tr></table>
+</body></html>

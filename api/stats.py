@@ -150,7 +150,7 @@ def _dashboard():
         "<p class=note>Die Zahlen zaehlen Sitzungen: jedes Ereignis wird pro "
         "Browser-Sitzung nur einmal gezaehlt. „Vorschau erreicht“ heisst, jemand "
         "ist von Seite 1 weitergekommen. Namen siehst du bewusst nicht hier, die "
-        "echten Kontakte stehen in MailerLite.</p>")
+        "echten Kontakte stehen in ActiveCampaign.</p>")
 
 
 class handler(BaseHTTPRequestHandler):

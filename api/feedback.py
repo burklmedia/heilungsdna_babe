@@ -11,14 +11,15 @@ POST  -> nimmt das Feedback zum Kosmischen Bauplan entgegen.
            1. Token ueber die KV zur E-Mail aufloesen (imh:fbtok:<t>).
            2. Doppel-Absenden atomar sperren (imh:fbdone:<t>, SET NX).
            3. Genau EINEN Datensatz in der KV ablegen (Liste imh:feedback).
-           4. In MailerLite feedback_given=yes setzen (Upsert per E-Mail).
+           4. In ActiveCampaign "Feedback gegeben" = yes setzen, nur beim
+              bestehenden Kontakt (api/_ac.py). Die Automation laesst damit
+              die Feedback-Erinnerung aus.
 
 GET ?pw=... -> geschuetzte Leseansicht aller Rueckmeldungen
                (Passwort aus STATS_PASSWORD, gleiches Muster wie /api/stats).
 
-Kein neues Secret, keine neue Library, keine neue Datenbank:
-nutzt die vorhandene KV (_store) und die vorhandene MailerLite-Anbindung
-(subscribe). Der MailerLite-API-Key wird ausschliesslich serverseitig verwendet.
+Keine neue Library, keine neue Datenbank: nutzt die vorhandene KV (_store).
+Der ActiveCampaign-API-Key wird ausschliesslich serverseitig verwendet.
 """
 from http.server import BaseHTTPRequestHandler
 from urllib.parse import urlparse, parse_qs
@@ -52,9 +53,9 @@ except Exception:  # noqa
         return False
 
 try:
-    from subscribe import subscribe_contact
+    from _ac import update_contact
 except Exception:  # noqa
-    def subscribe_contact(name, email, extra_fields=None):
+    def update_contact(email, fields):
         return False, "kein Dienst verbunden"
 
 # Die sieben Felder in Anzeige-Reihenfolge.
@@ -118,14 +119,14 @@ def handle_feedback(body):
         return 500, {"ok": False, "error": "store_failed",
                      "message": "Da ist gerade etwas schiefgelaufen. Bitte versuche es in einem Moment noch einmal."}
 
-    # feedback_given=yes in MailerLite (best effort, blockiert das Speichern nicht).
-    ml_ok = False
+    # feedback_given=yes beim Kontakt (best effort, blockiert das Speichern nicht).
+    crm_ok = False
     try:
-        ml_ok, _ = subscribe_contact("", email, {"feedback_given": "yes"})
+        crm_ok, _ = update_contact(email, {"feedback_given": "yes"})
     except Exception:  # noqa
-        ml_ok = False
+        crm_ok = False
 
-    return 200, {"ok": True, "stored": True, "mailerlite": bool(ml_ok),
+    return 200, {"ok": True, "stored": True, "crm": bool(crm_ok),
                  "message": "Danke, dass du dir die Zeit genommen hast. 🤍"}
 
 

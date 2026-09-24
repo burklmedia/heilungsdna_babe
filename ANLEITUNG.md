@@ -64,12 +64,12 @@ Kosten: praktisch **0 €**.
 
 ---
 
-## 💌 E-Mail-Adressen wirklich sammeln
+## 💌 E-Mail-Adressen sammeln
 
-Standardmäßig nimmt die Seite die Adresse an, speichert sie aber noch nirgends.
-Um sie automatisch zu sammeln, verbinden wir einen Newsletter-Dienst (z. B.
-**Brevo**, kostenloser Tarif). Das richte ich dir gern ein — es sind nur zwei
-Angaben in Vercel. Sag einfach Bescheid.
+Die Adressen landen über ein Formular in **ActiveCampaign**. Wer sich einträgt,
+bekommt zuerst eine Bestätigungsmail und erst nach dem Klick deinen Bauplan
+und die weiteren Mails. Wie das genau verdrahtet ist, steht in der README
+unter „E-Mail-Versand (ActiveCampaign)".
 
 ---
 

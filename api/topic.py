@@ -4,11 +4,12 @@ Vercel Serverless Function: /api/topic
 POST  -> nimmt die Themenauswahl zum Kosmischen Bauplan entgegen.
          Body (JSON): { "t": "<opaker feedback_token>",
                         "topic": "relationship|decision|boundaries|energy|none" }
-         Ablauf (MailerLite-Write ist verpflichtend):
+         Ablauf (der Write beim Kontakt ist verpflichtend):
            1. Token validieren (vorhanden + loest in der KV zu einer E-Mail auf).
            2. topic gegen Whitelist validieren.
            3. imh:topicdone:<token> atomar per SET NX reservieren (Doppel-Submit).
-           4. beta_topic beim MailerLite-Subscriber setzen (Upsert per E-Mail).
+           4. "Bauplan-Thema" beim bestehenden ActiveCampaign-Kontakt setzen
+              (api/_ac.py, im Uebergang auch bei MailerLite-Altkontakten).
            5. Erfolg -> aggregierte KV-Zaehler erhoehen, Erfolg zurueckgeben.
               Fehler -> imh:topicdone:<token> wieder loeschen, freundlicher Retry-Fehler.
          feedback_given wird NIEMALS veraendert.
@@ -50,9 +51,9 @@ except Exception:  # noqa
         return False
 
 try:
-    from subscribe import subscribe_contact
+    from _ac import update_contact
 except Exception:  # noqa
-    def subscribe_contact(name, email, extra_fields=None):
+    def update_contact(email, fields):
         return False, "kein Dienst verbunden"
 
 # Erlaubte Themenwerte (Whitelist) und Anzeige-Labels fuer die Auswertung.
@@ -100,20 +101,20 @@ def handle_topic(body):
         return 200, {"ok": True, "already": True,
                      "message": "Danke, deine Auswahl ist schon bei mir angekommen. 🤍"}
 
-    # 4. beta_topic in MailerLite setzen (Upsert per E-Mail). MUSS erfolgreich sein.
-    ml_ok = False
+    # 4. beta_topic beim Kontakt setzen. MUSS erfolgreich sein.
+    crm_ok = False
     try:
-        ml_ok, _ = subscribe_contact("", email, {"beta_topic": topic})
+        crm_ok, _ = update_contact(email, {"beta_topic": topic})
     except Exception:  # noqa
-        ml_ok = False
+        crm_ok = False
 
-    if not ml_ok:
+    if not crm_ok:
         # 6. Sperre wieder freigeben -> Nutzer kann erneut absenden, nichts geht verloren.
         kv_del("imh:topicdone:" + token)
-        return 503, {"ok": False, "error": "mailerlite_failed",
+        return 503, {"ok": False, "error": "crm_failed",
                      "message": "Da ist gerade etwas schiefgelaufen. Bitte versuche es in einem Moment noch einmal."}
 
-    # 5. Erst nach erfolgreichem MailerLite-Write aggregiert zaehlen (keine PII).
+    # 5. Erst nach erfolgreichem Write beim Kontakt aggregiert zaehlen (keine PII).
     try:
         day = datetime.now(timezone.utc).date().isoformat()
         incr(["imh:t:topic:" + topic, "imh:d:" + day + ":topic:" + topic])
@@ -182,7 +183,7 @@ def _viewer():
                  % (pct, TOPIC_LABELS[t], v, pct))
     return _page("<h1>Themenauswahl</h1>"
                  "<p class=sub>%d Antworten gesamt. Die Zuordnung pro Person steht als "
-                 "Feld beta_topic in MailerLite.</p>%s" % (total, rows))
+                 "Feld Bauplan-Thema in ActiveCampaign.</p>%s" % (total, rows))
 
 
 class handler(BaseHTTPRequestHandler):

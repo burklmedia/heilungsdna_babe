@@ -1974,7 +1974,7 @@
       .catch(function(){ return {}; })
       .then(function(d){
         // Die Auswertung kommt ausschliesslich per E-Mail. Den Hinweis gibt es nur,
-        // wenn MailerLite die Adresse angenommen hat; sonst erneut versuchen lassen.
+        // wenn ActiveCampaign die Adresse angenommen hat; sonst erneut versuchen lassen.
         if(!d || !d.ok || d.stored===false){
           err.textContent='Das hat gerade nicht geklappt. Bitte prüfe deine E-Mail-Adresse und versuche es noch einmal.';
           btn.disabled=false; btn.textContent='Meinen Bauplan per E-Mail erhalten ✦'; return;
@@ -2453,7 +2453,7 @@
   document.querySelectorAll('[data-goto]').forEach(function(b){ b.addEventListener('click',function(){show(b.getAttribute('data-goto'));}); });
 
   /* ── Eigene Bauplan-Seite aus der E-Mail: /mein-bauplan?d=… ──
-     d ist derselbe Parameter wie beim PDF (MailerLite-Feld bauplan_pdf). Damit wird
+     d ist derselbe Parameter wie beim PDF (ActiveCampaign-Feld %BAUPLAN_PDF%). Damit wird
      der Bauplan frisch berechnet und direkt als komplette Auswertung gezeigt. */
   function openFromMail(dparam){
     var birth=null;

@@ -37,6 +37,7 @@ PUBLIC_SURFACES = [
     "public/thema.html",
     "public/datenschutz.html",
     "public/impressum.html",
+    "public/bestaetigt.html",
 ]
 
 
@@ -56,12 +57,15 @@ def test_emails_clean():
     if not os.path.isdir(mail_dir):
         print("  (keine emails/)")
         return
-    for name in sorted(os.listdir(mail_dir)):
-        if not name.endswith(".html"):
-            continue
-        low = read(os.path.join("emails", name)).lower()
-        for marker in PAID_MARKERS:
-            check("emails/%s ohne '%s'" % (name, marker), marker not in low)
+    # auch Unterordner, z. B. emails/activecampaign/
+    for folder, _dirs, files in sorted(os.walk(mail_dir)):
+        for name in sorted(files):
+            if not name.endswith(".html"):
+                continue
+            rel = os.path.relpath(os.path.join(folder, name), ROOT)
+            low = read(rel).lower()
+            for marker in PAID_MARKERS:
+                check("%s ohne '%s'" % (rel, marker), marker not in low)
 
 
 def test_pdf_and_funnel_untouched_by_markers():

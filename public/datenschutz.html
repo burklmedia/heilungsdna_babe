@@ -31,6 +31,7 @@
   h1{font-family:var(--serif);font-weight:500;font-size:clamp(30px,5vw,44px);margin:0 0 6px}
   .lead{color:var(--ink-soft);margin:0 0 34px}
   h2{font-family:var(--serif);font-weight:600;font-size:23px;margin:34px 0 10px;color:var(--gold)}
+  h3{font-family:var(--sans);font-weight:700;font-size:15.5px;margin:22px 0 6px;color:var(--ink)}
   p{margin:0 0 12px;color:var(--ink-soft)} strong{color:var(--ink)}
   ul{margin:0 0 12px;padding-left:20px;color:var(--ink-soft)} li{margin-bottom:6px}
   a{color:var(--gold)}
@@ -63,7 +64,7 @@
     <li><strong>Name, Geburtsdatum, Geburtszeit und Geburtsort</strong> – ausschließlich, um deinen persönlichen Chart zu berechnen.</li>
     <li><strong>E-Mail-Adresse</strong> – nur, wenn du dich für die vollständige Analyse bzw. den Newsletter einträgst.</li>
   </ul>
-  <p>Die Geburtsdaten werden für die Berechnung im Moment der Anfrage verarbeitet und nicht dauerhaft in einer Datenbank gespeichert.</p>
+  <p>Für die Berechnung werden die Geburtsdaten nur im Moment der Anfrage verarbeitet und dafür nicht in einer Datenbank gespeichert. Trägst du dich für den vollständigen Bauplan ein, stecken sie in kodierter Form in deinem persönlichen Bauplan-Link und werden als Teil davon bei unserem E-Mail-Dienst gespeichert (siehe Abschnitt 6).</p>
 
   <h2>3. Zweck und Rechtsgrundlage</h2>
   <p>Die Verarbeitung erfolgt auf Grundlage deiner Einwilligung (Art. 6 Abs. 1 lit. a DSGVO). Zweck ist die Erstellung deiner Analyse und – bei Eintragung – der Versand der Analyse sowie des Newsletters.</p>
@@ -77,8 +78,27 @@
   <h2>5. Städtesuche (Geocoding)</h2>
   <p>Für die Orts-Vorschläge im Formular wird der eingegebene Ortsname an den Dienst <strong>Open-Meteo</strong> (Open-Meteo, geocoding-api.open-meteo.com) übermittelt, um Koordinaten und Zeitzone zu ermitteln. Es werden dabei keine weiteren personenbezogenen Daten übertragen.</p>
 
-  <h2>6. Newsletter / E-Mail-Versand</h2>
-  <p>Wenn du dich für die vollständige Analyse einträgst, wird deine E-Mail-Adresse zum Versand genutzt. Für den Versand nutzen wir <strong>MailerLite</strong> (UAB „MailerLite“, Paupio g. 46, 11341 Vilnius, Litauen). Deine Eintragung wird per Double-Opt-in bestätigt, das heißt, du erhältst zunächst eine Bestätigungsmail und wirst erst nach deinem Klick aufgenommen. Du kannst dich jederzeit über den Abmeldelink am Ende jeder E-Mail wieder abmelden.</p>
+  <h2>6. Newsletter und E-Mail-Versand (ActiveCampaign, Double-Opt-in)</h2>
+  <p>Wenn du dich für den vollständigen Bauplan einträgst, verarbeiten wir folgende Daten:</p>
+  <ul>
+    <li><strong>deinen Vornamen</strong>, für die persönliche Ansprache in den E-Mails</li>
+    <li><strong>deine E-Mail-Adresse</strong></li>
+    <li><strong>deinen persönlichen Bauplan-Link:</strong> Er enthält deine Geburtsangaben (Name, Geburtsdatum, Geburtszeit und Geburtsort) in kodierter Form, damit der Link in der E-Mail deinen Bauplan jederzeit frisch berechnen und öffnen kann</li>
+    <li><strong>einen zufälligen Kennwert (Token)</strong> für die Links zu Feedback und Themenauswahl</li>
+    <li><strong>ob du Feedback gegeben hast</strong> und <strong>welche Themenkategorie du gewählt hast</strong> (siehe Abschnitt 8)</li>
+    <li><strong>Datum und Uhrzeit</strong> deiner Anmeldung und deiner Bestätigung sowie die bei der Bestätigung verwendete <strong>IP-Adresse</strong>, zum Nachweis deiner Einwilligung</li>
+  </ul>
+  <h3>Double-Opt-in</h3>
+  <p>Die Anmeldung erfolgt im Double-Opt-in-Verfahren. Nach deiner Eintragung erhältst du zunächst eine E-Mail, in der wir dich bitten, deine Anmeldung zu bestätigen. Erst nach deinem Klick bekommst du deinen Bauplan und weitere E-Mails aus unserem Newsletter.</p>
+  <h3>Auswertung der E-Mails</h3>
+  <p>In unseren E-Mails erfassen wir, ob eine E-Mail geöffnet wurde und welche Links darin angeklickt wurden. Dafür enthalten die E-Mails ein kleines Zählpixel, und die Links laufen über ActiveCampaign. Wir nutzen diese Angaben, um zu sehen, welche Inhalte ankommen, und um die E-Mails zu verbessern. Rechtsgrundlage ist deine Einwilligung (Art. 6 Abs. 1 lit. a DSGVO, § 25 Abs. 1 TDDDG). Eine getrennte Abwahl der Auswertung ist nicht möglich, sie endet mit deiner Abmeldung.</p>
+  <h3>Rechtsgrundlage und Widerruf</h3>
+  <p>Rechtsgrundlage ist deine Einwilligung (Art. 6 Abs. 1 lit. a DSGVO). Du kannst sie jederzeit mit Wirkung für die Zukunft widerrufen, zum Beispiel über den Abmeldelink am Ende jeder E-Mail oder per Nachricht an <a href="mailto:lightupbydenise@gmail.com">lightupbydenise@gmail.com</a>. Der Widerruf berührt nicht die Rechtmäßigkeit der bis dahin erfolgten Verarbeitung.</p>
+  <h3>Auftragsverarbeiter ActiveCampaign</h3>
+  <p>Für Anmeldung, Versand und Auswertung nutzen wir <strong>ActiveCampaign</strong> (ActiveCampaign, LLC, 1 North Dearborn Street, 5th Floor, Chicago, IL 60602, USA). ActiveCampaign verarbeitet die genannten Daten in unserem Auftrag auf Grundlage eines Auftragsverarbeitungsvertrags nach Art. 28 DSGVO und speichert sie in den USA. Als Grundlage für die Übermittlung in die USA nennt ActiveCampaign das EU-U.S. Data Privacy Framework und die Standardvertragsklauseln der EU-Kommission.</p>
+  <p>Wer sich vor der Umstellung auf ActiveCampaign eingetragen hat, bekommt die bereits begonnene E-Mail-Reihe noch über unseren bisherigen Dienst <strong>MailerLite</strong> (UAB „MailerLite“, Paupio g. 46, 11341 Vilnius, Litauen). Sobald diese Reihe abgeschlossen ist, beenden wir die Nutzung von MailerLite und löschen die Daten dort.</p>
+  <h3>Speicherdauer</h3>
+  <p>Wir speichern deine Daten, solange du für den Newsletter angemeldet bist. Nach deiner Abmeldung werden sie aus dem Verteiler gelöscht oder gesperrt. Angaben zum Nachweis deiner Einwilligung bewahren wir auf, solange dies zur Abwehr möglicher Ansprüche erforderlich ist.</p>
 
   <h2>7. Hosting</h2>
   <p>Diese Website wird bei <strong>Vercel Inc.</strong> (340 S Lemon Ave #4133, Walnut, CA 91789, USA) gehostet. Beim Aufruf der Seite werden technisch notwendige Server-Logdaten (z. B. IP-Adresse, Zeitpunkt) verarbeitet, um die Auslieferung zu ermöglichen und die Sicherheit zu gewährleisten.</p>
@@ -91,7 +111,7 @@
     <li><strong>Themenauswahl:</strong> die von dir gewählte Themenkategorie (z. B. „Entscheidungen“).</li>
   </ul>
   <p>Die Zuordnung erfolgt über einen zufälligen, nicht zurückrechenbaren Kennwert (Token) im Link. Deine E-Mail-Adresse wird dabei <strong>nicht</strong> in der Adresszeile übertragen.</p>
-  <p>Deine Feedback-Antworten werden zusammen mit der Zuordnung zu deiner E-Mail-Adresse bei unserem Dienstleister <strong>Upstash</strong> (Serverstandort Frankfurt am Main, EU) gespeichert. Die gewählte Themenkategorie wird zusätzlich als Merkmal bei <strong>MailerLite</strong> gespeichert. Darüber hinaus führen wir nur anonyme Summen darüber, welche Themen wie oft gewählt wurden, ohne Personenbezug. In MailerLite wird außerdem vermerkt, ob du bereits Feedback gegeben hast, damit du nicht erneut gefragt wirst.</p>
+  <p>Deine Feedback-Antworten werden zusammen mit der Zuordnung zu deiner E-Mail-Adresse bei unserem Dienstleister <strong>Upstash</strong> (Serverstandort Frankfurt am Main, EU) gespeichert. Die gewählte Themenkategorie wird zusätzlich als Merkmal bei <strong>ActiveCampaign</strong> gespeichert. Darüber hinaus führen wir nur anonyme Summen darüber, welche Themen wie oft gewählt wurden, ohne Personenbezug. In ActiveCampaign wird außerdem vermerkt, ob du bereits Feedback gegeben hast, damit du nicht erneut gefragt wirst.</p>
   <p>Zweck ist ausschließlich die Weiterentwicklung und Verbesserung unseres Angebots. Rechtsgrundlage ist deine Einwilligung (Art. 6 Abs. 1 lit. a DSGVO), die du durch die freiwillige Teilnahme erteilst. Die Angaben werden gelöscht, sobald sie für diesen Zweck nicht mehr benötigt werden.</p>
 
   <h2>9. Deine Rechte</h2>

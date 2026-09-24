@@ -31,10 +31,12 @@ except Exception:  # noqa
     _build_pdf = None
 
 try:
-    from subscribe import subscribe_contact  # noqa: E402
+    import subscribe as _subscribe  # noqa: E402
+    # Lokal geht standardmaessig nichts an ActiveCampaign. Wer die echte
+    # Anmeldung samt Bestaetigungsmail testen will: BAUPLAN_AC_LIVE=1 python3 dev.py
+    _subscribe.DRY_RUN = os.environ.get("BAUPLAN_AC_LIVE") != "1"
 except Exception:  # noqa
-    def subscribe_contact(name, email):
-        return False, "kein Dienst verbunden"
+    _subscribe = None
 
 PORT = int(os.environ.get("PORT", "8000"))
 
@@ -128,12 +130,12 @@ class Handler(BaseHTTPRequestHandler):
             except Exception as e:  # noqa
                 self._json(500, {"ok": False, "error": "Berechnung fehlgeschlagen.", "detail": str(e)})
         elif self.path.startswith("/api/subscribe"):
-            email = (body.get("email") or "").strip()
-            if "@" not in email or "." not in email:
-                return self._json(400, {"ok": False, "error": "Bitte gib eine gültige E-Mail an."})
-            ok, msg = subscribe_contact((body.get("name") or "").strip(), email)
-            print(f"  ✉  E-Mail erfasst: {email}  ({msg})")
-            self._json(200, {"ok": True, "stored": ok, "message": msg})
+            if _subscribe is None:
+                return self._json(500, {"ok": False, "stored": False, "error": "subscribe nicht geladen"})
+            code, payload = _subscribe.handle_subscribe(body if isinstance(body, dict) else {})
+            if payload.get("dry_run"):
+                print("  ✉  Anmeldung lokal angenommen, nicht an ActiveCampaign gesendet")
+            self._json(code, payload)
         else:
             self._json(404, {"error": "no route"})
 

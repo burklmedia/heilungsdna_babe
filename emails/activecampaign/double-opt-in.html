@@ -1,0 +1,53 @@
+<!-- =====================================================================
+     ActiveCampaign · Kosmischer Bauplan · Bestätigungsmail (Double-Opt-in)
+
+     Sitzt NICHT in der Automation, sondern im Formular 5:
+     Website -> Formulare -> Kosmischer Bauplan -> Optionen -> Formularaktion
+     -> Zahnrad bei "Eine Liste abonnieren" -> Opt-in-Mail "Bearbeiten".
+
+     Einsetzen wie bei MUSTER: einen HTML-Block in den Designer ziehen und
+     ALLES ab <div style="display:none ... bis zum Ende einfügen. Das ist nur
+     der Inhalt, ohne <html> und <body>.
+
+     Zahnrad oben rechts:
+       Betreff        Ein Klick fehlt noch zu deinem Bauplan
+       Vorschautext   leer lassen, er steckt schon in der ersten Zeile
+       Von (Name)     Denise · Intuition mit Herz
+       Von (E-Mail)   hallo@intuitionmitherz.de
+       Antwort an     hallo@intuitionmitherz.de
+
+     Pflicht: %CONFIRMLINK% muss mindestens einmal vorkommen, sonst schickt
+     ActiveCampaign die Mail nicht. AC's Standardtext samt eigenem Knopf und
+     leere Blöcke darunter löschen. Den Fuß mit "Abbestellen" lässt AC nur weg,
+     wenn %SENDER-INFO-SINGLELINE% UND %UNSUBSCRIBELINK% im Block stehen.
+     Die Adresse kommt aus Einstellungen -> Adressen (Denise, der
+     Bauplan-Liste zugeordnet).
+
+     Keine Werbung in dieser Mail, nur die Bestätigung.
+     Platzhalter: %FIRSTNAME%, %CONFIRMLINK%, %SENDER-INFO-SINGLELINE%, %UNSUBSCRIBELINK%
+     ===================================================================== -->
+<div style="display:none;max-height:0;overflow:hidden;opacity:0;color:#160e2e;font-size:1px;line-height:1px;mso-hide:all;">Danach liegt er in deinem Postfach.</div>
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#160e2e" style="background:#160e2e;background-image:radial-gradient(70% 45% at 50% 0%, rgba(140,92,220,.30) 0%, rgba(22,14,46,0) 62%);">
+<tr><td align="center" style="padding:32px 12px 40px;">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="width:100%;max-width:600px;">
+    <tr><td align="center" style="padding:4px 0 22px;">
+      <img src="https://bauplan.intuitionmitherz.de/email-wordmark.png" width="250" alt="Intuition mit Herz" style="display:block;border:0;width:250px;max-width:74%;height:auto;">
+    </td></tr>
+    <tr><td bgcolor="#241848" style="background:#241848;border:1px solid rgba(245,197,107,.40);border-radius:22px;padding:36px 34px 34px;">
+      <div style="font-family:Arial,Helvetica,sans-serif;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:#f5c56b;margin-bottom:10px;">Nur noch ein Klick</div>
+      <h1 style="margin:0 0 20px;font-family:Georgia,'Times New Roman',serif;font-weight:normal;font-size:28px;line-height:1.2;color:#f3eefe;">Bitte bestätige deine E-Mail-Adresse.</h1>
+      <p style="margin:0 0 16px;font-family:Arial,Helvetica,sans-serif;font-size:16px;line-height:1.72;color:#c9c0e6;">Hallo %FIRSTNAME%,</p>
+      <p style="margin:0 0 18px;font-family:Arial,Helvetica,sans-serif;font-size:16px;line-height:1.72;color:#c9c0e6;">du hast gerade deinen Kosmischen Bauplan angefordert. Bevor ich ihn dir schicke, bestätige bitte kurz, dass diese E-Mail-Adresse dir gehört.</p>
+      <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin:2px 0 24px;"><tr><td align="center" bgcolor="#f5c56b" style="border-radius:14px;background:linear-gradient(135deg,#f5c56b,#eab24d);"><a href="%CONFIRMLINK%" target="_blank" style="display:inline-block;padding:16px 32px;font-family:Arial,Helvetica,sans-serif;font-size:16px;font-weight:bold;color:#3a2410;text-decoration:none;border-radius:14px;">Ja, ich möchte meinen Bauplan &#10022;</a></td></tr></table>
+      <p style="margin:0 0 16px;font-family:Arial,Helvetica,sans-serif;font-size:16px;line-height:1.72;color:#c9c0e6;">Danach bekommst du ihn in den nächsten Minuten per E-Mail, mit dem Link zu deiner persönlichen Auswertung.</p>
+      <p style="margin:0 0 10px;font-family:Arial,Helvetica,sans-serif;font-size:14px;line-height:1.7;color:#9186b3;">Mit deinem Klick meldest du dich außerdem zu meinem kostenlosen Newsletter an. Abmelden kannst du dich jederzeit mit einem Klick.</p>
+      <p style="margin:0 0 4px;font-family:Arial,Helvetica,sans-serif;font-size:14px;line-height:1.7;color:#9186b3;">Du hast nichts angefordert? Dann ignoriere diese E-Mail einfach. Ohne deinen Klick passiert nichts.</p>
+      <img src="https://bauplan.intuitionmitherz.de/email-signature-gold.png" width="188" alt="Von Herzen, Denise" style="display:block;margin:22px 0 0;border:0;width:188px;height:auto;">
+    </td></tr>
+    <tr><td align="center" style="padding:22px 16px 0;font-family:Arial,Helvetica,sans-serif;font-size:12px;line-height:1.7;color:#8f83b3;">
+      %SENDER-INFO-SINGLELINE%<br>
+      <a href="https://bauplan.intuitionmitherz.de/impressum.html" style="color:#b3a8d4;text-decoration:underline;">Impressum</a> &nbsp;&middot;&nbsp; <a href="https://bauplan.intuitionmitherz.de/datenschutz.html" style="color:#b3a8d4;text-decoration:underline;">Datenschutz</a> &nbsp;&middot;&nbsp; <a href="%UNSUBSCRIBELINK%" style="color:#b3a8d4;text-decoration:underline;">Abmelden</a>
+    </td></tr>
+  </table>
+</td></tr>
+</table>
