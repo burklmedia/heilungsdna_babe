@@ -122,14 +122,14 @@ def test_kurzlink():
 def test_ereignisse_nur_mit_token():
     print("Ereignisse fuer das Dashboard: nur mit Token")
     daten = [{"a": "klick", "k": "story", "t": "2026-09-28T18:00:00Z"}]
-    with patched(kurz, ereignisse=lambda: daten, schritte=lambda: {"visit": 3}):
+    with patched(kurz, ereignisse=lambda: daten, schritte=lambda: {"visit": 3}, schritte_tage=lambda: {}):
         with env(HERKUNFT_TOKEN="geheim-123"):
             h = aufruf("/api/kurz?ereignisse=1")
             check("ohne Token 404", h.status == 404)
             h = aufruf("/api/kurz?ereignisse=1", Authorization="Bearer falsch")
             check("falsches Token 404", h.status == 404)
             h = aufruf("/api/kurz?ereignisse=1", Authorization="Bearer geheim-123")
-            check("richtiges Token 200 mit Ereignissen", h.status == 200 and json.loads(h.wfile.getvalue()) == {"ereignisse": daten, "schritte": {"visit": 3}})
+            check("richtiges Token 200 mit Ereignissen", h.status == 200 and json.loads(h.wfile.getvalue()) == {"ereignisse": daten, "schritte": {"visit": 3}, "stichtag": "2026-09-29", "tage": {}})
         with env(HERKUNFT_TOKEN=None):
             h = aufruf("/api/kurz?ereignisse=1", Authorization="Bearer ")
             check("ohne eingerichtetes Token nie offen", h.status == 404)
@@ -164,6 +164,35 @@ def test_anmeldung_setzt_herkunft():
     check("gescheiterte Anmeldung zaehlt nicht", code == 502 and gemerkt == [])
 
 
+def test_intern():
+    print("Eigene Geraete: Cookie imh_intern=1 zaehlt nicht")
+    check("Cookie erkannt", _herkunft.ist_intern("a=1; imh_intern=1; b=2"))
+    check("ohne Cookie nicht intern", not _herkunft.ist_intern("") and not _herkunft.ist_intern(None))
+    check("anderer Wert nicht intern", not _herkunft.ist_intern("imh_intern=0"))
+    gemerkt = []
+    with patched(kurz, merken=lambda a, k: gemerkt.append((a, k)) or True):
+        h = aufruf("/api/kurz.py?k=story", **{"User-Agent": BROWSER, "Cookie": "imh_intern=1"})
+    check("interner Klick leitet weiter, zaehlt aber nicht", h.kopf.get("location") == "/?q=story" and gemerkt == [])
+    gemerkt.clear()
+    gesetzt = []
+    with patched(subscribe, _submit=lambda f: (True, None), kv_set=lambda *a, **k: True,
+                 ac_api_configured=lambda: True, herkunft_merken=lambda a, k: gemerkt.append((a, k)),
+                 set_fields=lambda e, v: gesetzt.append(v) or (True, "gesetzt"), form_connected=lambda: True):
+        subscribe.handle_subscribe({"email": TEST_MAIL, "q": "story"}, intern=True)
+    check("interne Anmeldung: Herkunft intern in AC, nicht gezaehlt", gesetzt == [{"8": "intern"}] and gemerkt == [])
+
+
+def test_schritte_tage():
+    print("Schritte je Tag ab Stichtag")
+    from datetime import date
+    with patched(_herkunft, mget=lambda keys: [1 if k.endswith(":visit") else 0 for k in keys]):
+        t = _herkunft.schritte_tage(heute=date(2026, 9, 30))
+    check("zwei Tage ab 29.09.", sorted(t) == ["2026-09-29", "2026-09-30"])
+    check("nur Schritte mit Wert", t["2026-09-29"] == {"visit": 1})
+    with patched(_herkunft, mget=lambda keys: [5] * len(keys)):
+        check("vor dem Stichtag nichts", _herkunft.schritte_tage(heute=date(2026, 9, 28)) == {})
+
+
 def test_merken():
     print("Speicher: nur Art, Kanal und Zeit")
     gespeichert = []
@@ -178,7 +207,7 @@ def test_merken():
 
 
 if __name__ == "__main__":
-    for fn in (test_kanal, test_kurzlink, test_ereignisse_nur_mit_token, test_anmeldung_setzt_herkunft, test_merken):
+    for fn in (test_kanal, test_kurzlink, test_ereignisse_nur_mit_token, test_anmeldung_setzt_herkunft, test_intern, test_schritte_tage, test_merken):
         fn()
     print()
     if FAILS:

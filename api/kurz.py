@@ -15,7 +15,7 @@ import os
 import sys
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from _herkunft import KURZLINKS, ereignisse, ist_bot, merken, schritte  # noqa: E402
+from _herkunft import KURZLINKS, ereignisse, ist_bot, ist_intern, merken, schritte, schritte_tage, STICHTAG  # noqa: E402
 
 
 class handler(BaseHTTPRequestHandler):
@@ -39,14 +39,15 @@ class handler(BaseHTTPRequestHandler):
             ist = (self.headers.get("authorization") or "").removeprefix("Bearer ").strip()
             if not soll or not hmac.compare_digest(soll, ist):
                 return self._antwort(404, b"nicht gefunden")
-            daten = json.dumps({"ereignisse": ereignisse(), "schritte": schritte()}, ensure_ascii=False).encode("utf-8")
+            daten = json.dumps({"ereignisse": ereignisse(), "schritte": schritte(), "stichtag": STICHTAG,
+                                "tage": schritte_tage()}, ensure_ascii=False).encode("utf-8")
             return self._antwort(200, daten, "application/json; charset=utf-8")
         k = (qs.get("k") or [""])[0]
         if k not in KURZLINKS:
             k = url.path.strip("/").split("/")[-1]
         if k not in KURZLINKS:
             return self._antwort(302, ort="/")
-        if not ist_bot(self.headers.get("user-agent", "")):
+        if not ist_bot(self.headers.get("user-agent", "")) and not ist_intern(self.headers.get("cookie")):
             merken("klick", k)
         self._antwort(302, ort="/?q=" + k)
 

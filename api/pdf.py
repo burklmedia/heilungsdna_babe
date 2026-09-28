@@ -1843,7 +1843,9 @@ class handler(BaseHTTPRequestHandler):
             self.wfile.write(pdf_bytes)
             # Anonym mitzaehlen, dass ein Bauplan-PDF geoeffnet wurde. Erst nach dem
             # Senden, damit der Download nicht wartet.
-            _count_pdf_open()
+            # Eigene Geraete (Cookie imh_intern=1) zaehlen nicht mit.
+            if "imh_intern=1" not in (self.headers.get("cookie") or "").replace(" ", "").split(";"):
+                _count_pdf_open()
         except ValueError as e:
             self._err(400, str(e))
         except Exception as e:  # noqa

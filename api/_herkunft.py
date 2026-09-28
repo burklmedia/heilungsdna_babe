@@ -39,6 +39,43 @@ def schritte():
     except Exception:  # noqa
         return {}
 
+# Eigene Geraete zaehlen nicht mit (seit 29.09.2026): Wer einmal /?intern=1 oeffnet, bekommt das Cookie
+# imh_intern=1. Das setzt nur, wer es selbst aufruft (Tobias, Denise); Besucherinnen bekommen kein Cookie.
+INTERN_COOKIE = "imh_intern=1"
+
+
+def ist_intern(cookie_header):
+    return bool(cookie_header) and INTERN_COOKIE in str(cookie_header).replace(" ", "").split(";")
+
+
+# Ab hier zaehlen die Schritte im Dashboard (Tobias, 28.09.2026): davor stecken Tests und die MailerLite-Zeit drin.
+STICHTAG = "2026-09-29"
+
+
+def schritte_tage(heute=None):
+    """Je Tag (UTC) ab STICHTAG die Summen je Schritt aus imh:d:<tag>:<schritt>, {tag: {schritt: zahl}}."""
+    from datetime import date, timedelta
+    try:
+        ende = heute or datetime.now(timezone.utc).date()
+        tag = date.fromisoformat(STICHTAG)
+        tage = []
+        while tag <= ende and len(tage) < 400:
+            tage.append(tag.isoformat())
+            tag += timedelta(days=1)
+        if not tage:
+            return {}
+        schluessel = ["imh:d:%s:%s" % (t, s) for t in tage for s in SCHRITTE]
+        werte = mget(schluessel)
+        out = {}
+        for k, w in zip(schluessel, werte):
+            _, _, t, s = k.split(":")
+            if int(w or 0):
+                out.setdefault(t, {})[s] = int(w)
+        return out
+    except Exception:  # noqa
+        return {}
+
+
 LISTE = "imh:herkunft"
 # Die Kurzlinks. Weitere Kanaele (Mails, Seiten) duerfen als ?q= ankommen, wenn sie dem Muster folgen.
 KURZLINKS = ("story", "kommentar", "bio", "dm")

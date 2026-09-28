@@ -21,6 +21,8 @@ import sys
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
+from _herkunft import ist_intern  # noqa: E402
+
 try:
     from _store import incr
 except Exception:  # noqa
@@ -51,7 +53,9 @@ class handler(BaseHTTPRequestHandler):
 
     def do_GET(self):
         qs = parse_qs(urlparse(self.path).query)
-        _count((qs.get("e") or [""])[0].strip())
+        # Eigene Geraete (Cookie imh_intern=1 nach /?intern=1) zaehlen nicht mit.
+        if not ist_intern(self.headers.get("cookie")):
+            _count((qs.get("e") or [""])[0].strip())
         self._ok()
 
     def do_POST(self):
@@ -63,5 +67,6 @@ class handler(BaseHTTPRequestHandler):
             event = (body.get("e") or body.get("event") or "").strip()
         except Exception:  # noqa
             event = ""
-        _count(event)
+        if not ist_intern(self.headers.get("cookie")):
+            _count(event)
         self._ok()

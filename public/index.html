@@ -1627,6 +1627,15 @@
   // Eigene Bauplan-Seite aus der E-Mail (/mein-bauplan?d=...): dort zaehlt weder ein
   // neuer Besuch noch das Lesen der Startseite.
   var MAIL_D = (function(){ try{ return new URLSearchParams(location.search).get('d')||''; }catch(e){ return ''; } })();
+  // Eigene Geraete (seit 29.09.2026): /?intern=1 setzt das Cookie imh_intern=1, danach zaehlt dieses Geraet
+  // weder Besuche noch Kurzlinks noch Anmeldungen. /?intern=0 nimmt es wieder weg. Besucherinnen bekommen es nie.
+  (function(){
+    try{
+      var i=new URLSearchParams(location.search).get('intern');
+      if(i==='1'){ document.cookie='imh_intern=1; Max-Age=157680000; Path=/; SameSite=Lax; Secure'; alert('Dieses Gerät zählt ab jetzt nicht mehr mit.'); }
+      else if(i==='0'){ document.cookie='imh_intern=; Max-Age=0; Path=/; SameSite=Lax; Secure'; alert('Dieses Gerät zählt wieder mit.'); }
+    }catch(e){}
+  })();
   // Herkunft (seit 28.09.2026): Die Kurzlinks /story, /kommentar, /bio und /dm leiten mit ?q= hierher. Der
   // Kanal gilt fuer die Sitzung und geht mit der Anmeldung an ActiveCampaign (Feld Herkunft).
   var HERKUNFT = (function(){

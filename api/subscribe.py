@@ -37,7 +37,7 @@ except Exception:  # noqa
     def kv_set(*a, **k):
         return False
 from _ac import FIELD_BAUPLAN_PDF, FIELD_FEEDBACK_TOKEN, USER_AGENT, configured as ac_api_configured, set_fields  # noqa: E402
-from _herkunft import FIELD_HERKUNFT, kanal as herkunft_kanal, merken as herkunft_merken  # noqa: E402
+from _herkunft import FIELD_HERKUNFT, ist_intern, kanal as herkunft_kanal, merken as herkunft_merken  # noqa: E402
 import time  # noqa: E402
 
 AC_ENDPOINT = "https://burkl-media.activehosted.com/proc.php"
@@ -114,7 +114,7 @@ def _submit(fields):
     return True, None
 
 
-def handle_subscribe(body):
+def handle_subscribe(body, intern=False):
     """Kernlogik. Rueckgabe (http_code, payload_dict). Ohne HTTP-Handler testbar."""
     email = body.get("email") if isinstance(body.get("email"), str) else ""
     email = email.strip()
@@ -163,16 +163,18 @@ def handle_subscribe(body):
         return 502, {"ok": False, "stored": False, "error": error,
                      "message": "Das hat gerade nicht geklappt. Bitte versuche es noch einmal."}
     # Kontakt liegt jetzt als "unbestaetigt" in AC, die Opt-in-Mail ist raus.
-    _herkunft_setzen(email, body.get("q"))
+    _herkunft_setzen(email, "intern" if intern else body.get("q"), zaehlen=not intern)
     return 200, {"ok": True, "stored": True}
 
 
-def _herkunft_setzen(email, q):
+def _herkunft_setzen(email, q, zaehlen=True):
     """Herkunft (seit 28.09.2026): Kanal aus ?q= in das AC-Feld 8 schreiben und die Anmeldung zaehlen.
     Ohne Kanal gilt "direkt". Das Formular kennt das Feld nicht, deshalb ueber die REST-API; den Kontakt
     legt proc.php eben erst an, darum ein zweiter Versuch. Scheitert es, bleibt die Anmeldung gueltig."""
     k = herkunft_kanal(q) or "direkt"
-    herkunft_merken("anmeldung", k)
+    # Eigene Geraete: Herkunft "intern" in AC, damit Tests erkennbar sind, aber nicht gezaehlt.
+    if zaehlen:
+        herkunft_merken("anmeldung", k)
     if not ac_api_configured():
         return
     for warten in (0, 1.5):
@@ -214,7 +216,7 @@ class handler(BaseHTTPRequestHandler):
             body = json.loads(self.rfile.read(length) or b"{}")
             if not isinstance(body, dict):
                 body = {}
-            code, payload = handle_subscribe(body)
+            code, payload = handle_subscribe(body, intern=ist_intern(self.headers.get("cookie")))
             self._send(code, payload)
         except Exception as e:  # noqa
             print("[subscribe] Fehler", type(e).__name__)
