@@ -122,14 +122,14 @@ def test_kurzlink():
 def test_ereignisse_nur_mit_token():
     print("Ereignisse fuer das Dashboard: nur mit Token")
     daten = [{"a": "klick", "k": "story", "t": "2026-09-28T18:00:00Z"}]
-    with patched(kurz, ereignisse=lambda: daten):
+    with patched(kurz, ereignisse=lambda: daten, schritte=lambda: {"visit": 3}):
         with env(HERKUNFT_TOKEN="geheim-123"):
             h = aufruf("/api/kurz?ereignisse=1")
             check("ohne Token 404", h.status == 404)
             h = aufruf("/api/kurz?ereignisse=1", Authorization="Bearer falsch")
             check("falsches Token 404", h.status == 404)
             h = aufruf("/api/kurz?ereignisse=1", Authorization="Bearer geheim-123")
-            check("richtiges Token 200 mit Ereignissen", h.status == 200 and json.loads(h.wfile.getvalue()) == {"ereignisse": daten})
+            check("richtiges Token 200 mit Ereignissen", h.status == 200 and json.loads(h.wfile.getvalue()) == {"ereignisse": daten, "schritte": {"visit": 3}})
         with env(HERKUNFT_TOKEN=None):
             h = aufruf("/api/kurz?ereignisse=1", Authorization="Bearer ")
             check("ohne eingerichtetes Token nie offen", h.status == 404)

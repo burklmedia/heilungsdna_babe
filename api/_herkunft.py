@@ -16,13 +16,28 @@ from datetime import datetime, timezone
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 try:
-    from _store import push_feedback, list_feedback
+    from _store import push_feedback, list_feedback, mget
 except Exception:  # noqa
     def push_feedback(record, key=None):
         return False
 
     def list_feedback(key=None):
         return []
+
+    def mget(keys):
+        return [0] * len(keys)
+
+# Die Schritte, die api/track.py je Sitzung zaehlt (imh:t:<schritt>), fuer den Funnel im Dashboard.
+SCHRITTE = ("visit", "himmel", "teaser", "email", "bauplan", "scroll", "pdf")
+
+
+def schritte():
+    """Summen je Schritt seit Beginn der Zaehlung, {schritt: zahl}."""
+    try:
+        werte = mget(["imh:t:" + s for s in SCHRITTE])
+        return {s: int(w or 0) for s, w in zip(SCHRITTE, werte)}
+    except Exception:  # noqa
+        return {}
 
 LISTE = "imh:herkunft"
 # Die Kurzlinks. Weitere Kanaele (Mails, Seiten) duerfen als ?q= ankommen, wenn sie dem Muster folgen.
