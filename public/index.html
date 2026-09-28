@@ -1627,6 +1627,14 @@
   // Eigene Bauplan-Seite aus der E-Mail (/mein-bauplan?d=...): dort zaehlt weder ein
   // neuer Besuch noch das Lesen der Startseite.
   var MAIL_D = (function(){ try{ return new URLSearchParams(location.search).get('d')||''; }catch(e){ return ''; } })();
+  // Herkunft (seit 28.09.2026): Die Kurzlinks /story, /kommentar, /bio und /dm leiten mit ?q= hierher. Der
+  // Kanal gilt fuer die Sitzung und geht mit der Anmeldung an ActiveCampaign (Feld Herkunft).
+  var HERKUNFT = (function(){
+    var q='';
+    try{ q=(new URLSearchParams(location.search).get('q')||'').toLowerCase(); }catch(e){}
+    if(/^[a-z0-9][a-z0-9-]{0,23}$/.test(q)){ try{ sessionStorage.setItem('imh_q',q); }catch(e){} return q; }
+    try{ return sessionStorage.getItem('imh_q')||''; }catch(e){ return ''; }
+  })();
   if(!MAIL_D) track('visit');
   // Scroll-Tiefe: wer mehr als 60% der Startseite liest, gilt als "gelesen"
   if(!MAIL_D) window.addEventListener('scroll', function onScroll(){
@@ -1968,7 +1976,7 @@
     if(email.indexOf('@')<0||email.indexOf('.')<0){ err.textContent='Bitte gib eine gültige E-Mail an.'; return; }
     var btn=this; btn.disabled=true; btn.textContent='Einen Moment…';
     track('email');
-    var payload={name:name,email:email}; var pp=pdfParam(); if(pp) payload.d=pp;
+    var payload={name:name,email:email}; var pp=pdfParam(); if(pp) payload.d=pp; if(HERKUNFT) payload.q=HERKUNFT;
     fetch(API+'/api/subscribe',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)})
       .then(function(r){ return r.json().catch(function(){ return {}; }); })
       .catch(function(){ return {}; })
