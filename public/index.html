@@ -1217,10 +1217,10 @@
               </div>
               <div class="mock-group">
                 <div class="mgh">Astrologie · Natalchart</div>
-                <div class="mrow"><span>Sonne</span><b>♊ Zwillinge</b></div>
-                <div class="mrow"><span>Mond</span><b>♓ Fische</b></div>
-                <div class="mrow"><span>Aszendent</span><b>♌ Löwe</b></div>
-                <div class="mrow"><span>Deszendent</span><b>♒ Wassermann</b></div>
+                <div class="mrow"><span>Sonne</span><b>♊︎ Zwillinge</b></div>
+                <div class="mrow"><span>Mond</span><b>♓︎ Fische</b></div>
+                <div class="mrow"><span>Aszendent</span><b>♌︎ Löwe</b></div>
+                <div class="mrow"><span>Deszendent</span><b>♒︎ Wassermann</b></div>
                 <div class="mrow gold"><span>Elemente-Balance</span><b>Luft &amp; Wasser betont</b></div>
               </div>
               <div class="mock-group">
@@ -2176,7 +2176,7 @@
         var lead=s.headline?'<div class="acc-lead">'+esc(s.headline)+'</div>':'';
         var take=s.takeaway?'<div class="acc-take">'+esc(s.takeaway)+'</div>':'';
         var tip=(s.tip&&s.tip[1])?'<div class="acc-tip"><span class="acc-tip-l">'+esc(s.tip[0])+'</span>'+esc(s.tip[1])+'</div>':'';
-        var facts=(s.facts&&s.facts.length)?'<div class="acc-facts">'+s.facts.map(function(ft){return '<span><strong>'+esc(ft[0])+':</strong> '+esc(ft[1])+'</span>';}).join('')+'</div>':'';
+        var facts=(s.facts&&s.facts.length)?'<div class="acc-facts">'+s.facts.map(function(ft){return '<span><strong>'+esc(ft[0])+':</strong> '+tp(esc(ft[1]))+'</span>';}).join('')+'</div>':'';
         var sub=s.subtitle?'<small>'+esc(s.subtitle)+'</small>':'';
         /* Vier-Schritt-Blöcke, aktuell im Kapitel "Deine größten Schwierigkeiten" */
         var blocks=(s.blocks&&s.blocks.length)?s.blocks.map(function(b,bi){
@@ -2366,7 +2366,9 @@
   }
 
   /* ── Bodygraph (Human-Design-Zentren, datengenau offen/definiert) ── */
+  var svgNr=0;   // jede Grafik bekommt eigene Filter-Kennungen
   function buildBodygraph(hd){
+    var cG='cGlow'+(++svgNr);
     var C={ Kopf:[130,36], Ajna:[130,110], Kehle:[130,186], G:[130,262],
       Herz:[196,230], Milz:[40,300], Solarplexus:[220,300], Sakral:[130,340], Wurzel:[130,416] };
     var SIZE={ Kopf:16, Ajna:16, Kehle:17, G:18, Herz:12, Milz:16, Solarplexus:16, Sakral:17, Wurzel:17 };
@@ -2389,14 +2391,14 @@
       else p=[[cx+s,cy-s],[cx-s,cy],[cx+s,cy+s]];
       return p.map(function(q){return q[0]+','+q[1];}).join(' '); }
     var s='<svg viewBox="0 0 260 452" aria-hidden="true">'+
-      '<defs><filter id="cGlow" x="-60%" y="-60%" width="220%" height="220%">'+
+      '<defs><filter id="'+cG+'" filterUnits="userSpaceOnUse" x="-20" y="-20" width="300" height="492">'+
       '<feDropShadow dx="0" dy="0" stdDeviation="2.6" flood-color="#f5c56b" flood-opacity="0.95"/></filter></defs><g>';
     SKEL.forEach(function(e){ s+=ln(e[0],e[1],LINE,2); });
     var ach=''; (hd.center_links||[]).forEach(function(e){ if(C[e[0]]&&C[e[1]]) ach+=ln(e[0],e[1],GOLD,4.5); });
-    if(ach) s+='<g filter="url(#cGlow)">'+ach+'</g>';
+    if(ach) s+='<g filter="url(#'+cG+')">'+ach+'</g>';
     Object.keys(C).forEach(function(c){
       var p=C[c], on=def[c], sz=SIZE[c];
-      s+='<polygon points="'+poly(SHAPE[c],p[0],p[1],sz)+'" fill="'+(on?GOLD:'none')+'" stroke="'+(on?GOLD:MUTE)+'" stroke-width="'+(on?1:1.4)+'" '+(on?'filter="url(#cGlow)"':'stroke-opacity=".8"')+'/>';
+      s+='<polygon points="'+poly(SHAPE[c],p[0],p[1],sz)+'" fill="'+(on?GOLD:'none')+'" stroke="'+(on?GOLD:MUTE)+'" stroke-width="'+(on?1:1.4)+'" '+(on?'filter="url(#'+cG+')"':'stroke-opacity=".8"')+'/>';
       s+='<text x="'+p[0]+'" y="'+(p[1]+sz+13)+'" text-anchor="middle" font-size="10" stroke="'+HALO+'" stroke-width="3.2" paint-order="stroke" fill="'+(on?GOLD:MUTE)+'">'+LABEL[c]+'</text>';
     });
     return s+'</g></svg>';
@@ -2405,23 +2407,23 @@
   /* ── Natal-Rad (Horoskop-Kreis mit Häusern & Planeten, exakt aus den Längen) ── */
   function buildNatalWheel(geo){
     if(!geo) return '';
-    var C=180, asc=geo.asc, R1=160, R2=131, R4=52;
+    var C=180, asc=geo.asc, R1=160, R2=131, R4=52, nr=++svgNr, nG='nGlow'+nr, nS='nGlowSoft'+nr, nK='nCore'+nr;
     var GOLD='var(--gold)', ACC='var(--accent)', INK='var(--ink)', SOFT='var(--ink-soft)', MUTE='var(--ink-mute)', LINE='var(--line-strong)';
     var SS=['♈','♉','♊','♋','♌','♍','♎','♏','♐','♑','♒','♓'];
     function pt(r,L){ var a=(180+(L-asc))*Math.PI/180; return [C+r*Math.cos(a), C-r*Math.sin(a)]; }
     var s='<svg viewBox="0 0 360 360" aria-hidden="true">'+
       '<defs>'+
-        '<filter id="nGlow" x="-60%" y="-60%" width="220%" height="220%">'+
+        '<filter id="'+nG+'" x="-60%" y="-60%" width="220%" height="220%">'+
           '<feDropShadow dx="0" dy="0" stdDeviation="2.2" flood-color="#f5c56b" flood-opacity="0.9"/></filter>'+
-        '<filter id="nGlowSoft" x="-80%" y="-80%" width="260%" height="260%">'+
+        '<filter id="'+nS+'" x="-80%" y="-80%" width="260%" height="260%">'+
           '<feDropShadow dx="0" dy="0" stdDeviation="2.8" flood-color="#f5d78c" flood-opacity="0.7"/></filter>'+
-        '<radialGradient id="nCore" cx="50%" cy="46%" r="60%">'+
+        '<radialGradient id="'+nK+'" cx="50%" cy="46%" r="60%">'+
           '<stop offset="0%" stop-color="rgba(245,197,107,.14)"/><stop offset="100%" stop-color="rgba(245,197,107,0)"/></radialGradient>'+
       '</defs>';
     // sanft leuchtender Kern in der Mitte
-    s+='<circle cx="180" cy="180" r="'+R1+'" fill="url(#nCore)"/>';
+    s+='<circle cx="180" cy="180" r="'+R1+'" fill="url(#'+nK+')"/>';
     // goldene Ringe mit Schimmer
-    s+='<g filter="url(#nGlow)">'+
+    s+='<g filter="url(#'+nG+')">'+
        '<circle cx="180" cy="180" r="'+R1+'" fill="none" stroke="'+GOLD+'" stroke-width="1.1" opacity=".75"/>'+
        '<circle cx="180" cy="180" r="'+R2+'" fill="none" stroke="'+GOLD+'" stroke-width="1" opacity=".45"/>'+
        '</g>';
@@ -2437,10 +2439,10 @@
       var hn=pt(R4+13, Lc+15);
       s+='<text x="'+hn[0].toFixed(1)+'" y="'+(hn[1]+3).toFixed(1)+'" text-anchor="middle" font-size="9" fill="'+MUTE+'">'+(k+1)+'</text>';
     }
-    s+='<g filter="url(#nGlow)">'+glyphs+'</g>';
+    s+='<g filter="url(#'+nG+')">'+glyphs+'</g>';
     function axis(L1,L2,l1,l2,col){
       var a=pt(R1,L1), b=pt(R1,L2);
-      s+='<g filter="url(#nGlow)">'+
+      s+='<g filter="url(#'+nG+')">'+
          '<line x1="'+a[0].toFixed(1)+'" y1="'+a[1].toFixed(1)+'" x2="'+b[0].toFixed(1)+'" y2="'+b[1].toFixed(1)+'" stroke="'+col+'" stroke-width="1.3" opacity=".9"/>';
       var t1=pt(R1+11,L1), t2=pt(R1+11,L2);
       s+='<text x="'+t1[0].toFixed(1)+'" y="'+(t1[1]+3).toFixed(1)+'" text-anchor="middle" font-size="10" fill="'+col+'" font-weight="600">'+l1+'</text>';
@@ -2464,7 +2466,7 @@
       // Planetensymbole mit warmem Schimmer
       glyphP+='<text x="'+g[0].toFixed(1)+'" y="'+(g[1]+5).toFixed(1)+'" text-anchor="middle" font-size="15.5" fill="'+INK+'">'+tp(p.sym)+'</text>';
     });
-    s+='<g filter="url(#nGlowSoft)">'+glyphP+'</g>';
+    s+='<g filter="url(#'+nS+')">'+glyphP+'</g>';
     return s+'</svg>';
   }
   document.querySelectorAll('[data-goto]').forEach(function(b){ b.addEventListener('click',function(){show(b.getAttribute('data-goto'));}); });
