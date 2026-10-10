@@ -199,38 +199,228 @@
     sichtbar(box, function () { box.classList.add("in"); }, { threshold: .3 });
   })();
 
-  // Fünf Siegel aus den berechneten Werten (Vorschau und Bericht)
-  function siegelHtml(f) {
+  // Fünf Siegel aus den berechneten Werten (Vorschau und Bericht).
+  // Mit „rueck“ bekommt jedes Siegel eine Rückseite mit einem Satz (nur in der Vorschau).
+  function siegelHtml(f, rueck) {
     var by = {}; (f.positions || []).forEach(function (p) { by[p.key] = p; });
     var sg = [];
-    function astro(k, label, pv) { var p = by[k]; if (p && p.signSymbol) sg.push({ tab: "na", pv: "na", g: tp(p.signSymbol), l: label, v: p.sign, glyph: true }); }
+    function astro(k, label, pv) { var p = by[k]; if (p && p.signSymbol) sg.push({ k: k, tab: "na", pv: "na", g: tp(p.signSymbol), l: label, v: p.sign, glyph: true }); }
     astro("Sonne", "Sonne"); astro("Mond", "Mond"); astro("AC", "Aszendent");
-    if (f.hd) sg.push({ tab: "hd", pv: "hd", g: esc(f.hd.profile || "◈"), l: "Human Design", v: f.hd.type_display || f.hd.type, profil: true });
-    if (f.numerology) sg.push({ tab: "nu", pv: "nu", g: esc(String(f.numerology.lifepath)), l: "Lebenszahl", v: f.numerology.title, zahl: true });
+    if (f.hd) sg.push({ k: "hd", tab: "hd", pv: "hd", g: esc(f.hd.profile || "◈"), l: "Human Design", v: f.hd.type_display || f.hd.type, profil: true });
+    if (f.numerology) sg.push({ k: "nu", tab: "nu", pv: "nu", g: esc(String(f.numerology.lifepath)), l: "Lebenszahl", v: f.numerology.title, zahl: true });
     return sg.map(function (x, i) {
-      return '<button type="button" class="siegel" data-tab="' + x.tab + '" style="--i:' + i + '">' +
-        '<span class="siegel-k"><svg viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="47"/><circle class="s2" cx="50" cy="50" r="41"/></svg>' +
+      var vorn = '<span class="siegel-k"><svg viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="47"/><circle class="s2" cx="50" cy="50" r="41"/></svg>' +
         '<span class="siegel-g' + (x.glyph ? " zeichen" : "") + (x.zahl ? " zahl" : "") + (x.profil ? " profil" : "") + '">' + x.g + '</span></span>' +
-        '<span class="siegel-l">' + esc(x.l) + '</span><span class="siegel-v">' + esc(x.v) + '</span></button>';
+        '<span class="siegel-l">' + esc(x.l) + '</span><span class="siegel-v">' + esc(x.v) + '</span>';
+      var r = rueck && rueck[x.k];
+      if (r && r.text) vorn = '<span class="siegel-dreh"><span class="siegel-vorn">' + vorn + '</span><span class="siegel-rueck">' +
+        (r.kopf ? '<span class="sr-kopf">' + esc(r.kopf) + '</span>' : '') + '<span class="sr-text">' + esc(r.text) + '</span></span></span>';
+      return '<button type="button" class="siegel' + (r && r.text ? " mit-rueck" : "") + '" data-tab="' + x.tab + '" style="--i:' + i + '">' + vorn + '</button>';
     }).join("");
   }
 
-  /* ════════ 3. Vorschau nach dem Moment: Sternbild hinter der Begrüßung, Siegel, die die Vorschau umschalten ════════ */
+  function satz(s) { s = String(s || "").trim(); if (!s) return ""; return /[.!?…]$/.test(s) ? s : s + "."; }
+  function ersterSatz(s) { var m = String(s || "").match(/^[^.!?]*[.!?]/); return m ? m[0].trim() : satz(s); }
+
+  /* ════════ 3. Vorschau nach dem Moment: Kuppel öffnet sich, Geburtshimmel, Siegel mit Rückseite ════════ */
   function vorschau(d) {
     var f = d && d.full; if (!f) return;
+    kuppelFilm();
     var box = $("greet-sternbild");
     var so = (f.positions || []).filter(function (p) { return p.key === "Sonne"; })[0], i = so ? H.ZEICHEN.indexOf(so.sign) : -1;
     if (box) { if (i >= 0) sternbildRein(box, i, 900, 420, { rand: 40, dauer: 2.2, gross: 1.4 }, 900); else box.innerHTML = ""; }
     var reihe = $("g-siegel");
     if (reihe) {
-      reihe.innerHTML = siegelHtml(f);
+      var t = d.teaser || {}, res = {};
+      (t.resonance || []).forEach(function (r) { res[r[0]] = r[1]; });
+      var nu = f.numerology || {};
+      reihe.innerHTML = siegelHtml(f, {
+        Sonne: { kopf: "Dein Kern", text: satz(res["Darum geht es in deinem Kern"]) },
+        Mond: { kopf: "Das brauchst du", text: satz(res["Das brauchst du im Innersten"]) },
+        AC: { kopf: "So wirkst du", text: satz(res["So wirkst du nach außen"]) },
+        hd: { kopf: t.authority || (f.hd && f.hd.authority), text: ersterSatz(t.authority_desc) },
+        nu: { kopf: nu.tagline, text: satz(nu.keyword) }
+      });
+      // Mit Maus dreht sich ein Siegel beim Darüberfahren um. Auf dem Handy dreht der erste Tipp,
+      // der zweite führt zur passenden Karte in der Vorschau.
+      var touch = window.matchMedia && window.matchMedia("(hover: none)").matches;
       reihe.onclick = function (e) {
         var b = e.target.closest(".siegel"); if (!b) return;
-        var pill = document.querySelector('#g-preview-body .pv-pill[data-pv="' + b.getAttribute("data-tab") + '"]');
-        if (pill) pill.click();
+        if (touch && b.classList.contains("mit-rueck") && !b.classList.contains("umgedreht")) {
+          [].forEach.call(reihe.querySelectorAll(".umgedreht"), function (x) { x.classList.remove("umgedreht"); });
+          b.classList.add("umgedreht"); clearTimeout(b._zurueck);
+          b._zurueck = setTimeout(function () { b.classList.remove("umgedreht"); }, 6000);
+          return;
+        }
+        var karte = document.querySelector('#g-preview-body [data-pv="' + b.getAttribute("data-tab") + '"]');
+        if (karte) karte.click();
         var pv = $("g-preview"); if (pv) pv.scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "start" });
       };
     }
+    geburtshimmel(d);
+  }
+
+  /* ── Kuppel-Film: der Spalt fährt auf, die Milchstraße kommt herein. Nur ab Tablet-Breite,
+     nicht bei „Bewegung reduzieren“ oder Datensparen. Geladen wird schon beim Klick auf
+     „Meinen Himmel lesen“, gespielt erst, wenn er bis zum Ende laden konnte. ── */
+  var film = null, filmBereit = false;
+  function filmLaden() {
+    if (film || reduce || window.innerWidth < 781) return;
+    var c = navigator.connection;
+    if (c && (c.saveData || /(^|-)2g$/.test(c.effectiveType || ""))) return;
+    var gross = window.innerWidth >= 1101 && window.innerWidth * (window.devicePixelRatio || 1) >= 1600;
+    film = document.createElement("video");
+    film.className = "kuppel-film";
+    film.muted = true; film.playsInline = true; film.preload = "auto";
+    film.setAttribute("muted", ""); film.setAttribute("playsinline", ""); film.setAttribute("aria-hidden", "true");
+    film.addEventListener("canplaythrough", function () { filmBereit = true; }, { once: true });
+    film.src = "/bilder/kuppel-film-" + (gross ? "1080" : "720") + ".mp4";
+    film.load();
+  }
+  if ($("go1")) $("go1").addEventListener("click", filmLaden);
+  function kuppelFilm() {
+    var bild = document.querySelector("#glimpse .g-bild");
+    if (!film || !filmBereit || !bild || bild.querySelector(".kuppel-film")) return;
+    bild.appendChild(film);
+    try { film.currentTime = 0; } catch (e) {}
+    var p = film.play();
+    if (p && p.catch) p.catch(function () { if (film.parentNode) film.parentNode.removeChild(film); });
+  }
+
+  /* ── Geburtshimmel: ein Bogen über der Kuppel, darauf Sonne, Mond und Planeten an ihrem Platz
+     im Moment der Geburt. Mit Geburtszeit nur der Teil, der über dem Horizont stand (links Osten
+     mit dem Aszendenten, rechts Westen). Ohne Geburtszeit der ganze Tierkreis, die Sonne oben. ── */
+  var PLANETEN = ["Sonne", "Mond", "Merkur", "Venus", "Mars", "Jupiter", "Saturn", "Uranus", "Neptun", "Pluto"];
+  var PSYM = { Sonne: "☉", Mond: "☽", Merkur: "☿", Venus: "♀", Mars: "♂", Jupiter: "♃", Saturn: "♄", Uranus: "♅", Neptun: "♆", Pluto: "♇" };
+  function laengeAus(p) {
+    var z = H.ZEICHEN.indexOf(p.sign); if (z < 0) return null;
+    var m = String(p.deg || "").match(/(\d+)\D+(\d+)/);
+    return z * 30 + (m ? +m[1] + (+m[2]) / 60 : 15);
+  }
+  var himmel = null;
+  function geburtshimmel(d) {
+    var f = d.full, buehne = document.querySelector("#glimpse .g-buehne");
+    if (!buehne || !f) return;
+    var by = {}; (f.positions || []).forEach(function (p) { by[p.key] = p; });
+    var geo = f.geo, mitZeit = !!(geo && typeof geo.dc === "number"), sonne = null, pl = [];
+    PLANETEN.forEach(function (n) {
+      var p = by[n], lon = null, haus = p && p.house;
+      if (geo && geo.planets) geo.planets.forEach(function (g) { if (g.name === n) { lon = g.lon; haus = g.house; } });
+      if (lon == null && p) lon = laengeAus(p);
+      if (lon == null) return;
+      var x = { n: n, lon: lon, p: p, haus: haus };
+      if (n === "Sonne") sonne = x;
+      pl.push(x);
+    });
+    if (!pl.length) return;
+    function lage(lon) {   // 0 = links/Osten, 1 = rechts/Westen, null = unter dem Horizont
+      if (mitZeit) { var dd = ((lon - geo.dc) % 360 + 360) % 360; return dd >= 180 ? null : 1 - dd / 180; }
+      return ((((lon - (sonne ? sonne.lon : 0)) % 360) + 540) % 360) / 360;
+    }
+    pl.forEach(function (x) { x.u = lage(x.lon); });
+    var ort = ((d.birth && d.birth.place) || "").split(",")[0].trim();
+    himmel = { buehne: buehne, lage: lage, mitZeit: mitZeit,
+      oben: pl.filter(function (x) { return x.u != null; }).sort(function (a, b) { return a.u - b.u; }),
+      zeile: mitZeit ? "So stand der Himmel " + (ort ? "über " + ort + ", " : "") + "als du geboren wurdest."
+                     : "So standen Sonne, Mond und Planeten am Tag deiner Geburt." };
+    var gr = buehne.querySelector(".g-greeting"), z = buehne.querySelector(".himmel-zeile");
+    if (gr && !z) { z = document.createElement("p"); z.className = "himmel-zeile"; gr.insertBefore(z, gr.firstChild); }
+    if (z) { z.textContent = himmel.zeile; z.classList.remove("an"); }
+    himmelZeichnen(true);
+    if (z) setTimeout(function () { z.classList.add("an"); }, reduce ? 0 : 1700 + himmel.oben.length * 320);
+  }
+  function himmelZeichnen(animiert) {
+    var h = himmel; if (!h) return;
+    var b = h.buehne, W = b.clientWidth; if (!W) return;
+    h.breite = W;
+    var alt = b.querySelector(".geburtshimmel"); if (alt) alt.remove();
+    var mobil = W < 700, reihe = $("g-siegel");
+    var basis = mobil ? 104 : Math.max(380, (reihe ? reihe.offsetTop : 560) - 30), oben = mobil ? 18 : 34;
+    var g = { cx: W / 2, base: basis, ry: basis - oben, rx: mobil ? W * .62 : Math.max(W * .56, 560) };
+    function pt(u) { var a = Math.PI * u; return [g.cx - g.rx * Math.cos(a), g.base - g.ry * Math.sin(a)]; }
+    function nor(u) { var a = Math.PI * u, nx = -g.ry * Math.cos(a), ny = -g.rx * Math.sin(a), l = Math.hypot(nx, ny) || 1; return [nx / l, ny / l]; }
+    var p0 = pt(0), p1 = pt(1), s = "", k;
+    s += '<defs><radialGradient id="gh-glut"><stop offset="0" stop-color="#fff6dc" stop-opacity=".95"/><stop offset=".3" stop-color="#f3dca6" stop-opacity=".42"/><stop offset="1" stop-color="#e2c486" stop-opacity="0"/></radialGradient></defs>';
+    s += '<path class="gh-bogen" d="M' + f1(p0[0]) + ' ' + f1(p0[1]) + ' A' + f1(g.rx) + ' ' + f1(g.ry) + ' 0 0 1 ' + f1(p1[0]) + ' ' + f1(p1[1]) + '"/>';
+    for (k = 0; k < 12; k++) {   // Zeichengrenzen als feine Striche, die Zeichen selbst ganz zart dazwischen
+      var ug = h.lage(k * 30), um = h.lage(k * 30 + 15);
+      if (ug != null) { var q = pt(ug), n = nor(ug); s += '<line class="gh-strich" x1="' + f1(q[0] - n[0] * 5) + '" y1="' + f1(q[1] - n[1] * 5) + '" x2="' + f1(q[0] + n[0] * 5) + '" y2="' + f1(q[1] + n[1] * 5) + '"/>'; }
+      if (um != null && !mobil) { var q2 = pt(um), n2 = nor(um); s += '<text class="gh-zeichen" x="' + f1(q2[0] - n2[0] * 17) + '" y="' + f1(q2[1] - n2[1] * 17 + 4) + '">' + tp(H.GLYPH[k]) + '</text>'; }
+    }
+    var letzt = -1e9, innen = false, bogenlaenge = Math.PI * (g.rx + g.ry) / 2;
+    h.oben.forEach(function (x, i) {
+      var q = pt(x.u), n = nor(x.u), pos = x.u * bogenlaenge;
+      innen = (pos - letzt < (mobil ? 22 : 30)) ? !innen : false; letzt = pos;
+      var abst = innen ? -20 : (mobil ? 16 : 21), gross = x.n === "Sonne" ? 1.5 : x.n === "Mond" ? 1.25 : 1;
+      var tip = x.n + (x.p ? " in " + x.p.sign + " " + x.p.deg : "") + (h.mitZeit && x.haus ? " · " + x.haus + ". Haus" : "");
+      s += '<g class="gh-p' + (x.n === "Sonne" ? " sonne" : "") + '" data-tip="' + esc(tip) + '" style="--d:' + f1(1.5 + i * .32) + 's" transform="translate(' + f1(q[0]) + ' ' + f1(q[1]) + ')">' +
+        '<circle class="gh-halo" r="' + f1(17 * gross) + '" fill="url(#gh-glut)"/><circle class="gh-blitz" r="' + f1(8 * gross) + '"/>' +
+        '<circle class="gh-kern" r="' + f1(2.6 * gross) + '"/>' +
+        '<text class="gh-g" x="' + f1(n[0] * abst) + '" y="' + f1(n[1] * abst + 6) + '">' + tp(PSYM[x.n]) + '</text>' +
+        '<circle class="gh-fang" r="20"/></g>';
+    });
+    var H2 = basis + 30;
+    b.insertAdjacentHTML("afterbegin", '<svg class="geburtshimmel' + (animiert && !reduce ? "" : " fertig") + '" width="' + W + '" height="' + H2 + '" viewBox="0 0 ' + W + ' ' + H2 + '" aria-hidden="true">' + s + '</svg>');
+    var svg = b.querySelector(".geburtshimmel"), bogen = svg.querySelector(".gh-bogen");
+    if (animiert && !reduce && bogen.getTotalLength) {
+      var L = bogen.getTotalLength();
+      bogen.style.strokeDasharray = L; bogen.style.strokeDashoffset = L;
+      requestAnimationFrame(function () { requestAnimationFrame(function () {
+        bogen.style.transition = "stroke-dashoffset 2.6s cubic-bezier(.4,.1,.2,1) .5s"; bogen.style.strokeDashoffset = 0; svg.classList.add("an");
+      }); });
+    }
+    // Tipp-Fenster: Planet, Zeichen, Grad und Haus
+    var tipp = b.querySelector(".gh-tipp");
+    if (!tipp) { tipp = document.createElement("div"); tipp.className = "gh-tipp"; tipp.setAttribute("role", "status"); b.appendChild(tipp); }
+    function zeig(el) {
+      if (!el) { tipp.classList.remove("an"); return; }
+      var r = el.getBoundingClientRect(), rb = b.getBoundingClientRect();
+      tipp.textContent = el.getAttribute("data-tip");
+      tipp.style.left = (r.left + r.width / 2 - rb.left) + "px"; tipp.style.top = (r.top - rb.top - 8) + "px";
+      tipp.classList.add("an");
+    }
+    svg.addEventListener("pointerover", function (e) { var p = e.target.closest(".gh-p"); if (p) zeig(p); });
+    svg.addEventListener("pointerout", function (e) { if (e.target.closest(".gh-p")) zeig(null); });
+    svg.addEventListener("click", function (e) { var p = e.target.closest(".gh-p"); zeig(p); if (p) { clearTimeout(tipp._t); tipp._t = setTimeout(function () { zeig(null); }, 3500); } });
+  }
+  var himmelUhr = 0;
+  window.addEventListener("resize", function () {
+    clearTimeout(himmelUhr);
+    himmelUhr = setTimeout(function () { if (himmel && himmel.buehne.clientWidth && himmel.buehne.clientWidth !== himmel.breite) himmelZeichnen(false); }, 200);
+  });
+
+  /* ── Nach dem Absenden: das Wachssiegel bricht, Licht fällt heraus, eine Sternschnuppe fliegt
+     vom Knopf in den Himmel. Gibt zurück, wie lange das Bestätigungsfenster warten soll. ── */
+  function gesendet(knopf) {
+    var lock = document.querySelector("#g-preview .preview-seal .lock");
+    if (lock) {
+      lock.classList.add("gebrochen");
+      var st = document.querySelector("#g-preview .seal-text"), ss = document.querySelector("#g-preview .seal-sub");
+      if (st) st.textContent = "Dein Siegel ist gebrochen.";
+      if (ss) ss.textContent = "Bestätige kurz deine E-Mail-Adresse, dann kommt deine vollständige Deutung zu dir.";
+    }
+    if (reduce || !knopf || !knopf.getBoundingClientRect || !document.body.animate) return 0;
+    var r = knopf.getBoundingClientRect(), x0 = r.left + r.width / 2, y0 = r.top + r.height / 2;
+    var x1 = Math.max(30, x0 - window.innerWidth * .38), y1 = -80, dx = x1 - x0, dy = y1 - y0;
+    var winkel = Math.atan2(dy, dx) * 180 / Math.PI;
+    var el = document.createElement("div"); el.className = "schnuppe";
+    el.style.left = x0 + "px"; el.style.top = y0 + "px";
+    document.body.appendChild(el);
+    var rot = " rotate(" + f1(winkel) + "deg)";
+    el.animate([
+      { transform: "translate(0,0)" + rot + " scaleX(.15)", opacity: 0 },
+      { offset: .12, transform: "translate(" + f1(dx * .06) + "px," + f1(dy * .06) + "px)" + rot + " scaleX(1)", opacity: 1 },
+      { transform: "translate(" + f1(dx) + "px," + f1(dy) + "px)" + rot + " scaleX(.7)", opacity: 0 }
+    ], { duration: 1500, easing: "cubic-bezier(.45,.05,.2,1)", fill: "forwards" }).onfinish = function () { el.remove(); };
+    for (var i = 0; i < 16; i++) {   // Funken am Knopf
+      var fu = document.createElement("div"); fu.className = "funke";
+      fu.style.left = x0 + "px"; fu.style.top = y0 + "px"; document.body.appendChild(fu);
+      var a = Math.random() * Math.PI * 2, w = 30 + Math.random() * 70;
+      fu.animate([{ transform: "translate(0,0) scale(1)", opacity: 1 },
+                  { transform: "translate(" + f1(Math.cos(a) * w) + "px," + f1(Math.sin(a) * w - 20) + "px) scale(.2)", opacity: 0 }],
+                 { duration: 700 + Math.random() * 600, easing: "cubic-bezier(.2,.7,.3,1)", fill: "forwards" }).onfinish = (function (x) { return function () { x.remove(); }; })(fu);
+    }
+    return 1500;
   }
 
   /* ════════ 5. Bericht ════════ */
@@ -715,7 +905,7 @@
     el.forEach(function (x) { if (x.classList.contains("auf")) return; x.classList.add("einblenden"); x.style.setProperty("--k", Math.min(n++, 10)); io.observe(x); });
   }
 
-  window.Erlebnis = { vorschau: vorschau, bericht: bericht };
+  window.Erlebnis = { vorschau: vorschau, bericht: bericht, gesendet: gesendet };
   // Falls der Bericht schon vor diesem Skript fertig war
   if (window.__bauplan) bericht(window.__bauplan);
 })();

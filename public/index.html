@@ -1275,7 +1275,7 @@
             <div class="preview-label">So sieht dein fertiger Bauplan aus</div>
             <div class="preview-body" id="g-preview-body"></div>
             <div class="preview-seal">
-              <div class="lock"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="10.5" width="14" height="10" rx="1.6"/><path d="M8 10.5V7.8a4 4 0 0 1 8 0v2.7"/><circle cx="12" cy="15.2" r="1.3"/><path d="M12 16.4v1.8"/></svg></div>
+              <div class="lock wachs" aria-hidden="true"><span class="wachs-licht"></span><span class="wachs-h l"></span><span class="wachs-h r"></span></div>
               <div class="seal-text">Deine persönliche Deutung ist noch versiegelt</div>
               <div class="seal-sub">Dein Typ ist nur der Anfang. Öffne jetzt deinen Intuitionstyp, Entscheidungsweg, deine größten Stärken und die Muster, die dich am häufigsten von dir selbst wegführen.</div>
             </div>
@@ -1858,18 +1858,30 @@
           '<p class="pv-tease">Dein Energie-Bauplan: wie du am stimmigsten Entscheidungen triffst, wo deine Kraft verlässlich sitzt und welche deiner neun Zentren definiert sind.</p>';
       }
       var PV=[['hd','Human Design'],['na','Natalchart'],['in','Intuitionstyp'],['nu','Numerologie'],['de','Deutung']];
-      var pills=PV.map(function(p,ix){ return '<span class="pv-pill'+(ix===0?' on':'')+'" data-pv="'+p[0]+'" role="button" tabindex="0">'+p[1]+'</span>'; }).join('');
+      // Fünf verdeckte Karten: Antippen dreht eine Karte um und zeigt darunter ihre Vorschau
+      var HDB={'Generator':'generator','Manifestierender Generator':'mg','Manifestor':'manifestor','Projektor':'projektor','Reflektor':'reflektor'};
+      var ELB={Feuer:'feuer',Wasser:'wasser',Erde:'erde',Luft:'luft'};
+      var ZZ=['Widder','Stier','Zwillinge','Krebs','Löwe','Jungfrau','Waage','Skorpion','Schütze','Steinbock','Wassermann','Fische'];
+      var zi=by['Sonne']?ZZ.indexOf(by['Sonne'].sign):-1;
+      var KB={hd:HDB[hd.type]?'/bilder/hd-'+HDB[hd.type]+'.webp':'', na:zi>=0?'/bilder/zeichen-'+zi+'-800.webp':'',
+        'in':(f.intuition&&ELB[f.intuition.key])?'/bilder/element-'+ELB[f.intuition.key]+'.webp':'', de:'/bilder/kapitel-0.webp'};
+      var karten=PV.map(function(p,ix){
+        var vorn=(p[0]==='nu'&&f.numerology)?'<span class="pvk-zahl">'+esc(String(f.numerology.lifepath))+'</span>':
+          (KB[p[0]]?'<span class="pvk-bild" style="background-image:url('+KB[p[0]]+')"></span>':'');
+        return '<button type="button" class="pv-karte'+(ix===0?' offen erst':'')+'" data-pv="'+p[0]+'" style="--i:'+ix+'" aria-pressed="'+(ix===0)+'">'+
+          '<span class="pvk-dreh"><span class="pvk-seite pvk-rueck" aria-hidden="true"></span><span class="pvk-seite pvk-vorn">'+vorn+'</span></span>'+
+          '<span class="pvk-name">'+p[1]+'</span></button>'; }).join('');
       document.getElementById('g-preview-body').innerHTML=
-        '<div class="pv-hint"><span class="pv-hint-ic">✦</span>Tippe auf einen Bereich, um eine Vorschau zu sehen</div>'+
-        '<div class="pv-pills">'+pills+'</div>'+
+        '<div class="pv-hint"><span class="pv-hint-ic">✦</span>Tippe auf eine Karte, um sie aufzudecken</div>'+
+        '<div class="pv-karten">'+karten+'</div>'+
         '<div id="g-preview-panel">'+pvTeaser('hd')+'</div>';
       var pvBody=document.getElementById('g-preview-body');
       function pvActivate(el){ if(!el) return;
-        pvBody.querySelectorAll('.pv-pill').forEach(function(x){x.classList.toggle('on', x===el);});
-        document.getElementById('g-preview-panel').innerHTML=pvTeaser(el.getAttribute('data-pv')); }
-      pvBody.querySelector('.pv-pills').addEventListener('click',function(e){ pvActivate(e.target.closest('.pv-pill')); });
-      pvBody.querySelector('.pv-pills').addEventListener('keydown',function(e){
-        if(e.key==='Enter'||e.key===' '){ var el=e.target.closest('.pv-pill'); if(el){ e.preventDefault(); pvActivate(el); } } });
+        var panel=document.getElementById('g-preview-panel'), key=el.getAttribute('data-pv');
+        pvBody.querySelectorAll('.pv-karte').forEach(function(x){ var an=(x===el); x.classList.toggle('offen',an); x.classList.remove('erst'); x.setAttribute('aria-pressed',an); });
+        panel.classList.add('wechsel');
+        setTimeout(function(){ panel.innerHTML=pvTeaser(key); panel.classList.remove('wechsel'); }, 220); }
+      pvBody.querySelector('.pv-karten').addEventListener('click',function(e){ pvActivate(e.target.closest('.pv-karte')); });
       document.getElementById('g-preview').style.display='';
     }
     var gn=document.getElementById('g-name'); if(gn && name) gn.value=name;
@@ -1914,7 +1926,8 @@
     var to=document.getElementById('mail-sent-to'); if(to) to.textContent=email;
     var st=document.getElementById('sent-to'); if(st) st.textContent=email;
     var fc=document.getElementById('floatcta2'); if(fc) fc.classList.remove('show');
-    var m=document.getElementById('sent'); if(m) m.classList.add('show');
+    var warte=(window.Erlebnis&&Erlebnis.gesendet)?Erlebnis.gesendet(document.getElementById('go2')):0;
+    var m=document.getElementById('sent'); if(m) setTimeout(function(){ m.classList.add('show'); }, warte||0);
   }
   var sentOk=document.getElementById('sent-ok');
   if(sentOk) sentOk.addEventListener('click',function(){
