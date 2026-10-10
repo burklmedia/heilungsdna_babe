@@ -582,6 +582,32 @@
     document.querySelector(".weiter").addEventListener("click", function (e) { var a = e.target.closest("[data-ev]"); if (a) zaehl(a.getAttribute("data-ev")); });
   }
 
+  /* ── Startseite: Goldfolie auf den Schmuckwörtern glänzt einmal auf, wenn sie ins Bild kommen ── */
+  (function goldfolie() {
+    var w = [].slice.call(document.querySelectorAll("#step1 h2 .script, .ebenen-pointe .script"));
+    if (!w.length) return;
+    if (reduce || !("IntersectionObserver" in window)) { w.forEach(function (x) { x.classList.add("glanz"); }); return; }
+    var io = new IntersectionObserver(function (e) {
+      e.forEach(function (x) { if (x.isIntersecting) { var el = x.target; setTimeout(function () { el.classList.add("glanz"); }, 700); io.unobserve(el); } });
+    }, { threshold: .6 });
+    w.forEach(function (x) { io.observe(x); });
+  })();
+
+  /* ── Startseite: ein feiner Lichtschein folgt der Maus über den dunklen Abschnitten (nur mit Maus) ── */
+  (function lichtschein() {
+    if (reduce || !window.matchMedia || !window.matchMedia("(hover: hover) and (pointer: fine)").matches) return;
+    [].forEach.call(document.querySelectorAll("#step1 header.hero, #step1 .ebenen, #step1 .final-band"), function (sec) {
+      var l = document.createElement("div"); l.className = "lichtschein"; l.setAttribute("aria-hidden", "true");
+      sec.appendChild(l);
+      var raf = 0, x = 0, y = 0;
+      sec.addEventListener("pointermove", function (e) {
+        var r = sec.getBoundingClientRect(); x = e.clientX - r.left; y = e.clientY - r.top;
+        if (!raf) raf = requestAnimationFrame(function () { raf = 0; l.style.setProperty("--mx", x + "px"); l.style.setProperty("--my", y + "px"); l.classList.add("an"); });
+      });
+      sec.addEventListener("pointerleave", function () { l.classList.remove("an"); });
+    });
+  })();
+
   /* ── Startseite: der Himmel von heute in einer Zeile (Mondphase und Zeichen des Mondes) ── */
   (function himmelHeute() {
     var el = $("hero-heute"); if (!el || !H._mond) return;
