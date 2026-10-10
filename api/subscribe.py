@@ -36,7 +36,7 @@ try:
 except Exception:  # noqa
     def kv_set(*a, **k):
         return False
-from _ac import FIELD_BAUPLAN_PDF, FIELD_FEEDBACK_TOKEN, USER_AGENT, configured as ac_api_configured, set_fields  # noqa: E402
+from _ac import FIELD_BAUPLAN_PDF, FIELD_FEEDBACK_TOKEN, FIELD_SONNENZEICHEN, USER_AGENT, configured as ac_api_configured, set_fields  # noqa: E402
 from _herkunft import FIELD_HERKUNFT, ist_intern, kanal as herkunft_kanal, merken as herkunft_merken  # noqa: E402
 import time  # noqa: E402
 
@@ -167,16 +167,15 @@ def handle_subscribe(body, intern=False):
     return 200, {"ok": True, "stored": True}
 
 
-# Sonnenzeichen fuer Kopfbilder je Zeichen in den Mails (vorbereitet am 10.10.2026).
-# Aktiv erst, wenn in ActiveCampaign ein Textfeld "Sonnenzeichen" angelegt ist und seine
-# Feld-ID in der Vercel-Variable AC_FELD_SONNENZEICHEN steht. In der Mail dann:
-# https://bauplan.intuitionmitherz.de/email-zeichen-%SONNENZEICHEN%.jpg
+# Sonnenzeichen fuer Kopfbilder je Zeichen in den Mails (seit 10.10.2026): AC-Feld 10
+# "Sonnenzeichen" an der Bauplan-Liste, gesetzt ueber die REST-API wie die Herkunft.
+# In der Mail: https://bauplan.intuitionmitherz.de/email-zeichen-%SONNENZEICHEN%.jpg
 ZEICHEN_SLUG = ["widder", "stier", "zwillinge", "krebs", "loewe", "jungfrau",
                 "waage", "skorpion", "schuetze", "steinbock", "wassermann", "fische"]
 
 
 def _zeichen_feld(z):
-    fid = (os.environ.get("AC_FELD_SONNENZEICHEN") or "").strip()
+    fid = (os.environ.get("AC_FELD_SONNENZEICHEN") or FIELD_SONNENZEICHEN).strip()
     if not fid.isdigit():
         return {}
     try:

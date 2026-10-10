@@ -169,10 +169,9 @@ Deploy unter bauplan.intuitionmitherz.de). Das Wachssiegel zieht sich als
 roter Faden durch: ganz in der Bestätigungsmail (`public/email-siegel.jpg`),
 gebrochen in Mail 1 (`public/email-siegel-offen.jpg`), bricht in der Vorschau
 beim Absenden, liegt gebrochen auf /bestaetigt und als Stempel auf dem Bericht.
-Vorbereitet, aber noch aus: ein AC-Textfeld „Sonnenzeichen“. Sobald es angelegt
-ist und seine Feld-ID in der Vercel-Variable `AC_FELD_SONNENZEICHEN` steht,
-schreibt `/api/subscribe` das Zeichen als Kürzel (`widder` … `fische`) hinein,
-und eine Mail kann `https://bauplan.intuitionmitherz.de/email-zeichen-%SONNENZEICHEN%.jpg`
+Seit 10.10.2026 gibt es das AC-Textfeld „Sonnenzeichen“ (Feld 10, an der
+Bauplan-Liste). `/api/subscribe` schreibt das Zeichen als Kürzel (`widder` …
+`fische`) über die REST-API hinein, und eine Mail kann `https://bauplan.intuitionmitherz.de/email-zeichen-%SONNENZEICHEN%.jpg`
 als Kopfbild nutzen (zwölf Bilder liegen in `public/`). Der Text ist aus den
 MailerLite-Dateien in `emails/` übernommen, geändert sind nur die Platzhalter
 (`%FIRSTNAME%`, `%BAUPLAN_PDF%`, `%FEEDBACK_TOKEN%`, `%UNSUBSCRIBELINK%`) und

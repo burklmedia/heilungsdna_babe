@@ -40,6 +40,7 @@ FIELD_BAUPLAN_PDF = "4"      # %BAUPLAN_PDF%     Parameter d fuer /mein-bauplan
 FIELD_FEEDBACK_TOKEN = "5"   # %FEEDBACK_TOKEN%  Links zu /feedback und /thema
 FIELD_FEEDBACK_GIVEN = "6"   # %FEEDBACK_GIVEN%  "yes" nach dem Feedback
 FIELD_BETA_TOPIC = "7"       # %BETA_TOPIC%      gewaehltes Thema
+FIELD_SONNENZEICHEN = "10"   # %SONNENZEICHEN%   Kuerzel des Sonnenzeichens (seit 10.10.2026)
 
 # Feldnamen wie frueher bei MailerLite -> Feld-ID in ActiveCampaign.
 FIELD_IDS = {
