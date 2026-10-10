@@ -97,6 +97,10 @@
     text-decoration:none;border-radius:2px;padding:12px 18px;background:linear-gradient(135deg,#ecd29d,#c9a560);box-shadow:0 10px 26px -12px rgba(226,196,134,.7)}
   .kontakt:hover{filter:brightness(1.05)}
   .kontakt:focus-visible{outline:2px solid var(--gold);outline-offset:3px}
+  .gruss{margin:40px auto 0;max-width:420px}
+  .gruss video{display:block;width:100%;aspect-ratio:9/16;max-height:70vh;object-fit:cover;border-radius:6px;background:#0f0e22;
+    box-shadow:0 0 0 1px rgba(226,196,134,.45),0 0 0 7px #0a0916,0 0 0 8px rgba(226,196,134,.22),0 40px 80px -30px rgba(0,0,0,.9)}
+  .gruss figcaption{margin-top:14px;font-family:var(--serif);font-style:italic;font-size:17px;color:var(--gold-hell)}
   .card{margin:38px auto 0;max-width:500px;text-align:left;border-radius:8px;padding:22px 24px 24px;
     background:linear-gradient(180deg,rgba(28,27,56,.88),rgba(16,15,36,.92));
     box-shadow:0 0 0 1px rgba(226,196,134,.3),0 30px 70px -30px rgba(0,0,0,.85)}
@@ -138,6 +142,13 @@
     <div class="siegel" aria-hidden="true"><span class="licht"></span><span class="h l"></span><span class="h r"></span></div>
     <h1><span class="s">Danke,</span>dein Bauplan ist unterwegs.</h1>
     <p class="lead">Deine E-Mail-Adresse ist bestätigt. In den nächsten Minuten liegt dein Kosmischer Bauplan in deinem Postfach, mit dem Link zu deiner persönlichen Auswertung.</p>
+
+    <!-- GRUSS: Videogruß von Denise (ca. 20 s). Datei nach /bilder/denise-gruss.mp4 legen,
+         Standbild nach /bilder/denise-gruss.jpg, dann das hidden-Attribut entfernen. -->
+    <figure class="gruss" id="gruss" hidden>
+      <video src="/bilder/denise-gruss.mp4" poster="/bilder/denise-gruss.jpg" playsinline controls preload="metadata"></video>
+      <figcaption>Ein kurzer Gruß von Denise</figcaption>
+    </figure>
 
     <div class="deck-buehne" aria-hidden="true">
       <div class="deckblatt" id="deckblatt">

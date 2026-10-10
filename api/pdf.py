@@ -1766,6 +1766,63 @@ def _break_with_accent(pdf, need, min_remaining=44.0):
     return False
 
 
+# Brief von Denise als erste Seite nach dem Deckblatt. ENTWURF: bleibt aus, bis Denise den
+# Text freigibt (dann hier auf True setzen). Zum Ansehen lokal: BAUPLAN_BRIEF=1.
+BRIEF_VON_DENISE = os.environ.get("BAUPLAN_BRIEF", "") == "1"
+BRIEF_ABSAETZE = [
+    "schön, dass du hier bist.",
+    "Was du jetzt in den Händen hältst, ist ein Blick auf das, was seit dem Moment deiner Geburt in dir angelegt ist.",
+    "Vielleicht erkennst du dich an manchen Stellen sofort wieder. An anderen brauchst du etwas mehr Zeit. Beides ist gut so.",
+    "Nimm dir, was dich berührt, und lass liegen, was gerade nicht passt. Dein Bauplan läuft dir nicht weg.",
+    "Ich wünsche dir, dass du beim Lesen ein Stück mehr bei dir ankommst.",
+]
+
+
+def _brief_seite(pdf, birth, name):
+    """Ein persönlicher Brief von Denise: Siegel, Anrede mit Namen, fünf kurze Absätze, Unterschrift."""
+    pdf.theme = "dark"
+    pdf.add_page()
+    pdf.set_auto_page_break(False)
+    # feine Goldwinkel in den Ecken wie auf Briefpapier
+    pdf.set_draw_color(*GOLD2)
+    pdf.set_line_width(0.3)
+    m, l = 14.0, 12.0
+    for x, y, dx, dy in ((m, m, 1, 1), (PW - m, m, -1, 1)):
+        pdf.line(x, y, x + dx * l, y)
+        pdf.line(x, y, x, y + dy * l)
+    b = _bild("siegel.jpg")
+    if b:
+        pdf.image(b, x=PW / 2.0 - 15, y=26, w=30, h=30)
+    pdf.set_xy(0, 64)
+    pdf.set_font("Vibes", "", 34)
+    pdf.set_text_color(*GOLD)
+    pdf.cell(PW, 14, safe("Ein Brief an dich"), align="C")
+    pdf.set_draw_color(*GOLD)
+    with pdf.local_context(stroke_opacity=0.6):
+        pdf.line(PW / 2.0 - 18, 84, PW / 2.0 + 18, 84)
+    x0, w = MX + 12, PW - 2 * (MX + 12)
+    g = (birth.get("gender") or "n")
+    anrede = ("Lieber " if g == "m" else "Liebe " if g == "f" else "Hallo ") + (name or "du") + ","
+    pdf.set_xy(x0, 98)
+    pdf.set_font("Cormo", "I", 18)
+    pdf.set_text_color(*INK_L)
+    pdf.cell(w, 9, safe(anrede))
+    y = 112
+    pdf.set_font("Cormo", "I", 15.5)
+    for t in BRIEF_ABSAETZE:
+        pdf.set_xy(x0, y)
+        pdf.multi_cell(w, 7.6, safe(t), align="L")
+        y = pdf.get_y() + 4.5
+    pdf.set_xy(x0, y + 6)
+    pdf.set_font("Cormo", "I", 15.5)
+    pdf.cell(w, 8, safe("Von Herzen,"))
+    pdf.set_xy(x0, y + 15)
+    pdf.set_font("Vibes", "", 40)
+    pdf.set_text_color(*GOLD)
+    pdf.cell(w, 16, safe("Denise"))
+    pdf.set_auto_page_break(True, margin=20)
+
+
 def _closing(pdf, full):
     """Abschlussseite: der warme Schlusstext, der spirituelle Lieblingsspruch
     und der Instagram-Auftritt."""
@@ -1873,6 +1930,8 @@ def _render(result, toc_entries):
     pdf.set_author("Intuition mit Herz")
 
     _cover(pdf, birth, name, full)
+    if BRIEF_VON_DENISE:
+        _brief_seite(pdf, birth, name)
     _toc_page(pdf, toc_entries)
 
     collected = []

@@ -223,10 +223,15 @@
   function ersterSatz(s) { var m = String(s || "").match(/^[^.!?]*[.!?]/); return m ? m[0].trim() : satz(s); }
 
   /* ════════ 3. Vorschau nach dem Moment: Kuppel öffnet sich, Geburtshimmel, Siegel mit Rückseite ════════ */
+  // Name im Browser-Tab: „Maries Himmel“, „Max’ Bauplan“
+  function genitiv(n) { n = String(n || "").trim().split(/\s+/)[0]; if (!n) return ""; return /[sßxz]$/i.test(n) ? n + "\u2019" : n + "s"; }
+  function tabTitel(was, d) { var g = genitiv(d && d.birth && d.birth.name); if (g) document.title = g + " " + was + " · Intuition mit Herz"; }
+
   var letzteVorschau = null;
   function vorschau(d) {
     var f = d && d.full; if (!f) return;
     letzteVorschau = d;
+    tabTitel("Himmel", d);
     kuppelFilm();
     var box = $("greet-sternbild");
     var so = (f.positions || []).filter(function (p) { return p.key === "Sonne"; })[0], i = so ? H.ZEICHEN.indexOf(so.sign) : -1;
@@ -582,6 +587,21 @@
     document.querySelector(".weiter").addEventListener("click", function (e) { var a = e.target.closest("[data-ev]"); if (a) zaehl(a.getAttribute("data-ev")); });
   }
 
+  /* ── Echte Stimmen: nur freigegebene Zitate mit Vorname und Sonnenzeichen (0 = Widder … 11 = Fische).
+     Solange die Liste leer ist, bleibt der Abschnitt unsichtbar. Beispiel:
+     { text: "…", name: "Lena", zeichen: 2 } ── */
+  var STIMMEN = [];
+  function stimmenZeigen(liste) {
+    var sec = $("stimmen"), r = $("stimmen-reihe"); if (!sec || !r || !liste || !liste.length) return;
+    r.innerHTML = liste.map(function (x, i) {
+      var z = (x.zeichen >= 0 && x.zeichen < 12) ? x.zeichen : -1;
+      return '<figure class="stimme" style="--i:' + i + '"><span class="st-zeichen" aria-hidden="true"' + (z >= 0 ? ' style="background-image:url(/bilder/zeichen-' + z + '-800.webp)"' : '') + '></span>' +
+        '<blockquote>' + esc(x.text) + '</blockquote><figcaption><span class="st-name">' + esc(x.name) + '</span>' + (z >= 0 ? '<span class="st-sign">' + esc(H.ZEICHEN[z]) + '</span>' : '') + '</figcaption></figure>';
+    }).join("");
+    sec.hidden = false;
+  }
+  stimmenZeigen(STIMMEN);
+
   /* ── Startseite: Goldfolie auf den Schmuckwörtern glänzt einmal auf, wenn sie ins Bild kommen ── */
   (function goldfolie() {
     var w = [].slice.call(document.querySelectorAll("#step1 h2 .script, .ebenen-pointe .script"));
@@ -668,6 +688,7 @@
 
   function bericht(d) {
     var f = d && d.full; if (!f) return;
+    tabTitel("Bauplan", d);
     var by = {}; (f.positions || []).forEach(function (p) { by[p.key] = p; });
     var sonne = by.Sonne, idx = sonne ? H.ZEICHEN.indexOf(sonne.sign) : -1;
 
@@ -1147,7 +1168,7 @@
     el.forEach(function (x) { if (x.classList.contains("auf")) return; x.classList.add("einblenden"); x.style.setProperty("--k", Math.min(n++, 10)); io.observe(x); });
   }
 
-  window.Erlebnis = { vorschau: vorschau, bericht: bericht, gesendet: gesendet };
+  window.Erlebnis = { vorschau: vorschau, bericht: bericht, gesendet: gesendet, stimmen: stimmenZeigen };
   // Falls der Bericht schon vor diesem Skript fertig war
   if (window.__bauplan) bericht(window.__bauplan);
 })();
