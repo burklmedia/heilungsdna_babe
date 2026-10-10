@@ -1549,7 +1549,7 @@ details.acc.gelesen .acc-t::after { content: " ✦"; color: #e2c486; font-size: 
 .pain-liste .pain:hover { transform: none; box-shadow: none; }
 .pain-liste .pain:nth-child(n+3) { border-bottom: 1px solid var(--gold-line); }
 .pain .pn { font-family: "Bodoni 72", Didot, "Bodoni MT", "Times New Roman", serif; font-size: 30px; line-height: 1; color: var(--gold); text-align: center; }
-.pain-bild { width: 112px; height: 82px; background: center / contain no-repeat; filter: brightness(.3) sepia(.6) saturate(1.6); opacity: .92;
+.pain-bild { width: 112px; height: 82px; background: center / 190% auto no-repeat; filter: brightness(.3) sepia(.6) saturate(1.6); opacity: .92;
   transition: transform 1s cubic-bezier(.2,.7,.2,1), opacity .6s; }
 .pain:hover .pain-bild { transform: scale(1.08); opacity: 1; }
 .pain-liste .pain p { font-family: var(--serif); font-size: clamp(18px, 1.7vw, 21px); line-height: 1.45; color: var(--ink); }
