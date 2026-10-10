@@ -349,6 +349,9 @@
     // Intuitionstyp und Elemente: die Element-Gravuren
     elementbilder(f);
     elementfunken(document.querySelector("#pane-in .intu-sketch"), f.intuition && ELBILD[f.intuition.key]);
+    hdBuehne(d);
+    natalGruppen(f);
+    himmelskarten(f);
     deutungsbuehne();
     // „Hier anfangen“: drei Bildkacheln statt Knöpfen
     [].forEach.call(document.querySelectorAll("#pane-ov .ov-start-b"), function (b) {
@@ -512,8 +515,131 @@
     fortschritt();
   }
 
+  var ZENTRUMBILD = { Kopf: "kopf", Ajna: "ajna", Kehle: "kehle", G: "g", Herz: "herz", Milz: "milz", Sakral: "sakral", Solarplexus: "solarplexus", Wurzel: "wurzel" };
+
+  // Human Design: Auftakt mit der Typ-Gravur, drei Schlüssel als Bildkarten, Zentren als Medaillons
+  function hdBuehne(d) {
+    var f = d.full, t = d.teaser || {}, hd = f.hd, pane = $("pane-hd");
+    if (!pane || !hd || pane.querySelector(".hd-buehne")) return;
+    var bild = HDBILD[hd.type] ? "/bilder/hd-" + HDBILD[hd.type] + ".webp" : "";
+    var flow = (t.signature ? '<span class="gut"><b>Signatur im Flow</b>' + esc(t.signature) + '</span>' : "") +
+               (t.not_self ? '<span class="warn"><b>Nicht-Selbst-Thema</b>' + esc(t.not_self) + '</span>' : "");
+    var keys = [
+      { bild: "/bilder/kapitel-5.webp", l: "Deine Strategie", v: t.strategy || "", d: "" },
+      { bild: "/bilder/kapitel-2.webp", l: "Deine innere Autorität", v: hd.authority || "", d: t.authority_desc || "" },
+      { bild: "/bilder/kapitel-3.webp", l: "Dein Profil", v: (hd.profile || "") + (t.profile_name ? " · " + t.profile_name : ""), d: t.profile_desc || "" }
+    ].filter(function (k) { return k.v; });
+    var html = '<section class="hd-buehne"><div class="hd-bild" style="background-image:url(' + bild + ')"></div><div class="hd-text">' +
+      '<div class="script-eyebrow">Dein Human-Design-Typ</div><div class="hd-typ">' + esc(hd.type_display || hd.type) + '</div>' +
+      (t.type_short ? '<p class="hd-kurz">' + esc(t.type_short) + '</p>' : '') + (flow ? '<div class="hd-flow">' + flow + '</div>' : '') + '</div></section>' +
+      '<div class="hd-schluessel">' + keys.map(function (k, i) {
+        return '<div class="hd-key" style="--i:' + i + '"><span class="hk-bild" style="background-image:url(' + k.bild + ')"></span><span class="hk-l">' + esc(k.l) + '</span>' +
+          '<span class="hk-v">' + esc(k.v) + '</span>' + (k.d ? '<span class="hk-d">' + esc(k.d) + '</span>' : '') + '</div>';
+      }).join("") + '</div>';
+    pane.insertAdjacentHTML("afterbegin", html);
+    // Typ, Strategie, Autorität und Profil stehen jetzt oben; in der Liste bleiben Definition und Inkarnationskreuz
+    [].forEach.call(pane.querySelectorAll(".kv"), function (kv) {
+      var k = kv.querySelector(".k"); if (k && /^(Typ|Strategie|Autorität|Profil)$/.test(k.textContent.trim())) kv.classList.add("doppelt");
+    });
+    // Zentren als Medaillons, definiert oder offen als Abzeichen
+    [].forEach.call(pane.querySelectorAll(".pcard"), function (c) {
+      var pk = c.querySelector(".pk"), pico = c.querySelector(".pico"), name = pk && pk.textContent.trim();
+      if (!name || !ZENTRUMBILD[name] || !pico || pico.querySelector(".pico-figur")) return;
+      c.setAttribute("data-zentrum", name);
+      var def = pico.textContent.indexOf("●") >= 0;
+      pico.classList.add("mit-figur", def ? "definiert" : "offen");
+      pico.innerHTML = '<span class="pico-figur" style="background-image:url(/bilder/zentrum-' + ZENTRUMBILD[name] + '.webp)"></span><span class="pico-g">' + (def ? "●" : "○") + '</span>';
+    });
+  }
+
+  // Natalchart: Planeten in Gruppen mit kurzer Einordnung
+  var GRUPPEN = [
+    { t: "Deine großen Drei", d: "Wer du im Kern bist, was du fühlst und wie du auf andere wirkst.", k: ["Sonne", "Mond", "AC"] },
+    { t: "Deine persönlichen Planeten", d: "Wie du denkst, wie du liebst und wie du handelst.", k: ["Merkur", "Venus", "Mars"] },
+    { t: "Die großen Lehrer", d: "Wo du wächst und wo du reifst.", k: ["Jupiter", "Saturn"] },
+    { t: "Die tiefen Kräfte", d: "Langsame Planeten, die ganze Generationen prägen. In deinem Chart zeigen sie, in welchem Lebensfeld sie bei dir wirken.", k: ["Uranus", "Neptun", "Pluto"] },
+    { t: "Achsen und Heilpunkt", d: "Deine Beziehungsachse, deine Berufung, deine Wurzeln und deine Wunde mit ihrer Heilkraft.", k: ["DC", "MC", "IC", "Chiron"] }
+  ];
+  function natalGruppen(f) {
+    var rechts = document.querySelector("#pane-na .sp-rechts") || $("pane-na");
+    if (!rechts || rechts.querySelector(".pgruppe")) return;
+    var karten = [].slice.call(rechts.querySelectorAll(":scope > .pcard")); if (!karten.length) return;
+    var nachKey = {};
+    (f.positions || []).forEach(function (p, i) { if (karten[i]) { nachKey[p.key] = karten[i]; karten[i].setAttribute("data-k", p.label === "Aszendent" ? "AC" : p.key); } });
+    var vorher = karten[0].previousSibling, rest = karten.slice(), frag = document.createDocumentFragment();
+    GRUPPEN.forEach(function (g, gi) {
+      var ks = g.k.map(function (k) { return nachKey[k]; }).filter(Boolean); if (!ks.length) return;
+      var box = document.createElement("div"); box.className = "pgruppe"; box.style.setProperty("--i", gi);
+      box.innerHTML = '<div class="pg-kopf"><span class="pg-nr">' + ("0" + (gi + 1)).slice(-2) + '</span><div><div class="pg-t">' + g.t + '</div><div class="pg-d">' + g.d + '</div></div></div>';
+      ks.forEach(function (c) { box.appendChild(c); rest.splice(rest.indexOf(c), 1); });
+      frag.appendChild(box);
+    });
+    if (rest.length) { var sonst = document.createElement("div"); sonst.className = "pgruppe"; rest.forEach(function (c) { sonst.appendChild(c); }); frag.appendChild(sonst); }
+    rechts.insertBefore(frag, vorher ? vorher.nextSibling : rechts.firstChild);
+  }
+
+  // Rad und Bodygraph sprechen: beim Darüberfahren steht da, was es ist; ein Klick öffnet die passende Karte
+  function himmelskarten(f) {
+    var by = {}; (f.positions || []).forEach(function (p) { by[p.key] = p; });
+    var zen = {}; (f.hd_centers || []).forEach(function (c) { zen[c.name] = c; });
+    // Übersicht: Überschrift und Unterschriften für die beiden Karten
+    var grid = document.querySelector("#pane-ov .grid2");
+    if (grid && !(grid.previousElementSibling && grid.previousElementSibling.classList.contains("karten-kopf"))) {
+      var fein = window.matchMedia && window.matchMedia("(hover: hover)").matches;
+      grid.insertAdjacentHTML("beforebegin", '<div class="karten-kopf"><div class="script-eyebrow">Zwei Karten deines Himmels</div><p>Links dein Geburtshimmel, rechts dein Energiekörper. ' +
+        (fein ? "Fahre über einen Planeten oder ein Zentrum, um zu sehen, was es bei dir bedeutet. Ein Klick öffnet die ganze Erklärung." : "Tippe auf einen Planeten oder ein Zentrum und du landest bei seiner Erklärung.") + '</p></div>');
+      var panels = grid.querySelectorAll(".panel");
+      if (panels[0]) panels[0].insertAdjacentHTML("beforeend", '<p class="karte-unterschrift">Wo Sonne, Mond und Planeten im Moment deiner Geburt standen.</p>');
+      if (panels[1]) panels[1].insertAdjacentHTML("beforeend", '<p class="karte-unterschrift">Welche deiner neun Energiezentren fest sind (gold) und welche offen.</p>');
+    }
+    var tip = $("himmel-tip");
+    if (!tip) { tip = document.createElement("div"); tip.id = "himmel-tip"; tip.className = "himmel-tip"; tip.setAttribute("role", "tooltip"); document.body.appendChild(tip); }
+    var step = $("step3"); if (!step || step.__karten) { if (step) step.__daten = { by: by, zen: zen }; return; }
+    step.__karten = true; step.__daten = { by: by, zen: zen };
+    function inhalt(el) {
+      var dd = step.__daten, k = el.getAttribute("data-k"), z = el.getAttribute("data-z");
+      if (k && dd.by[k]) { var p = dd.by[k]; return '<b>' + tp(p.sym) + " " + esc(p.label) + " " + tp(p.signSymbol) + " " + esc(p.sign) + '</b><span>' + esc(p.deg) + (p.house ? " · Haus " + p.house : "") + '</span><i>' + esc(p.meaning) + '</i><em>Antippen für mehr</em>'; }
+      if (z && dd.zen[z]) { var c = dd.zen[z]; return '<b>' + esc(c.name) + (c.defined ? " · definiert" : " · offen") + '</b><i>' + esc(c.meaning || "") + '</i><em>Antippen für mehr</em>'; }
+      return "";
+    }
+    step.addEventListener("mouseover", function (e) {
+      var el = e.target.closest(".gwheel [data-k], .gbody [data-z]"); if (!el) return;
+      var h = inhalt(el); if (!h) return;
+      tip.innerHTML = h; tip.classList.add("an");
+      var hk = el.getAttribute("data-k"); if (hk) [].forEach.call(document.querySelectorAll('.gwheel [data-k="' + hk + '"]'), function (x) { x.classList.add("hl"); });
+    });
+    function weg() { tip.classList.remove("an"); }
+    window.addEventListener("scroll", weg, { passive: true });
+    document.addEventListener("click", function (e) { if (e.target.closest(".rtab")) weg(); });
+    step.addEventListener("mousemove", function (e) { if (tip.classList.contains("an")) { tip.style.left = Math.min(window.innerWidth - 270, e.clientX + 18) + "px"; tip.style.top = (e.clientY + 18) + "px"; } });
+    step.addEventListener("mouseout", function (e) {
+      var el = e.target.closest(".gwheel [data-k], .gbody [data-z]"); if (!el) return;
+      tip.classList.remove("an"); [].forEach.call(document.querySelectorAll(".gwheel .hl"), function (x) { x.classList.remove("hl"); });
+    });
+    step.addEventListener("click", function (e) {
+      var el = e.target.closest(".gwheel [data-k], .gbody [data-z]"); if (!el) return;
+      tip.classList.remove("an");
+      var k = el.getAttribute("data-k"), z = el.getAttribute("data-z");
+      var tab = k ? "na" : "hd", sel = k ? '#pane-na .pcard[data-k="' + (k === "Aszendent" ? "AC" : k) + '"]' : '#pane-hd .pcard[data-zentrum="' + z + '"]';
+      var pane = $("pane-" + tab);
+      if (!pane.classList.contains("active")) { var r = document.querySelector('.rtab[data-rtab="' + tab + '"]'); if (r) r.click(); }
+      setTimeout(function () { var c = document.querySelector(sel); if (c && !c.classList.contains("open")) c.querySelector(".ph").click(); else if (c) c.scrollIntoView({ behavior: "smooth", block: "center" }); }, 380);
+    });
+    // Karte im Natalchart hervorheben → Planet im Rad leuchtet
+    step.addEventListener("mouseover", function (e) {
+      var c = e.target.closest("#pane-na .pcard[data-k]"); if (!c) return;
+      var k = c.getAttribute("data-k"); [].forEach.call(document.querySelectorAll('#pane-na .gwheel [data-k="' + k + '"]'), function (x) { x.classList.add("hl"); });
+    });
+    step.addEventListener("mouseout", function (e) {
+      var c = e.target.closest("#pane-na .pcard[data-k]"); if (!c || c.contains(e.relatedTarget)) return;
+      [].forEach.call(document.querySelectorAll("#pane-na .gwheel .hl"), function (x) { x.classList.remove("hl"); });
+    });
+  }
+
   function elementbilder(f) {
     var it = f.intuition;
+    var intu = document.querySelector("#pane-in .intu");
+    if (intu && it && ELBILD[it.key]) intu.style.setProperty("--el-bild", "url(/bilder/element-" + ELBILD[it.key] + ".webp)");
     var sk = document.querySelector("#pane-in .intu-sketch");
     if (sk && it && ELBILD[it.key] && !sk.querySelector(".el-gravur")) sk.insertAdjacentHTML("afterbegin", '<span class="el-gravur" style="background-image:url(/bilder/element-' + ELBILD[it.key] + '.webp)"></span>');
     [].forEach.call(document.querySelectorAll("#pane-in .itype"), function (x, i) {

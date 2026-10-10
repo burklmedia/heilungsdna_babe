@@ -12,7 +12,7 @@
 
   // Lichtkegel als Viereck (oben links, oben rechts, unten rechts, unten links) und Kuppelöffnung als Ellipse
   var ORTE = {
-    quer: { kegel: [[0.19, 0.10], [0.31, 0.10], [0.36, 0.90], [0.20, 0.90]], kuppel: [0.268, 0.03, 0.085, 0.075] },
+    quer: { kegel: [[0.182, 0.083], [0.302, 0.083], [0.352, 0.883], [0.192, 0.883]], kuppel: [0.26, 0.013, 0.085, 0.075] },
     hoch: { kegel: [[0.42, 0.13], [0.66, 0.13], [0.63, 0.90], [0.37, 0.90]], kuppel: [0.575, 0.04, 0.21, 0.06] }
   };
 
@@ -136,5 +136,22 @@
     los();
   }
   if (img.complete && img.naturalWidth) bereit(); else img.addEventListener("load", bereit, { once: true });
+
+  /* Film: auf dem Desktop dreht sich die Armillarsphäre (Seedance 2.5, nahtlose Schleife).
+     Lädt erst nach dem Lichtauftakt, nicht bei „Bewegung reduzieren“ oder Datensparen, pausiert außer Sicht. */
+  var film = hero.querySelector(".hero-film");
+  var spar = navigator.connection && (navigator.connection.saveData || /2g/.test(navigator.connection.effectiveType || ""));
+  if (film && !reduce && !spar && window.innerWidth > 1100) {
+    var starten = function () {
+      film.src = (window.innerWidth * (window.devicePixelRatio || 1) >= 1600) ? film.getAttribute("data-src") : film.getAttribute("data-src-klein");
+      film.addEventListener("playing", function () { film.classList.add("an"); hero.classList.add("mit-film"); }, { once: true });
+      var p = film.play(); if (p && p.catch) p.catch(function () {});
+      if (window.IntersectionObserver) new IntersectionObserver(function (e) {
+        if (e[0].isIntersecting) { var q = film.play(); if (q && q.catch) q.catch(function () {}); } else film.pause();
+      }).observe(hero);
+    };
+    var spaeter = function () { setTimeout(starten, 2600); };
+    if (document.readyState === "complete") spaeter(); else window.addEventListener("load", spaeter, { once: true });
+  }
   img.addEventListener("load", function () { if (bild) groesse(); });   // anderes Bild nach Größenwechsel
 })();

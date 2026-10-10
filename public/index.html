@@ -940,9 +940,11 @@
     <div class="scene" aria-hidden="true">
       <picture>
         <source media="(max-width: 1100px)" srcset="/bilder/sternwarte-licht-hoch-720.webp 720w, /bilder/sternwarte-licht-hoch-1080.webp 1080w" sizes="100vw" type="image/webp">
-        <source srcset="/bilder/sternwarte-licht-quer-1600.webp 1600w, /bilder/sternwarte-licht-quer-2400.webp 2400w" sizes="100vw" type="image/webp">
-        <img src="/bilder/sternwarte-licht-quer-1600.webp" alt="" width="2688" height="1520" fetchpriority="high">
+        <source srcset="/bilder/sternwarte-licht-quer-1600.webp 1600w, /bilder/sternwarte-licht-quer-1920.webp 1920w" sizes="100vw" type="image/webp">
+        <img src="/bilder/sternwarte-licht-quer-1600.webp" alt="" width="1920" height="1080" fetchpriority="high">
       </picture>
+      <video class="hero-film" muted loop playsinline preload="none" aria-hidden="true" tabindex="-1"
+             data-src="/bilder/sternwarte-film-1080.mp4" data-src-klein="/bilder/sternwarte-film-720.mp4"></video>
     </div>
     <nav class="topnav">
       <a class="brand" href="/" aria-label="Intuition mit Herz"><span class="b-script">Intuition</span><span class="b-serif">mit Herz</span></a>
@@ -2327,7 +2329,7 @@
     if(ach) s+='<g filter="url(#'+cG+')">'+ach+'</g>';
     Object.keys(C).forEach(function(c,i){
       var p=C[c], on=def[c], sz=SIZE[c], dz=' style="--d:'+(.5+i*.13).toFixed(2)+'s"';
-      s+='<polygon class="bg-z'+(on?' an':'')+'"'+dz+' points="'+poly(SHAPE[c],p[0],p[1],sz)+'" fill="'+(on?GOLD:'none')+'" stroke="'+(on?GOLD:MUTE)+'" stroke-width="'+(on?1:1.4)+'" '+(on?'filter="url(#'+cG+')"':'stroke-opacity=".8"')+'/>';
+      s+='<polygon class="bg-z'+(on?' an':'')+'" data-z="'+c+'"'+dz+' points="'+poly(SHAPE[c],p[0],p[1],sz)+'" fill="'+(on?GOLD:'none')+'" stroke="'+(on?GOLD:MUTE)+'" stroke-width="'+(on?1:1.4)+'" '+(on?'filter="url(#'+cG+')"':'stroke-opacity=".8"')+'/>';
       var mitte=(p[0]===130), lx=mitte?(p[0]+sz+7):p[0], ly=mitte?(p[1]+4):(p[1]+sz+13);
       s+='<text class="bg-t"'+dz+' x="'+lx+'" y="'+ly+'" text-anchor="'+(mitte?'start':'middle')+'" font-size="10" stroke="'+HALO+'" stroke-width="3.2" paint-order="stroke" fill="'+(on?GOLD:MUTE)+'">'+LABEL[c]+'</text>';
     });
@@ -2395,7 +2397,7 @@
       s+='<line class="nw-g" style="--d:'+dp+'s" x1="'+t1[0].toFixed(1)+'" y1="'+t1[1].toFixed(1)+'" x2="'+t2[0].toFixed(1)+'" y2="'+t2[1].toFixed(1)+'" stroke="'+GOLD+'" stroke-width="1" opacity=".6"/>';
       var g=pt(r,p.lon);
       // Planetensymbole mit warmem Schimmer
-      glyphP+='<text class="nw-p" style="--d:'+dp+'s" x="'+g[0].toFixed(1)+'" y="'+(g[1]+5).toFixed(1)+'" text-anchor="middle" font-size="15.5" fill="'+INK+'">'+tp(p.sym)+'</text>';
+      glyphP+='<text class="nw-p" data-k="'+esc(p.name)+'" style="--d:'+dp+'s" x="'+g[0].toFixed(1)+'" y="'+(g[1]+5).toFixed(1)+'" text-anchor="middle" font-size="15.5" fill="'+INK+'">'+tp(p.sym)+'</text>';
     });
     s+='<g filter="url(#'+nS+')">'+glyphP+'</g>';
     return s+'</svg>';
