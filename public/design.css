@@ -1139,3 +1139,98 @@ section.band > .wrap.bridge::before { content: "✦"; position: absolute; top: -
 #mcards .mcard { hyphens: manual; -webkit-hyphens: manual; }
 /* Der mitlaufende Knopf tritt zurück, sobald der Abschluss oder der Fuß zu sehen ist */
 body.ende-sichtbar #floatcta.show { opacity: 0; pointer-events: none; transform: translateX(-50%) translateY(24px); }
+
+/* Planetenkarten: die klassische Planetenfigur als Medaillon, das Symbol als kleines Abzeichen */
+.pcard .pico.mit-figur { position: relative; width: 62px; height: 62px; font-size: 0; overflow: visible;
+  background: radial-gradient(circle at 50% 40%, #2a1f5c, #120c28 72%);
+  transition: width .5s cubic-bezier(.2,.9,.3,1.3), height .5s cubic-bezier(.2,.9,.3,1.3), transform .5s cubic-bezier(.2,.9,.3,1.5), box-shadow .4s ease; }
+.pico-figur { position: absolute; inset: 2px; border-radius: 50%; background: center / 128% no-repeat; }
+.pico-g { position: absolute; right: -5px; bottom: -5px; width: 24px; height: 24px; border-radius: 50%; display: grid; place-items: center;
+  font-family: var(--symbol); font-size: 12px; line-height: 1; color: #2a1f45; background: linear-gradient(135deg, #f3dca6, #c9a560);
+  box-shadow: 0 0 0 2px #160f31, 0 0 12px rgba(226,196,134,.6); }
+.pcard.open .pico.mit-figur { width: 84px; height: 84px; box-shadow: 0 0 0 1px rgba(243,220,166,.9), 0 0 40px -2px rgba(226,196,134,.8); }
+.pcard:hover .pico.mit-figur { transform: scale(1.06); }
+@media (max-width: 560px) { .pcard .pico.mit-figur { width: 54px; height: 54px; } .pcard.open .pico.mit-figur { width: 70px; height: 70px; } }
+.pcard:hover .pico.mit-figur, .pcard.open .pico.mit-figur { transform: none; }
+.pcard:not(.open):hover .pico.mit-figur { transform: scale(1.06); }
+
+/* ============================================================
+   Runde 5: Elemente lesbar, Intuitionstyp als Bühne, Zahlenrad,
+   Deutung vor der Himmelskarte mit goldener Weglinie
+   ============================================================ */
+/* Elemente im Natalchart: Gravur als Medaillon oben, Text frei darunter, der Anteil als Linie */
+#pane-na .el { padding: 22px 12px 18px; }
+#pane-na .el .el-gravur { position: relative; inset: auto; order: 0; width: 92px; height: 92px; flex: none; border-radius: 50%; opacity: 1; z-index: 1;
+  background-color: #140d2c; background-size: 122%; background-position: center; box-shadow: 0 0 0 1px rgba(226,196,134,.45), 0 0 26px -6px rgba(226,196,134,.5);
+  -webkit-mask-image: none; mask-image: none; }
+#pane-na .el.stark .el-gravur { box-shadow: 0 0 0 1px rgba(243,220,166,.9), 0 0 40px -2px rgba(226,196,134,.8); }
+#pane-na .el svg { order: 2; width: 22px; height: 22px; margin-top: 10px; }
+#pane-na .el .el-n { order: 1; margin-top: 12px; font-family: "Bodoni 72", Didot, "Bodoni MT", "Times New Roman", serif; }
+#pane-na .el .el-name { order: 3; }
+#pane-na .el .el-wort { order: 4; }
+#pane-na .el .el-saeule { order: 5; width: 74%; height: 5px; margin: 14px 0 0; border-radius: 3px; }
+#pane-na .el .el-saeule span { top: 0; bottom: 0; left: 0; right: auto; height: 100%; width: calc(var(--h) * 100%); transform-origin: left; animation-name: saeulequer; }
+@keyframes saeulequer { from { transform: scaleX(0); } }
+
+/* Intuitionstyp: große Element-Gravur mit Bewegung, die vier Typen als Karten */
+#pane-in .intu-sketch { overflow: visible; }
+.intu-funken { position: absolute; left: 50%; top: 50%; width: 380px; height: 420px; transform: translate(-50%, -54%); pointer-events: none; z-index: 2; }
+@media (min-width: 1101px) {
+  #pane-in .intu.gespalten .sp-links .intu-sketch svg { width: 300px; height: 300px; }
+  #pane-in .intu.gespalten .sp-links .intu-sketch .el-gravur { width: 300px; }
+  .intu-funken { width: 460px; height: 500px; }
+}
+#pane-in .intu-sketch .el-gravur { box-shadow: 0 0 120px -20px rgba(226,196,134,.55); animation: gravuratmen 6s ease-in-out infinite; }
+@keyframes gravuratmen { 50% { filter: brightness(1.18); } }
+.intu-gallery { gap: 16px; }
+.itype { padding: 22px 16px 20px; background: radial-gradient(90% 60% at 50% 25%, #2a1f5c, #150e2f 72%); border: none;
+  box-shadow: 0 0 0 1px rgba(226,196,134,.3), inset 0 0 0 6px #150e2f, inset 0 0 0 7px rgba(226,196,134,.22); opacity: .78; filter: saturate(.75); }
+.itype:hover { opacity: 1; filter: none; }
+.itype.on { opacity: 1; filter: none; box-shadow: 0 0 0 1px rgba(243,220,166,.8), inset 0 0 0 6px #150e2f, inset 0 0 0 7px rgba(243,220,166,.55), 0 0 60px -14px rgba(226,196,134,.75); }
+.itype-sk { height: 110px; }
+.itype-sk svg { width: 110px; height: 110px; }
+.itype-sk .el-gravur { width: 110px; }
+.itype-name { font-size: 19px; margin-top: 10px; }
+
+/* Numerologie: Zahlenrad, Rechnung leuchtet auf, Neun-Jahres-Zyklus */
+.ns-zahl circle { fill: #160f31; stroke: rgba(226,196,134,.55); stroke-width: .8; }
+.ns-zahl text { font-family: "Bodoni 72", Didot, "Bodoni MT", "Times New Roman", serif; font-size: 10px; text-anchor: middle; fill: #d6cde6; }
+.ns-zahl { animation: glimmauf .6s ease both; animation-delay: calc(1.2s + var(--i) * .1s); }
+.ns-zahl.an circle { fill: #e2c486; stroke: #fff3d2; stroke-width: 1.2; filter: drop-shadow(0 0 5px rgba(243,220,166,.95)); }
+.ns-zahl.an text { fill: #2a1f45; font-weight: 700; }
+.ns-zahl.an { transform-box: fill-box; transform-origin: center; animation: zahlzuenden 1.2s cubic-bezier(.2,.9,.3,1.5) both; animation-delay: 2.2s; }
+@keyframes zahlzuenden { 0% { opacity: 0; transform: scale(.3); } 60% { opacity: 1; transform: scale(1.5); } 100% { opacity: 1; transform: scale(1.18); } }
+.num-calc span { display: inline-block; animation: zifferauf .5s cubic-bezier(.2,.9,.3,1.4) backwards; animation-delay: calc(.5s + var(--i) * .045s); }
+@keyframes zifferauf { from { opacity: 0; transform: translateY(-10px); color: #fff6dc; text-shadow: 0 0 12px rgba(243,220,166,1); } }
+.jahreszyklus { margin: 18px 0 6px; }
+.jz-titel { font-size: 10.5px; letter-spacing: .26em; text-transform: uppercase; font-weight: 700; color: #a69cbf; margin-bottom: 14px; }
+.jz-bahn { position: relative; display: grid; grid-template-columns: repeat(9, 1fr); gap: 4px; }
+.jz-bahn::before { content: ""; position: absolute; left: 5%; right: 5%; top: 17px; height: 1px; background: linear-gradient(90deg, rgba(226,196,134,.2), rgba(226,196,134,.6), rgba(226,196,134,.2)); }
+.jz-punkt { position: relative; display: flex; flex-direction: column; align-items: center; gap: 6px; animation: glimmauf .6s ease both; animation-delay: calc(.4s + var(--i) * .08s); }
+.jz-punkt span { width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center; font-family: "Bodoni 72", Didot, "Times New Roman", serif; font-size: 16px; color: #a69cbf;
+  background: #160f31; box-shadow: 0 0 0 1px rgba(226,196,134,.35); }
+.jz-punkt small { font-size: 10.5px; letter-spacing: .06em; color: #8a80a6; }
+.jz-punkt.war span { color: #e2c486; background: rgba(226,196,134,.12); }
+.jz-punkt.jetzt span { width: 44px; height: 44px; margin-top: -5px; font-size: 21px; color: #2a1f45; background: linear-gradient(135deg, #f3dca6, #c9a560);
+  box-shadow: 0 0 0 4px rgba(226,196,134,.18), 0 0 30px rgba(226,196,134,.8); animation: jetztpuls 2.6s ease-in-out infinite; }
+.jz-punkt.jetzt small { color: #f3dca6; font-weight: 700; }
+@keyframes jetztpuls { 50% { box-shadow: 0 0 0 8px rgba(226,196,134,.1), 0 0 44px rgba(226,196,134,.95); } }
+@media (max-width: 560px) { .jz-punkt span { width: 28px; height: 28px; font-size: 14px; } .jz-punkt.jetzt span { width: 36px; height: 36px; font-size: 18px; } .jz-punkt small { font-size: 9px; } }
+
+/* Deutung: Himmelskarte steht ruhig im Hintergrund und dreht sich ganz langsam */
+#step3 #pane-de { position: relative; isolation: isolate; }
+.de-himmel { position: sticky; top: 0; height: 100vh; margin-bottom: -100vh; z-index: -1; pointer-events: none; overflow: visible; }
+.de-himmel div { position: absolute; left: 50%; top: 50%; width: min(1400px, 150vw); aspect-ratio: 1100 / 1473; transform: translate(-50%, -50%);
+  background: url("/bilder/himmelskarte.webp") center / contain no-repeat; opacity: .2;
+  -webkit-mask-image: radial-gradient(closest-side, #000 55%, transparent); mask-image: radial-gradient(closest-side, #000 55%, transparent);
+  animation: kartedreh 420s linear infinite; }
+@keyframes kartedreh { to { transform: translate(-50%, -50%) rotate(360deg); } }
+#pane-de .acc { background: rgba(22,15,48,.84); backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px); }
+#pane-de .acc[open] { background: rgba(24,16,52,.9); }
+/* goldene Weglinie durch die Kapitelnummern, sie füllt sich beim Lesen */
+#pane-de .story { position: relative; isolation: isolate; }
+#pane-de .story::before, #pane-de .story::after { content: ""; position: absolute; left: 38px; top: 34px; width: 2px; z-index: -1; border-radius: 2px; }
+#pane-de .story::before { bottom: 34px; background: linear-gradient(180deg, rgba(226,196,134,.15), rgba(226,196,134,.4), rgba(226,196,134,.15)); }
+#pane-de .story::after { height: calc((100% - 68px) * var(--weg, 0)); background: linear-gradient(180deg, #c9a560, #fff3d2); box-shadow: 0 0 14px rgba(243,220,166,.9); transition: height .25s linear; }
+#pane-de .acc-nr { position: relative; z-index: 2; }
+@media (prefers-reduced-motion: reduce) { .de-himmel div, .jz-punkt.jetzt span, #pane-in .intu-sketch .el-gravur { animation: none; } }

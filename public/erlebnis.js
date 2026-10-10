@@ -287,19 +287,51 @@
     var nu = $("pane-nu"), big = nu && nu.querySelector(".num-big");
     if (big && !big.parentNode.classList.contains("num-siegel")) {
       var w = document.createElement("div"); w.className = "num-siegel";
-      var st = "", i, a, pts = [];
-      for (i = 0; i < 9; i++) { a = (i * 4 % 9) / 9 * 2 * Math.PI - Math.PI / 2; pts.push(f1(100 + Math.cos(a) * 86) + "," + f1(100 + Math.sin(a) * 86)); }
-      for (i = 0; i < 9; i++) { a = i / 9 * 2 * Math.PI - Math.PI / 2; st += '<circle cx="' + f1(100 + Math.cos(a) * 86) + '" cy="' + f1(100 + Math.sin(a) * 86) + '" r="2.6"/>'; }
-      w.innerHTML = '<svg viewBox="0 0 200 200" aria-hidden="true"><g class="ns-dreh"><circle cx="100" cy="100" r="97" class="ns-punkte"/><circle cx="100" cy="100" r="86" class="ns-ring"/>' +
-        '<polygon points="' + pts.join(" ") + '" class="ns-stern" pathLength="1"/>' + st + '</g><circle cx="100" cy="100" r="52" class="ns-innen"/></svg>';
+      var st = "", i, a, pts = [], lp = +f.numerology.lifepath, eigene = lp > 9 ? ({ 11: 2, 22: 4, 33: 6 }[lp] || 0) : lp;
+      for (i = 0; i < 9; i++) { a = (i * 4 % 9) / 9 * 2 * Math.PI - Math.PI / 2; pts.push(f1(100 + Math.cos(a) * 82) + "," + f1(100 + Math.sin(a) * 82)); }
+      for (i = 0; i < 9; i++) {
+        a = i / 9 * 2 * Math.PI - Math.PI / 2;
+        var x = f1(100 + Math.cos(a) * 82), y = f1(100 + Math.sin(a) * 82);
+        st += '<g class="ns-zahl' + (i + 1 === eigene ? " an" : "") + '" style="--i:' + i + '"><circle cx="' + x + '" cy="' + y + '" r="9.5"/><text x="' + x + '" y="' + (+y + 3.6).toFixed(1) + '">' + (i + 1) + '</text></g>';
+      }
+      w.innerHTML = '<svg viewBox="0 0 200 200" aria-hidden="true"><g class="ns-dreh"><circle cx="100" cy="100" r="98" class="ns-punkte"/></g><circle cx="100" cy="100" r="82" class="ns-ring"/>' +
+        '<polygon points="' + pts.join(" ") + '" class="ns-stern" pathLength="1"/><circle cx="100" cy="100" r="52" class="ns-innen"/>' + st + '</svg>';
       big.parentNode.insertBefore(w, big); w.appendChild(big);
       big.setAttribute("data-zahl", big.textContent.trim());
     }
 
+    var calc = document.querySelector("#pane-nu .num-calc");
+    if (calc && !calc.querySelector("span")) {
+      calc.innerHTML = Array.from(calc.textContent).map(function (ch, i) { return ch === " " ? " " : '<span style="--i:' + i + '">' + esc(ch) + "</span>"; }).join("");
+    }
+    var py = f.numerology && f.numerology.personal_year;
+    if (py && py.number && !document.querySelector("#pane-nu .jahreszyklus")) {
+      var kap = [].filter.call(document.querySelectorAll("#pane-nu .cap2"), function (c) { return /persönliches Jahr/i.test(c.textContent); })[0];
+      var ziel = kap && kap.nextElementSibling;
+      if (ziel) {
+        var html = '<div class="jahreszyklus" aria-label="Dein Neun-Jahres-Zyklus"><div class="jz-titel">Dein Neun-Jahres-Zyklus</div><div class="jz-bahn">';
+        for (var j = 1; j <= 9; j++) {
+          var jahr = py.year + (j - py.number);
+          html += '<div class="jz-punkt' + (j < py.number ? " war" : "") + (j === py.number ? " jetzt" : "") + '" style="--i:' + j + '"><span>' + j + '</span><small>' + jahr + '</small></div>';
+        }
+        ziel.insertAdjacentHTML("afterend", html + '</div></div>');
+      }
+    }
+
     // Planetenkarten kennen ihr Zeichen (für Sternbild und Gravur beim Aufklappen)
+    // und zeigen die klassische Planetenfigur als Medaillon, das Symbol klein als Abzeichen
     if (na) {
       var karten = na.querySelectorAll(".pcard");
-      (f.positions || []).forEach(function (p, k) { var z = H.ZEICHEN.indexOf(p.sign); if (karten[k] && z >= 0) karten[k].setAttribute("data-zeichen", z); });
+      (f.positions || []).forEach(function (p, k) {
+        var c = karten[k]; if (!c) return;
+        var z = H.ZEICHEN.indexOf(p.sign); if (z >= 0) c.setAttribute("data-zeichen", z);
+        var bild = PLANETBILD[p.key], pico = c.querySelector(".pico");
+        if (bild && pico && !pico.querySelector(".pico-figur")) {
+          var g = pico.innerHTML;
+          pico.classList.add("mit-figur");
+          pico.innerHTML = '<span class="pico-figur" style="background-image:url(' + bild + ')"></span><span class="pico-g">' + g + '</span>';
+        }
+      });
     }
 
     // Breite Ansicht: Grafik links (bleibt beim Lesen stehen), Inhalt rechts
@@ -316,6 +348,8 @@
     kapitelbilder();
     // Intuitionstyp und Elemente: die Element-Gravuren
     elementbilder(f);
+    elementfunken(document.querySelector("#pane-in .intu-sketch"), f.intuition && ELBILD[f.intuition.key]);
+    deutungsbuehne();
     // „Hier anfangen“: drei Bildkacheln statt Knöpfen
     [].forEach.call(document.querySelectorAll("#pane-ov .ov-start-b"), function (b) {
       var z = b.getAttribute("data-start") || "", bild = "";
@@ -347,6 +381,9 @@
     neuImReiter(document.querySelector(".rpane.active"));
   }
 
+  var PLANETBILD = { Sonne: "/bilder/planet-sonne.webp", Mond: "/bilder/planet-mond.webp", Merkur: "/bilder/planet-merkur.webp", Venus: "/bilder/planet-venus.webp",
+    Mars: "/bilder/planet-mars.webp", Jupiter: "/bilder/planet-jupiter.webp", Saturn: "/bilder/planet-saturn.webp", Uranus: "/bilder/planet-uranus.webp",
+    Neptun: "/bilder/planet-neptun.webp", Pluto: "/bilder/planet-pluto.webp", Chiron: "/bilder/kapitel-15.webp" };
   var HDBILD = { "Generator": "generator", "Manifestierender Generator": "mg", "Manifestor": "manifestor", "Projektor": "projektor", "Reflektor": "reflektor" };
   var ELBILD = { Feuer: "feuer", Wasser: "wasser", Erde: "erde", Luft: "luft" };
 
@@ -416,6 +453,63 @@
       KAPITEL.some(function (k) { if (titel.indexOf(k[0]) >= 0) { nr = k[1]; return true; } });
       if (nr >= 0) b.insertAdjacentHTML("afterbegin", '<div class="kap-bild" aria-hidden="true" style="background-image:url(/bilder/kapitel-' + nr + '.webp)"></div>');
     });
+  }
+
+  // Bewegung passend zum Element: Funken steigen, Tropfen fallen, Staub sinkt, Wind zieht
+  function elementfunken(box, art) {
+    if (!box || reduce || box.querySelector(".intu-funken")) return;
+    var c = document.createElement("canvas"); c.className = "intu-funken"; c.setAttribute("aria-hidden", "true"); box.appendChild(c);
+    var ctx = c.getContext("2d"), dpr = Math.min(window.devicePixelRatio || 1, 2), W = 0, H = 0, teile = [], raf = 0, an = false, t0 = 0;
+    function neu(start) {
+      var p = { x: Math.random() * W, y: Math.random() * H, a: Math.random(), s: .4 + Math.random() * 1.2, r: .6 + Math.random() * 1.8, w: Math.random() * 6.28 };
+      if (art === "feuer") { p.x = W * (.38 + Math.random() * .24); p.y = start ? Math.random() * H : H * (.62 + Math.random() * .1); p.vy = -(18 + Math.random() * 34); }
+      if (art === "wasser") { p.y = start ? Math.random() * H : -6; p.vy = 26 + Math.random() * 30; p.r = 1 + Math.random() * 1.6; }
+      if (art === "erde") { p.vy = 4 + Math.random() * 7; }
+      if (art === "luft") { p.vx = 30 + Math.random() * 40; p.x = start ? Math.random() * W : -40; p.len = 18 + Math.random() * 40; }
+      return p;
+    }
+    function groesse() { var r = c.getBoundingClientRect(); W = r.width; H = r.height; if (!W) return; c.width = W * dpr; c.height = H * dpr; ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      teile = []; for (var i = 0; i < (art === "luft" ? 14 : 46); i++) teile.push(neu(true)); }
+    function lauf(t) {
+      raf = 0; if (!an || document.hidden || !c.offsetParent) return;
+      var dt = t0 ? Math.min(.05, (t - t0) / 1000) : 0; t0 = t; ctx.clearRect(0, 0, W, H);
+      teile.forEach(function (p, i) {
+        var sek = t / 1000;
+        if (art === "feuer") { p.y += p.vy * dt; p.x += Math.sin(sek * 2 + p.w) * 12 * dt; if (p.y < H * .05) teile[i] = neu(false);
+          var al = Math.max(0, Math.min(1, (p.y / H - .05) * 2.2)) * (.5 + .5 * Math.sin(sek * 9 * p.s + p.w));
+          ctx.fillStyle = "rgba(255," + (190 + Math.round(50 * p.a)) + ",120," + al.toFixed(3) + ")"; ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, 6.283); ctx.fill(); }
+        if (art === "wasser") { p.y += p.vy * dt; if (p.y > H + 6) teile[i] = neu(false);
+          ctx.strokeStyle = "rgba(205,225,255," + (.25 + .45 * p.a).toFixed(3) + ")"; ctx.lineWidth = p.r * .7; ctx.beginPath(); ctx.moveTo(p.x, p.y); ctx.lineTo(p.x, p.y - 6 - p.r * 4); ctx.stroke(); }
+        if (art === "erde") { p.y += p.vy * dt; p.x += Math.sin(sek * .7 + p.w) * 4 * dt; if (p.y > H + 4) { p.y = -4; p.x = Math.random() * W; }
+          ctx.fillStyle = "rgba(236,214,160," + ((.2 + .5 * p.a) * (.6 + .4 * Math.sin(sek * p.s + p.w))).toFixed(3) + ")"; ctx.beginPath(); ctx.arc(p.x, p.y, p.r * .9, 0, 6.283); ctx.fill(); }
+        if (art === "luft") { p.x += p.vx * dt; if (p.x > W + 60) teile[i] = neu(false);
+          var yy = p.y + Math.sin(p.x / 40 + p.w) * 10, g = ctx.createLinearGradient(p.x - p.len, 0, p.x, 0);
+          g.addColorStop(0, "rgba(243,220,166,0)"); g.addColorStop(1, "rgba(243,220,166," + (.25 + .35 * p.a).toFixed(3) + ")");
+          ctx.strokeStyle = g; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(p.x - p.len, yy + 3); ctx.quadraticCurveTo(p.x - p.len / 2, yy - 5, p.x, yy); ctx.stroke(); }
+      });
+      raf = requestAnimationFrame(lauf);
+    }
+    function los() { if (!raf && an) { t0 = 0; raf = requestAnimationFrame(lauf); } }
+    groesse();
+    if (window.ResizeObserver) new ResizeObserver(function () { groesse(); los(); }).observe(c);
+    if ("IntersectionObserver" in window) new IntersectionObserver(function (e) { an = e[0].isIntersecting; los(); }).observe(c); else { an = true; los(); }
+  }
+
+  // Deutung: die alte Himmelskarte steht ruhig hinter den Kapiteln, eine Goldlinie verbindet die Kapitel und füllt sich beim Lesen
+  function deutungsbuehne() {
+    var de = $("pane-de"); if (!de) return;
+    if (!de.querySelector(".de-himmel")) de.insertAdjacentHTML("afterbegin", '<div class="de-himmel" aria-hidden="true"><div></div></div>');
+    var story = de.querySelector(".story"); if (!story || story.__linie) return;
+    story.__linie = true;
+    function fortschritt() {
+      if (!de.classList.contains("active")) return;
+      var r = story.getBoundingClientRect(), mitte = window.innerHeight * .55;
+      story.style.setProperty("--weg", Math.max(0, Math.min(1, (mitte - r.top) / Math.max(1, r.height))).toFixed(4));
+    }
+    window.addEventListener("scroll", fortschritt, { passive: true });
+    window.addEventListener("resize", fortschritt);
+    de.addEventListener("toggle", function () { setTimeout(fortschritt, 60); }, true);
+    fortschritt();
   }
 
   function elementbilder(f) {
