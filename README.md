@@ -162,8 +162,11 @@ Reihe. In den Mails führt der Button zu
 Links zu Feedback und Themenwahl tragen `?t=%FEEDBACK_TOKEN%`.
 
 **Mails.** Die ActiveCampaign-Fassungen liegen in `emails/activecampaign/`,
-jede mit Kopfkommentar zu Betreff, Vorschau und Einsetzen. Text und Look sind
-1:1 aus den MailerLite-Dateien in `emails/`, geändert sind nur die Platzhalter
+jede mit Kopfkommentar zu Betreff, Vorschau und Einsetzen. Seit 10.10.2026
+tragen sie das Sternwarte-Design der Seite (Mitternachtsblau und Gold) mit
+einem eigenen Kopfbild je Mail (`public/email-kopf-*.jpg`, liegt nach dem
+Deploy unter bauplan.intuitionmitherz.de). Der Text ist aus den
+MailerLite-Dateien in `emails/` übernommen, geändert sind nur die Platzhalter
 (`%FIRSTNAME%`, `%BAUPLAN_PDF%`, `%FEEDBACK_TOKEN%`, `%UNSUBSCRIBELINK%`) und
 die Fußzeile mit Anschrift, Impressum, Datenschutz und Abmeldelink. Die
 Anschrift kommt über `%SENDER-INFO-SINGLELINE%` aus Einstellungen → Adressen:
