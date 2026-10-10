@@ -1017,7 +1017,6 @@
       </div>
       <button class="btn" id="go1" type="button">Meinen Himmel lesen ✦</button>
       <div class="err" id="err1"></div>
-      <p class="form-remembered" id="form-remembered" style="display:none">✓ Deine Angaben sind auf diesem Gerät gemerkt. <button type="button" id="form-forget" class="linkbtn">Zurücksetzen</button></p>
       <div class="traits"><span>Kein Persönlichkeitstest</span><span>Exakt berechnet</span><span>Kostenlos starten</span></div>
           <p class="microcopy">Keine Vermutungen, keine Schubladen. Dein persönlicher kosmischer Bauplan, individuell aus deinen Geburtsdaten berechnet.</p>
     </div>
@@ -1734,28 +1733,9 @@
     });
   })();
 
-  /* ── Eingaben lokal merken, damit man nicht alles neu tippen muss ── */
-  var FORM_KEY='imh_form', FORM_IDS=['f-name','f-gender','f-day','f-month','f-year','f-hour','f-min','f-place'];
-  function saveForm(){
-    try{ var d={city:state.city}; FORM_IDS.forEach(function(id){ d[id]=val(id); });
-      localStorage.setItem(FORM_KEY, JSON.stringify(d)); }catch(e){}
-  }
-  function loadForm(){
-    var d; try{ d=JSON.parse(localStorage.getItem(FORM_KEY)||'null'); }catch(e){ d=null; }
-    if(!d) return;
-    var any=false;
-    FORM_IDS.forEach(function(id){ var el=document.getElementById(id); if(el && d[id]){ el.value=d[id]; el.classList.remove('placeheld'); any=true; } });
-    if(d.city) state.city=d.city;
-    var h=document.getElementById('form-remembered'); if(h && any) h.style.display='';
-  }
-  var forgetBtn=document.getElementById('form-forget');
-  if(forgetBtn) forgetBtn.addEventListener('click',function(){
-    try{ localStorage.removeItem(FORM_KEY); }catch(e){}
-    document.getElementById('f-name').value=''; document.getElementById('f-place').value=''; state.city=null;
-    ['f-gender','f-day','f-month','f-year','f-hour','f-min'].forEach(function(id){ var el=document.getElementById(id); if(el){ el.selectedIndex=0; el.classList.add('placeheld'); } });
-    var h=document.getElementById('form-remembered'); if(h) h.style.display='none';
-  });
-  loadForm();
+  /* ── Das Formular startet immer leer. Früher gemerkte Angaben (imh_form) werden beim Besuch gelöscht. ── */
+  var FORM_KEY='imh_form';
+  try{ localStorage.removeItem(FORM_KEY); }catch(e){}
 
   document.getElementById('go1').addEventListener('click',function(){
     var err=document.getElementById('err1'); err.textContent='';
@@ -1774,7 +1754,6 @@
     var time=('0'+hour).slice(-2)+':'+('0'+min).slice(-2);
     var body={name:name,gender:gender,date:date,time:time,place:place};
     if(state.city){ body.lat=state.city.lat; body.lon=state.city.lon; body.tz=state.city.tz; }
-    saveForm();   // Angaben lokal merken
     track('himmel');
     show('step2'); runRitual();
     var t0=Date.now();
