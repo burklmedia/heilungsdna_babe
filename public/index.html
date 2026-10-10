@@ -9,20 +9,20 @@
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
-<meta name="theme-color" content="#1b1530">
+<meta name="theme-color" content="#0a0916">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Intuition mit Herz">
 <meta property="og:title" content="Dein kosmischer Bauplan, Intuition mit Herz">
 <meta property="og:description" content="Entdecke, wer du wirklich bist: Human Design und Natalchart, exakt aus deinem Geburtshimmel berechnet und liebevoll erklärt. Kostenlos.">
 <meta property="og:url" content="https://bauplan.intuitionmitherz.de/">
-<meta property="og:image" content="https://bauplan.intuitionmitherz.de/og-image.jpg">
+<meta property="og:image" content="https://bauplan.intuitionmitherz.de/og-image.jpg?v=20261010">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta property="og:locale" content="de_DE">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Dein kosmischer Bauplan, Intuition mit Herz">
 <meta name="twitter:description" content="Human Design und Natalchart, exakt aus deinem Geburtshimmel. Kostenlos.">
-<meta name="twitter:image" content="https://bauplan.intuitionmitherz.de/og-image.jpg">
+<meta name="twitter:image" content="https://bauplan.intuitionmitherz.de/og-image.jpg?v=20261010">
 <style>
   /* Alle Schriften selbst gehostet, kein externer Server (DSGVO: keine Google Fonts) */
   @font-face { font-family: "Great Vibes"; font-style: normal; font-weight: 400; font-display: swap;
@@ -956,6 +956,7 @@
         <h1 class="hero-title"><span class="s">Dein</span>Kosmischer<br>Bauplan</h1>
         <p class="hero-tag">Entdecke, wer du <em>wirklich</em> bist.<br>Exakt aus deinem Geburtshimmel.</p>
         <p class="hero-systems">Human Design · Natalchart · Intuitionstyp · Numerologie</p>
+        <a class="hero-heute" id="hero-heute" href="#ebenen" data-scroll="ebenen" hidden></a>
       </div>
       <div class="hero-lead">
         <div class="rule left">✦</div>
@@ -1343,7 +1344,6 @@
         <div class="cover-gravur" id="cover-gravur" aria-hidden="true"></div>
         <div class="cover-sternbild" id="cover-sternbild" aria-hidden="true"></div>
         <div class="report-emblem">✦</div>
-        <div class="report-eyebrow">Dein persönlicher Bauplan</div>
         <h2 class="report-title" id="a-title">Dein kosmischer Bauplan</h2>
         <div class="report-name" id="a-name"></div>
         <p class="report-birth" id="a-birth">…</p>
@@ -1678,14 +1678,21 @@
     rcx.globalAlpha=1; rcx.shadowBlur=0; requestAnimationFrame(rrender); }
 
   /* Längerer magischer Moment: mehr Phasen, mehr Zeit */
+  // Die Phasen zeigen, was wirklich gerechnet wird; Phase 2 nennt den eigenen Geburtsmoment
   var STATUS=[
     ['Wir öffnen deinen Himmel','einen Moment noch'],
     ['Wir verankern deinen Geburtsmoment','Ort, Zeit und Datum'],
-    ['Deine Planeten finden ihren Platz','Sonne, Mond und mehr'],
-    ['Dein inneres Design formt sich','alles ordnet sich'],
-    ['Deine innere Klarheit wird sichtbar','wie du Entscheidungen triffst'],
+    ['Sonne, Mond und Planeten finden ihren Platz','auf die Bogenminute genau'],
+    ['Dein Human Design formt sich','64 Tore, 9 Zentren'],
+    ['Deine Lebenszahl ergibt sich','aus deinem Geburtsdatum'],
     ['Dein kosmischer Bauplan entsteht','gleich ist es soweit']
   ];
+  function geburtsZeile(){
+    var MO=['Januar','Februar','März','April','Mai','Juni','Juli','August','September','Oktober','November','Dezember'];
+    var t=val('f-day'), m=+val('f-month'), j=val('f-year'), h=val('f-hour'), mi=val('f-min'), o=(val('f-place')||'').split(',')[0].trim();
+    if(!t||!m||!j) return 'Ort, Zeit und Datum';
+    return [t+'. '+MO[m-1]+' '+j, (h&&mi)?(('0'+h).slice(-2)+':'+('0'+mi).slice(-2)+' Uhr'):'', o].filter(Boolean).join(' · ');
+  }
   // Jede Botschaft bleibt gut lesbar stehen und blendet vollständig aus,
   // bevor die nächste erscheint (kein Überschneiden mehr).
   var HOLD = reduce ? 400 : 1200;   // ← wie lange eine Botschaft ruhig stehen bleibt
@@ -1705,6 +1712,7 @@
     setTimeout(function(){ stage.classList.add('merge'); }, reduce ? 0 : 2300);     // und gleiten zusammen
     setTimeout(function(){ stage.classList.add('eins'); }, reduce ? 0 : 6700);      // Lichtring, Herz, Name
     var step=1,total=reduce?1:STATUS.length;
+    try{ STATUS[1][1]=geburtsZeile(); }catch(e){}
     st.textContent=STATUS[0][0]; sub.textContent=STATUS[0][1];
     (function tick(){ if(step>=total)return;
       setTimeout(function(){ st.style.opacity=0; sub.style.opacity=0; setTimeout(function(){
@@ -1881,7 +1889,7 @@
         pvBody.querySelectorAll('.pv-karte').forEach(function(x){ var an=(x===el); x.classList.toggle('offen',an); x.classList.remove('erst'); x.setAttribute('aria-pressed',an); });
         panel.classList.add('wechsel');
         setTimeout(function(){ panel.innerHTML=pvTeaser(key); panel.classList.remove('wechsel'); }, 220); }
-      pvBody.querySelector('.pv-karten').addEventListener('click',function(e){ pvActivate(e.target.closest('.pv-karte')); });
+      pvBody.querySelector('.pv-karten').addEventListener('click',function(e){ var k=e.target.closest('.pv-karte'); if(k){ track('karte'); pvActivate(k); } });
       document.getElementById('g-preview').style.display='';
     }
     var gn=document.getElementById('g-name'); if(gn && name) gn.value=name;
@@ -1907,6 +1915,8 @@
     var btn=this; btn.disabled=true; btn.textContent='Einen Moment…';
     track('email');
     var payload={name:name,email:email}; var pp=pdfParam(); if(pp) payload.d=pp; if(HERKUNFT) payload.q=HERKUNFT;
+    try{ var ZZ=['Widder','Stier','Zwillinge','Krebs','Löwe','Jungfrau','Waage','Skorpion','Schütze','Steinbock','Wassermann','Fische'];
+      var so=(state.result.full.positions||[]).filter(function(p){return p.key==='Sonne';})[0]; if(so&&ZZ.indexOf(so.sign)>=0) payload.z=ZZ.indexOf(so.sign); }catch(e){}
     fetch(API+'/api/subscribe',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)})
       .then(function(r){ return r.json().catch(function(){ return {}; }); })
       .catch(function(){ return {}; })

@@ -163,11 +163,30 @@ def handle_subscribe(body, intern=False):
         return 502, {"ok": False, "stored": False, "error": error,
                      "message": "Das hat gerade nicht geklappt. Bitte versuche es noch einmal."}
     # Kontakt liegt jetzt als "unbestaetigt" in AC, die Opt-in-Mail ist raus.
-    _herkunft_setzen(email, "intern" if intern else body.get("q"), zaehlen=not intern)
+    _herkunft_setzen(email, "intern" if intern else body.get("q"), zaehlen=not intern, extra=_zeichen_feld(body.get("z")))
     return 200, {"ok": True, "stored": True}
 
 
-def _herkunft_setzen(email, q, zaehlen=True):
+# Sonnenzeichen fuer Kopfbilder je Zeichen in den Mails (vorbereitet am 10.10.2026).
+# Aktiv erst, wenn in ActiveCampaign ein Textfeld "Sonnenzeichen" angelegt ist und seine
+# Feld-ID in der Vercel-Variable AC_FELD_SONNENZEICHEN steht. In der Mail dann:
+# https://bauplan.intuitionmitherz.de/email-zeichen-%SONNENZEICHEN%.jpg
+ZEICHEN_SLUG = ["widder", "stier", "zwillinge", "krebs", "loewe", "jungfrau",
+                "waage", "skorpion", "schuetze", "steinbock", "wassermann", "fische"]
+
+
+def _zeichen_feld(z):
+    fid = (os.environ.get("AC_FELD_SONNENZEICHEN") or "").strip()
+    if not fid.isdigit():
+        return {}
+    try:
+        z = int(z)
+    except (TypeError, ValueError):
+        return {}
+    return {fid: ZEICHEN_SLUG[z]} if 0 <= z < 12 else {}
+
+
+def _herkunft_setzen(email, q, zaehlen=True, extra=None):
     """Herkunft (seit 28.09.2026): Kanal aus ?q= in das AC-Feld 8 schreiben und die Anmeldung zaehlen.
     Ohne Kanal gilt "direkt". Das Formular kennt das Feld nicht, deshalb ueber die REST-API; den Kontakt
     legt proc.php eben erst an, darum ein zweiter Versuch. Scheitert es, bleibt die Anmeldung gueltig."""
@@ -180,7 +199,9 @@ def _herkunft_setzen(email, q, zaehlen=True):
     for warten in (0, 1.5):
         if warten:
             time.sleep(warten)
-        ok, grund = set_fields(email, {FIELD_HERKUNFT: k})
+        werte = {FIELD_HERKUNFT: k}
+        werte.update(extra or {})
+        ok, grund = set_fields(email, werte)
         if ok or grund != "kein_kontakt":
             return
 

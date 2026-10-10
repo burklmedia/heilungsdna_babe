@@ -223,8 +223,10 @@
   function ersterSatz(s) { var m = String(s || "").match(/^[^.!?]*[.!?]/); return m ? m[0].trim() : satz(s); }
 
   /* ════════ 3. Vorschau nach dem Moment: Kuppel öffnet sich, Geburtshimmel, Siegel mit Rückseite ════════ */
+  var letzteVorschau = null;
   function vorschau(d) {
     var f = d && d.full; if (!f) return;
+    letzteVorschau = d;
     kuppelFilm();
     var box = $("greet-sternbild");
     var so = (f.positions || []).filter(function (p) { return p.key === "Sonne"; })[0], i = so ? H.ZEICHEN.indexOf(so.sign) : -1;
@@ -244,11 +246,12 @@
       // Mit Maus dreht sich ein Siegel beim Darüberfahren um. Auf dem Handy dreht der erste Tipp,
       // der zweite führt zur passenden Karte in der Vorschau.
       var touch = window.matchMedia && window.matchMedia("(hover: none)").matches;
+      reihe.onmouseover = function (e) { if (e.target.closest(".siegel.mit-rueck")) zaehl("siegeldreh"); };
       reihe.onclick = function (e) {
         var b = e.target.closest(".siegel"); if (!b) return;
         if (touch && b.classList.contains("mit-rueck") && !b.classList.contains("umgedreht")) {
           [].forEach.call(reihe.querySelectorAll(".umgedreht"), function (x) { x.classList.remove("umgedreht"); });
-          b.classList.add("umgedreht"); clearTimeout(b._zurueck);
+          b.classList.add("umgedreht"); clearTimeout(b._zurueck); zaehl("siegeldreh");
           b._zurueck = setTimeout(function () { b.classList.remove("umgedreht"); }, 6000);
           return;
         }
@@ -375,7 +378,7 @@
     function zeig(el) {
       if (!el) { tipp.classList.remove("an"); return; }
       var r = el.getBoundingClientRect(), rb = b.getBoundingClientRect();
-      tipp.textContent = el.getAttribute("data-tip");
+      tipp.textContent = el.getAttribute("data-tip"); zaehl("himmelpunkt");
       tipp.style.left = (r.left + r.width / 2 - rb.left) + "px"; tipp.style.top = (r.top - rb.top - 8) + "px";
       tipp.classList.add("an");
     }
@@ -389,9 +392,214 @@
     himmelUhr = setTimeout(function () { if (himmel && himmel.buehne.clientWidth && himmel.buehne.clientWidth !== himmel.breite) himmelZeichnen(false); }, 200);
   });
 
+  /* ── Am Ende des Berichts: das echte PDF-Deckblatt als Vorschau, schräg gestellt, mit Knopf ── */
+  function pdfKarte(d, idx) {
+    var f = d.full, note = $("note"), alt = document.querySelector(".pdf-karte");
+    if (alt) alt.remove();
+    if (!note || !$("pdfbtn")) return;
+    var by = {}; (f.positions || []).forEach(function (p) { by[p.key] = p; });
+    var ringe = ["Sonne", "Mond", "AC"].map(function (k) { return by[k] && by[k].signSymbol ? tp(by[k].signSymbol) : ""; });
+    ringe.push(f.hd ? esc(f.hd.profile || "") : ""); ringe.push(f.numerology ? esc(String(f.numerology.lifepath)) : "");
+    var name = (d.birth && d.birth.name) || "", b = d.birth || {}, m = String(b.date || "").match(/^(\d{4})-(\d{2})-(\d{2})/);
+    var geburt = m ? [m[3] + "." + m[2] + "." + m[1], b.time && b.time !== "unbekannt" ? b.time + " Uhr" : "", String(b.place || "").split(",")[0]].filter(Boolean).join(" · ") : "";
+    var html = '<section class="pdf-karte"><div class="pk-buehne" aria-hidden="true"><div class="pk-deck" style="background-image:url(/bilder/deckblatt-' + (idx >= 0 ? idx : "neutral") + '-480.webp)">' +
+      '<div class="pk-titel">Dein kosmischer Bauplan</div>' + (name ? '<div class="pk-name">' + esc(name) + '</div>' : '') + (geburt ? '<div class="pk-geburt">' + esc(geburt) + '</div>' : '') +
+      '<div class="pk-ringe">' + ringe.filter(Boolean).map(function (g) { return "<i>" + g + "</i>"; }).join("") + '</div>' +
+      '<div class="pk-marke">Intuition mit Herz</div></div></div>' +
+      '<div class="pk-text"><div class="script-eyebrow">Dein Bauplan zum Aufheben</div>' +
+      '<p>Alle Kapitel in einer PDF, rund 40 Seiten mit deinem Deckblatt. Zum Ausdrucken, Wiederlesen und Weitergeben an dich selbst in ein paar Monaten.</p>' +
+      '<div class="pk-knoepfe"><button class="btn pk-pdf" type="button" style="width:auto">Als PDF speichern ↓</button>' +
+      '<button class="btn btn-ghost pk-story" type="button" style="width:auto">Als Story teilen ✦</button></div>' +
+      '<p class="pk-hinweis">Das Story-Bild zeigt deinen Namen, deine Zeichen und deinen Typ. Geburtsdatum, Zeit und Ort bleiben bei dir.</p></div></section>';
+    note.insertAdjacentHTML("beforebegin", html);
+    var karte = document.querySelector(".pdf-karte");
+    karte.querySelector(".pk-pdf").addEventListener("click", function () { zaehl("deckblatt"); $("pdfbtn").click(); });
+    karte.querySelector(".pk-buehne").addEventListener("click", function () { zaehl("deckblatt"); $("pdfbtn").click(); });
+    karte.querySelector(".pk-story").addEventListener("click", function () { storyTeilen(d, this); });
+    if (reduce) karte.classList.add("an"); else sichtbar(karte, function () { karte.classList.add("an"); }, { threshold: .3 });
+  }
+
+  /* ── Anonyme Zähler wie auf der Startseite: je Sitzung einmal, keine Cookies, keine Namen ── */
+  function zaehl(ev) {
+    try {
+      if (sessionStorage.getItem("imh_ev_" + ev)) return;
+      sessionStorage.setItem("imh_ev_" + ev, "1");
+      var b = JSON.stringify({ e: ev });
+      if (navigator.sendBeacon) navigator.sendBeacon("/api/track", b); else fetch("/api/track", { method: "POST", body: b, keepalive: true });
+    } catch (e) {}
+  }
+  // Schlüssel je Bauplan auf diesem Gerät: nur eine Prüfzahl, keine Geburtsdaten im Klartext
+  function bauplanSchluessel(d) {
+    var b = d.birth || {}, s = [b.date, b.time, b.place, b.name].join("|"), h = 5381;
+    for (var i = 0; i < s.length; i++) h = ((h << 5) + h + s.charCodeAt(i)) | 0;
+    return (h >>> 0).toString(36);
+  }
+  function mondHeute() {
+    var jetzt = new Date(), T = H._T(jetzt), ph = H.mondphase(jetzt);
+    return { zeichen: H.zeichen(H._mond(T)), phase: ph.name.charAt(0).toUpperCase() + ph.name.slice(1) };
+  }
+
+  /* ── Bericht: Willkommen zurück und der Himmel von heute, bezogen auf den eigenen Bauplan ── */
+  function heuteImBericht(d) {
+    var f = d.full, kopf = document.querySelector("#step3 .report-head"), gruss = $("a-greeting");
+    if (!kopf || !gruss) return;
+    var schl = bauplanSchluessel(d), besuche = 0;
+    try { besuche = +(localStorage.getItem("imh_besuch_" + schl) || 0); localStorage.setItem("imh_besuch_" + schl, String(besuche + 1)); } catch (e) {}
+    var name = (d.birth && d.birth.name) || "";
+    if (besuche >= 1) {
+      gruss.textContent = (name ? "Schön, dass du wieder da bist, " + name + ". " : "Schön, dass du wieder da bist. ") + "Lies einfach dort weiter, wo es dich gerade hinzieht.";
+      zaehl("zurueck");
+    }
+    var by = {}; (f.positions || []).forEach(function (p) { by[p.key] = p; });
+    var m = mondHeute(), zus = "";
+    function zi(k) { return by[k] ? H.ZEICHEN.indexOf(by[k].sign) : -1; }
+    if (m.zeichen === zi("Sonne")) zus = " Der Mond steht heute in deinem Sonnenzeichen.";
+    else if (m.zeichen === zi("Mond")) zus = " Der Mond steht heute im selben Zeichen wie in deiner Geburtsstunde.";
+    else if (m.zeichen === zi("AC")) zus = " Der Mond steht heute in deinem Aszendenten.";
+    var alt = kopf.querySelector(".report-heute"); if (alt) alt.remove();
+    gruss.insertAdjacentHTML("afterend", '<p class="report-heute"><span class="hh-mond">' + tp("☽") + '</span>Der Himmel heute: <b>' + esc(m.phase) + " " + esc(H.IM[m.zeichen]) + "</b>." + esc(zus) + "</p>");
+  }
+
+  /* ── Bericht: Lesezeichen „Hier anfangen“ an den drei Stellen aus Mail 2, Lesefortschritt der Kapitel ── */
+  var ANFANG = ["Entscheidungsweg", "Schwierigkeiten"];
+  function lesezeichen(d) {
+    var tab = document.querySelector('.rtab[data-rtab="in"]'); if (tab) tab.classList.add("anfang");
+    var kapitel = [].slice.call(document.querySelectorAll("#pane-de details.acc"));
+    var schl = "imh_gelesen_" + bauplanSchluessel(d), gelesen = {};
+    try { (JSON.parse(localStorage.getItem(schl) || "[]")).forEach(function (t) { gelesen[t] = 1; }); } catch (e) {}
+    function titel(acc) { var t = acc.querySelector(".acc-t"); return t ? ((t.firstChild && t.firstChild.textContent) || t.textContent).trim() : ""; }
+    kapitel.forEach(function (acc) {
+      var t = titel(acc), s = acc.querySelector("summary");
+      if (s && !s.querySelector(".lesezeichen") && ANFANG.some(function (a) { return t.indexOf(a) >= 0; })) {
+        acc.classList.add("anfang");
+        var x = s.querySelector(".acc-x"), lz = '<span class="lesezeichen">Hier anfangen</span>';
+        if (x) x.insertAdjacentHTML("beforebegin", lz); else s.insertAdjacentHTML("beforeend", lz);
+      }
+      if (gelesen[t]) acc.classList.add("gelesen");
+    });
+    var pane = $("pane-de"); if (!pane || !kapitel.length) return;
+    var alt = pane.querySelector(".lesefortschritt"); if (alt) alt.remove();
+    pane.insertAdjacentHTML("afterbegin", '<div class="lesefortschritt"><div class="lf-text"></div><div class="lf-balken"><span></span></div></div>');
+    var box = pane.querySelector(".lesefortschritt");
+    function zeigen() {
+      var n = kapitel.filter(function (a) { return a.classList.contains("gelesen"); }).length;
+      box.querySelector(".lf-text").textContent = n === 0 ? "Du hast " + kapitel.length + " Kapitel vor dir. Fang an, wo es dich hinzieht."
+        : n >= kapitel.length ? "Alle " + kapitel.length + " Kapitel gelesen. Schön, dass du dir die Zeit genommen hast."
+        : n + " von " + kapitel.length + " Kapiteln gelesen";
+      box.querySelector(".lf-balken span").style.width = (100 * n / kapitel.length).toFixed(1) + "%";
+    }
+    kapitel.forEach(function (acc) {
+      acc.addEventListener("toggle", function () {
+        if (!acc.open || acc.classList.contains("gelesen")) return;
+        acc.classList.add("gelesen"); gelesen[titel(acc)] = 1;
+        try { localStorage.setItem(schl, JSON.stringify(Object.keys(gelesen))); } catch (e) {}
+        zeigen();
+      });
+    });
+    zeigen();
+  }
+
+  /* ── Story-Bild zum Teilen (1080 × 1920): Gravur, Name, Siegel, @intuitionmitherz. Keine Geburtsdaten im Bild. ── */
+  function bildLaden(src) { return new Promise(function (ok) { var i = new Image(); i.onload = function () { ok(i); }; i.onerror = function () { ok(null); }; i.src = src; }); }
+  function storyBild(d) {
+    var f = d.full, by = {}; (f.positions || []).forEach(function (p) { by[p.key] = p; });
+    var so = by.Sonne, idx = so ? H.ZEICHEN.indexOf(so.sign) : -1, name = (d.birth && d.birth.name) || "";
+    var schriften = document.fonts && document.fonts.load ? Promise.all([
+      document.fonts.load('200px "Great Vibes"'), document.fonts.load('500 48px "Cormorant Garamond"'), document.fonts.load('600 30px "Mulish"')
+    ]).catch(function () {}) : Promise.resolve();
+    return Promise.all([bildLaden("/bilder/kuppel-hoch.webp"), idx >= 0 ? bildLaden("/bilder/zeichen-" + idx + "-1600.webp") : null, bildLaden("/bilder/wachssiegel-440.webp"), schriften]).then(function (r) {
+      var W = 1080, Hh = 1920, c = document.createElement("canvas"); c.width = W; c.height = Hh;
+      var g = c.getContext("2d");
+      g.fillStyle = "#0a0916"; g.fillRect(0, 0, W, Hh);
+      if (r[0]) { var s = Math.max(W / r[0].width, 1300 / r[0].height); g.globalAlpha = .62; g.drawImage(r[0], (W - r[0].width * s) / 2, -60, r[0].width * s, r[0].height * s); g.globalAlpha = 1; }
+      var v = g.createLinearGradient(0, 0, 0, Hh); v.addColorStop(0, "rgba(10,9,22,.25)"); v.addColorStop(.42, "rgba(10,9,22,.55)"); v.addColorStop(.62, "#0a0916"); v.addColorStop(1, "#0a0916");
+      g.fillStyle = v; g.fillRect(0, 0, W, Hh);
+      if (r[1]) { var zw = 980, zh = r[1].height * zw / r[1].width; g.globalAlpha = .62; g.globalCompositeOperation = "screen"; g.drawImage(r[1], (W - zw) / 2, 330, zw, zh); g.globalAlpha = 1; g.globalCompositeOperation = "source-over"; }
+      g.textAlign = "center"; g.textBaseline = "alphabetic";
+      g.fillStyle = "#f6f1e8"; g.font = '500 46px "Cormorant Garamond", Georgia, serif';
+      if ("letterSpacing" in g) g.letterSpacing = "10px";
+      g.fillText("MEIN KOSMISCHER BAUPLAN", W / 2, 300);
+      if ("letterSpacing" in g) g.letterSpacing = "0px";
+      if (name) { g.font = '200px "Great Vibes", cursive'; g.fillStyle = "#e2c486"; g.shadowColor = "rgba(226,196,134,.55)"; g.shadowBlur = 40; g.fillText(name, W / 2, 520, W - 120); g.shadowBlur = 0; }
+      // fünf Siegel
+      var sg = [];
+      ["Sonne", "Mond", "AC"].forEach(function (k, i) { var p = by[k]; if (p) sg.push({ g: tp(p.signSymbol), l: ["Sonne", "Mond", "Aszendent"][i], v: p.sign, sym: true }); });
+      if (f.hd) sg.push({ g: f.hd.profile || "", l: "Human Design", v: f.hd.type_display || f.hd.type || "" });
+      if (f.numerology) sg.push({ g: String(f.numerology.lifepath), l: "Lebenszahl", v: f.numerology.title || "" });
+      var y = 1200, schritt = W / (sg.length + 1);
+      sg.forEach(function (x, i) {
+        var cx = schritt * (i + 1);
+        g.beginPath(); g.arc(cx, y, 74, 0, Math.PI * 2); g.fillStyle = "rgba(16,15,36,.82)"; g.fill();
+        g.lineWidth = 2; g.strokeStyle = "#e2c486"; g.shadowColor = "rgba(226,196,134,.7)"; g.shadowBlur = 24; g.stroke(); g.shadowBlur = 0;
+        g.beginPath(); g.arc(cx, y, 64, 0, Math.PI * 2); g.setLineDash([2, 7]); g.lineWidth = 1.5; g.stroke(); g.setLineDash([]);
+        g.fillStyle = "#f3dca6"; g.font = x.sym ? '64px "Apple Symbols", "Segoe UI Symbol", "Noto Sans Symbols 2", serif' : '500 54px "Cormorant Garamond", Georgia, serif';
+        g.fillText(x.g, cx, y + (x.sym ? 22 : 18));
+        g.fillStyle = "#e2c486"; g.font = '600 16px "Mulish", sans-serif'; if ("letterSpacing" in g) g.letterSpacing = "2px";
+        g.fillText(x.l.toUpperCase(), cx, y + 122, schritt - 10); if ("letterSpacing" in g) g.letterSpacing = "0px";
+        // Werte: bei Bedarf auf zwei Zeilen
+        g.fillStyle = "#f6f1e8"; g.font = '500 30px "Cormorant Garamond", Georgia, serif';
+        var breit = schritt - 14, worte = String(x.v).split(" "), z1 = String(x.v), z2 = "";
+        if (g.measureText(z1).width > breit && worte.length > 1) {
+          z1 = worte[0]; var k = 1;
+          while (k < worte.length && g.measureText(z1 + " " + worte[k]).width <= breit) { z1 += " " + worte[k]; k++; }
+          z2 = worte.slice(k).join(" ");
+        }
+        g.fillText(z1, cx, y + 162, breit); if (z2) g.fillText(z2, cx, y + 196, breit);
+      });
+      if (r[2]) g.drawImage(r[2], W / 2 - 80, 1480, 160, 160);
+      g.fillStyle = "#f6f1e8"; g.font = 'italic 500 44px "Cormorant Garamond", Georgia, serif'; g.fillText("Hol dir deinen eigenen Bauplan", W / 2, 1730);
+      g.fillStyle = "#e2c486"; g.font = '600 30px "Mulish", sans-serif'; if ("letterSpacing" in g) g.letterSpacing = "3px";
+      g.fillText("@INTUITIONMITHERZ", W / 2, 1790); if ("letterSpacing" in g) g.letterSpacing = "0px";
+      return new Promise(function (ok) { c.toBlob(function (b) { ok(b); }, "image/png"); });
+    });
+  }
+  function storyTeilen(d, knopf) {
+    var alt = knopf.textContent; knopf.disabled = true; knopf.textContent = "Einen Moment…";
+    storyBild(d).then(function (blob) {
+      knopf.disabled = false; knopf.textContent = alt;
+      if (!blob) return;
+      zaehl("story");
+      var datei = null; try { datei = new File([blob], "mein-kosmischer-bauplan.png", { type: "image/png" }); } catch (e) {}
+      if (datei && navigator.canShare && navigator.canShare({ files: [datei] })) {
+        navigator.share({ files: [datei], title: "Mein Kosmischer Bauplan", text: "Mein Kosmischer Bauplan von @intuitionmitherz" }).catch(function () {});
+        return;
+      }
+      var a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = "mein-kosmischer-bauplan.png";
+      document.body.appendChild(a); a.click(); setTimeout(function () { URL.revokeObjectURL(a.href); a.remove(); }, 1500);
+    }).catch(function () { knopf.disabled = false; knopf.textContent = alt; });
+  }
+
+  /* ── Bericht: wie es weitergeht (Instagram, Frage an Denise; die Liebesanalyse erscheint erst, wenn sie live ist) ── */
+  var LIEBE_LIVE = false;
+  function weiter() {
+    var note = $("note"); if (!note || document.querySelector(".weiter")) return;
+    var karten = [
+      '<a class="wk" href="https://www.instagram.com/intuitionmitherz/" target="_blank" rel="noopener" data-ev="folgen"><span class="wk-titel">Folge mir auf Instagram</span><span class="wk-text">Impulse rund um Intuition, Grenzen und das, was in deinem Bauplan steckt.</span><span class="wk-mehr">@intuitionmitherz ✦</span></a>',
+      '<a class="wk" href="https://ig.me/m/intuitionmitherz" target="_blank" rel="noopener" data-ev="frage"><span class="wk-titel">Frag mich direkt</span><span class="wk-text">Schreib mir, welche Stelle in deinem Bauplan dich gerade am meisten beschäftigt.</span><span class="wk-mehr">Nachricht schreiben ✦</span></a>'
+    ];
+    if (LIEBE_LIVE) karten.push('<a class="wk" href="https://liebe.intuitionmitherz.de/?q=bauplan-bericht" data-ev="liebe"><span class="wk-titel">Wenn dein Himmel auf einen anderen trifft</span><span class="wk-text">Die Kosmische Liebesanalyse für dich und einen Menschen, der dir nah ist.</span><span class="wk-mehr">Ansehen ✦</span></a>');
+    note.insertAdjacentHTML("beforebegin", '<section class="weiter"><div class="script-eyebrow">Wie geht es für dich weiter?</div><div class="wk-reihe">' + karten.join("") + '</div></section>');
+    document.querySelector(".weiter").addEventListener("click", function (e) { var a = e.target.closest("[data-ev]"); if (a) zaehl(a.getAttribute("data-ev")); });
+  }
+
+  /* ── Startseite: der Himmel von heute in einer Zeile (Mondphase und Zeichen des Mondes) ── */
+  (function himmelHeute() {
+    var el = $("hero-heute"); if (!el || !H._mond) return;
+    var jetzt = new Date(), T = H._T(jetzt), z = H.zeichen(H._mond(T)), ph = H.mondphase(jetzt);
+    var name = ph.name.charAt(0).toUpperCase() + ph.name.slice(1);
+    el.innerHTML = '<span class="hh-mond">' + tp("☽") + '</span>Der Himmel heute: <b>' + esc(name) + ' ' + esc(H.IM[z]) + '</b>';
+    el.hidden = false;
+  })();
+
   /* ── Nach dem Absenden: das Wachssiegel bricht, Licht fällt heraus, eine Sternschnuppe fliegt
      vom Knopf in den Himmel. Gibt zurück, wie lange das Bestätigungsfenster warten soll. ── */
   function gesendet(knopf) {
+    // Für die Bestätigungsseite: nur das Sonnenzeichen als Zahl 0 bis 11, kein Name, keine Geburtsdaten
+    try {
+      var so = letzteVorschau && (letzteVorschau.full.positions || []).filter(function (p) { return p.key === "Sonne"; })[0];
+      var zi = so ? H.ZEICHEN.indexOf(so.sign) : -1;
+      if (zi >= 0) localStorage.setItem("imh_zeichen", String(zi));
+    } catch (e) {}
     var lock = document.querySelector("#g-preview .preview-seal .lock");
     if (lock) {
       lock.classList.add("gebrochen");
@@ -446,6 +654,11 @@
       if (idx >= 0) { gravur.style.backgroundImage = "url(/bilder/zeichen-" + idx + "-1600.webp)"; setTimeout(function () { gravur.classList.add("an"); }, 200); }
       else gravur.style.backgroundImage = "none";
     }
+
+    // Das Wachssiegel aus der Vorschau, jetzt als Stempel auf dem fertigen Bauplan
+    var kopf = document.querySelector("#step3 .report-head");
+    if (kopf && !kopf.querySelector(".cover-wachs")) kopf.insertAdjacentHTML("beforeend", '<div class="cover-wachs" aria-hidden="true"></div>');
+    pdfKarte(d, idx);
 
     // Siegel: Sonne, Mond, Aszendent, Human Design, Lebenszahl. Ein Klick öffnet den Reiter.
     var reihe = $("siegel-reihe");
@@ -536,6 +749,9 @@
     legung(d);
     // Deutung: jedes Kapitel bekommt seine Gravur, die beim Aufklappen erscheint
     kapitelbilder();
+    lesezeichen(d);
+    heuteImBericht(d);
+    weiter();
     // Intuitionstyp und Elemente: die Element-Gravuren
     elementbilder(f);
     elementfunken(document.querySelector("#pane-in .intu-sketch"), f.intuition && ELBILD[f.intuition.key]);

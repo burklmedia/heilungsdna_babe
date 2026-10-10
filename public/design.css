@@ -1435,3 +1435,84 @@ header.hero.mit-film #lichtfeld { opacity: .45; }
   .pv-karte, .lock.wachs, .geburtshimmel .gh-halo { animation: none; }
 }
 
+
+/* ============================================================
+   Runde 8: Himmel heute im Hero, Wachssiegel als Stempel auf dem Bericht,
+   PDF-Deckblatt als Vorschau am Ende des Berichts
+   ============================================================ */
+.hero-heute { display: inline-flex; align-items: center; gap: 10px; margin-top: 18px; font-family: var(--serif); font-style: italic; font-size: 17px; line-height: 1.3;
+  color: #d6cde6; text-decoration: none; border-bottom: 1px solid rgba(226,196,134,.25); padding-bottom: 3px; transition: color .3s, border-color .3s;
+  animation: einblend 1.2s ease 1.2s backwards; }
+.hero-heute[hidden] { display: none; }
+.hero-heute b { font-weight: 500; color: #f3dca6; }
+.hero-heute:hover { color: #f6f1e8; border-color: rgba(243,220,166,.7); }
+.hh-mond { font-family: var(--symbol); font-style: normal; font-size: 18px; color: #f3dca6; text-shadow: 0 0 14px rgba(226,196,134,.8); }
+
+#step3 .report-head > .cover-wachs { position: absolute; z-index: 2; top: 120px; right: max(5vw, calc(50% - 520px)); width: 112px; height: 112px;
+  background: url("/bilder/wachssiegel-220.webp") center / contain no-repeat;
+  background-image: image-set(url("/bilder/wachssiegel-220.webp") 1x, url("/bilder/wachssiegel-440.webp") 2x);
+  transform: rotate(-12deg); filter: drop-shadow(0 12px 16px rgba(0,0,0,.65)) drop-shadow(0 0 18px rgba(226,196,134,.25));
+  animation: stempel .9s cubic-bezier(.3,1.4,.5,1) 2.2s backwards; pointer-events: none; }
+@keyframes stempel { from { opacity: 0; transform: rotate(-12deg) scale(1.9); } 60% { opacity: 1; } }
+@media (max-width: 760px) { #step3 .report-head > .cover-wachs { top: 12px; right: 12px; width: 58px; height: 58px; } }
+
+.pdf-karte { display: grid; grid-template-columns: minmax(0, 300px) minmax(0, 1fr); gap: 56px; align-items: center; max-width: 920px !important;
+  margin: 70px auto 10px !important; padding: 44px 48px !important; border-radius: 8px;
+  background: radial-gradient(80% 90% at 20% 30%, #22214a, #0f0e22 75%);
+  box-shadow: 0 0 0 1px rgba(226,196,134,.3), inset 0 0 0 7px #0f0e22, inset 0 0 0 8px rgba(226,196,134,.16), 0 40px 80px -40px rgba(0,0,0,.9); }
+.pk-buehne { perspective: 1100px; cursor: pointer; }
+.pk-deck { position: relative; aspect-ratio: 210 / 297; border-radius: 4px; overflow: hidden; container-type: inline-size; text-align: center;
+  background: #0b0a1a center / cover no-repeat; transform: rotateY(-18deg) rotateX(6deg) rotate(-3deg) translateY(30px); opacity: 0;
+  transition: transform 1.2s cubic-bezier(.2,.8,.2,1), opacity 1s ease;
+  box-shadow: 0 0 0 1px rgba(226,196,134,.35), 26px 44px 60px -24px rgba(0,0,0,.95), 0 0 80px -20px rgba(226,196,134,.45); }
+.pdf-karte.an .pk-deck { opacity: 1; transform: rotateY(-18deg) rotateX(6deg) rotate(-3deg); }
+.pdf-karte.an .pk-buehne:hover .pk-deck { transform: rotateY(-6deg) rotateX(2deg) rotate(-1deg) translateY(-4px); }
+.pk-deck::after { content: ""; position: absolute; inset: 0; pointer-events: none;
+  background: linear-gradient(115deg, transparent 30%, rgba(255,248,230,.16) 45%, transparent 60%); background-size: 250% 100%; animation: pkglanz 6s ease-in-out 1.5s infinite; }
+@keyframes pkglanz { 0%, 55% { background-position: 120% 0; } 85%, 100% { background-position: -20% 0; } }
+.pk-titel { position: absolute; left: 0; right: 0; top: 9.4%; font-family: var(--serif); font-size: 3.6cqw; letter-spacing: .11em; white-space: nowrap; text-transform: uppercase; color: #f6f1e8; text-shadow: 0 1px 8px rgba(0,0,0,.7); }
+.pk-name { position: absolute; left: 0; right: 0; top: 14.2%; font-family: var(--script); font-size: 10.5cqw; line-height: 1; color: #e2c486; text-shadow: 0 0 18px rgba(226,196,134,.45); }
+.pk-geburt { position: absolute; left: 0; right: 0; top: 24.6%; font-size: 1.7cqw; letter-spacing: .12em; color: #d6cde6; }
+.pk-ringe { position: absolute; left: 12.6%; right: 12.6%; top: 29.6%; display: flex; justify-content: space-between; }
+.pk-ringe i { width: 10cqw; height: 10cqw; border-radius: 50%; display: grid; place-items: center; font-style: normal; font-family: var(--symbol), var(--serif);
+  font-size: 4.4cqw; color: #f3dca6; background: rgba(14,13,32,.5); box-shadow: 0 0 0 1px rgba(226,196,134,.75), inset 0 0 8px rgba(226,196,134,.25); }
+.pk-marke { position: absolute; left: 0; right: 0; bottom: 5.8%; font-family: var(--script); font-size: 5.4cqw; color: #e2c486; }
+.pk-text .script-eyebrow { font-size: clamp(34px, 3.6vw, 46px); line-height: 1.1; }
+.pk-text p { margin: 12px 0 24px; color: #d6cde6; font-size: 16px; line-height: 1.7; max-width: 44ch; }
+@media (max-width: 760px) {
+  .pdf-karte { grid-template-columns: none; gap: 30px; padding: 34px 22px !important; text-align: center; margin-top: 50px !important; }
+  .pk-buehne { width: min(220px, 62vw); margin: 0 auto; }
+  .pk-text p { margin-left: auto; margin-right: auto; }
+}
+@media (prefers-reduced-motion: reduce) { .pk-deck { transition: none; } .pk-deck::after { display: none; } #step3 .report-head > .cover-wachs, .hero-heute { animation: none; } }
+
+/* Runde 8b: Bericht mit Himmel heute, Lesezeichen, Lesefortschritt, Story-Bild, wie es weitergeht */
+.report-heute { position: relative; z-index: 1; margin: 12px auto 0; max-width: 52ch; font-family: var(--serif); font-style: italic; font-size: 16.5px; line-height: 1.5; color: #d6cde6; }
+.report-heute b { font-weight: 500; color: #f3dca6; }
+.report-heute .hh-mond { margin-right: 8px; }
+.rtab.anfang { position: relative; }
+.rtab.anfang::after { content: ""; position: absolute; top: 4px; right: -9px; width: 7px; height: 7px; border-radius: 50%; background: #f3dca6; box-shadow: 0 0 10px rgba(226,196,134,.9); }
+.lesezeichen { flex: none; align-self: center; margin: 0 12px; padding: 6px 10px 6px 12px; font-family: var(--serif); font-style: italic; font-size: 14px; line-height: 1; color: #1d1733;
+  background: linear-gradient(135deg, #ecd29d, #c9a560); clip-path: polygon(0 0, 100% 0, 92% 50%, 100% 100%, 0 100%); box-shadow: 0 6px 16px -8px rgba(226,196,134,.8); }
+details.acc.anfang { box-shadow: 0 0 0 1px rgba(226,196,134,.45), 0 0 40px -18px rgba(226,196,134,.7); }
+details.acc.gelesen .acc-t::after { content: " ✦"; color: #e2c486; font-size: .7em; vertical-align: middle; }
+.lesefortschritt { max-width: 760px; margin: 0 auto 26px; text-align: center; }
+.lf-text { font-family: var(--serif); font-style: italic; font-size: 17px; color: #d6cde6; margin-bottom: 10px; }
+.lf-balken { height: 3px; border-radius: 3px; background: rgba(226,196,134,.15); overflow: hidden; }
+.lf-balken span { display: block; height: 100%; width: 0; background: linear-gradient(90deg, #c9a560, #fff3d2); box-shadow: 0 0 12px rgba(226,196,134,.8); transition: width .8s cubic-bezier(.2,.7,.2,1); }
+.pk-knoepfe { display: flex; flex-wrap: wrap; gap: 12px; }
+.pk-hinweis { margin: 14px 0 0 !important; font-size: 12.5px !important; line-height: 1.55 !important; color: #a69cbf !important; max-width: 46ch; }
+.weiter { max-width: 920px !important; margin: 50px auto 10px !important; text-align: center; padding: 0 !important; }
+.weiter .script-eyebrow { font-size: clamp(32px, 3.4vw, 44px); line-height: 1.1; margin-bottom: 22px; }
+.wk-reihe { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 18px; }
+.wk { display: flex; flex-direction: column; gap: 8px; padding: 24px 24px 22px; border-radius: 8px; text-decoration: none; text-align: left;
+  background: radial-gradient(90% 90% at 20% 20%, #201f44, #0f0e22 78%); box-shadow: 0 0 0 1px rgba(226,196,134,.3), 0 30px 60px -36px rgba(0,0,0,.9);
+  transition: transform .4s cubic-bezier(.2,.9,.3,1.4), box-shadow .4s ease; }
+.wk:hover { transform: translateY(-4px); box-shadow: 0 0 0 1px rgba(243,220,166,.8), 0 0 50px -14px rgba(226,196,134,.6), 0 30px 60px -36px rgba(0,0,0,.9); }
+.wk-titel { font-family: var(--serif); font-size: 23px; line-height: 1.2; color: #f6f1e8; }
+.wk-text { font-size: 15px; line-height: 1.6; color: #c4bad8; }
+.wk-mehr { margin-top: 4px; font-size: 11px; font-weight: 700; letter-spacing: .2em; text-transform: uppercase; color: #e2c486; }
+@media (max-width: 760px) {
+  .lesezeichen { margin: 0 8px; font-size: 12.5px; padding: 5px 8px 5px 10px; }
+  .pk-knoepfe { justify-content: center; } .pk-hinweis { margin-left: auto !important; margin-right: auto !important; }
+}

@@ -11,6 +11,10 @@ Erlaubte Ereignisse:
   teaser   Vorschau erreicht (nicht auf Seite 1 abgesprungen)
   email    E-Mail eingetragen (Lead)
   bauplan  kompletter Bauplan gesehen (Seite 3)
+  karte, siegeldreh, himmelpunkt   Vorschau: Karte aufgedeckt, Siegel umgedreht, Planet angetippt
+  deckblatt, story, folgen, frage  Bericht: PDF über die Deckblatt-Karte, Story-Bild, Instagram, Frage an Denise
+  zurueck                          Bericht ein weiteres Mal geöffnet (auf demselben Gerät)
+  bestaetigt, kontakt              Bestätigungsseite geöffnet, Kontaktkarte geladen
 """
 from http.server import BaseHTTPRequestHandler
 from urllib.parse import urlparse, parse_qs
@@ -29,7 +33,10 @@ except Exception:  # noqa
     def incr(keys):
         return
 
-ALLOWED = {"visit", "himmel", "teaser", "email", "bauplan", "scroll", "pdf"}
+ALLOWED = {"visit", "himmel", "teaser", "email", "bauplan", "scroll", "pdf",
+           # seit 10.10.2026 (Runde 8): Erlebnis-Elemente, je Sitzung höchstens einmal
+           "karte", "siegeldreh", "himmelpunkt", "deckblatt", "story", "kontakt",
+           "bestaetigt", "folgen", "frage", "zurueck"}
 
 
 def _count(event):

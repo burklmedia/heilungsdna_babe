@@ -35,6 +35,16 @@ STEPS = [
 EXTRA = [
     ("scroll", "Startseite gelesen (>60%)"),
     ("pdf", "Bauplan als PDF geöffnet (Aufrufe)"),
+    ("bestaetigt", "Bestätigungsseite geöffnet"),
+    ("kontakt", "Denise als Kontakt gespeichert"),
+    ("karte", "Vorschau: Karte aufgedeckt"),
+    ("siegeldreh", "Vorschau: Siegel umgedreht"),
+    ("himmelpunkt", "Vorschau: Planet im Geburtshimmel angetippt"),
+    ("zurueck", "Bericht erneut geöffnet"),
+    ("deckblatt", "PDF über die Deckblatt-Karte geöffnet"),
+    ("story", "Story-Bild geteilt oder gespeichert"),
+    ("folgen", "Instagram-Link am Berichtsende"),
+    ("frage", "Frage an Denise geklickt"),
 ]
 
 PAGE_CSS = """
