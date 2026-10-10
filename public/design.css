@@ -592,11 +592,12 @@ section.band > .wrap.bridge::before { content: "✦"; position: absolute; top: -
 /* Vorschau etwas tiefer. Um den Kasten läuft ein Lichtband (Violett, Gold, Weiß): einmal scharf als Kante,
    einmal weich gezeichnet als Schein. Beides liegt hinter dem Kasten, der Rahmen hält den Stapel zusammen. */
 #beispiel .mockup-rahmen { position: relative; isolation: isolate; margin-top: 46px; border-radius: 8px; }
-#beispiel .mockup-rahmen::before, #beispiel .mockup-rahmen::after { content: ""; position: absolute; z-index: 0; pointer-events: none; border-radius: 10px;
-  background: conic-gradient(from var(--kranz), rgba(226,196,134,.32) 0deg, rgba(226,196,134,.32) 140deg, #8f72d4 205deg, #e2c486 255deg, #fff6dc 282deg, #f3dca6 300deg, #c9a560 325deg, rgba(226,196,134,.32) 360deg);
+#beispiel .mockup-rahmen::before, #beispiel .mockup-rahmen::after { content: ""; position: absolute; z-index: 0; pointer-events: none; border-radius: 11px;
+  background: conic-gradient(from var(--kranz), rgba(156,118,51,.55) 0deg, #8f72d4 40deg, #fff3d2 72deg, #c9a560 95deg, rgba(156,118,51,.55) 130deg,
+    rgba(156,118,51,.55) 180deg, #b9924c 220deg, #fff6dc 252deg, #8f72d4 280deg, rgba(156,118,51,.55) 315deg, rgba(156,118,51,.55) 360deg);
   animation: kranz 6s linear infinite; }
-#beispiel .mockup-rahmen::before { inset: -2px; }
-#beispiel .mockup-rahmen::after { inset: -8px; filter: blur(20px); opacity: .9; }
+#beispiel .mockup-rahmen::before { inset: -3px; }
+#beispiel .mockup-rahmen::after { inset: -14px; filter: blur(22px); opacity: 1; }
 #beispiel .mockup { position: relative; z-index: 1; border: none; border-radius: 8px; padding: 30px 30px 26px;
   background: linear-gradient(180deg, #2f2463, #221a4b);
   box-shadow: 0 0 110px -20px rgba(226,196,134,.5), 0 50px 90px -40px rgba(30,20,60,.85); }
@@ -642,10 +643,10 @@ section.band > .wrap.bridge::before { content: "✦"; position: absolute; top: -
 .report-head::before { animation: ritualraum 14s ease-out both; }
 .report-head > *:not(.cover-sternbild):not(.cover-gravur) { position: relative; z-index: 1; }
 .cover-gravur { position: absolute; z-index: 0; left: 50%; top: 50%; width: min(100%, 1200px); height: min(78vh, 720px); transform: translate(-50%, -52%) scale(1.06);
-  background: center / contain no-repeat; mix-blend-mode: screen; opacity: 0; pointer-events: none;
+  background: center / contain no-repeat; opacity: 0; pointer-events: none;
   -webkit-mask-image: radial-gradient(closest-side, #000 50%, transparent); mask-image: radial-gradient(closest-side, #000 50%, transparent);
   transition: opacity 2.6s ease, transform 9s cubic-bezier(.2,.7,.2,1); }
-.cover-gravur.an { opacity: .42; transform: translate(-50%, -52%) scale(1); }
+.cover-gravur.an { opacity: .3; transform: translate(-50%, -52%) scale(1); }
 .cover-sternbild { position: absolute; z-index: 0; left: 50%; top: 30px; width: min(96%, 900px); height: 470px; transform: translateX(-50%); pointer-events: none; opacity: .7; }
 .cover-sternbild .sb-l { opacity: .38; }
 .cover-sternbild .sb-h { fill: rgba(243,220,166,.09); }
@@ -975,7 +976,7 @@ section.band > .wrap.bridge::before { content: "✦"; position: absolute; top: -
 .pcard .pin > :not(.pc-himmel) { position: relative; z-index: 1; }
 /* Gravur und Sternbild des Zeichens im geöffneten Planetenkärtchen */
 .pc-himmel { position: absolute; z-index: 0 !important; right: 0; top: -54px; bottom: 0; width: min(46%, 320px); pointer-events: none; animation: none !important; }
-.pc-gravur { position: absolute; inset: 0; background: center / contain no-repeat; mix-blend-mode: screen; opacity: 0;
+.pc-gravur { position: absolute; inset: 0; background: center / contain no-repeat; opacity: 0;
   -webkit-mask-image: radial-gradient(closest-side, #000 55%, transparent); mask-image: radial-gradient(closest-side, #000 55%, transparent);
   transition: opacity 1.4s ease .2s; }
 .pcard.open .pc-gravur { opacity: .32; }
@@ -1038,3 +1039,103 @@ section.band > .wrap.bridge::before { content: "✦"; position: absolute; top: -
   -webkit-mask-image: linear-gradient(180deg, transparent, #000 25%, #000 80%, transparent); mask-image: linear-gradient(180deg, transparent, #000 25%, #000 80%, transparent); }
 @media (max-width: 900px) { .final-bild { background-image: url("/bilder/kuppel-hoch.webp"); } }
 @media (prefers-reduced-motion: reduce) { .tierkreisband span, .wasserrad .wr-dreh { animation: none; } }
+
+/* ============================================================
+   Übersicht: „Dein Bauplan auf einen Blick“ als Kartenlegung.
+   Sechs Karten liegen verdeckt und drehen sich nacheinander um.
+   ============================================================ */
+#step3 #pane-ov { max-width: 1160px !important; }
+#pane-ov > .factrow { display: none; }
+.legung { margin: 4px 0 56px; }
+.legung-kopf { text-align: center; margin-bottom: 30px; }
+.legung-kopf .script-eyebrow { font-size: clamp(34px, 4vw, 48px); line-height: 1.1; }
+.legung-sub { margin: 10px auto 0; max-width: 46ch; color: #c4bad8; font-size: 15px; line-height: 1.6; }
+.legung-reihe { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 30px 28px; perspective: 1600px; }
+.tkarte { appearance: none; border: 0; padding: 0; margin: 0; background: none; font: inherit; color: inherit; cursor: pointer; text-align: center;
+  position: relative; aspect-ratio: 3 / 4.25; transform-style: preserve-3d;
+  transform: translateY(var(--hoch, 0)) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)); transition: transform .5s cubic-bezier(.2,.7,.2,1); }
+.tkarte:hover { --hoch: -10px; }
+.tk-dreh { position: absolute; inset: 0; transform-style: preserve-3d; transform: rotateY(180deg);
+  transition: transform 1.3s cubic-bezier(.3,1.25,.45,1) calc(.2s + var(--i) * .24s); }
+.legung.an .tk-dreh { transform: none; }
+.tk-seite { position: absolute; inset: 0; border-radius: 12px; overflow: hidden; -webkit-backface-visibility: hidden; backface-visibility: hidden; }
+.tk-rueck { transform: rotateY(180deg); background: #120c26 url("/bilder/kartenrueckseite.webp") center / cover no-repeat;
+  box-shadow: 0 0 0 1px rgba(226,196,134,.55), inset 0 0 0 7px #120c26, inset 0 0 0 8px rgba(226,196,134,.45), 0 30px 60px -30px rgba(0,0,0,.9); }
+.tk-vorn { display: flex; flex-direction: column; align-items: center; justify-content: flex-end; padding: 22px 20px 22px;
+  background: radial-gradient(90% 60% at 50% 30%, #2c2160, #160f31 70%);
+  box-shadow: 0 0 0 1px rgba(226,196,134,.6), inset 0 0 0 7px #160f31, inset 0 0 0 8px rgba(226,196,134,.4), 0 34px 70px -30px rgba(0,0,0,.95), 0 0 70px -24px rgba(226,196,134,.45);
+  transition: box-shadow .5s ease; }
+.tk-vorn::after { content: ""; position: absolute; inset: 0; pointer-events: none; opacity: 0; transition: opacity .4s ease;
+  background: radial-gradient(420px circle at var(--mx, 50%) var(--my, 30%), rgba(255,244,214,.16), transparent 45%); }
+.tkarte:hover .tk-vorn { box-shadow: 0 0 0 1px rgba(243,220,166,.95), inset 0 0 0 7px #160f31, inset 0 0 0 8px rgba(243,220,166,.7), 0 40px 80px -30px rgba(0,0,0,.95), 0 0 90px -16px rgba(226,196,134,.75); }
+.tkarte:hover .tk-vorn::after { opacity: 1; }
+.tk-bild { position: absolute; left: 0; right: 0; top: 4%; height: 56%; background: center / contain no-repeat; opacity: .96; filter: drop-shadow(0 0 14px rgba(226,196,134,.25));
+  -webkit-mask-image: radial-gradient(closest-side, #000 62%, transparent); mask-image: radial-gradient(closest-side, #000 62%, transparent);
+  transition: transform .8s cubic-bezier(.2,.7,.2,1); }
+.tkarte:hover .tk-bild { transform: scale(1.06); }
+.tk-zahlsiegel { position: absolute; left: 50%; top: 9%; width: 46%; aspect-ratio: 1; transform: translateX(-50%); border-radius: 50%; display: grid; place-items: center;
+  background: radial-gradient(circle, rgba(226,196,134,.16), rgba(16,11,33,.2) 70%); box-shadow: 0 0 0 1px rgba(226,196,134,.7), 0 0 0 9px rgba(226,196,134,.07), 0 0 0 10px rgba(226,196,134,.35), 0 0 60px -6px rgba(226,196,134,.55); }
+.tk-zahlsiegel::before { content: ""; position: absolute; inset: -18%; border-radius: 50%; border: 1px dashed rgba(226,196,134,.45); animation: drehen 40s linear infinite; }
+.tk-zahlsiegel span { font-family: "Bodoni 72", Didot, "Bodoni MT", "Times New Roman", serif; font-size: clamp(56px, 6vw, 84px); line-height: 1; color: #f3dca6; text-shadow: 0 0 30px rgba(226,196,134,.75); }
+.tk-titel { position: relative; font-size: 10px; letter-spacing: .3em; text-transform: uppercase; font-weight: 700; color: #e2c486; }
+.tk-wert { position: relative; margin-top: 6px; font-family: var(--serif); font-size: clamp(22px, 2.2vw, 30px); line-height: 1.12; color: #f6f1e8; }
+.tk-wert.schrift { font-family: var(--script); font-size: clamp(30px, 3vw, 42px); color: #f3dca6; }
+.tk-g { font-style: normal; font-family: var(--symbol); color: #e2c486; font-size: .85em; }
+.tk-zeile { position: relative; margin-top: 6px; font-size: 10.5px; letter-spacing: .18em; text-transform: uppercase; color: #a69cbf; }
+.tk-text { position: relative; margin-top: 10px; font-family: var(--serif); font-style: italic; font-size: 16px; line-height: 1.4; color: #d6cde6; max-width: 22ch; }
+.tk-mehr { position: relative; margin-top: 14px; font-size: 10px; letter-spacing: .26em; text-transform: uppercase; font-weight: 700; color: #e2c486; opacity: .75; transition: opacity .3s, letter-spacing .4s; }
+.tkarte:hover .tk-mehr { opacity: 1; letter-spacing: .32em; }
+.legung.an .tkarte .tk-vorn { animation: kartenlicht 1.6s ease backwards; animation-delay: calc(.9s + var(--i) * .24s); }
+@keyframes kartenlicht { 0% { box-shadow: 0 0 0 1px rgba(255,246,222,1), inset 0 0 0 7px #160f31, inset 0 0 0 8px rgba(255,246,222,.9), 0 0 120px 10px rgba(243,220,166,.75); } }
+@media (max-width: 900px) {
+  .legung-reihe { grid-template-columns: none; grid-auto-flow: column; grid-auto-columns: min(74vw, 300px); overflow-x: auto; scroll-snap-type: x mandatory;
+    padding: 6px 18px 18px; margin: 0 -16px; scrollbar-width: none; }
+  .legung-reihe::-webkit-scrollbar { display: none; }
+  .tkarte { scroll-snap-align: center; }
+}
+@media (prefers-reduced-motion: reduce) { .tk-dreh { transition: none; } .tk-zahlsiegel::before, .legung.an .tkarte .tk-vorn { animation: none; } }
+
+/* Übersicht: das Vorwort als Brief mit großer Initiale */
+#pane-ov .ov-intro { text-align: left; max-width: 64ch; font-size: 19px; line-height: 1.75; }
+#pane-ov .ov-intro::first-letter { float: left; font-family: var(--script); font-style: normal; font-size: 4.2em; line-height: .78; color: #f3dca6; margin: 8px 12px 0 0; text-shadow: 0 0 24px rgba(226,196,134,.5); }
+
+/* Deutung: Kapitelbild erscheint beim Aufklappen aus dem Licht */
+.kap-bild { height: clamp(150px, 21vw, 250px); margin: -2px -18px 14px; background: center / cover no-repeat; opacity: 0;
+  -webkit-mask-image: radial-gradient(62% 80% at 50% 50%, #000 45%, transparent 100%); mask-image: radial-gradient(62% 80% at 50% 50%, #000 45%, transparent 100%); }
+.acc[open] .acc-b > .kap-bild { animation: kapauf 1.8s cubic-bezier(.2,.7,.2,1) forwards; }
+@keyframes kapauf { 0% { opacity: 0; transform: scale(1.18); filter: brightness(2.4) blur(8px); } 35% { opacity: 1; } 100% { opacity: 1; transform: none; filter: none; } }
+@media (prefers-reduced-motion: reduce) { .acc[open] .acc-b > .kap-bild { animation: none; opacity: 1; } }
+
+/* Element-Gravuren: Intuitionstyp, die vier Typen, die Elemente im Natalchart */
+.intu-sketch, .itype-sk { position: relative; }
+.el-gravur { position: absolute; inset: 0; z-index: 1; border-radius: 50%; background: center / 118% no-repeat; pointer-events: none;
+  -webkit-mask-image: radial-gradient(closest-side, #000 70%, transparent); mask-image: radial-gradient(closest-side, #000 70%, transparent); }
+.intu > .intu-sketch .el-gravur, .intu .sp-links .intu-sketch .el-gravur { left: 50%; width: 176px; transform: translateX(-50%); }
+.intu-sketch:has(.el-gravur) svg path, .intu-sketch:has(.el-gravur) svg circle, .itype-sk:has(.el-gravur) svg > * { opacity: 0; }
+.itype-sk .el-gravur { left: 50%; width: 66px; transform: translateX(-50%); }
+@media (min-width: 1101px) { #pane-in .intu.gespalten .sp-links .intu-sketch .el-gravur { width: 240px; } }
+.el .el-gravur { inset: auto 0 0 0; height: 70%; border-radius: 0; opacity: .22; background-size: contain; background-position: 50% 80%;
+  -webkit-mask-image: linear-gradient(0deg, #000 30%, transparent); mask-image: linear-gradient(0deg, #000 30%, transparent); z-index: 0; }
+.el > :not(.el-gravur) { position: relative; z-index: 1; }
+.el.stark .el-gravur { opacity: .38; }
+
+/* „Hier anfangen“ als drei Bildkacheln */
+#pane-ov .ov-start { max-width: 1000px; padding: 26px 26px 24px; border-radius: 8px; border: none; text-align: center;
+  background: rgba(16,11,33,.5); box-shadow: 0 0 0 1px rgba(226,196,134,.22), 0 0 80px -30px rgba(226,196,134,.4); }
+#pane-ov .ov-start-h { font-size: 1.6rem; font-weight: 500; color: #f3dca6; }
+#pane-ov .ov-start-p { color: #c4bad8; }
+#pane-ov .ov-start-btns { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; margin-top: 18px; }
+.ov-start-b.mit-bild { position: relative; overflow: hidden; display: flex; flex-direction: column; justify-content: flex-end; align-items: center; min-height: 190px; padding: 16px 14px;
+  border-radius: 6px; background: radial-gradient(80% 70% at 50% 35%, #2b2060, #140d2c 75%); box-shadow: 0 0 0 1px rgba(226,196,134,.4);
+  font-family: var(--serif); font-size: 19px; letter-spacing: 0; color: #f6f1e8; text-transform: none;
+  transition: transform .45s cubic-bezier(.2,.9,.3,1.4), box-shadow .45s ease; }
+.ov-start-b.mit-bild .os-bild { position: absolute; inset: 6% 8% 30%; background: center / contain no-repeat; transition: transform .7s cubic-bezier(.2,.7,.2,1); }
+.ov-start-b.mit-bild:hover { transform: translateY(-6px); box-shadow: 0 0 0 1px rgba(243,220,166,.9), 0 0 50px -8px rgba(226,196,134,.7); background: radial-gradient(80% 70% at 50% 35%, #33276f, #160f31 75%); }
+.ov-start-b.mit-bild:hover .os-bild { transform: scale(1.08); }
+@media (max-width: 760px) { #pane-ov .ov-start-btns { grid-template-columns: 1fr; } .ov-start-b.mit-bild { min-height: 150px; } }
+
+/* Kacheln: eine einzelne letzte Kachel geht über beide Spalten, damit kein Wort getrennt wird */
+#mcards .mcard:last-child:nth-child(odd) { grid-column: 1 / -1; }
+#mcards .mcard { hyphens: manual; -webkit-hyphens: manual; }
+/* Der mitlaufende Knopf tritt zurück, sobald der Abschluss oder der Fuß zu sehen ist */
+body.ende-sichtbar #floatcta.show { opacity: 0; pointer-events: none; transform: translateX(-50%) translateY(24px); }

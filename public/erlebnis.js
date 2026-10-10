@@ -179,6 +179,18 @@
     w.innerHTML = s + '</g></svg>';
   });
 
+  /* Mitlaufender Knopf: am Seitenende ausblenden (Abschluss und Fuß haben eigene Knöpfe) */
+  (function () {
+    var enden = [].slice.call(document.querySelectorAll("#step1 .final-band, #step1 footer"));
+    if (!enden.length || !("IntersectionObserver" in window)) return;
+    var an = new Set();
+    var io = new IntersectionObserver(function (e) {
+      e.forEach(function (x) { if (x.isIntersecting) an.add(x.target); else an.delete(x.target); });
+      document.body.classList.toggle("ende-sichtbar", an.size > 0);
+    });
+    enden.forEach(function (el) { io.observe(el); });
+  })();
+
   /* ════════ 2. Beispiel: Karten fallen nacheinander herein ════════ */
   (function beispiel() {
     var box = $("mcards");
@@ -298,6 +310,21 @@
       return el.classList.contains("intu-eyebrow") || el.classList.contains("num-siegel") || el.classList.contains("intu-tag") || !!el.querySelector(".num-calc");
     });
 
+    // Übersicht: sechs Karten, die sich beim Hinscrollen umdrehen
+    legung(d);
+    // Deutung: jedes Kapitel bekommt seine Gravur, die beim Aufklappen erscheint
+    kapitelbilder();
+    // Intuitionstyp und Elemente: die Element-Gravuren
+    elementbilder(f);
+    // „Hier anfangen“: drei Bildkacheln statt Knöpfen
+    [].forEach.call(document.querySelectorAll("#pane-ov .ov-start-b"), function (b) {
+      var z = b.getAttribute("data-start") || "", bild = "";
+      if (z === "in" && f.intuition && ELBILD[f.intuition.key]) bild = "/bilder/element-" + ELBILD[f.intuition.key] + ".webp";
+      else if (/Entscheidungsweg/.test(z)) bild = "/bilder/kapitel-5.webp";
+      else if (/Schwierigkeiten/.test(z)) bild = "/bilder/kapitel-7.webp";
+      if (bild && !b.querySelector(".os-bild")) { b.classList.add("mit-bild"); b.insertAdjacentHTML("afterbegin", '<span class="os-bild" style="background-image:url(' + bild + ')"></span>'); }
+    });
+
     // Schlusswort mit Unterschrift
     var schluss = document.querySelector("#pane-de .closing");
     if (schluss && !schluss.querySelector(".unterschrift")) schluss.insertAdjacentHTML("beforeend", '<span class="unterschrift">Von Herzen, Denise</span>');
@@ -318,6 +345,91 @@
 
     // Kurz nach dem Erscheinen: Sternbild zeichnen, Zahl zählen, Inhalte einblenden
     neuImReiter(document.querySelector(".rpane.active"));
+  }
+
+  var HDBILD = { "Generator": "generator", "Manifestierender Generator": "mg", "Manifestor": "manifestor", "Projektor": "projektor", "Reflektor": "reflektor" };
+  var ELBILD = { Feuer: "feuer", Wasser: "wasser", Erde: "erde", Luft: "luft" };
+
+  function legung(d) {
+    var f = d.full, t = d.teaser || {}, pane = $("pane-ov");
+    if (!pane) return;
+    var alt = pane.querySelector(".legung"); if (alt) alt.remove();
+    var by = {}; (f.positions || []).forEach(function (p) { by[p.key] = p; });
+    var k = [];
+    function astro(key, titel) {
+      var p = by[key]; if (!p) return;
+      var z = H.ZEICHEN.indexOf(p.sign);
+      k.push({ tab: "na", karte: p.label || key, titel: titel, wert: '<i class="tk-g">' + tp(p.signSymbol) + "</i> " + esc(p.sign),
+        zeile: esc(p.deg) + (p.house ? " · Haus " + p.house : ""), text: p.meaning, bild: z >= 0 ? "/bilder/zeichen-" + z + "-800.webp" : "" });
+    }
+    astro("Sonne", "Deine Sonne"); astro("Mond", "Dein Mond"); astro("AC", "Dein Aszendent");
+    if (f.hd) k.push({ tab: "hd", titel: "Dein Human-Design-Typ", wert: esc(f.hd.type_display || f.hd.type), zeile: "Profil " + esc(f.hd.profile),
+      text: t.strategy ? "Strategie: " + t.strategy : f.hd.authority, bild: HDBILD[f.hd.type] ? "/bilder/hd-" + HDBILD[f.hd.type] + ".webp" : "" });
+    if (f.numerology) k.push({ tab: "nu", titel: "Deine Lebenszahl", zahl: f.numerology.lifepath, wert: esc(f.numerology.title), text: f.numerology.tagline });
+    if (f.intuition) k.push({ tab: "in", titel: "Dein Intuitionstyp", wert: esc(f.intuition.archetype), schrift: true, zeile: esc(f.intuition.tagline),
+      text: "Mond in " + f.intuition.moon_sign, bild: ELBILD[f.intuition.key] ? "/bilder/element-" + ELBILD[f.intuition.key] + ".webp" : "" });
+    var html = '<section class="legung"><div class="legung-kopf"><div class="script-eyebrow">Dein Bauplan auf einen Blick</div>' +
+      '<p class="legung-sub">Gelegt aus dem Moment deiner Geburt. Tippe eine Karte an und sie führt dich in die Tiefe.</p></div><div class="legung-reihe">' +
+      k.map(function (x, i) {
+        var bild = x.zahl ? '<span class="tk-zahlsiegel"><span>' + esc(String(x.zahl)) + '</span></span>' : (x.bild ? '<span class="tk-bild" style="background-image:url(' + x.bild + ')"></span>' : '');
+        return '<button type="button" class="tkarte" data-tab="' + x.tab + '"' + (x.karte ? ' data-karte="' + esc(x.karte) + '"' : '') + ' style="--i:' + i + '">' +
+          '<span class="tk-dreh"><span class="tk-seite tk-rueck" aria-hidden="true"></span><span class="tk-seite tk-vorn">' + bild +
+          '<span class="tk-titel">' + esc(x.titel) + '</span><span class="tk-wert' + (x.schrift ? " schrift" : "") + '">' + x.wert + '</span>' +
+          (x.zeile ? '<span class="tk-zeile">' + x.zeile + '</span>' : '') + (x.text ? '<span class="tk-text">' + esc(x.text) + '</span>' : '') +
+          '<span class="tk-mehr">Mehr lesen ✦</span></span></span></button>';
+      }).join("") + '</div></section>';
+    pane.insertAdjacentHTML("afterbegin", html);
+    var leg = pane.querySelector(".legung");
+    if (reduce) leg.classList.add("an"); else sichtbar(leg, function () { leg.classList.add("an"); }, { threshold: .25 });
+    leg.addEventListener("click", function (e) {
+      var b = e.target.closest(".tkarte"); if (!b) return;
+      var tab = document.querySelector('.rtab[data-rtab="' + b.getAttribute("data-tab") + '"]'); if (tab) tab.click();
+      var name = b.getAttribute("data-karte");
+      if (name) setTimeout(function () {
+        [].some.call(document.querySelectorAll("#pane-na .pcard"), function (c) {
+          var pk = c.querySelector(".pk"); if (pk && pk.textContent.trim() === name) { if (!c.classList.contains("open")) c.querySelector(".ph").click(); return true; }
+        });
+      }, 380);
+    });
+    // Karten neigen sich zur Maus
+    if (!reduce && window.matchMedia && window.matchMedia("(hover: hover) and (pointer: fine)").matches) {
+      leg.addEventListener("mousemove", function (e) {
+        var b = e.target.closest(".tkarte"); if (!b) return;
+        var r = b.getBoundingClientRect(), x = (e.clientX - r.left) / r.width, y = (e.clientY - r.top) / r.height;
+        b.style.setProperty("--rx", ((.5 - y) * 12).toFixed(1) + "deg"); b.style.setProperty("--ry", ((x - .5) * 14).toFixed(1) + "deg");
+        b.style.setProperty("--mx", (x * 100).toFixed(0) + "%"); b.style.setProperty("--my", (y * 100).toFixed(0) + "%");
+      });
+      leg.addEventListener("mouseout", function (e) {
+        var b = e.target.closest(".tkarte"); if (b && !b.contains(e.relatedTarget)) { b.style.setProperty("--rx", "0deg"); b.style.setProperty("--ry", "0deg"); }
+      });
+    }
+  }
+
+  var KAPITEL = [["innerster Kern", 0], ["Human-Design-Typ", 1], ["innere Autorität", 2], ["Profil", 3], ["Zentren", 4], ["Entscheidungsweg", 5],
+    ["Stärken", 6], ["Schwierigkeiten", 7], ["Elemente", 8], ["Lebensschwerpunkt", 9], ["inneren Gespräche", 10], ["Intuitionstyp", 11],
+    ["Higher Self", 12], ["Lower Self", 13], ["Lebensaufgabe", 14], ["Chiron", 15], ["Tools", 16]];
+  function kapitelbilder() {
+    [].forEach.call(document.querySelectorAll("#pane-de details.acc"), function (acc) {
+      var t = acc.querySelector(".acc-t"), b = acc.querySelector(".acc-b");
+      if (!t || !b || b.querySelector(".kap-bild")) return;
+      var titel = (t.firstChild && t.firstChild.textContent) || t.textContent, nr = -1;
+      KAPITEL.some(function (k) { if (titel.indexOf(k[0]) >= 0) { nr = k[1]; return true; } });
+      if (nr >= 0) b.insertAdjacentHTML("afterbegin", '<div class="kap-bild" aria-hidden="true" style="background-image:url(/bilder/kapitel-' + nr + '.webp)"></div>');
+    });
+  }
+
+  function elementbilder(f) {
+    var it = f.intuition;
+    var sk = document.querySelector("#pane-in .intu-sketch");
+    if (sk && it && ELBILD[it.key] && !sk.querySelector(".el-gravur")) sk.insertAdjacentHTML("afterbegin", '<span class="el-gravur" style="background-image:url(/bilder/element-' + ELBILD[it.key] + '.webp)"></span>');
+    [].forEach.call(document.querySelectorAll("#pane-in .itype"), function (x, i) {
+      var a = it && it.all && it.all[i], skx = x.querySelector(".itype-sk");
+      if (a && skx && ELBILD[a.key] && !skx.querySelector(".el-gravur")) skx.insertAdjacentHTML("afterbegin", '<span class="el-gravur" style="background-image:url(/bilder/element-' + ELBILD[a.key] + '.webp)"></span>');
+    });
+    [].forEach.call(document.querySelectorAll("#pane-na .el"), function (x) {
+      var n = x.querySelector(".el-name"), key = n && ELBILD[n.textContent.trim()];
+      if (key && !x.querySelector(".el-gravur")) x.insertAdjacentHTML("afterbegin", '<span class="el-gravur" style="background-image:url(/bilder/element-' + key + '.webp)"></span>');
+    });
   }
 
   function spalten(root, links) {
