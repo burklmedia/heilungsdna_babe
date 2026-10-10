@@ -1659,3 +1659,18 @@ footer.fuss-start .foot { border-top: 1px solid var(--line); padding-top: 22px; 
   .karten-siegel, .galerie::after { animation: none; }
 }
 
+
+/* Runde 9b: der Brief liegt auf dem nächtlichen Schreibtisch eines Sternkundigen (Samt, Messing, Kerzenlicht) */
+.brueckenband { background: #020a18; }
+.brueckenband::after { content: ""; position: absolute; left: 0; right: 0; top: 50%; z-index: -2; width: 100%; aspect-ratio: 2400 / 1357; transform: translateY(-50%); pointer-events: none;
+  background: url("/bilder/schreibtisch-2400.webp") center / cover no-repeat;
+  -webkit-mask-image: linear-gradient(180deg, transparent 0, #000 20%, #000 80%, transparent 100%); mask-image: linear-gradient(180deg, transparent 0, #000 20%, #000 80%, transparent 100%); }
+.brueckenband::before { content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none;
+  background: linear-gradient(180deg, #020a18 0%, rgba(2,10,24,0) 18%, rgba(2,10,24,0) 82%, #020a18 100%),
+              radial-gradient(60% 50% at 50% 50%, rgba(2,10,24,.35), transparent 70%); }
+.brueckenband .wasserrad { color: #e2c486; opacity: .07; }
+.brueckenband section.band > .wrap.bridge.brief, section.band.brueckenband > .wrap.bridge.brief {
+  box-shadow: inset 0 0 0 9px var(--white), inset 0 0 0 10px rgba(156,118,51,.28), 0 60px 110px -30px rgba(0,0,0,.9), 0 0 120px -30px rgba(243,220,166,.28); }
+.brueckenband .brief-siegel { filter: drop-shadow(0 14px 16px rgba(0,0,0,.6)); }
+@media (max-width: 1100px) { .brueckenband::after { background-image: url("/bilder/schreibtisch-1400.webp"); width: 130%; left: -15%; } }
+@media (max-width: 760px) { .brueckenband::after { width: 300%; left: -100%; top: 0; transform: none; } }
