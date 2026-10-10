@@ -1,6 +1,8 @@
 /* Bewegte Sterne für die Nachtbänder: jedes Element mit data-sterne bekommt ein
    eigenes Sternenfeld. Sterne funkeln einzeln, das Feld driftet langsam, selten
    zieht eine Sternschnuppe vorbei. Läuft nur, solange das Band sichtbar ist.
+   data-sterne="fest" (lange Seiten wie der Bericht): das Feld steht fest im Fenster,
+   damit die Leinwand nicht so hoch wird wie die ganze Seite.
    Bei „Bewegung reduzieren“ steht das Feld still. */
 (function () {
   "use strict";
@@ -13,7 +15,8 @@
 
   function feld(el) {
     var c = document.createElement("canvas");
-    c.className = "sternfeld";
+    var fest = el.getAttribute("data-sterne") === "fest";
+    c.className = "sternfeld" + (fest ? " fest" : "");
     c.setAttribute("aria-hidden", "true");
     el.insertBefore(c, el.firstChild);
     el.classList.add("sterne-live");
@@ -35,7 +38,8 @@
     function groesse() {
       var r = el.getBoundingClientRect();
       if (!r.width || !r.height) return;
-      W = r.width; H = r.height;
+      if (fest && sterne.length && W === window.innerWidth && H === window.innerHeight) return;   // nur das Fenster zählt
+      W = fest ? window.innerWidth : r.width; H = fest ? window.innerHeight : r.height;
       c.width = Math.round(W * dpr); c.height = Math.round(H * dpr);
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
       saeen();
@@ -97,7 +101,7 @@
     groesse();
     naechste = performance.now() + rand(3000, 8000);
     if (window.ResizeObserver) new ResizeObserver(groesse).observe(el);
-    else window.addEventListener("resize", groesse);
+    if (fest || !window.ResizeObserver) window.addEventListener("resize", groesse);
     if (window.IntersectionObserver) {
       new IntersectionObserver(function (e) { sichtbar = e[0].isIntersecting; if (sichtbar) start(); }, { rootMargin: "100px" }).observe(el);
     } else { sichtbar = true; start(); }
