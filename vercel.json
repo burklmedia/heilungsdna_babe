@@ -67,6 +67,13 @@
     {
       "src": "public/**",
       "use": "@vercel/static"
+    },
+    {
+      "src": "api/bericht.py",
+      "use": "@vercel/python",
+      "config": {
+        "includeFiles": "api/**"
+      }
     }
   ],
   "routes": [
@@ -136,6 +143,10 @@
     {
       "src": "/api/handoff",
       "dest": "/api/handoff.py"
+    },
+    {
+      "src": "/api/bericht",
+      "dest": "/api/bericht.py"
     },
     {
       "src": "/api/kurz",

@@ -1652,6 +1652,7 @@
     <div class="st" id="sent-title">Deine komplette Auswertung kommt <em>per E-Mail</em></div>
     <p>Ich habe dir gerade eine E-Mail an <b id="sent-to"></b> geschickt. Ein Klick auf den Button darin, dann bekommst du deinen vollständigen Bauplan als PDF.</p>
     <p class="sent-hint">Keine Mail da? Schau auch im Spam- oder Werbung-Ordner nach.</p>
+    <a class="sent-insta" id="sent-insta" href="https://www.instagram.com/intuitionmitherz/" target="_blank" rel="noopener">Bis dahin: Folg mir auf Instagram, dort geht es weiter ✦</a>
     <button class="cbtn" id="sent-ok" type="button">Alles klar</button>
   </div>
 </div>
@@ -1829,6 +1830,16 @@
       el.innerHTML=html; el.hidden=false; el.classList.remove('an'); void el.offsetWidth; el.classList.add('an');
     }
     ['f-day','f-month','f-year'].forEach(function(id){ var e=document.getElementById(id); if(e) e.addEventListener('change',zeigen); });
+  })();
+  // Schlüssel aus Mail 1 (&t=%FEEDBACK_TOKEN%, seit 11.10.2026): für die Warteliste mit einem Klick.
+  // Er wird für die Sitzung gemerkt und sofort aus der Adresszeile genommen, damit er beim Teilen nicht mitwandert.
+  (function(){
+    try{
+      var u=new URL(location.href), t=u.searchParams.get('t')||'';
+      if(!/^[A-Za-z0-9_-]{8,64}$/.test(t)) return;
+      sessionStorage.setItem('imh_t',t); u.searchParams.delete('t');
+      history.replaceState(history.state,'',u.pathname+(u.search||'')+u.hash);
+    }catch(e){}
   })();
   if(!MAIL_D) track('visit');
   // Scroll-Tiefe: wer mehr als 60% der Startseite liest, gilt als "gelesen"
@@ -2211,6 +2222,8 @@
     var warte=(window.Erlebnis&&Erlebnis.gesendet)?Erlebnis.gesendet(document.getElementById('go2')):0;
     var m=document.getElementById('sent'); if(m) setTimeout(function(){ m.classList.add('show'); Gruss.start(); }, warte||0);
   }
+  var sentInsta=document.getElementById('sent-insta');
+  if(sentInsta) sentInsta.addEventListener('click',function(){ track('popup_insta'); });
   var sentOk=document.getElementById('sent-ok');
   if(sentOk) sentOk.addEventListener('click',function(){
     var m=document.getElementById('sent'); if(m) m.classList.remove('show'); Gruss.stop(); });

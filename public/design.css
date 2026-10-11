@@ -1785,3 +1785,45 @@ header.hero .card h3, header.hero .card > .hint { text-align: center; }
   header.hero .card .row3 { grid-template-columns: .74fr 1.5fr 1fr; gap: 8px; }
   header.hero .card .row3 select { padding-left: 11px; padding-right: 22px; background-position: right 7px center; font-size: 14.5px; }
 }
+
+/* Runde 15: Warteliste Liebesanalyse, Frage an Denise, Siegel für fertig Gelesenes, Instagram im Pop-up */
+.wk-warte:hover { transform: none; }
+.wl-form { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-top: 6px; }
+.wl-form[hidden], .wl-mail[hidden], .fb-form[hidden] { display: none !important; }
+.wl-mail { flex: 1 1 180px; min-width: 0; padding: 11px 13px; border-radius: 4px; border: 1px solid rgba(226,196,134,.3); background: rgba(10,9,22,.6);
+  color: #f6f1e8; font: 14.5px var(--sans); }
+.wl-mail:focus { outline: none; border-color: #e2c486; box-shadow: 0 0 0 3px rgba(226,196,134,.18); }
+.wl-knopf { margin-top: 0; padding: 12px 16px; border: 0; border-radius: 2px; cursor: pointer; background: linear-gradient(135deg, #ecd29d, #c9a560); color: #1d1733;
+  box-shadow: 0 10px 26px -12px rgba(226,196,134,.7); transition: filter .2s; }
+.wl-knopf:hover { filter: brightness(1.06); }
+.wl-knopf:disabled { opacity: .6; cursor: default; }
+.wl-info { font-family: var(--serif); font-style: italic; font-size: 16px; line-height: 1.45; color: #f3dca6; }
+.wl-info:empty { display: none; }
+.wk-warte.drauf { box-shadow: 0 0 0 1px rgba(243,220,166,.75), 0 0 46px -14px rgba(226,196,134,.55), 0 30px 60px -36px rgba(0,0,0,.9); }
+
+.fragebox { max-width: 640px !important; margin: 46px auto 10px !important; padding: 30px 28px 28px !important; text-align: center; border-radius: 8px;
+  background: linear-gradient(180deg, rgba(28,27,56,.85), rgba(16,15,36,.92)); box-shadow: 0 0 0 1px rgba(226,196,134,.3), 0 30px 70px -34px rgba(0,0,0,.85); }
+.fragebox .script-eyebrow { font-size: clamp(30px, 3.2vw, 40px); line-height: 1.1; margin-bottom: 10px; }
+.fb-lead { margin: 0 auto 16px !important; max-width: 46ch; color: #d3cde0 !important; font-size: 15.5px !important; line-height: 1.6 !important; }
+.fb-form { display: flex; flex-direction: column; align-items: center; gap: 12px; }
+.fb-text { width: 100%; min-height: 92px; resize: vertical; padding: 13px 15px; border-radius: 4px; border: 1px solid rgba(226,196,134,.28); background: rgba(10,9,22,.6);
+  color: #f6f1e8; font: 15.5px/1.55 var(--sans); }
+.fb-text::placeholder { color: #8a84a6; }
+.fb-text:focus { outline: none; border-color: #e2c486; box-shadow: 0 0 0 3px rgba(226,196,134,.18); }
+.fb-info { margin: 12px 0 0 !important; font-family: var(--serif); font-style: italic; font-size: 17px !important; color: #f3dca6 !important; }
+.fb-info:empty { display: none; }
+
+.vollendet { position: relative; z-index: 2; margin: 56px auto 10px; max-width: 520px; padding: 92px 30px 28px; text-align: center; border-radius: 8px;
+  background: radial-gradient(80% 90% at 50% 0%, rgba(226,196,134,.16), rgba(18,17,41,0) 70%), #121129; box-shadow: 0 0 0 1px rgba(226,196,134,.32), 0 0 0 8px #0d0c20, 0 30px 70px -34px rgba(0,0,0,.9); }
+.vd-siegel { position: absolute; left: 50%; top: -30px; width: 108px; height: 108px; margin-left: -54px;
+  background: url("/bilder/wachssiegel-220.webp") center / contain no-repeat; background-image: image-set(url("/bilder/wachssiegel-220.webp") 1x, url("/bilder/wachssiegel-440.webp") 2x);
+  filter: drop-shadow(0 12px 16px rgba(0,0,0,.6)) drop-shadow(0 0 26px rgba(226,196,134,.45)); }
+.vollendet.neu .vd-siegel { animation: stempel 1s cubic-bezier(.3,1.4,.5,1) .2s backwards; }
+.vd-titel { margin: 0 0 8px !important; font-family: var(--serif); font-size: 25px !important; line-height: 1.25 !important; color: #f6f1e8 !important; }
+.vd-text { margin: 0 auto !important; max-width: 40ch; font-family: var(--serif); font-style: italic; font-size: 18px !important; line-height: 1.5 !important; color: #e2c486 !important; }
+.vd-name { margin: 10px 0 0 !important; font-family: var(--script); font-size: 40px !important; line-height: 1 !important; color: #e2c486 !important; }
+
+.sent-insta { display: inline-block; margin: -8px 0 22px; font-family: var(--serif); font-style: italic; font-size: 16px; color: #e2c486; text-decoration: none;
+  border-bottom: 1px solid rgba(226,196,134,.35); padding-bottom: 2px; }
+.sent-insta:hover { color: #f3dca6; border-color: rgba(243,220,166,.8); }
+@media (prefers-reduced-motion: reduce) { .vollendet.neu .vd-siegel { animation: none; } }

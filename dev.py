@@ -136,6 +136,11 @@ class Handler(BaseHTTPRequestHandler):
             if payload.get("dry_run"):
                 print("  ✉  Anmeldung lokal angenommen, nicht an ActiveCampaign gesendet")
             self._json(code, payload)
+        elif self.path.startswith("/api/bericht"):
+            # Lokal nur eine Probe-Antwort: nichts an ActiveCampaign, nichts in die KV, kein Telegram.
+            aktion = (body or {}).get("aktion") if isinstance(body, dict) else ""
+            print("  ✦  /api/bericht lokal angenommen:", aktion)
+            self._json(200 if aktion in ("warteliste", "frage") else 400, {"ok": aktion in ("warteliste", "frage"), "dry_run": True})
         else:
             self._json(404, {"error": "no route"})
 

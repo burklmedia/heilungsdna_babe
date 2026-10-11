@@ -13,6 +13,11 @@ import sys
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 try:
+    from _store import list_feedback
+except Exception:  # noqa
+    def list_feedback(key="imh:feedback"):
+        return []
+try:
     from _store import mget, configured, diag_names
 except Exception:  # noqa
     def mget(keys):
@@ -49,6 +54,10 @@ EXTRA = [
     ("frage", "Frage an Denise geklickt"),
     ("empfehlen", "Bauplan an eine Freundin weiterempfohlen"),
     ("hintergrund", "Geburtshimmel als Handy-Hintergrund geladen"),
+    ("warteliste", "Warteliste Liebesanalyse eingetragen"),
+    ("fragebox", "Frage an Denise abgeschickt"),
+    ("vollendet", "Alle Kapitel gelesen"),
+    ("popup_insta", "Instagram aus dem Pop-up"),
 ]
 
 PAGE_CSS = """
@@ -96,6 +105,22 @@ def _login(msg=""):
         "<button style='margin-left:8px;padding:12px 20px;border:0;border-radius:10px;"
         "background:#f5c56b;color:#3a2410;font-weight:700;font-size:15px;cursor:pointer'>"
         "Ansehen</button></form>")
+
+
+def _fragen_html():
+    """Anonyme Fragen vom Ende des Berichts (api/bericht.py), neueste zuerst."""
+    import html as _h
+    fragen = list(reversed(list_feedback(key="imh:fragen")))[:60]
+    if not fragen:
+        return "<p class=note>Noch keine Fragen.</p>"
+    out = ""
+    for f in fragen:
+        zeit = str(f.get("zeit", ""))[:10]
+        if len(zeit) == 10:
+            zeit = zeit[8:10] + "." + zeit[5:7] + "."
+        out += ("<div class=row><div class=lbl>%s</div><div class=rgt><div class=pct>%s</div></div></div>"
+                % (_h.escape(str(f.get("frage", ""))), _h.escape(zeit)))
+    return "<div class=funnel>" + out + "</div>"
 
 
 def _dashboard():
@@ -159,6 +184,7 @@ def _dashboard():
         "<div class=funnel>" + rows + "</div>"
         "<h1 style='font-size:16px'>Weitere Kennzahlen</h1>"
         "<div class=funnel>" + extra_html + "</div>"
+        "<h1 style='font-size:16px'>Fragen aus dem Bericht</h1>" + _fragen_html() +
         "<h1 style='font-size:16px'>Letzte 14 Tage</h1>"
         "<table>" + thead + trows + "</table>"
         "<p class=note>Die Zahlen zaehlen Sitzungen: jedes Ereignis wird pro "

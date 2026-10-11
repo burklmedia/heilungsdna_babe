@@ -173,3 +173,42 @@ def update_contact(email, fields):
         if ml_grund != "nicht_konfiguriert":
             grund = grund + "/mailerlite_" + ml_grund
     return False, grund
+
+
+TAG_WARTELISTE_LIEBE = "13"   # "Warteliste Liebesanalyse" (seit 11.10.2026)
+
+
+def add_tag(email, tag_id):
+    """Haengt ein Tag an den bestehenden Kontakt mit dieser E-Mail. Legt nie jemanden an.
+    Rueckgabe (ok, grund), nie eine Ausnahme. grund: gesetzt | kein_kontakt | nicht_konfiguriert
+    | ungueltige_adresse | email | http_<status> | timeout | netz"""
+    key = os.environ.get("AC_API_KEY", "").strip()
+    address = os.environ.get("AC_API_URL", "").strip()
+    if not key or not address:
+        _log("AC_API_URL oder AC_API_KEY fehlt")
+        return False, "nicht_konfiguriert"
+    base = api_base(address)
+    if not base:
+        return False, "ungueltige_adresse"
+    wanted = email.strip().lower() if isinstance(email, str) else ""
+    if not wanted:
+        return False, "email"
+    try:
+        found = _call(base, key, "GET", "/contacts?email=" + urllib.parse.quote(wanted, safe=""))
+        contact = next((c for c in (found.get("contacts") or [])
+                        if isinstance(c, dict) and c.get("id")
+                        and str(c.get("email") or "").strip().lower() == wanted), None)
+        if not contact:
+            return False, "kein_kontakt"
+        _call(base, key, "POST", "/contactTags",
+              {"contactTag": {"contact": str(contact["id"]), "tag": str(tag_id)}})
+        return True, "gesetzt"
+    except urllib.error.HTTPError as e:
+        _log("ActiveCampaign lehnt ab", "http_%d" % e.code)
+        return False, "http_%d" % e.code
+    except Exception as e:  # noqa
+        reason = getattr(e, "reason", e)
+        timeout = (isinstance(reason, (socket.timeout, TimeoutError))
+                   or "timed out" in str(reason).lower())
+        _log("ActiveCampaign nicht erreichbar", "timeout" if timeout else type(e).__name__)
+        return False, "timeout" if timeout else "netz"

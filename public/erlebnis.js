@@ -494,6 +494,19 @@
         : n >= kapitel.length ? "Alle " + kapitel.length + " Kapitel gelesen. Schön, dass du dir die Zeit genommen hast."
         : n + " von " + kapitel.length + " Kapiteln gelesen";
       box.querySelector(".lf-balken span").style.width = (100 * n / kapitel.length).toFixed(1) + "%";
+      if (n >= kapitel.length) vollendet();
+    }
+    // Alle Kapitel gelesen: Wachssiegel und ein Satz von Denise unter dem letzten Kapitel (seit 11.10.2026)
+    function vollendet() {
+      if (pane.querySelector(".vollendet")) return;
+      var vs = "imh_vollendet_" + bauplanSchluessel(d), erstmals = true;
+      try { erstmals = !localStorage.getItem(vs); localStorage.setItem(vs, "1"); } catch (e) {}
+      kapitel[kapitel.length - 1].insertAdjacentHTML("afterend",
+        '<section class="vollendet' + (erstmals && !reduce ? " neu" : "") + '"><span class="vd-siegel" aria-hidden="true"></span>' +
+        '<p class="vd-titel">Du hast deinen ganzen Bauplan gelesen.</p>' +
+        '<p class="vd-text">Nimm dir mit, was sich stimmig anfühlt. Was nicht passt, darfst du liegen lassen.</p>' +
+        '<p class="vd-name">Denise</p></section>');
+      if (erstmals) zaehl("vollendet");
     }
     kapitel.forEach(function (acc) {
       acc.addEventListener("toggle", function () {
@@ -682,8 +695,15 @@
       '<a class="wk" href="https://ig.me/m/intuitionmitherz" target="_blank" rel="noopener" data-ev="frage"><span class="wk-titel">Frag mich direkt</span><span class="wk-text">Schreib mir, welche Stelle in deinem Bauplan dich gerade am meisten beschäftigt.</span><span class="wk-mehr">Nachricht schreiben ✦</span></a>'
     ];
     karten.push('<a class="wk wk-teilen" href="https://bauplan.intuitionmitherz.de/?q=freundin" data-ev="empfehlen"><span class="wk-titel">Schenk ihn einer Freundin</span><span class="wk-text">Kennst du eine Frau, die alle anderen spürt, nur sich selbst kaum? Schick ihr ihren eigenen Bauplan.</span><span class="wk-mehr">Link verschicken ✦</span></a>');
+    if (!LIEBE_LIVE) karten.push('<div class="wk wk-warte"><span class="wk-titel">Wenn dein Himmel auf einen anderen trifft</span><span class="wk-text">Die Kosmische Liebesanalyse für dich und einen Menschen, der dir nah ist. Sie entsteht gerade. Magst du sie als Erste bekommen?</span>' +
+      '<form class="wl-form" novalidate><input class="wl-mail" type="email" placeholder="Deine E-Mail-Adresse" autocomplete="email" hidden aria-label="E-Mail-Adresse"><button class="wk-mehr wl-knopf" type="submit">Auf die Warteliste ✦</button></form><span class="wl-info" aria-live="polite"></span></div>');
     if (LIEBE_LIVE) karten.push('<a class="wk" href="https://liebe.intuitionmitherz.de/?q=bauplan-bericht" data-ev="liebe"><span class="wk-titel">Wenn dein Himmel auf einen anderen trifft</span><span class="wk-text">Die Kosmische Liebesanalyse für dich und einen Menschen, der dir nah ist.</span><span class="wk-mehr">Ansehen ✦</span></a>');
     note.insertAdjacentHTML("beforebegin", '<section class="weiter"><div class="script-eyebrow">Wie geht es für dich weiter?</div><div class="wk-reihe">' + karten.join("") + '</div></section>');
+    note.insertAdjacentHTML("beforebegin", '<section class="fragebox"><div class="script-eyebrow">Eine Frage an dich</div>' +
+      '<p class="fb-lead">Welche Frage hat dein Bauplan bei dir ausgelöst? Schreib sie mir, ganz ohne Namen und ohne E-Mail.</p>' +
+      '<form class="fb-form" novalidate><textarea class="fb-text" maxlength="800" rows="3" placeholder="Zum Beispiel: Wie merke ich im Alltag, ob mein Bauch Ja sagt?" aria-label="Deine Frage"></textarea>' +
+      '<button class="btn fb-knopf" type="submit" style="width:auto">Frage abschicken ✦</button></form><p class="fb-info" aria-live="polite"></p></section>');
+    fragebox(); warteliste();
     document.querySelector(".weiter").addEventListener("click", function (e) { var a = e.target.closest("[data-ev]"); if (a) zaehl(a.getAttribute("data-ev")); });
     // Weiterempfehlung: am Handy das Teilen-Menü, sonst Link kopieren. Herkunft ?q=freundin landet in AC-Feld 8.
     var teilen = document.querySelector(".wk-teilen");
@@ -696,6 +716,48 @@
       function whatsapp() { window.open("https://wa.me/?text=" + encodeURIComponent(text + " " + url), "_blank", "noopener"); }
       if (navigator.clipboard) { navigator.clipboard.writeText(text + " " + url).then(function () { fertig("Link kopiert ✦"); }, whatsapp); return; }
       whatsapp();
+    });
+  }
+
+  /* ── Bericht: Warteliste Liebesanalyse und Frage an Denise, beides über /api/bericht ── */
+  function berichtAktion(daten) {
+    return fetch("/api/bericht", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(daten) })
+      .then(function (r) { return r.json().catch(function () { return {}; }); });
+  }
+  function warteliste() {
+    var karte = document.querySelector(".wk-warte"); if (!karte) return;
+    var form = karte.querySelector(".wl-form"), mail = karte.querySelector(".wl-mail"), knopf = karte.querySelector(".wl-knopf"), info = karte.querySelector(".wl-info");
+    function drauf() { form.hidden = true; info.textContent = "Du stehst auf der Liste ✦ Ich sag dir Bescheid, sobald sie fertig ist."; karte.classList.add("drauf"); }
+    try { if (localStorage.getItem("imh_warteliste")) { drauf(); return; } } catch (e) {}
+    var t = ""; try { t = sessionStorage.getItem("imh_t") || ""; } catch (e) {}
+    if (!t) mail.hidden = false;
+    form.addEventListener("submit", function (e) {
+      e.preventDefault(); info.textContent = "";
+      var daten = { aktion: "warteliste" };
+      if (t) daten.t = t; else daten.email = mail.value.trim();
+      if (!t && !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(daten.email)) { info.textContent = "Bitte gib die E-Mail-Adresse ein, mit der du deinen Bauplan bekommen hast."; return; }
+      knopf.disabled = true;
+      berichtAktion(daten).then(function (d) {
+        knopf.disabled = false;
+        if (d && d.ok) { try { localStorage.setItem("imh_warteliste", "1"); } catch (x) {} zaehl("warteliste"); drauf(); return; }
+        if (d && d.error === "need_email") { t = ""; mail.hidden = false; }
+        info.textContent = (d && d.message) || "Das hat gerade nicht geklappt. Bitte versuch es gleich noch einmal.";
+      }).catch(function () { knopf.disabled = false; info.textContent = "Keine Verbindung. Bitte versuch es gleich noch einmal."; });
+    });
+  }
+  function fragebox() {
+    var box = document.querySelector(".fragebox"); if (!box) return;
+    var form = box.querySelector(".fb-form"), feld = box.querySelector(".fb-text"), knopf = box.querySelector(".fb-knopf"), info = box.querySelector(".fb-info");
+    form.addEventListener("submit", function (e) {
+      e.preventDefault(); info.textContent = "";
+      var text = feld.value.trim();
+      if (text.length < 3) { info.textContent = "Schreib mir gern ein paar Worte."; return; }
+      knopf.disabled = true;
+      berichtAktion({ aktion: "frage", text: text }).then(function (d) {
+        knopf.disabled = false;
+        if (d && d.ok) { zaehl("fragebox"); form.hidden = true; info.textContent = "Danke. Deine Frage ist bei mir angekommen. 🤍"; box.classList.add("gesendet"); return; }
+        info.textContent = (d && d.message) || "Das hat gerade nicht geklappt. Bitte versuch es gleich noch einmal.";
+      }).catch(function () { knopf.disabled = false; info.textContent = "Keine Verbindung. Bitte versuch es gleich noch einmal."; });
     });
   }
 
