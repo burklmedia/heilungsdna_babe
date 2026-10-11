@@ -724,14 +724,14 @@
       e.satz = "Er berührt dein " + e.haus + ". Haus: " + e.bedeutung + ". " + (e.art === "Neumond"
         ? "Ein guter Moment, dort etwas Neues zu beginnen." : "Was dort gewachsen ist, darf jetzt sichtbar werden.");
     });
-    var ziel = document.querySelector(".roter-faden") || document.querySelector("#siegel-reihe"); if (!ziel) return;
-    ziel.insertAdjacentHTML("afterend", '<section class="mondkalender' + (besuchNr === 2 ? " neu" : "") + '">' +
-      (besuchNr === 2 ? '<p class="mk-neu">Deine nächste Überraschung</p>' : '') +
+    var ziel = ueNeu ? obenAnker() : (document.querySelector(".roter-faden") || document.querySelector("#siegel-reihe")); if (!ziel) return;
+    ziel.insertAdjacentHTML("afterend", '<section class="mondkalender' + (ueNeu ? " neu" : "") + '">' +
+      (ueNeu ? '<span class="ue-geschenk" aria-hidden="true"></span><p class="mk-neu">Deine zweite Überraschung</p>' : '') +
       '<p class="mk-titel">Dein Mondkalender</p><ol class="mk-liste">' + ev.map(function (e) {
         return '<li><span class="mk-mond ' + (e.art === "Neumond" ? "neu" : "voll") + '" aria-hidden="true"></span><span class="mk-inhalt"><b>' + esc(e.art) + " " + esc(H.IM[e.zeichen]) +
           '</b><span class="mk-datum">' + esc(e.datum) + '</span><span class="mk-satz">' + esc(e.satz) + '</span></span></li>';
       }).join("") + '</ol><button class="btn btn-ghost mk-ics" type="button" style="width:auto">In meinen Kalender ✦</button></section>');
-    if (besuchNr === 2) zaehl("mondkalender");
+    if (ueNeu) zaehl("mondkalender");
     document.querySelector(".mk-ics").addEventListener("click", function () {
       var url = location.origin + location.pathname + "?d=" + encodeURIComponent(new URLSearchParams(location.search).get("d") || "");
       function tag(t) { var x = new Date(t); return x.getFullYear() + ("0" + (x.getMonth() + 1)).slice(-2) + ("0" + x.getDate()).slice(-2); }
@@ -754,28 +754,56 @@
   }
 
   /* ── Wiederkommen lohnt sich: beim ersten Lesen der Hinweis auf eine Überraschung, beim zweiten Öffnen die Überraschung selbst ── */
+  // Oben unter der Knopfleiste, damit sie beim Öffnen sofort ins Auge fallen
+  function obenAnker() { return document.querySelector("#step3 .hoeren-box") || document.querySelector("#step3 .bericht-leiste"); }
+  function wannText(ts) {
+    var z = new Date(ts), h = new Date(), tage = Math.round((new Date(z.getFullYear(), z.getMonth(), z.getDate()) - new Date(h.getFullYear(), h.getMonth(), h.getDate())) / 864e5);
+    var tag = tage <= 0 ? "heute" : tage === 1 ? "morgen" : tage === 2 ? "übermorgen" : WTAG[z.getDay()].replace(".", "") + "., " + z.getDate() + ". " + MONAT[z.getMonth()];
+    return tag + " ab " + z.getHours() + ":" + ("0" + z.getMinutes()).slice(-2) + " Uhr";
+  }
+  function bauplanLink() {
+    var dp = ""; try { dp = new URLSearchParams(location.search).get("d") || ""; } catch (e) {}
+    return location.origin + location.pathname + (dp ? "?d=" + encodeURIComponent(dp) : "");
+  }
+  function linkSpeichern(knopf, info) {
+    var url = bauplanLink();
+    zaehl("link_speichern");
+    if (navigator.share && /iPhone|iPad|Android/.test(navigator.userAgent || "")) {
+      navigator.share({ title: "Mein Kosmischer Bauplan", url: url }).catch(function () {});
+      return;
+    }
+    var fertig = function () { info.textContent = "Link kopiert. Leg ihn dir als Lesezeichen ab, dann findest du deinen Bauplan sofort wieder."; };
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(url).then(fertig, function () { info.textContent = url; });
+    else info.textContent = url;
+  }
   function ueberraschung() {
     var alt = document.querySelectorAll(".ue-hinweis, .ue-karte"); [].forEach.call(alt, function (x) { x.remove(); });
+    var anker = obenAnker(); if (!anker) return;
     if (ersterBesuch) {
-      var note = $("note"); if (!note) return;
-      note.insertAdjacentHTML("beforebegin", '<section class="ue-hinweis"><span class="ue-stern" aria-hidden="true">✦</span>' +
-        '<p class="ue-titel">Komm morgen wieder.</p><p class="ue-text">Wenn du deinen Bauplan noch einmal öffnest, wartet eine kleine Überraschung auf dich.</p></section>');
+      var ab = ueFrei ? wannText(ueFrei[0]) : "morgen";
+      anker.insertAdjacentHTML("afterend", '<section class="ue-hinweis"><span class="ue-geschenk zu" aria-hidden="true"></span>' +
+        '<p class="ue-titel">Hier wartet eine Überraschung auf dich.</p>' +
+        '<p class="ue-text">Sie öffnet sich ' + esc(ab) + '. Speicher dir dafür diesen Link, er führt dich direkt zurück zu deinem Bauplan. Du findest ihn auch in deiner E-Mail. Öffne ihn am besten wieder hier auf diesem Gerät.</p>' +
+        '<div class="ue-knoepfe"><button class="btn ue-link" type="button" style="width:auto">Link speichern ✦</button></div><p class="ue-info" aria-live="polite"></p></section>');
+      var h0 = document.querySelector(".ue-hinweis");
+      h0.querySelector(".ue-link").addEventListener("click", function () { linkSpeichern(this, h0.querySelector(".ue-info")); });
       return;
     }
     if (!zweiterBesuch) return;
-    var brief = document.querySelector(".zeichen-brief") || document.querySelector("#step3 .report-head"); if (!brief) return;
-    (brief.classList.contains("zeichen-brief") ? brief : brief).insertAdjacentHTML(brief.classList.contains("zeichen-brief") ? "beforebegin" : "afterend",
-      '<section class="ue-karte"><span class="ue-geschenk" aria-hidden="true"></span><p class="ue-titel">Deine Überraschung</p>' +
-      '<p class="ue-text">' + (document.querySelector(".wk-app") ? "Dein Geburtshimmel als Hintergrund für dein Handy und dein Bauplan als App auf deinem Startbildschirm. Beides wartet ab jetzt auf dich."
+    var app = !!document.querySelector(".wk-app");
+    anker.insertAdjacentHTML("afterend",
+      '<section class="ue-karte' + (ueNeu ? " neu" : "") + '"><span class="ue-geschenk" aria-hidden="true"></span><p class="ue-titel">Deine Überraschung</p>' +
+      '<p class="ue-text">' + (app ? "Dein Geburtshimmel als Hintergrund für dein Handy und dein Bauplan als App auf deinem Startbildschirm. Beides wartet ab jetzt auf dich."
         : "Dein Geburtshimmel als Hintergrund für dein Handy. Der Himmel über dir in der Minute deiner Geburt, jeden Tag in deiner Hand.") + '</p>' +
-      '<p class="ue-naechste">Und beim nächsten Mal wartet dein persönlicher Mondkalender.</p>' +
       '<div class="ue-knoepfe"><button class="btn ue-himmel" type="button" style="width:auto">Mein Geburtshimmel ✦</button>' +
-      (document.querySelector(".wk-app") ? '<button class="btn btn-ghost ue-app" type="button" style="width:auto">Als App speichern</button>' : '') + '</div></section>');
-    zaehl("ueberraschung");
+      (app ? '<button class="btn btn-ghost ue-app" type="button" style="width:auto">Als App speichern</button>' : '') + '</div>' +
+      '<p class="ue-naechste">Die nächste Überraschung, dein persönlicher Mondkalender, öffnet sich ' + esc(ueFrei ? wannText(ueFrei[1]) : "beim nächsten Mal") + '.</p></section>');
+    if (ueNeu) zaehl("ueberraschung");
     var k = document.querySelector(".ue-karte");
     var h = k.querySelector(".ue-himmel"); if (h) h.addEventListener("click", function () { var b = document.querySelector(".pk-hintergrund"); if (b) { b.scrollIntoView({ behavior: "smooth", block: "center" }); setTimeout(function () { b.click(); }, 500); } });
     var a = k.querySelector(".ue-app"); if (a) a.addEventListener("click", function () { var c = document.querySelector(".wk-app"); if (c) { c.scrollIntoView({ behavior: "smooth", block: "center" }); var det = c.querySelector("details"); if (det) det.open = true; } });
   }
+
 
   /* ── Bericht: Lesezeichen „Hier anfangen“ an den drei Stellen aus Mail 2, Lesefortschritt der Kapitel ── */
   var ANFANG = ["Entscheidungsweg", "Schwierigkeiten"];
@@ -1172,19 +1200,26 @@
   };
   var ELEMENT_WORT = { Feuer: "Antrieb und Begeisterung", Erde: "Halt und Umsetzung", Luft: "Gedanken und Austausch", Wasser: "Gefühl und Tiefe" };
 
-  var letzterBericht = null, ersterBesuch = true, zweiterBesuch = false, besuchNr = 0;
+  var letzterBericht = null, ersterBesuch = true, zweiterBesuch = false, besuchNr = 0, ueNeu = false, ueFrei = null;
   function bericht(d) {
     var f = d && d.full; if (!f) return;
     letzterBericht = d;
     // Beim ersten Lesen nur das Wesentliche: Story, Brief, Kapitel. App und Handy-Hintergrund kommen ab dem zweiten Besuch dazu.
-    /* Besuchstage statt Seitenaufrufe: Neuladen am selben Tag zählt nicht als Wiederkommen.
-       Wer schon vor dieser Zählung da war (imh_besuch), beginnt mit einem Tag. */
+    /* Überraschungen nach Stunden seit dem ersten Öffnen auf diesem Gerät: ab 24 h die erste, ab 48 h die zweite (seit 11.10.2026).
+       Ältere Zählung (imh_tage, imh_besuch) wird übernommen, damit niemand zurückfällt. */
     try {
-      var schl0 = bauplanSchluessel(d), bn = +(localStorage.getItem("imh_besuch_" + schl0) || 0), heute = new Date().toDateString();
-      var tg = JSON.parse(localStorage.getItem("imh_tage_" + schl0) || "null") || { n: bn >= 1 ? 1 : 0, tag: "" };
-      if (tg.tag !== heute) { tg.n = (+tg.n || 0) + 1; tg.tag = heute; localStorage.setItem("imh_tage_" + schl0, JSON.stringify(tg)); }
-      besuchNr = tg.n - 1; ersterBesuch = besuchNr < 1; zweiterBesuch = besuchNr === 1;
-    } catch (e) { ersterBesuch = true; zweiterBesuch = false; besuchNr = 0; }
+      var schl0 = bauplanSchluessel(d), jetzt = Date.now(), erst = +(localStorage.getItem("imh_erst_" + schl0) || 0);
+      if (!erst) {
+        var bn = +(localStorage.getItem("imh_besuch_" + schl0) || 0), tg = JSON.parse(localStorage.getItem("imh_tage_" + schl0) || "null");
+        erst = tg && tg.n >= 1 ? jetzt - (tg.n - 1) * 864e5 : bn >= 1 ? jetzt - 864e5 : jetzt;
+        localStorage.setItem("imh_erst_" + schl0, String(erst));
+      }
+      var std = (jetzt - erst) / 36e5, gesehen = +(localStorage.getItem("imh_ue_" + schl0) || 0);
+      besuchNr = std >= 48 ? 2 : std >= 24 ? 1 : 0;
+      ueNeu = besuchNr > gesehen; if (ueNeu) localStorage.setItem("imh_ue_" + schl0, String(besuchNr));
+      ueFrei = [erst + 864e5, erst + 2 * 864e5];
+      ersterBesuch = besuchNr < 1; zweiterBesuch = besuchNr === 1;
+    } catch (e) { ersterBesuch = true; zweiterBesuch = false; besuchNr = 0; ueNeu = false; ueFrei = null; }
     tabTitel("Bauplan", d);
     var by = {}; (f.positions || []).forEach(function (p) { by[p.key] = p; });
     var sonne = by.Sonne, idx = sonne ? H.ZEICHEN.indexOf(sonne.sign) : -1;

@@ -2127,3 +2127,12 @@ p, li, figcaption, summary, blockquote, dd, .mail-sub, .seal-sub, .seal-text, .w
   .glimpse-cols .mail-rahmen .mailcard { margin-top: 0; }
   .glimpse-cols .g-left { margin-top: 26px; }
 }
+
+/* Überraschungen oben unter der Knopfleiste (11.10.2026) */
+#step3 .ue-hinweis, #step3 .ue-karte, #step3 .mondkalender.neu { margin: 6px auto 30px; }
+.ue-karte.neu, .ue-hinweis { border-color: rgba(243,220,166,.7); box-shadow: 0 0 0 1px rgba(226,196,134,.25), 0 0 60px -18px rgba(226,196,134,.75); }
+.ue-hinweis .ue-titel { font-size: 32px !important; }
+.ue-info { margin: 10px auto 0 !important; max-width: 44ch; font-family: var(--serif); font-style: italic; font-size: 15px; color: #f3dca6; word-break: break-word; }
+.ue-info:empty { display: none; }
+.ue-karte .ue-naechste { margin-top: 16px !important; }
+.mondkalender .ue-geschenk { margin-bottom: 8px; }
