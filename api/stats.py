@@ -72,6 +72,9 @@ EXTRA = [
     ("himmel_mit", "Empfehlung mit eigenem Himmel geteilt"),
     ("du_und", "Freundinnen-Vergleich gesehen"),
     ("bestaetigt_insta", "Instagram von der Bestätigungsseite"),
+    ("ueberraschung", "Zweiter Besuch: Überraschung gesehen"),
+    ("mondkalender", "Dritter Besuch: Mondkalender gesehen"),
+    ("mondkalender_ics", "Mondtermine in den Kalender geladen"),
 ]
 
 PAGE_CSS = """

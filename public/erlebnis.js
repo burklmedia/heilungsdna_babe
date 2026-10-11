@@ -779,6 +779,95 @@
     zaehl("du_und");
   }
 
+  /* ── Dritte Überraschung: Mondkalender. Die nächsten Neu- und Vollmonde mit dem Lebensbereich (Haus), den sie bei ihr berühren,
+        dazu alle Termine als Kalenderdatei mit Link zurück zum Bauplan. Ab dem dritten Öffnen. ── */
+  var MONAT = ["Januar", "Februar", "März", "April", "Mai", "Juni", "Juli", "August", "September", "Oktober", "November", "Dezember"];
+  var WTAG = ["So.", "Mo.", "Di.", "Mi.", "Do.", "Fr.", "Sa."];
+  function mondEreignisse(anzahl) {
+    if (!H._mond || !H._sonne || !H._T) return [];
+    function el(t) { var T = H._T(new Date(t)); return ((H._mond(T) - H._sonne(T)) % 360 + 360) % 360; }
+    var aus = [], t = Date.now(), schritt = 6 * 3600000, vor = el(t);
+    for (var i = 0; i < 4 * 75 && aus.length < anzahl; i++) {
+      var t2 = t + schritt, jetzt = el(t2);
+      [[0, "Neumond"], [180, "Vollmond"]].forEach(function (z) {
+        var a1 = (vor - z[0] + 360) % 360, a2 = (jetzt - z[0] + 360) % 360;
+        if (a1 > 300 && a2 < 60) {   // Grenze überschritten: auf die Stunde genau eingrenzen
+          var lo = t, hi = t2;
+          for (var k = 0; k < 12; k++) { var mi = (lo + hi) / 2, am = (el(mi) - z[0] + 360) % 360; if (am > 300) lo = mi; else hi = mi; }
+          var T = H._T(new Date(hi));
+          aus.push({ art: z[1], zeit: hi, zeichen: H.zeichen(H._mond(T)) });
+        }
+      });
+      vor = jetzt; t = t2;
+    }
+    return aus.slice(0, anzahl);
+  }
+  function mondkalender(d) {
+    var alt = document.querySelector(".mondkalender"); if (alt) alt.remove();
+    if (besuchNr < 2) return;
+    var f = d.full, ac = (f.positions || []).filter(function (p) { return p.key === "AC"; })[0], ai = ac ? H.ZEICHEN.indexOf(ac.sign) : -1;
+    if (ai < 0 || !f.houses) return;
+    var ev = mondEreignisse(4); if (!ev.length) return;
+    ev.forEach(function (e) {
+      e.haus = ((e.zeichen - ai + 12) % 12) + 1;
+      var h = f.houses.filter(function (x) { return x.nr === e.haus; })[0]; e.bedeutung = h ? h.meaning : "";
+      var dt = new Date(e.zeit); e.datum = WTAG[dt.getDay()] + ", " + dt.getDate() + ". " + MONAT[dt.getMonth()];
+      e.satz = "Er berührt dein " + e.haus + ". Haus: " + e.bedeutung + ". " + (e.art === "Neumond"
+        ? "Ein guter Moment, dort etwas Neues zu beginnen." : "Was dort gewachsen ist, darf jetzt sichtbar werden.");
+    });
+    var ziel = document.querySelector(".roter-faden") || document.querySelector("#siegel-reihe"); if (!ziel) return;
+    ziel.insertAdjacentHTML("afterend", '<section class="mondkalender' + (besuchNr === 2 ? " neu" : "") + '">' +
+      (besuchNr === 2 ? '<p class="mk-neu">Deine nächste Überraschung</p>' : '') +
+      '<p class="mk-titel">Dein Mondkalender</p><ol class="mk-liste">' + ev.map(function (e) {
+        return '<li><span class="mk-mond ' + (e.art === "Neumond" ? "neu" : "voll") + '" aria-hidden="true"></span><span class="mk-inhalt"><b>' + esc(e.art) + " " + esc(H.IM[e.zeichen]) +
+          '</b><span class="mk-datum">' + esc(e.datum) + '</span><span class="mk-satz">' + esc(e.satz) + '</span></span></li>';
+      }).join("") + '</ol><button class="btn btn-ghost mk-ics" type="button" style="width:auto">In meinen Kalender ✦</button></section>');
+    if (besuchNr === 2) zaehl("mondkalender");
+    document.querySelector(".mk-ics").addEventListener("click", function () {
+      var url = location.origin + location.pathname + "?d=" + encodeURIComponent(new URLSearchParams(location.search).get("d") || "");
+      function tag(t) { var x = new Date(t); return x.getFullYear() + ("0" + (x.getMonth() + 1)).slice(-2) + ("0" + x.getDate()).slice(-2); }
+      function txt(s) { return String(s).replace(/[\\,;]/g, function (c) { return "\\" + c; }); }
+      var z = ["BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//Intuition mit Herz//Mondkalender//DE", "CALSCALE:GREGORIAN"];
+      ev.forEach(function (e, i) {
+        z.push("BEGIN:VEVENT", "UID:imh-mond-" + Math.round(e.zeit / 60000) + "-" + i + "@bauplan.intuitionmitherz.de", "DTSTAMP:" + new Date().toISOString().replace(/[-:]/g, "").replace(/\.\d+/, ""),
+          "DTSTART;VALUE=DATE:" + tag(e.zeit), "SUMMARY:" + txt(e.art + " in deinem " + e.haus + ". Haus"),
+          "DESCRIPTION:" + txt(e.satz + " Dein Bauplan: " + url), "URL:" + url,
+          "BEGIN:VALARM", "ACTION:DISPLAY", "TRIGGER:PT9H", "DESCRIPTION:" + txt(e.art + " in deinem " + e.haus + ". Haus"), "END:VALARM", "END:VEVENT");
+      });
+      z.push("END:VCALENDAR");
+      // Zeilen über 75 Zeichen falten (RFC 5545), sonst lehnen strenge Kalender die Datei ab
+      z = z.map(function (l) { var o = l.slice(0, 60); for (var p = 60; p < l.length; p += 60) o += "\r\n " + l.slice(p, p + 60); return o; });
+      var blob = new Blob([z.join("\r\n") + "\r\n"], { type: "text/calendar" }), a = document.createElement("a");
+      a.href = URL.createObjectURL(blob); a.download = "mein-mondkalender.ics"; document.body.appendChild(a); a.click();
+      setTimeout(function () { URL.revokeObjectURL(a.href); a.remove(); }, 1500);
+      zaehl("mondkalender_ics");
+    });
+  }
+
+  /* ── Wiederkommen lohnt sich: beim ersten Lesen der Hinweis auf eine Überraschung, beim zweiten Öffnen die Überraschung selbst ── */
+  function ueberraschung() {
+    var alt = document.querySelectorAll(".ue-hinweis, .ue-karte"); [].forEach.call(alt, function (x) { x.remove(); });
+    if (ersterBesuch) {
+      var note = $("note"); if (!note) return;
+      note.insertAdjacentHTML("beforebegin", '<section class="ue-hinweis"><span class="ue-stern" aria-hidden="true">✦</span>' +
+        '<p class="ue-titel">Komm morgen wieder.</p><p class="ue-text">Wenn du deinen Bauplan noch einmal öffnest, wartet eine kleine Überraschung auf dich.</p></section>');
+      return;
+    }
+    if (!zweiterBesuch) return;
+    var brief = document.querySelector(".zeichen-brief") || document.querySelector("#step3 .report-head"); if (!brief) return;
+    (brief.classList.contains("zeichen-brief") ? brief : brief).insertAdjacentHTML(brief.classList.contains("zeichen-brief") ? "beforebegin" : "afterend",
+      '<section class="ue-karte"><span class="ue-geschenk" aria-hidden="true"></span><p class="ue-titel">Deine Überraschung</p>' +
+      '<p class="ue-text">' + (document.querySelector(".wk-app") ? "Dein Geburtshimmel als Hintergrund für dein Handy und dein Bauplan als App auf deinem Startbildschirm. Beides wartet ab jetzt auf dich."
+        : "Dein Geburtshimmel als Hintergrund für dein Handy. Der Himmel über dir in der Minute deiner Geburt, jeden Tag in deiner Hand.") + '</p>' +
+      '<p class="ue-naechste">Und beim nächsten Mal wartet dein persönlicher Mondkalender.</p>' +
+      '<div class="ue-knoepfe"><button class="btn ue-himmel" type="button" style="width:auto">Mein Geburtshimmel ✦</button>' +
+      (document.querySelector(".wk-app") ? '<button class="btn btn-ghost ue-app" type="button" style="width:auto">Als App speichern</button>' : '') + '</div></section>');
+    zaehl("ueberraschung");
+    var k = document.querySelector(".ue-karte");
+    var h = k.querySelector(".ue-himmel"); if (h) h.addEventListener("click", function () { var b = document.querySelector(".pk-hintergrund"); if (b) { b.scrollIntoView({ behavior: "smooth", block: "center" }); setTimeout(function () { b.click(); }, 500); } });
+    var a = k.querySelector(".ue-app"); if (a) a.addEventListener("click", function () { var c = document.querySelector(".wk-app"); if (c) { c.scrollIntoView({ behavior: "smooth", block: "center" }); var det = c.querySelector("details"); if (det) det.open = true; } });
+  }
+
   /* ── Bericht: Lesezeichen „Hier anfangen“ an den drei Stellen aus Mail 2, Lesefortschritt der Kapitel ── */
   var ANFANG = ["Entscheidungsweg", "Schwierigkeiten"];
   function lesezeichen(d) {
@@ -1163,12 +1252,19 @@
   };
   var ELEMENT_WORT = { Feuer: "Antrieb und Begeisterung", Erde: "Halt und Umsetzung", Luft: "Gedanken und Austausch", Wasser: "Gefühl und Tiefe" };
 
-  var letzterBericht = null, ersterBesuch = true;
+  var letzterBericht = null, ersterBesuch = true, zweiterBesuch = false, besuchNr = 0;
   function bericht(d) {
     var f = d && d.full; if (!f) return;
     letzterBericht = d;
     // Beim ersten Lesen nur das Wesentliche: Story, Brief, Kapitel. App und Handy-Hintergrund kommen ab dem zweiten Besuch dazu.
-    try { ersterBesuch = !(+(localStorage.getItem("imh_besuch_" + bauplanSchluessel(d)) || 0) >= 1); } catch (e) { ersterBesuch = true; }
+    /* Besuchstage statt Seitenaufrufe: Neuladen am selben Tag zählt nicht als Wiederkommen.
+       Wer schon vor dieser Zählung da war (imh_besuch), beginnt mit einem Tag. */
+    try {
+      var schl0 = bauplanSchluessel(d), bn = +(localStorage.getItem("imh_besuch_" + schl0) || 0), heute = new Date().toDateString();
+      var tg = JSON.parse(localStorage.getItem("imh_tage_" + schl0) || "null") || { n: bn >= 1 ? 1 : 0, tag: "" };
+      if (tg.tag !== heute) { tg.n = (+tg.n || 0) + 1; tg.tag = heute; localStorage.setItem("imh_tage_" + schl0, JSON.stringify(tg)); }
+      besuchNr = tg.n - 1; ersterBesuch = besuchNr < 1; zweiterBesuch = besuchNr === 1;
+    } catch (e) { ersterBesuch = true; zweiterBesuch = false; besuchNr = 0; }
     tabTitel("Bauplan", d);
     var by = {}; (f.positions || []).forEach(function (p) { by[p.key] = p; });
     var sonne = by.Sonne, idx = sonne ? H.ZEICHEN.indexOf(sonne.sign) : -1;
@@ -1293,6 +1389,8 @@
     zeichenBrief(d);
     wrappedVorbereiten(d);
     weiter();
+    mondkalender(d);
+    ueberraschung();
     // Intuitionstyp und Elemente: die Element-Gravuren
     elementbilder(f);
     elementfunken(document.querySelector("#pane-in .intu-sketch"), f.intuition && ELBILD[f.intuition.key]);
