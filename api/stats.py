@@ -71,6 +71,7 @@ EXTRA = [
     ("spiegel_fertig", "Vorschau: alle drei Sätze beantwortet"),
     ("himmel_mit", "Empfehlung mit eigenem Himmel geteilt"),
     ("du_und", "Freundinnen-Vergleich gesehen"),
+    ("bestaetigt_insta", "Instagram von der Bestätigungsseite"),
 ]
 
 PAGE_CSS = """

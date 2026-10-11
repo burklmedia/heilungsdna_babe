@@ -416,14 +416,14 @@
       '<p>Alle Kapitel in einer PDF, rund 40 Seiten mit deinem Deckblatt. Zum Ausdrucken, Wiederlesen und Weitergeben an dich selbst in ein paar Monaten.</p>' +
       '<div class="pk-knoepfe"><button class="btn pk-pdf" type="button" style="width:auto">Als PDF speichern ↓</button>' +
       '<button class="btn btn-ghost pk-story" type="button" style="width:auto">Als Story teilen ✦</button>' +
-      '<button class="btn btn-ghost pk-hintergrund" type="button" style="width:auto">Als Handy-Hintergrund ✦</button></div>' +
+      (ersterBesuch ? '' : '<button class="btn btn-ghost pk-hintergrund" type="button" style="width:auto">Als Handy-Hintergrund ✦</button>') + '</div>' +
       '<p class="pk-hinweis">Story-Bild und Hintergrund zeigen deinen Namen und deine Zeichen. Geburtsdatum, Zeit und Ort bleiben bei dir.</p></div></section>';
     note.insertAdjacentHTML("beforebegin", html);
     var karte = document.querySelector(".pdf-karte");
     karte.querySelector(".pk-pdf").addEventListener("click", function () { zaehl("deckblatt"); $("pdfbtn").click(); });
     karte.querySelector(".pk-buehne").addEventListener("click", function () { zaehl("deckblatt"); $("pdfbtn").click(); });
     karte.querySelector(".pk-story").addEventListener("click", function () { storyTeilen(d, this); });
-    karte.querySelector(".pk-hintergrund").addEventListener("click", function () { hintergrundTeilen(d, this); });
+    var hg = karte.querySelector(".pk-hintergrund"); if (hg) hg.addEventListener("click", function () { hintergrundTeilen(d, this); });
     if (reduce) karte.classList.add("an"); else sichtbar(karte, function () { karte.classList.add("an"); }, { threshold: .3 });
   }
 
@@ -509,6 +509,7 @@
   function alsApp() {
     var ua = navigator.userAgent || "", standalone = (window.matchMedia && window.matchMedia("(display-mode: standalone)").matches) || navigator.standalone;
     if (standalone) { zaehl("app_start"); return null; }
+    if (ersterBesuch) return null;
     var ios = /iPhone|iPad|iPod/.test(ua), android = /Android/.test(ua), inApp = /Instagram|FBAN|FBAV|FB_IAB/.test(ua);
     if (!ios && !android) return null;
     var schritte = inApp ? "Öffne deinen Bauplan zuerst im Browser: oben rechts auf die drei Punkte tippen und „Im Browser öffnen“ wählen. Dann geht es von dort weiter."
@@ -1162,10 +1163,12 @@
   };
   var ELEMENT_WORT = { Feuer: "Antrieb und Begeisterung", Erde: "Halt und Umsetzung", Luft: "Gedanken und Austausch", Wasser: "Gefühl und Tiefe" };
 
-  var letzterBericht = null;
+  var letzterBericht = null, ersterBesuch = true;
   function bericht(d) {
     var f = d && d.full; if (!f) return;
     letzterBericht = d;
+    // Beim ersten Lesen nur das Wesentliche: Story, Brief, Kapitel. App und Handy-Hintergrund kommen ab dem zweiten Besuch dazu.
+    try { ersterBesuch = !(+(localStorage.getItem("imh_besuch_" + bauplanSchluessel(d)) || 0) >= 1); } catch (e) { ersterBesuch = true; }
     tabTitel("Bauplan", d);
     var by = {}; (f.positions || []).forEach(function (p) { by[p.key] = p; });
     var sonne = by.Sonne, idx = sonne ? H.ZEICHEN.indexOf(sonne.sign) : -1;

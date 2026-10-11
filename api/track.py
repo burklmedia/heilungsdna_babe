@@ -53,7 +53,7 @@ ALLOWED = {"visit", "himmel", "teaser", "email", "bauplan", "scroll", "pdf",
            # seit 11.10.2026: Erklärfilm auf der Startseite
            "film_start", "film_ton", "film_ende", "film_cta",
            # Aha-Momente in der Vorschau
-           "spiegel_ja", "spiegel_nein", "spiegel_fertig", "du_und", "himmel_mit"}
+           "spiegel_ja", "spiegel_nein", "spiegel_fertig", "du_und", "himmel_mit", "bestaetigt_insta"}
 
 
 def _count(event):
