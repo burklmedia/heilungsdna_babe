@@ -585,10 +585,21 @@
     var hatD = false; try { hatD = !!new URLSearchParams(location.search).get("d"); } catch (e) {}
     if (!hatD || document.querySelector(".hoeren-box")) return;
     pdf.insertAdjacentHTML("afterend", '<button class="btn btn-ghost hb-oben" style="width:auto;margin:0" type="button"><span aria-hidden="true">♪</span> Bauplan anhören</button>');
-    leiste.insertAdjacentHTML("afterend", '<div class="hoeren-box" hidden><audio controls preload="none" hidden></audio>' +
+    leiste.insertAdjacentHTML("afterend", '<div class="hoeren-box" hidden><button class="hb-zu" type="button" aria-label="Player schließen">×</button><audio controls preload="none" hidden></audio>' +
       '<p class="hb-klein">Lea liest dir das Wichtigste in rund zwei Minuten vor. Eine KI-Stimme.</p><p class="hb-info" aria-live="polite"></p></div>');
-    var hk = leiste.querySelector(".hb-oben");
-    hk.addEventListener("click", function () { document.querySelector(".hoeren-box").hidden = false; anhoeren(d, hk); });
+    var hk = leiste.querySelector(".hb-oben"), box = document.querySelector(".hoeren-box"), audio = box.querySelector("audio");
+    var LABEL = { start: '<span aria-hidden="true">♪</span> Bauplan anhören', pause: '<span aria-hidden="true">❚❚</span> Pause', weiter: '<span aria-hidden="true">♪</span> Weiterhören' };
+    // Der Knopf schaltet um: erst laden und abspielen, danach Pause und Weiterhören
+    hk.addEventListener("click", function () {
+      box.hidden = false;
+      if (audio.src && !audio.paused) { audio.pause(); return; }
+      if (audio.src) { audio.play(); return; }
+      anhoeren(d, hk);
+    });
+    audio.addEventListener("play", function () { hk.innerHTML = LABEL.pause; });
+    audio.addEventListener("pause", function () { if (!audio.ended) hk.innerHTML = LABEL.weiter; });
+    audio.addEventListener("ended", function () { hk.innerHTML = LABEL.start; });
+    box.querySelector(".hb-zu").addEventListener("click", function () { audio.pause(); box.hidden = true; if (audio.src) hk.innerHTML = LABEL.weiter; });
   }
 
   /* ── Aha-Momente in der Vorschau (seit 11.10.2026) ── */
@@ -724,14 +735,16 @@
       e.satz = "Er berührt dein " + e.haus + ". Haus: " + e.bedeutung + ". " + (e.art === "Neumond"
         ? "Ein guter Moment, dort etwas Neues zu beginnen." : "Was dort gewachsen ist, darf jetzt sichtbar werden.");
     });
-    var ziel = ueNeu ? obenAnker() : (document.querySelector(".roter-faden") || document.querySelector("#siegel-reihe")); if (!ziel) return;
-    ziel.insertAdjacentHTML("afterend", '<section class="mondkalender' + (ueNeu ? " neu" : "") + '">' +
-      (ueNeu ? '<span class="ue-geschenk" aria-hidden="true"></span><p class="mk-neu">Deine zweite Überraschung</p>' : '') +
+    var mkNeu = ueNeu && besuchNr === 2;
+    var ziel = mkNeu ? obenAnker() : (document.querySelector(".roter-faden") || document.querySelector("#siegel-reihe")); if (!ziel) return;
+    ziel.insertAdjacentHTML("afterend", '<section class="mondkalender' + (mkNeu ? " neu" : "") + '">' +
+      (mkNeu ? '<span class="ue-geschenk" aria-hidden="true"></span><p class="mk-neu">Deine zweite Überraschung</p>' : '') +
       '<p class="mk-titel">Dein Mondkalender</p><ol class="mk-liste">' + ev.map(function (e) {
         return '<li><span class="mk-mond ' + (e.art === "Neumond" ? "neu" : "voll") + '" aria-hidden="true"></span><span class="mk-inhalt"><b>' + esc(e.art) + " " + esc(H.IM[e.zeichen]) +
           '</b><span class="mk-datum">' + esc(e.datum) + '</span><span class="mk-satz">' + esc(e.satz) + '</span></span></li>';
-      }).join("") + '</ol><button class="btn btn-ghost mk-ics" type="button" style="width:auto">In meinen Kalender ✦</button></section>');
-    if (ueNeu) zaehl("mondkalender");
+      }).join("") + '</ol><button class="btn btn-ghost mk-ics" type="button" style="width:auto">In meinen Kalender ✦</button>' +
+      (mkNeu && ueFrei ? '<p class="ue-naechste">Die dritte Überraschung öffnet sich ' + esc(wannText(ueFrei[2])) + '. Ab dann wartet jeden Tag eine Karte aus deinem Bauplan auf dich.</p>' : '') + '</section>');
+    if (mkNeu) zaehl("mondkalender");
     document.querySelector(".mk-ics").addEventListener("click", function () {
       var url = location.origin + location.pathname + "?d=" + encodeURIComponent(new URLSearchParams(location.search).get("d") || "");
       function tag(t) { var x = new Date(t); return x.getFullYear() + ("0" + (x.getMonth() + 1)).slice(-2) + ("0" + x.getDate()).slice(-2); }
@@ -754,6 +767,50 @@
   }
 
   /* ── Wiederkommen lohnt sich: beim ersten Lesen der Hinweis auf eine Überraschung, beim zweiten Öffnen die Überraschung selbst ── */
+  /* ── Dritte Überraschung ab 72 h: „Deine Karte für heute“. Eine verdeckte Karte zum Umdrehen, darauf ein Merksatz
+        aus dem eigenen Bauplan und ein Impuls aus „Deine Tools und Impulse“. Jeden Tag eine andere, den ganzen Tag dieselbe. ── */
+  function tageskarte(d) {
+    var alt = document.querySelector(".tageskarte"); if (alt) alt.remove();
+    if (besuchNr < 3) return;
+    var f = d.full || {}, deck = [], impulse = [];
+    (f.sections || []).forEach(function (s) {
+      var t = String(s.takeaway || "").trim(); if (!t) return;
+      var m = t.match(/^([^:]{2,32}):\s*(.+)$/); if (m) t = m[2].charAt(0).toUpperCase() + m[2].slice(1);
+      deck.push({ titel: s.title || "", satz: gendern(t, d) });
+    });
+    (f.sections || []).forEach(function (s) {
+      if (!/Tools/.test(s.title || "")) return;
+      var roh = Array.isArray(s.body) ? s.body.join("\n") : String(s.body || "");
+      roh = roh.replace(/<li[^>]*>/gi, "\n• ").replace(/<[^>]+>/g, "\n");
+      roh.split("•").slice(1).forEach(function (z) { z = z.split(/\n/)[0].trim(); if (z.length > 8) impulse.push(z); });
+    });
+    if (deck.length < 3) return;
+    var schl = bauplanSchluessel(d), seed = 0, jetzt = new Date();
+    for (var i = 0; i < schl.length; i++) seed = (seed * 31 + schl.charCodeAt(i)) >>> 0;
+    var tagNr = Math.floor((new Date(jetzt.getFullYear(), jetzt.getMonth(), jetzt.getDate()) - new Date(2026, 0, 1)) / 864e5);
+    var karte = deck[(tagNr + seed) % deck.length], impuls = impulse.length ? impulse[(tagNr + (seed >>> 3)) % impulse.length] : "";
+    var gezogen = false; try { gezogen = localStorage.getItem("imh_karte_" + schl) === String(tagNr); } catch (e) {}
+    var neu = ueNeu && besuchNr === 3, anker = obenAnker(); if (!anker) return;
+    anker.insertAdjacentHTML("afterend", '<section class="tageskarte' + (neu ? " neu" : "") + '">' +
+      (neu ? '<span class="ue-geschenk" aria-hidden="true"></span><p class="mk-neu">Deine dritte Überraschung</p>' : '') +
+      '<p class="mk-titel">Deine Karte für heute</p>' +
+      '<p class="tgk-lead">Eine Karte aus deinem eigenen Bauplan. Dreh sie um, lies sie in Ruhe und spür nach, wo sie dich heute berührt.</p>' +
+      '<button class="tgk-karte' + (gezogen ? " offen" : "") + '" type="button" aria-label="Karte umdrehen"><span class="tgk-innen">' +
+        '<span class="tgk-rueck" aria-hidden="true"><span class="tgk-stern">✦</span></span>' +
+        '<span class="tgk-vorn"><span class="tgk-kapitel">' + esc(karte.titel) + '</span><span class="tgk-satz">' + esc(karte.satz) + '</span>' +
+        (impuls ? '<span class="tgk-impuls"><b>Dein Impuls für heute</b>' + esc(impuls) + '</span>' : '') + '</span>' +
+      '</span></button><p class="tgk-morgen"' + (gezogen ? '' : ' hidden') + '>Morgen wartet die nächste Karte auf dich.</p></section>');
+    if (neu) zaehl("tageskarte");
+    var k = document.querySelector(".tgk-karte");
+    k.addEventListener("click", function () {
+      if (k.classList.contains("offen")) return;
+      k.classList.add("offen"); k.setAttribute("aria-label", "Deine Karte für heute");
+      try { localStorage.setItem("imh_karte_" + schl, String(tagNr)); } catch (e) {}
+      setTimeout(function () { var mo = document.querySelector(".tgk-morgen"); if (mo) mo.hidden = false; }, reduce ? 0 : 700);
+      zaehl("tageskarte_gezogen");
+    });
+  }
+
   // Oben unter der Knopfleiste, damit sie beim Öffnen sofort ins Auge fallen
   function obenAnker() { return document.querySelector("#step3 .hoeren-box") || document.querySelector("#step3 .bericht-leiste"); }
   function wannText(ts) {
@@ -1215,9 +1272,9 @@
         localStorage.setItem("imh_erst_" + schl0, String(erst));
       }
       var std = (jetzt - erst) / 36e5, gesehen = +(localStorage.getItem("imh_ue_" + schl0) || 0);
-      besuchNr = std >= 48 ? 2 : std >= 24 ? 1 : 0;
+      besuchNr = std >= 72 ? 3 : std >= 48 ? 2 : std >= 24 ? 1 : 0;
       ueNeu = besuchNr > gesehen; if (ueNeu) localStorage.setItem("imh_ue_" + schl0, String(besuchNr));
-      ueFrei = [erst + 864e5, erst + 2 * 864e5];
+      ueFrei = [erst + 864e5, erst + 2 * 864e5, erst + 3 * 864e5];
       ersterBesuch = besuchNr < 1; zweiterBesuch = besuchNr === 1;
     } catch (e) { ersterBesuch = true; zweiterBesuch = false; besuchNr = 0; ueNeu = false; ueFrei = null; }
     tabTitel("Bauplan", d);
@@ -1345,6 +1402,7 @@
     hoerenVorbereiten(d);
     weiter();
     mondkalender(d);
+    tageskarte(d);
     ueberraschung();
     // Intuitionstyp und Elemente: die Element-Gravuren
     elementbilder(f);

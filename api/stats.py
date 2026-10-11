@@ -75,6 +75,8 @@ EXTRA = [
     ("mondkalender_ics", "Mondtermine in den Kalender geladen"),
     ("inhalt_seite", "Startseite: Kapitel im Inhalt angetippt"),
     ("link_speichern", "Bericht: Link für die Überraschung gespeichert"),
+    ("tageskarte", "Dritte Überraschung: Karte für heute freigeschaltet"),
+    ("tageskarte_gezogen", "Karte für heute umgedreht"),
 ]
 
 PAGE_CSS = """

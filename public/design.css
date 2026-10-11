@@ -2136,3 +2136,45 @@ p, li, figcaption, summary, blockquote, dd, .mail-sub, .seal-sub, .seal-text, .w
 .ue-info:empty { display: none; }
 .ue-karte .ue-naechste { margin-top: 16px !important; }
 .mondkalender .ue-geschenk { margin-bottom: 8px; }
+
+/* Bauplan anhören: am Desktop liegt die Knopfleiste über dem Deckblatt, der Player schwebt deshalb als kleines Fenster darunter (11.10.2026) */
+.hoeren-box { padding: 16px 18px 12px; border-radius: 14px; background: rgba(14,12,30,.9); box-shadow: 0 0 0 1px rgba(226,196,134,.38), 0 24px 60px -24px rgba(0,0,0,.9); }
+.hoeren-box[hidden] { display: none; }
+.hb-zu { position: absolute; top: 6px; right: 8px; width: 30px; height: 30px; border: 0; border-radius: 50%; background: transparent; color: #e2c486; font-size: 22px; line-height: 1; cursor: pointer; }
+.hb-zu:hover { background: rgba(226,196,134,.12); }
+.hoeren-box audio { margin-top: 18px; }
+@media (min-width: 901px) {
+  #step3 .hoeren-box { position: absolute; z-index: 7; top: 84px; right: max(4vw, calc(50% - 680px)); width: 400px; margin: 0;
+    -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); }
+  /* Überraschungen oben: unter der schwebenden Leiste beginnen (flow-root, sonst schiebt der Abstand die Leiste mit) */
+  #step3 > .bericht-wrap { display: flow-root; }
+  #step3 > .bericht-wrap > .ue-hinweis, #step3 > .bericht-wrap > .ue-karte, #step3 > .bericht-wrap > .mondkalender { margin-top: 116px; margin-bottom: 0; }
+}
+
+/* Dritte Überraschung: Deine Karte für heute (11.10.2026) */
+.tageskarte { max-width: 620px; margin: 6px auto 30px; padding: 24px 20px 22px; border-radius: 18px; text-align: center;
+  border: 1px solid rgba(226,196,134,.28); background: rgba(14,12,30,.5); }
+.tageskarte.neu { border-color: rgba(243,220,166,.7); box-shadow: 0 0 0 1px rgba(226,196,134,.25), 0 0 60px -18px rgba(226,196,134,.75); }
+.tgk-lead { margin: -6px auto 18px !important; max-width: 42ch; font-size: 15.5px; line-height: 1.55; color: #d3cde0; }
+.tgk-karte { display: block; width: min(300px, 86%); aspect-ratio: 5 / 7.4; margin: 0 auto; padding: 0; border: 0; background: none; cursor: pointer; perspective: 1400px; font: inherit; color: inherit; }
+.tgk-karte.offen { cursor: default; }
+.tgk-innen { position: relative; display: block; width: 100%; height: 100%; transform-style: preserve-3d; transition: transform 1s cubic-bezier(.3,.7,.2,1); }
+.tgk-karte.offen .tgk-innen { transform: rotateY(180deg); }
+.tgk-rueck, .tgk-vorn { position: absolute; inset: 0; border-radius: 14px; -webkit-backface-visibility: hidden; backface-visibility: hidden; overflow: hidden; }
+.tgk-rueck { display: grid; place-items: center;
+  background: radial-gradient(circle at 50% 50%, rgba(226,196,134,.22) 0 16%, transparent 17%),
+    repeating-radial-gradient(circle at 50% 50%, transparent 0 22px, rgba(226,196,134,.12) 23px 24px),
+    linear-gradient(160deg, #221c40, #120f26);
+  box-shadow: inset 0 0 0 1px rgba(226,196,134,.7), inset 0 0 0 8px #15122b, inset 0 0 0 9px rgba(226,196,134,.35), 0 26px 60px -24px rgba(0,0,0,.95); }
+.tgk-stern { font-size: 44px; color: #f3dca6; text-shadow: 0 0 24px rgba(243,220,166,.8); animation: ue-funkeln 2.6s ease-in-out infinite; }
+.tgk-karte:not(.offen):hover .tgk-innen { transform: translateY(-4px) rotateY(8deg); }
+.tgk-vorn { transform: rotateY(180deg); display: flex; flex-direction: column; justify-content: center; gap: 14px; padding: 26px 22px;
+  background: radial-gradient(120% 70% at 50% 0%, rgba(226,196,134,.16), transparent 60%), linear-gradient(180deg, #1f1a36, #15122a);
+  box-shadow: inset 0 0 0 1px rgba(226,196,134,.75), inset 0 0 0 8px #17132b, inset 0 0 0 9px rgba(226,196,134,.3), 0 26px 60px -24px rgba(0,0,0,.95); }
+.tgk-kapitel { font-family: var(--serif); font-style: italic; font-size: 15px; color: #e2c486; }
+.tgk-satz { font-family: var(--serif); font-size: 21px; line-height: 1.4; color: #f6f1e8; text-wrap: balance; }
+.tgk-impuls { display: block; padding-top: 12px; border-top: 1px solid rgba(226,196,134,.25); font-size: 14px; line-height: 1.5; color: #d3cde0; text-wrap: balance; }
+.tgk-impuls b { display: block; margin-bottom: 4px; font-family: var(--serif); font-style: italic; font-weight: 400; font-size: 14px; color: #e2c486; }
+.tgk-morgen { margin: 16px 0 0 !important; font-family: var(--serif); font-style: italic; color: #f3dca6; font-size: 15px; }
+@media (min-width: 901px) { #step3 > .bericht-wrap > .tageskarte { margin-top: 116px; margin-bottom: 0; } }
+@media (prefers-reduced-motion: reduce) { .tgk-innen { transition: none; } .tgk-stern { animation: none; } }
