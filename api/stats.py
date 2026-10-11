@@ -35,6 +35,8 @@ STEPS = [
 EXTRA = [
     ("scroll", "Startseite gelesen (>60%)"),
     ("pdf", "Bauplan als PDF geöffnet (Aufrufe)"),
+    ("grusston", "Videogruß: Ton eingeschaltet"),
+    ("grussende", "Videogruß bis zum Ende angesehen"),
     ("bestaetigt", "Bestätigungsseite geöffnet"),
     ("kontakt", "Denise als Kontakt gespeichert"),
     ("karte", "Vorschau: Karte aufgedeckt"),

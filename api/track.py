@@ -15,6 +15,7 @@ Erlaubte Ereignisse:
   deckblatt, story, folgen, frage  Bericht: PDF über die Deckblatt-Karte, Story-Bild, Instagram, Frage an Denise
   zurueck                          Bericht ein weiteres Mal geöffnet (auf demselben Gerät)
   bestaetigt, kontakt              Bestätigungsseite geöffnet, Kontaktkarte geladen
+  grusston, grussende              Videogruß im Pop-up: Ton eingeschaltet, bis zum Ende angesehen
 """
 from http.server import BaseHTTPRequestHandler
 from urllib.parse import urlparse, parse_qs
@@ -36,7 +37,9 @@ except Exception:  # noqa
 ALLOWED = {"visit", "himmel", "teaser", "email", "bauplan", "scroll", "pdf",
            # seit 10.10.2026 (Runde 8): Erlebnis-Elemente, je Sitzung höchstens einmal
            "karte", "siegeldreh", "himmelpunkt", "deckblatt", "story", "kontakt",
-           "bestaetigt", "folgen", "frage", "zurueck"}
+           "bestaetigt", "folgen", "frage", "zurueck",
+           # seit 11.10.2026: Videogruß von Denise im Pop-up nach dem Eintragen
+           "grusston", "grussende"}
 
 
 def _count(event):

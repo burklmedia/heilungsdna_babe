@@ -1639,9 +1639,13 @@
 
 <div id="sent" data-nosnippet role="dialog" aria-modal="true" aria-labelledby="sent-title">
   <div class="cookie-card">
-    <span class="spark">✦</span>
+    <figure class="gruss-pop" id="gruss-pop">
+      <video id="gruss-video" src="/bilder/denise-gruss.mp4" poster="/bilder/denise-gruss.jpg" muted playsinline preload="none" aria-label="Videogruß von Denise"></video>
+      <p class="gruss-zeile" id="gruss-zeile" aria-hidden="true"></p>
+      <button class="gruss-ton" id="gruss-ton" type="button"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M4 9h4l5-4v14l-5-4H4z" fill="currentColor"/><path d="M16.5 8.5a5 5 0 0 1 0 7M19 6a8.5 8.5 0 0 1 0 12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg> Ton an</button>
+    </figure>
     <div class="st" id="sent-title">Deine komplette Auswertung kommt <em>per E-Mail</em></div>
-    <p>Ich habe dir gerade eine E-Mail an <b id="sent-to"></b> geschickt. Bitte bestätige darin kurz deine E-Mail-Adresse, danach bekommst du deinen vollständigen Bauplan als PDF.</p>
+    <p>Ich habe dir gerade eine E-Mail an <b id="sent-to"></b> geschickt. Ein Klick auf den Button darin, dann bekommst du deinen vollständigen Bauplan als PDF.</p>
     <p class="sent-hint">Keine Mail da? Schau auch im Spam- oder Werbung-Ordner nach.</p>
     <button class="cbtn" id="sent-ok" type="button">Alles klar</button>
   </div>
@@ -2172,11 +2176,47 @@
     var st=document.getElementById('sent-to'); if(st) st.textContent=email;
     var fc=document.getElementById('floatcta2'); if(fc) fc.classList.remove('show');
     var warte=(window.Erlebnis&&Erlebnis.gesendet)?Erlebnis.gesendet(document.getElementById('go2')):0;
-    var m=document.getElementById('sent'); if(m) setTimeout(function(){ m.classList.add('show'); }, warte||0);
+    var m=document.getElementById('sent'); if(m) setTimeout(function(){ m.classList.add('show'); Gruss.start(); }, warte||0);
   }
   var sentOk=document.getElementById('sent-ok');
   if(sentOk) sentOk.addEventListener('click',function(){
-    var m=document.getElementById('sent'); if(m) m.classList.remove('show'); });
+    var m=document.getElementById('sent'); if(m) m.classList.remove('show'); Gruss.stop(); });
+
+  /* ── Videogruß von Denise im Pop-up: startet stumm mit Untertiteln, Antippen schaltet den Ton ein und spielt von vorn ── */
+  var Gruss=(function(){
+    var v=document.getElementById('gruss-video'), z=document.getElementById('gruss-zeile'),
+        b=document.getElementById('gruss-ton'), fig=document.getElementById('gruss-pop'), raf=0, an=false;
+    var ICO_TON='<svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M4 9h4l5-4v14l-5-4H4z" fill="currentColor"/><path d="M16.5 8.5a5 5 0 0 1 0 7M19 6a8.5 8.5 0 0 1 0 12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>';
+    var ZEILEN=[[0.55,1.95,'Hallo, du liebe Seele.'],[2.15,3.4,'Ich bin Denise.'],[3.7,5.3,'Schön, dass du da bist.'],
+      [5.75,7.6,'Dein Bauplan ist schon fertig berechnet.'],[7.78,9.55,'Jetzt fehlt nur noch ein Klick von dir.'],
+      [9.8,10.9,'Schau mal in deinem Postfach.'],[10.92,12.5,'Da liegt eine Mail von mir'],
+      [12.5,14.1,'und darin ein Button zum Bestätigen.'],[14.3,15.05,'Siehst du nichts?'],
+      [15.1,17.2,'Dann guck kurz in Spam oder bei Werbung nach.'],[17.26,18.9,'Da landet sie gern manchmal.'],
+      [19.58,21.9,'Und dann nimm dir ruhig einen Moment für dich.'],[23.1,24.95,'Ich freue mich so sehr, dass du da bist.'],
+      [25.18,27.1,'Viel Spaß beim Lesen.']];
+    if(!v) return {start:function(){},stop:function(){}};
+    function zeile(){ var t=v.currentTime,txt='';
+      for(var i=0;i<ZEILEN.length;i++){ if(t>=ZEILEN[i][0]&&t<ZEILEN[i][1]){ txt=ZEILEN[i][2]; break; } }
+      if(z.textContent!==txt){ z.textContent=txt; z.classList.toggle('an',!!txt); } }
+    function loop(){ zeile(); raf=requestAnimationFrame(loop); }
+    function knopf(t){ b.innerHTML=t; b.hidden=false; }
+    v.addEventListener('play',function(){ cancelAnimationFrame(raf); loop(); fig.classList.add('laeuft'); });
+    v.addEventListener('timeupdate',zeile);   // falls requestAnimationFrame gedrosselt ist
+    v.addEventListener('pause',function(){ cancelAnimationFrame(raf); fig.classList.remove('laeuft'); });
+    v.addEventListener('ended',function(){ z.textContent=''; z.classList.remove('an');
+      if(an) track('grussende'); knopf('<svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M20 12a8 8 0 1 1-2.6-5.9M20 4v4.5h-4.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg> Nochmal ansehen'); });
+    function mitTon(){ an=true; v.muted=false; v.currentTime=0; b.hidden=true;
+      var p=v.play(); if(p&&p.catch) p.catch(function(){}); track('grusston'); }
+    function tippen(){ if(v.ended||!an){ mitTon(); return; } if(v.paused){ v.play(); } else { v.pause(); } }
+    b.addEventListener('click',function(e){ e.stopPropagation(); mitTon(); });
+    v.addEventListener('click',tippen);
+    return {
+      start:function(){ v.preload='auto'; v.muted=true; an=false; knopf(ICO_TON+' Ton an');
+        if(reduce) return;   // bei reduzierter Bewegung erst auf Antippen
+        try{ v.currentTime=0; }catch(e){} var p=v.play(); if(p&&p.catch) p.catch(function(){}); },
+      stop:function(){ v.pause(); }
+    };
+  })();
 
   var pdfbtn=document.getElementById('pdfbtn');
   if(pdfbtn) pdfbtn.addEventListener('click',function(){
