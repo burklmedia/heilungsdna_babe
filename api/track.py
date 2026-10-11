@@ -16,6 +16,7 @@ Erlaubte Ereignisse:
   zurueck                          Bericht ein weiteres Mal geöffnet (auf demselben Gerät)
   bestaetigt, kontakt              Bestätigungsseite geöffnet, Kontaktkarte geladen
   grusston, grussende              Videogruß im Pop-up: Ton eingeschaltet, bis zum Ende angesehen
+  empfehlen                        Bericht: "Schenk ihn einer Freundin" angetippt
 """
 from http.server import BaseHTTPRequestHandler
 from urllib.parse import urlparse, parse_qs
@@ -39,7 +40,9 @@ ALLOWED = {"visit", "himmel", "teaser", "email", "bauplan", "scroll", "pdf",
            "karte", "siegeldreh", "himmelpunkt", "deckblatt", "story", "kontakt",
            "bestaetigt", "folgen", "frage", "zurueck",
            # seit 11.10.2026: Videogruß von Denise im Pop-up nach dem Eintragen
-           "grusston", "grussende"}
+           "grusston", "grussende",
+           # seit 11.10.2026: Bauplan an eine Freundin weiterempfohlen (Karte am Berichtsende)
+           "empfehlen"}
 
 
 def _count(event):

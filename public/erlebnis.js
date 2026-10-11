@@ -589,9 +589,22 @@
       '<a class="wk" href="https://www.instagram.com/intuitionmitherz/" target="_blank" rel="noopener" data-ev="folgen"><span class="wk-titel">Folge mir auf Instagram</span><span class="wk-text">Impulse rund um Intuition, Grenzen und das, was in deinem Bauplan steckt.</span><span class="wk-mehr">@intuitionmitherz ✦</span></a>',
       '<a class="wk" href="https://ig.me/m/intuitionmitherz" target="_blank" rel="noopener" data-ev="frage"><span class="wk-titel">Frag mich direkt</span><span class="wk-text">Schreib mir, welche Stelle in deinem Bauplan dich gerade am meisten beschäftigt.</span><span class="wk-mehr">Nachricht schreiben ✦</span></a>'
     ];
+    karten.push('<a class="wk wk-teilen" href="https://bauplan.intuitionmitherz.de/?q=freundin" data-ev="empfehlen"><span class="wk-titel">Schenk ihn einer Freundin</span><span class="wk-text">Kennst du eine Frau, die alle anderen spürt, nur sich selbst kaum? Schick ihr ihren eigenen Bauplan.</span><span class="wk-mehr">Link verschicken ✦</span></a>');
     if (LIEBE_LIVE) karten.push('<a class="wk" href="https://liebe.intuitionmitherz.de/?q=bauplan-bericht" data-ev="liebe"><span class="wk-titel">Wenn dein Himmel auf einen anderen trifft</span><span class="wk-text">Die Kosmische Liebesanalyse für dich und einen Menschen, der dir nah ist.</span><span class="wk-mehr">Ansehen ✦</span></a>');
     note.insertAdjacentHTML("beforebegin", '<section class="weiter"><div class="script-eyebrow">Wie geht es für dich weiter?</div><div class="wk-reihe">' + karten.join("") + '</div></section>');
     document.querySelector(".weiter").addEventListener("click", function (e) { var a = e.target.closest("[data-ev]"); if (a) zaehl(a.getAttribute("data-ev")); });
+    // Weiterempfehlung: am Handy das Teilen-Menü, sonst Link kopieren. Herkunft ?q=freundin landet in AC-Feld 8.
+    var teilen = document.querySelector(".wk-teilen");
+    if (teilen) teilen.addEventListener("click", function (e) {
+      e.preventDefault();
+      var url = teilen.href, mehr = teilen.querySelector(".wk-mehr");
+      var text = "Ich habe gerade meinen Kosmischen Bauplan von Denise gelesen. Hol dir deinen auch, er ist ein Geschenk:";
+      function fertig(t) { if (mehr) { mehr.textContent = t; setTimeout(function () { mehr.textContent = "Link verschicken ✦"; }, 2600); } }
+      if (navigator.share) { navigator.share({ title: "Dein Kosmischer Bauplan", text: text, url: url }).catch(function () {}); return; }
+      function whatsapp() { window.open("https://wa.me/?text=" + encodeURIComponent(text + " " + url), "_blank", "noopener"); }
+      if (navigator.clipboard) { navigator.clipboard.writeText(text + " " + url).then(function () { fertig("Link kopiert ✦"); }, whatsapp); return; }
+      whatsapp();
+    });
   }
 
   /* ── Startseite: Goldfolie auf den Schmuckwörtern glänzt einmal auf, wenn sie ins Bild kommen ── */

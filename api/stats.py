@@ -47,6 +47,7 @@ EXTRA = [
     ("story", "Story-Bild geteilt oder gespeichert"),
     ("folgen", "Instagram-Link am Berichtsende"),
     ("frage", "Frage an Denise geklickt"),
+    ("empfehlen", "Bauplan an eine Freundin weiterempfohlen"),
 ]
 
 PAGE_CSS = """
