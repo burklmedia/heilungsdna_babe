@@ -538,7 +538,14 @@
         g.lineWidth = 2; g.strokeStyle = "#e2c486"; g.shadowColor = "rgba(226,196,134,.7)"; g.shadowBlur = 24; g.stroke(); g.shadowBlur = 0;
         g.beginPath(); g.arc(cx, y, 64, 0, Math.PI * 2); g.setLineDash([2, 7]); g.lineWidth = 1.5; g.stroke(); g.setLineDash([]);
         g.fillStyle = "#f3dca6"; g.font = x.sym ? '64px "Apple Symbols", "Segoe UI Symbol", "Noto Sans Symbols 2", serif' : '500 54px "Cormorant Garamond", Georgia, serif';
-        g.fillText(x.g, cx, y + (x.sym ? 22 : 18));
+        // Sichtbares Zeichen genau in die Kreismitte setzen: Symbolschriften haben ungleiche Ränder,
+        // deshalb nach der gemessenen Zeichenbox zentrieren statt nach der Schriftbox
+        var zeichenText = x.sym ? String(x.g).replace(/\uFE0E/g, "") : x.g;
+        g.textAlign = "left"; g.textBaseline = "alphabetic";
+        var mz = g.measureText(zeichenText);
+        var li = mz.actualBoundingBoxLeft || 0, re = mz.actualBoundingBoxRight || mz.width, ob = mz.actualBoundingBoxAscent || 40, un = mz.actualBoundingBoxDescent || 0;
+        g.fillText(zeichenText, cx - (re - li) / 2, y + (ob - un) / 2);
+        g.textAlign = "center";
         g.fillStyle = "#e2c486"; g.font = '600 16px "Mulish", sans-serif'; if ("letterSpacing" in g) g.letterSpacing = "2px";
         g.fillText(x.l.toUpperCase(), cx, y + 122, schritt - 10); if ("letterSpacing" in g) g.letterSpacing = "0px";
         // Werte: bei Bedarf auf zwei Zeilen
