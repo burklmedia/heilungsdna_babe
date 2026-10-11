@@ -1827,3 +1827,59 @@ header.hero .card h3, header.hero .card > .hint { text-align: center; }
   border-bottom: 1px solid rgba(226,196,134,.35); padding-bottom: 2px; }
 .sent-insta:hover { color: #f3dca6; border-color: rgba(243,220,166,.8); }
 @media (prefers-reduced-motion: reduce) { .vollendet.neu .vd-siegel { animation: none; } }
+
+/* Runde 16: weniger Großbuchstaben im Hero, Hilfe zur Geburtszeit, echte Seiten zum Blättern, Aufklappen */
+header.hero h1.hero-title .hero-systems { text-transform: none; font-family: var(--serif); font-style: italic; font-weight: 400; letter-spacing: .02em;
+  font-size: clamp(16px, 1.5vw, 19px); color: #e2c486; white-space: normal; }
+.hero-tag { text-transform: none; letter-spacing: .01em; font-size: clamp(19px, 4.6cqw, 25px); line-height: 1.45; color: #f6f1e8; }
+.hero-tag em { letter-spacing: 0; }
+@media (max-width: 760px) {
+  header.hero h1.hero-title .hero-systems { font-size: 15.5px; letter-spacing: .01em; line-height: 1.5; }
+  .hero-tag { font-size: 20px; }
+}
+
+.zeit-hilfe { margin: 8px 0 0; }
+.zeit-hilfe summary { display: inline-flex; align-items: center; gap: 6px; cursor: pointer; list-style: none; font-family: var(--serif); font-style: italic; font-size: 15.5px;
+  color: #d6cde6; border-bottom: 1px dotted rgba(226,196,134,.5); padding-bottom: 1px; }
+.zeit-hilfe summary::-webkit-details-marker { display: none; }
+.zeit-hilfe summary::before { content: "?"; display: inline-grid; place-items: center; width: 17px; height: 17px; border-radius: 50%; font: 700 11px/1 var(--sans); font-style: normal;
+  color: #1d1733; background: #e2c486; }
+.zeit-hilfe[open] summary { color: #f3dca6; }
+.zeit-hilfe p { margin: 8px 0 2px; font-size: 13.5px; line-height: 1.6; color: #c4bad8; }
+
+#beispiel .example-grid { align-items: center; }
+.blaetter { margin: 0; text-align: center; }
+.bl-stapel { position: relative; width: min(360px, 74vw); aspect-ratio: 760 / 1075; margin: 10px auto 0; perspective: 1700px; cursor: pointer; touch-action: pan-y; }
+.bl-seite { position: absolute; inset: 0; width: 100%; height: 100%; border-radius: 3px; object-fit: cover; transform-origin: 0% 50%; backface-visibility: hidden;
+  z-index: calc(10 - var(--k, 0));
+  transform: translate(calc(var(--k, 0) * 9px), calc(var(--k, 0) * -7px)) rotate(calc(var(--k, 0) * 1.6deg));
+  filter: brightness(calc(1 - var(--k, 0) * .16));
+  opacity: calc(1 - max(0, var(--k, 0) - 2) * 1);
+  box-shadow: 0 0 0 1px rgba(226,196,134,.32), 0 24px 50px -22px rgba(0,0,0,.85);
+  transition: transform .65s cubic-bezier(.3,.7,.2,1), filter .65s, opacity .65s; }
+.bl-seite.vorn { box-shadow: 0 0 0 1px rgba(243,220,166,.55), 0 30px 70px -26px rgba(0,0,0,.9), 0 0 60px -24px rgba(226,196,134,.55); }
+.bl-seite.weg { z-index: 11; transform: rotateY(-118deg) translateX(-6%); opacity: 0; filter: brightness(.7); }
+.bl-leiste { display: flex; align-items: center; justify-content: center; gap: 14px; margin-top: 22px; }
+.bl-pfeil { width: 40px; height: 40px; border-radius: 50%; border: 1px solid rgba(226,196,134,.5); background: rgba(14,13,32,.6); color: #f3dca6; font: 22px/1 var(--serif);
+  cursor: pointer; transition: background .25s, border-color .25s; }
+.bl-pfeil:hover { background: rgba(226,196,134,.14); border-color: #f3dca6; }
+.bl-zahl { min-width: 120px; font-family: var(--serif); font-style: italic; font-size: 17px; color: var(--ink-soft, #c4bad8); }
+.bl-zahl b { font-style: normal; font-weight: 500; color: #c9a560; }
+.bl-hinweis { margin: 10px auto 0 !important; max-width: 40ch; font-size: 12.5px !important; line-height: 1.5 !important; color: var(--ink-mute, #8a84a6) !important; }
+@media (prefers-reduced-motion: reduce) { .bl-seite { transition: none; } }
+
+.aufklapp { max-width: 1180px; margin: 30px auto 0; text-align: center; }
+.aufklapp > summary { display: inline-flex; align-items: center; gap: 12px; cursor: pointer; list-style: none; padding: 13px 22px; border-radius: 2px;
+  font-family: var(--sans); font-size: 12px; font-weight: 700; letter-spacing: .16em; text-transform: uppercase; color: #8a6b2e;
+  box-shadow: inset 0 0 0 1px rgba(201,165,96,.6); transition: background .25s; }
+.aufklapp > summary::-webkit-details-marker { display: none; }
+.aufklapp > summary:hover { background: rgba(201,165,96,.1); }
+.aufklapp .ak-zeichen { font: 400 20px/1 var(--serif); transition: transform .3s; }
+.aufklapp[open] .ak-zeichen { transform: rotate(45deg); }
+.aufklapp[open] > .rechnung-grid { animation: aufklappAuf .5s cubic-bezier(.2,.7,.2,1); }
+.aufklapp .rechnung-schluss { text-align: center; }
+@keyframes aufklappAuf { from { opacity: 0; transform: translateY(-8px); } }
+#beispiel .bl-pfeil { background: transparent; color: #8a6b2e; border-color: rgba(201,165,96,.75); }
+#beispiel .bl-pfeil:hover { background: rgba(201,165,96,.12); border-color: #8a6b2e; }
+#beispiel .bl-zahl { color: #5d566f; }
+#beispiel .bl-zahl b { color: #8a6b2e; }

@@ -161,6 +161,10 @@
       "dest": "/public/index.html"
     },
     {
+      "src": "/geschenk/?",
+      "dest": "/public/geschenk.html"
+    },
+    {
       "src": "/feedback",
       "dest": "/public/feedback.html"
     },
