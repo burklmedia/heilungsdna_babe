@@ -1883,3 +1883,13 @@ header.hero h1.hero-title .hero-systems { text-transform: none; font-family: var
 #beispiel .bl-pfeil:hover { background: rgba(201,165,96,.12); border-color: #8a6b2e; }
 #beispiel .bl-zahl { color: #5d566f; }
 #beispiel .bl-zahl b { color: #8a6b2e; }
+
+/* Runde 17: KI-Porträt von Denise an der Formularkarte, größer mit Mondschein (Galerie-Variante 5) */
+.karte-denise { width: 108px; height: 108px; top: -54px; margin-left: -54px;
+  box-shadow: 0 0 0 5px rgba(12,10,28,.72), 0 0 60px 6px rgba(243,220,166,.42), 0 0 120px 20px rgba(226,196,134,.2); }
+header.hero .card { padding-top: 66px; }
+@media (max-width: 1100px) { .hero-in { row-gap: 74px; } }
+@media (max-width: 760px) {
+  .karte-denise { width: 100px; height: 100px; top: -50px; margin-left: -50px; }
+  header.hero .card { padding-top: 62px; }
+}
