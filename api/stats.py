@@ -62,6 +62,10 @@ EXTRA = [
     ("wrapped", "Bauplan in 60 Sekunden gestartet"),
     ("wrapped_ende", "Bauplan in 60 Sekunden bis zum Ende gesehen"),
     ("hoeren", "Bauplan von Lea vorlesen lassen"),
+    ("film_start", "Erklärfilm angelaufen (stumm)"),
+    ("film_ton", "Erklärfilm mit Ton gestartet"),
+    ("film_ende", "Erklärfilm bis zum Ende gesehen"),
+    ("film_cta", "Knopf unter dem Erklärfilm"),
 ]
 
 PAGE_CSS = """

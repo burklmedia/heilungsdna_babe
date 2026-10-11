@@ -1217,6 +1217,24 @@
 
   <!-- PAIN -->
   <!-- PROLOG: die Worte aus dem Hero, groß und ruhig gesetzt -->
+  <!-- ERKLÄRFILM (seit 11.10.2026): hochkant bis 699 px Breite, sonst quer; startet stumm mit eingebrannten Untertiteln, sobald er zur Hälfte zu sehen ist -->
+  <section class="night band film-band" id="film" data-sterne>
+    <div class="wrap">
+      <div class="sec-head center">
+        <div class="script-eyebrow">In 90 Sekunden</div>
+        <h2>Wie oft hast du heute schon <span class="script">„Gut“</span> gesagt?</h2>
+      </div>
+      <figure class="erklaerfilm" id="erklaerfilm">
+        <video id="film-video" muted playsinline preload="none" aria-label="Erklärfilm: So entsteht dein Kosmischer Bauplan"
+               data-hoch="/bilder/film/so-entsteht-hoch.mp4" data-quer="/bilder/film/so-entsteht-quer.mp4"
+               data-poster-hoch="/bilder/film/so-entsteht-hoch.webp" data-poster-quer="/bilder/film/so-entsteht-quer.webp"></video>
+        <button class="film-ton" type="button"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M4 9h4l5-4v14l-5-4H4z" fill="currentColor"/><path d="M16.5 8.5a5 5 0 0 1 0 7M19 6a8.5 8.5 0 0 1 0 12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg> Mit Ton ansehen</button>
+      </figure>
+      <div class="midcta"><a href="#analyse" class="btn" style="width:auto" data-scroll="analyse" id="film-cta">Meinen Bauplan öffnen ✦</a></div>
+      <p class="film-unter">Ein Geschenk von mir. Es kostet dich nichts.</p>
+    </div>
+  </section>
+
   <section class="band intro-band prolog">
     <div class="wrap">
       <div class="prolog-zier" aria-hidden="true"><span></span>✦<span></span></div>
@@ -1924,6 +1942,34 @@
     var io=new IntersectionObserver(function(e){ e.forEach(function(x){ if(x.isIntersecting){ x.target.classList.add('nah'); io.unobserve(x.target); } }); },{rootMargin:'900px 0px'});
     [].forEach.call(document.querySelectorAll('#step1 > section'),function(x){ io.observe(x); });
   })();
+  /* Erklärfilm: Format nach Breite, lädt erst in Scrollnähe, spielt stumm ab halber Sichtbarkeit, "Mit Ton ansehen" startet von vorn */
+  (function(){
+    var v=document.getElementById('film-video'); if(!v) return;
+    var fig=document.getElementById('erklaerfilm'), knopf=fig.querySelector('.film-ton'), mq=window.matchMedia('(max-width: 699px)'), fmt='', an=false, geladen=false;
+    function spiel(){ var p=v.play(); if(p&&p.catch) p.catch(function(){}); }
+    function waehle(){
+      var f=mq.matches?'hoch':'quer'; if(f===fmt) return;
+      var t=v.currentTime||0, lief=!v.paused; fmt=f; fig.classList.toggle('hoch',f==='hoch');
+      v.poster=v.getAttribute('data-poster-'+f);
+      if(geladen){ v.src=v.getAttribute('data-'+f); v.load(); if(t) v.addEventListener('loadedmetadata',function(){ v.currentTime=t; if(lief) spiel(); },{once:true}); }
+    }
+    function laden(){ if(geladen) return; geladen=true; v.src=v.getAttribute('data-'+fmt); v.preload='auto'; }
+    waehle(); if(mq.addEventListener) mq.addEventListener('change',waehle); else if(mq.addListener) mq.addListener(waehle);
+    if('IntersectionObserver' in window){
+      new IntersectionObserver(function(e){ if(e[0].isIntersecting) laden(); },{rootMargin:'600px 0px'}).observe(fig);
+      new IntersectionObserver(function(e){
+        var x=e[0];
+        if(x.isIntersecting && x.intersectionRatio>=.5){ laden(); if(!reduce || an){ spiel(); track('film_start'); } }
+        else if(!v.paused) v.pause();
+      },{threshold:[0,.5]}).observe(fig);
+    } else laden();
+    knopf.addEventListener('click',function(){ an=true; laden(); v.muted=false; try{ v.currentTime=0; }catch(e){} v.controls=true; knopf.hidden=true; fig.classList.add('mit-ton'); spiel(); track('film_ton'); });
+    v.addEventListener('ended',function(){ track('film_ende'); });
+    var cta=document.getElementById('film-cta'); if(cta) cta.addEventListener('click',function(){ track('film_cta'); });
+    // Solange der Knopf unter dem Film zu sehen ist, braucht es die schwebende Knopfleiste nicht doppelt
+    if(cta && 'IntersectionObserver' in window) new IntersectionObserver(function(e){ document.documentElement.classList.toggle('film-cta-da', e[0].isIntersecting); }).observe(cta);
+  })();
+
   /* Beispiel: echte Seiten zum Blättern. Antippen, Pfeile oder Wischen; blättert von selbst, solange der Stapel zu sehen ist. */
   (function(){
     var box=document.getElementById('blaetter'); if(!box) return;

@@ -23,6 +23,7 @@ Erlaubte Ereignisse:
   app_start                        Bericht vom Startbildschirm aus geöffnet (als App)
   wrapped, wrapped_ende             Bauplan in 60 Sekunden: gestartet, bis zur letzten Karte gesehen
   hoeren                           Bericht: von Lea vorlesen lassen
+  film_start, film_ton, film_ende, film_cta   Erklärfilm: angelaufen, mit Ton, zu Ende gesehen, Knopf darunter
 """
 from http.server import BaseHTTPRequestHandler
 from urllib.parse import urlparse, parse_qs
@@ -48,7 +49,9 @@ ALLOWED = {"visit", "himmel", "teaser", "email", "bauplan", "scroll", "pdf",
            # seit 11.10.2026: Videogruß von Denise im Pop-up nach dem Eintragen
            "grusston", "grussende",
            # seit 11.10.2026: Bauplan an eine Freundin weiterempfohlen (Karte am Berichtsende)
-           "empfehlen", "hintergrund", "warteliste", "fragebox", "vollendet", "popup_insta", "app_start", "wrapped", "wrapped_ende", "hoeren"}
+           "empfehlen", "hintergrund", "warteliste", "fragebox", "vollendet", "popup_insta", "app_start", "wrapped", "wrapped_ende", "hoeren",
+           # seit 11.10.2026: Erklärfilm auf der Startseite
+           "film_start", "film_ton", "film_ende", "film_cta"}
 
 
 def _count(event):

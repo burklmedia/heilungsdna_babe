@@ -2002,3 +2002,22 @@ html.bilder-spaet #step1 > section.brueckenband:not(.nah)::after { background-im
 #wrapped.laeuft .wr-karte.an .wr-glyph, #wrapped.laeuft .wr-karte.an .wr-zahl, #wrapped.laeuft .wr-karte.an .wr-stern { animation: wrGlyph 1.6s cubic-bezier(.2,.7,.2,1) both, wrBeat .46875s ease-out 1.875s infinite !important; }
 @keyframes wrBeat { 0% { transform: scale(1.045); } 100% { transform: scale(1); } }
 @media (prefers-reduced-motion: reduce) { .wr-los, #wrapped.laeuft .wr-karte.an .wr-glyph { animation: none !important; } }
+
+/* Runde 23: Erklärfilm direkt nach dem ersten Bildschirm */
+.film-band { padding-top: clamp(56px, 8vw, 96px); padding-bottom: clamp(48px, 7vw, 84px); }
+.film-band .sec-head { margin-bottom: 30px; }
+.erklaerfilm { position: relative; margin: 0 auto; width: min(100%, 1040px); aspect-ratio: 16 / 9; border-radius: 10px; overflow: hidden; background: #121129;
+  box-shadow: 0 0 0 1px rgba(226,196,134,.45), 0 0 0 8px rgba(10,9,22,.6), 0 0 0 9px rgba(226,196,134,.16), 0 40px 90px -30px rgba(0,0,0,.9), 0 0 90px -30px rgba(226,196,134,.45); }
+.erklaerfilm.hoch { aspect-ratio: 9 / 16; width: min(100%, 420px); max-height: 82svh; }
+.erklaerfilm.hoch video { object-fit: cover; }
+.erklaerfilm video { display: block; width: 100%; height: 100%; object-fit: contain; background: #121129; }
+.film-ton { position: absolute; left: 50%; bottom: 18px; z-index: 2; transform: translateX(-50%); display: inline-flex; align-items: center; gap: 8px; padding: 11px 18px;
+  border: 0; border-radius: 999px; cursor: pointer; background: rgba(16,14,36,.78); color: #f3dca6; font-family: var(--sans); font-size: 12px; font-weight: 700;
+  letter-spacing: .14em; text-transform: uppercase; box-shadow: inset 0 0 0 1px rgba(226,196,134,.7); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); }
+.erklaerfilm:not(.hoch) .film-ton { bottom: auto; top: 18px; left: auto; right: 18px; transform: none; }
+.film-ton:hover { background: rgba(32,27,64,.9); }
+.film-ton[hidden] { display: none; }
+.film-band .midcta { margin-top: 30px; text-align: center; }
+.film-unter { margin: 12px 0 0 !important; text-align: center; font-family: var(--serif); font-style: italic; font-size: 17px !important; color: #e2c486 !important; }
+.erklaerfilm .film-ton, .erklaerfilm:not(.hoch) .film-ton { top: 14px; right: 14px; bottom: auto; left: auto; transform: none; }
+html.film-cta-da #floatcta { opacity: 0 !important; pointer-events: none !important; transform: translateY(20px); }
