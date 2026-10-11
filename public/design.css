@@ -1711,3 +1711,17 @@ footer.fuss-start .foot { border-top: 1px solid var(--line); padding-top: 22px; 
   .foot a { display: inline-block; padding: 12px 6px; }
 }
 
+
+/* ── SEO-Runde 11.10.2026: Systemzeile als Teil der H1, Rechenweg, Instagram ── */
+header.hero h1.hero-title .hero-systems { display: block; line-height: 1.5; text-shadow: none; }
+.hs-trenn { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.rechnung-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0; max-width: 1180px; margin: 46px auto 0; }
+.rechnung-grid .rg { padding: 6px 26px 10px; border-left: 1px solid var(--gold-line); }
+.rechnung-grid .rg:first-child { border-left: none; }
+.rechnung-grid .rg h3 { font-family: var(--serif); font-weight: 500; font-size: 22px; color: var(--ink); margin: 0 0 10px; }
+.rechnung-grid .rg p { color: var(--ink-soft); font-size: 15.5px; line-height: 1.7; margin: 0; }
+.rechnung-schluss { max-width: 720px; margin: 42px auto 0; text-align: center; color: var(--ink-soft); font-style: italic; line-height: 1.75; }
+.about-insta { margin-top: 18px; color: var(--ink-soft); }
+.about-insta a { color: var(--gold); text-decoration: underline; text-underline-offset: 3px; }
+@media (max-width: 1100px) { .rechnung-grid { grid-template-columns: 1fr 1fr; gap: 30px 0; } .rechnung-grid .rg:nth-child(3) { border-left: none; } }
+@media (max-width: 620px) { .rechnung-grid { grid-template-columns: 1fr; gap: 0; margin-top: 30px; } .rechnung-grid .rg { border-left: none; border-top: 1px solid var(--gold-line); padding: 22px 4px; } .rechnung-grid .rg:first-child { border-top: none; } }

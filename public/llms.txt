@@ -1,17 +1,19 @@
 # Kosmischer Bauplan von Intuition mit Herz
 
-> Der Kosmische Bauplan ist eine kostenlose persönliche Auswertung auf Deutsch von Denise (Intuition mit Herz, Instagram @intuitionmitherz). Aus Geburtsdatum, Geburtszeit und Geburtsort berechnet er Human Design, Natalchart, Intuitionstyp und Numerologie und erklärt die Ergebnisse in einfacher Sprache.
+> Der Kosmische Bauplan ist eine kostenlose persönliche Auswertung auf Deutsch von Denise (Intuition mit Herz, Instagram @intuitionmitherz). Aus Geburtsdatum, Geburtszeit und Geburtsort berechnet er Human Design, Geburtshoroskop (Natalchart), Intuitionstyp und Numerologie und erklärt die Ergebnisse in einfacher Sprache.
 
-Die Auswertung ist kostenlos. Wer das Formular absendet, meldet sich zum Newsletter von Intuition mit Herz an und kann ihn jederzeit abbestellen. Der Bauplan dient der Selbstreflexion und ersetzt keine medizinische oder therapeutische Beratung.
+Die Auswertung ist kostenlos. Direkt nach der Berechnung erscheint eine Vorschau aus allen vier Ebenen. Wer das Formular mit E-Mail-Adresse absendet, meldet sich zum Newsletter von Intuition mit Herz an (Double-Opt-in), bekommt nach der Bestätigung den vollständigen Bauplan als PDF per E-Mail und kann den Newsletter jederzeit abbestellen. Der Bauplan dient der Selbstreflexion und ersetzt keine medizinische oder therapeutische Beratung.
 
 ## Angebot
 
-- [Kosmischer Bauplan](https://bauplan.intuitionmitherz.de/): Startseite mit Eingabeformular, Beschreibung der Inhalte, fiktivem Beispiel und häufigen Fragen.
+- [Kosmischer Bauplan](https://bauplan.intuitionmitherz.de/): Startseite mit Eingabeformular, Beschreibung der Inhalte, fiktivem Beispiel, Rechenweg und häufigen Fragen.
+- [So wird der Bauplan berechnet](https://bauplan.intuitionmitherz.de/#berechnung)
+- [Häufige Fragen](https://bauplan.intuitionmitherz.de/#fragen)
 
 ## Inhalte des Bauplans
 
 - Human Design: Typ, Strategie, innere Autorität, Profil, definierte Zentren.
-- Natalchart: Sonne, Mond, Aszendent, Planeten in Zeichen und Häusern, Elemente, Chiron.
+- Geburtshoroskop (Natalchart): Sonne, Mond, Aszendent, Planeten in Zeichen und Häusern, Elemente, Chiron.
 - Intuitionstyp: ein eigenes Deutungsbild von Intuition mit Herz. Es gehört weder zum klassischen Human Design noch zur klassischen Astrologie und entsteht aus Mond, Neptun, Pluto und den Wasserhäusern 4, 8 und 12.
 - Numerologie: Lebenszahl als Quersumme des Geburtsdatums (Meisterzahlen 11, 22 und 33 bleiben stehen) und persönliches Jahr.
 
@@ -20,10 +22,12 @@ Die Auswertung ist kostenlos. Wer das Formular absendet, meldet sich zum Newslet
 - Planetenpositionen mit der Swiss Ephemeris, tropischer Tierkreis.
 - Human Design aus zwei Zeitpunkten: Geburt und der Moment, in dem die Sonne 88 Grad vor ihrer Geburtsposition stand.
 - Häuser in Ganzzeichen und Placidus; die Deutung folgt den Ganzzeichen-Häusern.
-- Die Geburtszeit ist Pflicht, weil Aszendent, Häuser und das Human-Design-Chart davon abhängen.
+- Die Geburtszeit ist Pflicht, weil Aszendent, Häuser und das Human-Design-Chart davon abhängen. Der Aszendent wechselt etwa alle zwei Stunden das Zeichen.
+- Beispiel Lebenszahl: 14.06.1994 ergibt 7.
+- Geburtsdaten werden für die Berechnung nicht in einer Datenbank gespeichert; bei Eintragung stecken sie kodiert im persönlichen Bauplan-Link.
 
 ## Über
 
 - Denise, Gründerin von Intuition mit Herz: https://www.instagram.com/intuitionmitherz/
-- [Impressum](https://bauplan.intuitionmitherz.de/impressum.html)
-- [Datenschutzerklärung](https://bauplan.intuitionmitherz.de/datenschutz.html)
+- [Impressum](https://bauplan.intuitionmitherz.de/impressum)
+- [Datenschutzerklärung](https://bauplan.intuitionmitherz.de/datenschutz)
