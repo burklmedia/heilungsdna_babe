@@ -136,6 +136,11 @@ class Handler(BaseHTTPRequestHandler):
             if payload.get("dry_run"):
                 print("  ✉  Anmeldung lokal angenommen, nicht an ActiveCampaign gesendet")
             self._json(code, payload)
+        elif self.path.startswith("/api/hoeren"):
+            # Lokal nur mit ELEVENLABS_API_KEY in der Umgebung (kostet Credits), sonst 503 wie live ohne Schlüssel.
+            import hoeren as _hoeren
+            code, art, daten = _hoeren.handle(body if isinstance(body, dict) else {}, "127.0.0.1")
+            self.send_response(code); self.send_header("Content-Type", art); self.send_header("Content-Length", str(len(daten))); self.end_headers(); self.wfile.write(daten)
         elif self.path.startswith("/api/bericht"):
             # Lokal nur eine Probe-Antwort: nichts an ActiveCampaign, nichts in die KV, kein Telegram.
             aktion = (body or {}).get("aktion") if isinstance(body, dict) else ""

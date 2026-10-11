@@ -74,6 +74,14 @@
       "config": {
         "includeFiles": "api/**"
       }
+    },
+    {
+      "src": "api/hoeren.py",
+      "use": "@vercel/python",
+      "config": {
+        "includeFiles": "api/**",
+        "maxDuration": 60
+      }
     }
   ],
   "routes": [
@@ -143,6 +151,10 @@
     {
       "src": "/api/handoff",
       "dest": "/api/handoff.py"
+    },
+    {
+      "src": "/api/hoeren",
+      "dest": "/api/hoeren.py"
     },
     {
       "src": "/api/bericht",

@@ -592,8 +592,50 @@
     });
     zeige(0);
   }
+  /* ── Bauplan anhören: Lea liest ihn in rund zwei Minuten vor (/api/hoeren). Das Gerät behält die Aufnahme in IndexedDB. ── */
+  function audioSpeicher(art, schl, wert) {
+    return new Promise(function (ok) {
+      try {
+        var r = indexedDB.open("imh_bauplan", 1);
+        r.onupgradeneeded = function () { r.result.createObjectStore("audio"); };
+        r.onerror = function () { ok(null); };
+        r.onsuccess = function () {
+          try {
+            var tx = r.result.transaction("audio", art === "lesen" ? "readonly" : "readwrite"), st = tx.objectStore("audio");
+            var q = art === "lesen" ? st.get(schl) : st.put(wert, schl);
+            q.onsuccess = function () { ok(art === "lesen" ? q.result || null : true); }; q.onerror = function () { ok(null); };
+          } catch (e) { ok(null); }
+        };
+      } catch (e) { ok(null); }
+    });
+  }
+  function anhoeren(d, knopf) {
+    var dParam = ""; try { dParam = new URLSearchParams(location.search).get("d") || ""; } catch (e) {}
+    var box = document.querySelector(".hoeren-box"), info = box.querySelector(".hb-info"), audio = box.querySelector("audio");
+    if (audio.src) { audio.play(); return; }
+    var schl = "lea_" + bauplanSchluessel(d), alt = knopf.innerHTML;
+    knopf.disabled = true; knopf.innerHTML = "Lea liest sich ein…"; info.textContent = "";
+    audioSpeicher("lesen", schl).then(function (blob) {
+      if (blob) return blob;
+      return fetch("/api/hoeren", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ d: dParam }) })
+        .then(function (r) {
+          if (r.ok && /audio/.test(r.headers.get("content-type") || "")) return r.blob().then(function (b) { audioSpeicher("schreiben", schl, b); return b; });
+          return r.json().catch(function () { return {}; }).then(function (j) { throw new Error(j.message || "Das Vorlesen klappt gerade nicht. Bitte versuch es später noch einmal."); });
+        });
+    }).then(function (blob) {
+      knopf.disabled = false; knopf.innerHTML = alt;
+      audio.src = URL.createObjectURL(blob); audio.hidden = false; box.classList.add("an");
+      zaehl("hoeren"); var p = audio.play(); if (p && p.catch) p.catch(function () {});
+    }).catch(function (e) { knopf.disabled = false; knopf.innerHTML = alt; info.textContent = e.message; });
+  }
   function wrappedVorbereiten(d) {
     var kopf = document.querySelector("#step3 .report-head"); if (!kopf) return;
+    var hatD = false; try { hatD = !!new URLSearchParams(location.search).get("d"); } catch (e) {}
+    if (hatD && !kopf.querySelector(".hoeren-box")) {
+      kopf.insertAdjacentHTML("beforeend", '<div class="hoeren-box"><button class="hb-knopf" type="button"><span aria-hidden="true">♪</span> Bauplan anhören</button>' +
+        '<p class="hb-klein">Lea liest dir das Wichtigste in rund zwei Minuten vor. Eine KI-Stimme.</p><audio controls preload="none" hidden></audio><p class="hb-info" aria-live="polite"></p></div>');
+      var hk = kopf.querySelector(".hb-knopf"); hk.addEventListener("click", function () { anhoeren(d, hk); });
+    }
     if (!kopf.querySelector(".wr-start")) {
       kopf.insertAdjacentHTML("beforeend", '<button class="wr-start" type="button"><span aria-hidden="true">▶</span> Dein Bauplan in 60 Sekunden</button>');
       kopf.querySelector(".wr-start").addEventListener("click", function () { wrappedOeffnen(d); });

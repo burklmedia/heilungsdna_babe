@@ -1972,3 +1972,16 @@ html.bilder-spaet #step1 > section:not(.nah) .final-bild,
 html.bilder-spaet #step1 > section:not(.nah) .pain-bild,
 html.bilder-spaet #step1 > section:not(.nah) .bd-bild { background-image: none !important; }
 html.bilder-spaet #step1 > section.brueckenband:not(.nah)::after { background-image: none !important; }
+
+/* Runde 21: Bauplan anhören */
+.hoeren-box { position: relative; z-index: 3; margin: 12px auto 0; max-width: 360px; text-align: center; }
+.hb-knopf { display: inline-flex; align-items: center; gap: 9px; padding: 11px 20px; border-radius: 999px; border: 0; cursor: pointer; background: rgba(14,13,32,.6);
+  color: #f3dca6; font-family: var(--sans); font-size: 12px; font-weight: 700; letter-spacing: .16em; text-transform: uppercase; box-shadow: inset 0 0 0 1px rgba(226,196,134,.65); }
+.hb-knopf:hover { background: rgba(226,196,134,.12); }
+.hb-knopf:disabled { opacity: .7; cursor: default; }
+.hb-knopf span { font-size: 14px; letter-spacing: 0; }
+.hb-klein { margin: 8px 0 0 !important; font-size: 12.5px !important; color: #a69cbf !important; }
+.hoeren-box audio { display: block; width: 100%; margin: 12px 0 0; }
+.hoeren-box audio[hidden] { display: none; }
+.hb-info { margin: 8px 0 0 !important; font-family: var(--serif); font-style: italic; font-size: 15.5px !important; color: #f3dca6 !important; }
+.hb-info:empty { display: none; }
