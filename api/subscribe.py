@@ -38,6 +38,7 @@ except Exception:  # noqa
         return False
 from _ac import FIELD_BAUPLAN_PDF, FIELD_FEEDBACK_TOKEN, FIELD_SONNENZEICHEN, USER_AGENT, configured as ac_api_configured, set_fields  # noqa: E402
 from _herkunft import FIELD_HERKUNFT, ist_intern, kanal as herkunft_kanal, merken as herkunft_merken  # noqa: E402
+import _telegram as telegram  # noqa: E402
 import time  # noqa: E402
 
 AC_ENDPOINT = "https://burkl-media.activehosted.com/proc.php"
@@ -164,6 +165,9 @@ def handle_subscribe(body, intern=False):
                      "message": "Das hat gerade nicht geklappt. Bitte versuche es noch einmal."}
     # Kontakt liegt jetzt als "unbestaetigt" in AC, die Opt-in-Mail ist raus.
     _herkunft_setzen(email, "intern" if intern else body.get("q"), zaehlen=not intern, extra=_zeichen_feld(body.get("z")))
+    # Meldung in die Telegram-Gruppe von Tobias und Denise, ohne Daten der Person.
+    if not intern:
+        telegram.melden("Neue Anmeldung für den Kosmischen Bauplan ✦")
     return 200, {"ok": True, "stored": True}
 
 
@@ -227,6 +231,7 @@ class handler(BaseHTTPRequestHandler):
             "ok": True,
             "ac_form_connected": form_connected(),
             "ac_api_configured": ac_api_configured(),
+            "telegram_configured": telegram.configured(),
             "mailerlite_key_present": bool(os.environ.get("MAILERLITE_API_KEY")),
         })
 
