@@ -48,7 +48,7 @@ def pruefe(name, ok, info=""):
 def main():
     print("Prüfe " + BASIS)
     for pfad in ("/", "/impressum", "/datenschutz", "/feedback?t=x", "/geschenk", "/robots.txt", "/llms.txt",
-                 "/design.css", "/erlebnis.js", "/himmel.js", "/bilder/film/so-entsteht-hoch.webp", "/bilder/wrapped-klang.mp3"):
+                 "/design.css", "/erlebnis.js", "/himmel.js", "/bilder/film/so-entsteht-hoch.webp", "/bilder/beispiel-seite-08.webp"):
         code, _, _ = abruf(pfad, "HEAD" if pfad.startswith("/bilder") else "GET")
         pruefe("Seite " + pfad, code == 200, str(code))
 

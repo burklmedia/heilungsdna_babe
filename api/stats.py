@@ -59,8 +59,6 @@ EXTRA = [
     ("vollendet", "Alle Kapitel gelesen"),
     ("popup_insta", "Instagram aus dem Pop-up"),
     ("app_start", "Bericht als App vom Startbildschirm geöffnet"),
-    ("wrapped", "Bauplan in 60 Sekunden gestartet"),
-    ("wrapped_ende", "Bauplan in 60 Sekunden bis zum Ende gesehen"),
     ("hoeren", "Bauplan von Lea vorlesen lassen"),
     ("film_start", "Erklärfilm angelaufen (stumm)"),
     ("film_ton", "Erklärfilm mit Ton gestartet"),

@@ -519,114 +519,12 @@
       '<details class="app-hilfe"><summary class="wk-mehr">So geht’s ✦</summary><p>' + schritte + '</p></details></div>';
   }
 
-  /* ── „Dein Bauplan in 60 Sekunden“: Vollbild-Story wie Wrapped, acht Karten aus den Texten des Berichts (seit 11.10.2026).
-        Öffnet sich beim ersten Lesen eines Bauplans auf diesem Gerät von selbst, danach über den Knopf im Kopf des Berichts. ── */
+  // Sätze aus einem Text (ohne Lookbehind, alte iPhones); satzAus überspringt verbotene Satzanfänge
   function saetze(text) { return (String(text || "").match(/[^.!?]+[.!?]+(?:\s|$)/g) || []).map(function (x) { return x.trim(); }); }
   function satzAus(text, ab) {
     var s = saetze(text);
     for (var i = ab || 0; i < s.length; i++) if (!/^(Vielleicht|Manchmal|Stell dir vor)\b/.test(s[i])) return s[i];
     return s[0] || "";
-  }
-  function wrappedKarten(d) {
-    var f = d.full, by = {}, name = (d.birth && d.birth.name) || "";
-    (f.positions || []).forEach(function (p) { by[p.key] = p; });
-    var k = [{ art: "auftakt", titel: name ? name + "," : "Für dich,", zeile: "das ist dein Bauplan in 60 Sekunden.", klein: "Tippe dich durch. Rechts geht es weiter, links zurück." }];
-    [["Sonne", "Deine Sonne"], ["Mond", "Dein Mond"], ["AC", "Dein Aszendent"]].forEach(function (x) {
-      var p = by[x[0]]; if (!p) return;
-      k.push({ art: "zeichen", oben: x[1], glyph: tp(p.signSymbol), titel: p.sign, unter: p.meaning || "", zeile: satzAus(p.desc, 1), idx: H.ZEICHEN.indexOf(p.sign) });
-    });
-    if (f.hd) k.push({ art: "hd", oben: "Dein Human Design", titel: f.hd.type_display || f.hd.type || "", unter: [f.hd.profile ? "Profil " + f.hd.profile : "", f.hd.authority || ""].filter(Boolean).join(" · ") });
-    if (f.numerology) k.push({ art: "zahl", oben: "Deine Lebenszahl", zahl: String(f.numerology.lifepath), titel: f.numerology.title || "", unter: f.numerology.tagline || "", zeile: f.numerology.keyword || "" });
-    if (f.intuition) k.push({ art: "intuition", oben: "Dein Intuitionstyp", titel: f.intuition.archetype || "", unter: f.intuition.tagline || "" });
-    var c = String(f.closing || ""), kern = c.indexOf(":") > 0 ? c.slice(c.indexOf(":") + 1).trim() : c;
-    var kernSaetze = saetze(kern).slice(0, 2).join(" ");
-    k.push({ art: "kern", oben: "Wenn du nur einen Satz mitnimmst", zeile: kernSaetze });
-    return k;
-  }
-  function wrappedOeffnen(d) {
-    if (document.getElementById("wrapped")) return;
-    // Im Takt: Der Track (bilder/wrapped-klang.mp3) läuft mit 128 BPM, jede Karte dauert genau vier Takte = 7,5 s, acht Karten = 60 s.
-    var karten = wrappedKarten(d), n = karten.length, cur = -1, uhr = 0, DAUER = 7500, start = 0, rest = DAUER, los = false;
-    var ton = true; try { ton = localStorage.getItem("imh_wr_ton") !== "0"; } catch (e) {}
-    // Track einmal komplett laden (als Blob), dann ist jede Stelle anspringbar, auch ohne Range-Abrufe beim Server
-    var musik = null, MUSIK = "/bilder/wrapped-klang.mp3";
-    try { musik = new Audio(); musik.preload = "auto"; musik.muted = !ton; } catch (e) {}
-    if (musik) fetch(MUSIK).then(function (r) { return r.ok ? r.blob() : null; }).then(function (b) {
-      if (b && !los) musik.src = URL.createObjectURL(b);
-    }).catch(function () {});
-    var html = '<div id="wrapped" role="dialog" aria-modal="true" aria-label="Dein Bauplan in 60 Sekunden"><div class="wr-himmel" aria-hidden="true"></div>' +
-      '<div class="wr-balken">' + karten.map(function () { return "<span><i></i></span>"; }).join("") + '</div>' +
-      '<button class="wr-ton' + (ton ? "" : " aus") + '" type="button" aria-label="Musik an oder aus"><span class="an-z" aria-hidden="true">♪</span><span class="aus-z" aria-hidden="true">♪̸</span></button>' +
-      '<button class="wr-zu" type="button" aria-label="Schließen">×</button><div class="wr-buehne">' +
-      karten.map(function (x, i) {
-        var g = "";
-        if (x.art === "auftakt") g = '<div class="wr-siegel" aria-hidden="true"></div><h2 class="wr-gross wr-script">' + esc(x.titel) + '</h2><p class="wr-zeile">' + esc(x.zeile) + '</p>' +
-          '<button class="wr-los" type="button">Los geht’s <span aria-hidden="true">♪</span></button><p class="wr-klein">Mit Musik. Rechts tippen für weiter, links für zurück.</p>';
-        else if (x.art === "zeichen") g = (x.idx >= 0 ? '<div class="wr-gravur" style="background-image:url(/bilder/zeichen-' + x.idx + '-1600.webp)"></div>' : '') +
-          '<p class="wr-oben">' + esc(x.oben) + '</p><div class="wr-glyph">' + x.glyph + '</div><h2 class="wr-gross">' + esc(x.titel) + '</h2><p class="wr-unter">' + esc(x.unter) + '</p><p class="wr-zeile">' + esc(x.zeile) + '</p>';
-        else if (x.art === "zahl") g = '<p class="wr-oben">' + esc(x.oben) + '</p><div class="wr-zahl">' + esc(x.zahl) + '</div><h2 class="wr-gross">' + esc(x.titel) + '</h2><p class="wr-unter">' + esc(x.unter) + '</p><p class="wr-zeile">' + esc(x.zeile) + '</p>';
-        else if (x.art === "kern") g = '<p class="wr-oben">' + esc(x.oben) + '</p><p class="wr-kern">' + esc(x.zeile) + '</p><p class="wr-name">Denise</p>' +
-          '<div class="wr-knoepfe"><button class="btn wr-teilen" type="button" style="width:auto">Als Story teilen ✦</button><button class="btn btn-ghost wr-lesen" type="button" style="width:auto">Zu deinem Bauplan</button></div>';
-        else g = '<p class="wr-oben">' + esc(x.oben) + '</p><div class="wr-stern" aria-hidden="true">✦</div><h2 class="wr-gross">' + esc(x.titel) + '</h2><p class="wr-unter">' + esc(x.unter) + '</p>';
-        return '<section class="wr-karte wr-' + x.art + '" data-i="' + i + '"><div class="wr-in">' + g + '</div></section>';
-      }).join("") + '</div></div>';
-    document.body.insertAdjacentHTML("beforeend", html);
-    var box = document.getElementById("wrapped"), balken = box.querySelectorAll(".wr-balken span"), kn = box.querySelectorAll(".wr-karte");
-    document.documentElement.classList.add("wr-offen");
-    zaehl("wrapped");
-    function musikSpielen() { if (!musik || !los) return; if (!musik.src) musik.src = MUSIK; var p = musik.play(); if (p && p.catch) p.catch(function () {}); }
-    function takt(i) {   // Musik an die Karte binden, damit Vor- und Zurückspringen im Takt bleibt
-      if (!musik || !los) return;
-      var soll = i * DAUER / 1000;
-      var kann = musik.seekable && musik.seekable.length && musik.seekable.end(0) >= soll;
-      if (kann && Math.abs((musik.currentTime || 0) - soll) > .35) { try { musik.currentTime = soll; } catch (e) {} }
-    }
-    function zeige(i) {
-      if (i < 0) i = 0;
-      if (i >= n) { zu(); return; }
-      cur = i;
-      kn.forEach(function (k, j) { k.classList.toggle("an", j === i); });
-      balken.forEach(function (b, j) { b.classList.toggle("voll", j < i); b.classList.toggle("laeuft", los && j === i); b.querySelector("i").style.animationDuration = DAUER + "ms"; });
-      if (i === n - 1) zaehl("wrapped_ende");
-      clearTimeout(uhr); rest = DAUER; start = Date.now();
-      takt(i);
-      if (los && i < n - 1 && !reduce) uhr = setTimeout(function () { zeige(cur + 1); }, DAUER);
-      if (i === n - 1) balken[i].classList.add("voll");
-    }
-    function starten() { if (los) return; los = true; box.classList.add("laeuft"); if (musik) { try { musik.currentTime = 0; } catch (e) {} } musikSpielen(); zeige(0); }
-    function zu() {
-      clearTimeout(uhr); if (musik) { musik.pause(); if (/^blob:/.test(musik.src)) setTimeout(function () { URL.revokeObjectURL(musik.src); }, 600); }
-      box.classList.add("weg"); document.documentElement.classList.remove("wr-offen");
-      setTimeout(function () { box.remove(); }, 450); document.removeEventListener("keydown", taste);
-    }
-    function taste(e) {
-      if (e.key === "Escape") zu();
-      else if (e.key === "ArrowRight") { if (!los) starten(); else zeige(cur + 1); }
-      else if (e.key === "ArrowLeft" && los) zeige(cur - 1);
-    }
-    document.addEventListener("keydown", taste);
-    box.querySelector(".wr-zu").addEventListener("click", zu);
-    box.querySelector(".wr-lesen").addEventListener("click", zu);
-    box.querySelector(".wr-los").addEventListener("click", function (e) { e.stopPropagation(); starten(); });
-    box.querySelector(".wr-teilen").addEventListener("click", function (e) { e.stopPropagation(); storyTeilen(d, this); });
-    box.querySelector(".wr-ton").addEventListener("click", function (e) {
-      e.stopPropagation(); ton = !ton; this.classList.toggle("aus", !ton);
-      try { localStorage.setItem("imh_wr_ton", ton ? "1" : "0"); } catch (x) {}
-      if (musik) { musik.muted = !ton; if (ton && los && musik.paused) { takt(cur); musikSpielen(); } }
-    });
-    var gedrueckt = 0;
-    box.addEventListener("pointerdown", function (e) {
-      if (e.target.closest("button") || !los) return;
-      gedrueckt = Date.now(); clearTimeout(uhr); rest = Math.max(800, DAUER - (Date.now() - start)); box.classList.add("pausiert"); if (musik) musik.pause();
-    });
-    box.addEventListener("pointerup", function (e) {
-      if (e.target.closest("button")) return;
-      if (!los) { starten(); return; }
-      box.classList.remove("pausiert"); musikSpielen();
-      if (Date.now() - gedrueckt > 350) { start = Date.now() - (DAUER - rest); if (cur < n - 1 && !reduce) uhr = setTimeout(function () { zeige(cur + 1); }, rest); return; }
-      zeige(e.clientX > window.innerWidth * .33 ? cur + 1 : cur - 1);
-    });
-    zeige(0);
   }
   /* ── Bauplan anhören: Lea liest ihn in rund zwei Minuten vor (/api/hoeren). Das Gerät behält die Aufnahme in IndexedDB. ── */
   function audioSpeicher(art, schl, wert) {
@@ -664,29 +562,16 @@
       zaehl("hoeren"); var p = audio.play(); if (p && p.catch) p.catch(function () {});
     }).catch(function (e) { knopf.disabled = false; knopf.innerHTML = alt; info.textContent = e.message; });
   }
-  function wrappedVorbereiten(d) {
-    var kopf = document.querySelector("#step3 .report-head"); if (!kopf) return;
+  // Bauplan anhören: Knopf oben in der Leiste neben „Als PDF speichern“, Player klappt darunter auf (Story seit 11.10.2026 entfernt)
+  function hoerenVorbereiten(d) {
+    var leiste = document.querySelector("#step3 .bericht-leiste"), pdf = $("pdfbtn"); if (!leiste || !pdf) return;
     var hatD = false; try { hatD = !!new URLSearchParams(location.search).get("d"); } catch (e) {}
-    if (hatD && !kopf.querySelector(".hoeren-box")) {
-      kopf.insertAdjacentHTML("beforeend", '<div class="hoeren-box"><button class="hb-knopf" type="button"><span aria-hidden="true">♪</span> Bauplan anhören</button>' +
-        '<p class="hb-klein">Lea liest dir das Wichtigste in rund zwei Minuten vor. Eine KI-Stimme.</p><audio controls preload="none" hidden></audio><p class="hb-info" aria-live="polite"></p></div>');
-      var hk = kopf.querySelector(".hb-knopf"); hk.addEventListener("click", function () { anhoeren(d, hk); });
-    }
-    if (!kopf.querySelector(".wr-start")) {
-      kopf.insertAdjacentHTML("beforeend", '<button class="wr-start" type="button"><span aria-hidden="true">▶</span> Dein Bauplan in 60 Sekunden</button>');
-      kopf.querySelector(".wr-start").addEventListener("click", function () { wrappedOeffnen(d); });
-    }
-    var schl = "imh_wrapped_" + bauplanSchluessel(d), gesehen = false;
-    try { gesehen = !!localStorage.getItem(schl); } catch (e) {}
-    if (gesehen) return;
-    // Beim ersten Mal von selbst, sobald der Ruhe-Hinweis geschlossen ist
-    var tries = 0, t = setInterval(function () {
-      var offen = [].some.call(document.querySelectorAll("#calm, #cookie"), function (el) { return el.classList.contains("show"); });
-      if (offen && ++tries < 240) return;
-      clearInterval(t);
-      try { localStorage.setItem(schl, "1"); } catch (e) {}
-      setTimeout(function () { wrappedOeffnen(d); }, 700);
-    }, 500);
+    if (!hatD || document.querySelector(".hoeren-box")) return;
+    pdf.insertAdjacentHTML("afterend", '<button class="btn btn-ghost hb-oben" style="width:auto;margin:0" type="button"><span aria-hidden="true">♪</span> Bauplan anhören</button>');
+    leiste.insertAdjacentHTML("afterend", '<div class="hoeren-box" hidden><audio controls preload="none" hidden></audio>' +
+      '<p class="hb-klein">Lea liest dir das Wichtigste in rund zwei Minuten vor. Eine KI-Stimme.</p><p class="hb-info" aria-live="polite"></p></div>');
+    var hk = leiste.querySelector(".hb-oben");
+    hk.addEventListener("click", function () { document.querySelector(".hoeren-box").hidden = false; anhoeren(d, hk); });
   }
 
   /* ── Aha-Momente in der Vorschau (seit 11.10.2026) ── */
@@ -1398,7 +1283,7 @@
     heuteImBericht(d);
     heuteFuerDich(d);
     zeichenBrief(d);
-    wrappedVorbereiten(d);
+    hoerenVorbereiten(d);
     weiter();
     mondkalender(d);
     ueberraschung();
@@ -1771,7 +1656,23 @@
     el.forEach(function (x) { if (x.classList.contains("auf")) return; x.classList.add("einblenden"); x.style.setProperty("--k", Math.min(n++, 10)); io.observe(x); });
   }
 
-  window.Erlebnis = { vorschau: vorschau, bericht: bericht, gesendet: gesendet };
+  /* Symmetrie (Wunsch Denise, 11.10.2026): Zentrierte Texte brechen ausgeglichen um, damit nie ein einzelnes Wort
+     allein unter dem Satz steht. Linksbündige Absätze regelt text-wrap: pretty in design.css. Ohne Unterstützung bleibt alles wie vorher. */
+  function symmetrie() {
+    if (!window.CSS || !CSS.supports || !CSS.supports("text-wrap", "balance")) return;
+    [].forEach.call(document.querySelectorAll("p, li, figcaption, .seal-text, .seal-sub, .mail-sub, .wk-text, .wk-titel, .bl-hinweis"), function (el) {
+      if (el.style.textWrap || (el.textContent || "").length > 480) return;
+      if (getComputedStyle(el).textAlign === "center") el.style.textWrap = "balance";
+    });
+  }
+  function symmetrieGleichUndSpaeter() { symmetrie(); setTimeout(symmetrie, 1600); }
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", symmetrie); else symmetrie();
+
+  window.Erlebnis = {
+    vorschau: function (d) { var r = vorschau(d); symmetrieGleichUndSpaeter(); return r; },
+    bericht: function (d) { var r = bericht(d); symmetrieGleichUndSpaeter(); return r; },
+    gesendet: function (k) { var r = gesendet(k); setTimeout(symmetrie, 900); return r; }
+  };
   // Falls der Bericht schon vor diesem Skript fertig war
   if (window.__bauplan) bericht(window.__bauplan);
 })();
