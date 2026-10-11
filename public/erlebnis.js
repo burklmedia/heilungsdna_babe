@@ -467,6 +467,150 @@
     gruss.insertAdjacentHTML("afterend", '<p class="report-heute"><span class="hh-mond">' + tp("☽") + '</span>Der Himmel heute: <b>' + esc(m.phase) + " " + esc(H.IM[m.zeichen]) + "</b>." + esc(zus) + "</p>");
   }
 
+  /* ── Bericht: ein persönlicher Brief von Denise je Sonnenzeichen ganz oben (seit 11.10.2026) ── */
+  var BRIEF_ZEICHEN = [
+    "Du bist oft die Erste, die losgeht. Die, die anpackt, wenn andere noch überlegen. Das kostet Kraft, und selten fragt jemand, wie es dir dabei geht. Hier darfst du einmal stehen bleiben. Dein Bauplan zeigt dir, wohin dein Feuer wirklich will und wo du es verschenkst, nur weil sonst keiner anfängt. Lies dich in Ruhe. Hier gibt es nichts zu gewinnen.",
+    "Du spürst die Welt mit dem Körper. Ein warmes Essen, gute Hände, ein Ort, an dem du ankommen kannst. Und genau deshalb hältst du oft länger fest, als dir guttut, weil Loslassen sich unsicher anfühlt. Dein Bauplan zeigt dir, was dir wirklich Halt gibt. Nimm dir einen Tee und lies langsam. Du bist hier sicher.",
+    "In deinem Kopf ist immer etwas los. Gedanken, Ideen, Gespräche, drei Fragen gleichzeitig. Das ist lebendig und manchmal ganz schön laut. Auf den nächsten Seiten darf es einmal still werden. Such dir eine Stelle, die dich ruft, und bleib dort. Dein Bauch kennt die Antwort oft schneller als dein Kopf.",
+    "Du merkst sofort, wie es den anderen geht. Oft, bevor sie es selbst wissen. Und während du für alle da bist, wird es bei dir ganz leise. Dieser Bauplan ist nur für dich. Hier geht es einmal ganz um dich. Lies mit der Hand auf dem Herzen, wenn du magst. Alles, was du hier über dich liest, war schon immer da.",
+    "Du bringst Licht in einen Raum. Das merken andere sofort, auch wenn du dich selbst oft kleiner machst, damit sich niemand übergangen fühlt. Hier darfst du groß sein. Dein Bauplan zeigt dir, wo dein Leuchten zu Hause ist und wann du es dir selbst verbietest. Lies ihn wie einen Brief an dich. Er ist einer.",
+    "Ich weiß, du willst es richtig machen. Auch beim Lesen. Jede Seite gründlich, nichts übersehen. Diesmal darfst du es dir leichter machen. Hier wird nichts bewertet. Nimm dir die Stellen, die sich stimmig anfühlen, den Rest darfst du liegen lassen. Du bist auch ohne Perfektion genug.",
+    "Du spürst, was jeder im Raum braucht, und suchst den Weg, der für alle passt. Dabei fragst du dich selten, was eigentlich du willst. Dein Bauplan stellt dir genau diese Frage. Ganz leise, ohne Druck. Lies ihn, als würdest du dir selbst zuhören. Deine Antwort darf auch dann gelten, wenn sie nicht allen gefällt.",
+    "Du gehst in die Tiefe. Oberflächliches langweilt dich, halbe Wahrheiten spürst du sofort. Und du zeigst nur wenigen, was wirklich in dir vorgeht. Diese Seiten gehören nur dir, niemand schaut mit. Lies sie mit derselben Ehrlichkeit, mit der du andere durchschaust. Du wirst Dinge finden, die du längst geahnt hast.",
+    "Du willst wissen, wohin dein Weg führt. Nach vorne schauen, weiterziehen, Sinn finden. Bevor du losgehst, schau einmal hierher. Dein Bauplan ist eine Landkarte von dir selbst, und die größte Reise beginnt oft genau hier. Lies mit Neugier und offenem Herzen. Was sich nach Freiheit anfühlt, darfst du dir merken.",
+    "Du trägst viel. Verantwortung, Pläne, Erwartungen, oft auch die von anderen. Und du machst das so gut, dass kaum jemand sieht, wie schwer es manchmal ist. Für diese Seiten darfst du alles absetzen. Hier gibt es nichts zu leisten. Lies dich, als wärst du jemand, den du sehr gern hast. Du bist es.",
+    "Du denkst anders, und das weißt du. Oft fühlst du dich deshalb ein bisschen fremd unter den anderen. Dein Bauplan zeigt dir, dass genau diese Eigenart zu dir gehört. Hier gibt es keine Schublade für dich. Lies frei, spring hin und her, wie es dir gefällt. Dein Weg ist eigen. Er darf es bleiben.",
+    "Du fühlst so viel. Stimmungen, Zwischentöne, das, was ungesagt im Raum liegt. Oft weißt du kaum noch, was davon deins ist. Dein Bauplan hilft dir, dich selbst wieder herauszuhören. Lies ihn langsam, vielleicht abends, wenn es ruhig wird. Deine Feinfühligkeit ist eine Gabe. Hier darf sie einfach sein."
+    ];
+  function zeichenBrief(d) {
+    var f = d.full, kopf = document.querySelector("#step3 .report-head"); if (!kopf || !f) return;
+    var alt = document.querySelector(".zeichen-brief"); if (alt) alt.remove();
+    var so = (f.positions || []).filter(function (p) { return p.key === "Sonne"; })[0], i = so ? H.ZEICHEN.indexOf(so.sign) : -1;
+    if (i < 0) return;
+    var name = (d.birth && d.birth.name) || "";
+    kopf.insertAdjacentHTML("afterend", '<section class="zeichen-brief"><span class="zb-zeichen" aria-hidden="true">' + tp(H.GLYPH[i]) + '</span>' +
+      '<p class="zb-anrede">' + (name ? "Liebe " + esc(name) + "," : "Für dich,") + '</p><p class="zb-text">' + esc(BRIEF_ZEICHEN[i]) + '</p>' +
+      '<p class="zb-gruss">Von Herzen, <span>Denise</span></p></section>');
+  }
+
+  /* ── Bericht: „Heute für dich“, durch welches Haus der Mond heute wandert (Ganzzeichen ab dem Aszendenten) ── */
+  function heuteFuerDich(d) {
+    var f = d.full, zeile = document.querySelector("#step3 .report-heute"); if (!zeile || !f) return;
+    var ac = (f.positions || []).filter(function (p) { return p.key === "AC"; })[0], ai = ac ? H.ZEICHEN.indexOf(ac.sign) : -1;
+    if (ai < 0 || !f.houses) return;
+    var m = mondHeute(), haus = ((m.zeichen - ai + 12) % 12) + 1, h = f.houses.filter(function (x) { return x.nr === haus; })[0];
+    if (!h) return;
+    var alt = document.querySelector(".report-fuer-dich"); if (alt) alt.remove();
+    zeile.insertAdjacentHTML("afterend", '<p class="report-fuer-dich">Für dich heute: Der Mond wandert durch dein ' + haus + '. Haus. Das berührt ' + esc(h.meaning) + '.</p>');
+  }
+
+  /* ── Bericht als App auf dem Startbildschirm: kurze Anleitung je nach Gerät (nur am Handy, nicht in der App selbst) ── */
+  function alsApp() {
+    var ua = navigator.userAgent || "", standalone = (window.matchMedia && window.matchMedia("(display-mode: standalone)").matches) || navigator.standalone;
+    if (standalone) { zaehl("app_start"); return null; }
+    var ios = /iPhone|iPad|iPod/.test(ua), android = /Android/.test(ua), inApp = /Instagram|FBAN|FBAV|FB_IAB/.test(ua);
+    if (!ios && !android) return null;
+    var schritte = inApp ? "Öffne deinen Bauplan zuerst im Browser: oben rechts auf die drei Punkte tippen und „Im Browser öffnen“ wählen. Dann geht es von dort weiter."
+      : ios ? "Tippe unten in Safari auf das Teilen-Symbol (das Quadrat mit dem Pfeil nach oben) und dann auf „Zum Home-Bildschirm“."
+      : "Tippe oben rechts auf die drei Punkte und dann auf „Zum Startbildschirm hinzufügen“.";
+    return '<div class="wk wk-app"><span class="wk-titel">Dein Bauplan als App</span><span class="wk-text">Leg ihn dir auf deinen Startbildschirm. Dann ist er mit einem Tippen da, und jeden Tag wartet „Heute für dich“ auf dich.</span>' +
+      '<details class="app-hilfe"><summary class="wk-mehr">So geht’s ✦</summary><p>' + schritte + '</p></details></div>';
+  }
+
+  /* ── „Dein Bauplan in 60 Sekunden“: Vollbild-Story wie Wrapped, acht Karten aus den Texten des Berichts (seit 11.10.2026).
+        Öffnet sich beim ersten Lesen eines Bauplans auf diesem Gerät von selbst, danach über den Knopf im Kopf des Berichts. ── */
+  function saetze(text) { return (String(text || "").match(/[^.!?]+[.!?]+(?:\s|$)/g) || []).map(function (x) { return x.trim(); }); }
+  function satzAus(text, ab) {
+    var s = saetze(text);
+    for (var i = ab || 0; i < s.length; i++) if (!/^(Vielleicht|Manchmal|Stell dir vor)\b/.test(s[i])) return s[i];
+    return s[0] || "";
+  }
+  function wrappedKarten(d) {
+    var f = d.full, by = {}, name = (d.birth && d.birth.name) || "";
+    (f.positions || []).forEach(function (p) { by[p.key] = p; });
+    var k = [{ art: "auftakt", titel: name ? name + "," : "Für dich,", zeile: "das ist dein Bauplan in 60 Sekunden.", klein: "Tippe dich durch. Rechts geht es weiter, links zurück." }];
+    [["Sonne", "Deine Sonne"], ["Mond", "Dein Mond"], ["AC", "Dein Aszendent"]].forEach(function (x) {
+      var p = by[x[0]]; if (!p) return;
+      k.push({ art: "zeichen", oben: x[1], glyph: tp(p.signSymbol), titel: p.sign, unter: p.meaning || "", zeile: satzAus(p.desc, 1), idx: H.ZEICHEN.indexOf(p.sign) });
+    });
+    if (f.hd) k.push({ art: "hd", oben: "Dein Human Design", titel: f.hd.type_display || f.hd.type || "", unter: [f.hd.profile ? "Profil " + f.hd.profile : "", f.hd.authority || ""].filter(Boolean).join(" · ") });
+    if (f.numerology) k.push({ art: "zahl", oben: "Deine Lebenszahl", zahl: String(f.numerology.lifepath), titel: f.numerology.title || "", unter: f.numerology.tagline || "", zeile: f.numerology.keyword || "" });
+    if (f.intuition) k.push({ art: "intuition", oben: "Dein Intuitionstyp", titel: f.intuition.archetype || "", unter: f.intuition.tagline || "" });
+    var c = String(f.closing || ""), kern = c.indexOf(":") > 0 ? c.slice(c.indexOf(":") + 1).trim() : c;
+    var kernSaetze = saetze(kern).slice(0, 2).join(" ");
+    k.push({ art: "kern", oben: "Wenn du nur einen Satz mitnimmst", zeile: kernSaetze });
+    return k;
+  }
+  function wrappedOeffnen(d) {
+    if (document.getElementById("wrapped")) return;
+    var karten = wrappedKarten(d), n = karten.length, cur = -1, uhr = 0, pause = false, DAUER = 7000, start = 0, rest = DAUER;
+    var html = '<div id="wrapped" role="dialog" aria-modal="true" aria-label="Dein Bauplan in 60 Sekunden"><div class="wr-himmel" aria-hidden="true"></div>' +
+      '<div class="wr-balken">' + karten.map(function () { return "<span><i></i></span>"; }).join("") + '</div>' +
+      '<button class="wr-zu" type="button" aria-label="Schließen">×</button><div class="wr-buehne">' +
+      karten.map(function (x, i) {
+        var g = "";
+        if (x.art === "auftakt") g = '<div class="wr-siegel" aria-hidden="true"></div><h2 class="wr-gross wr-script">' + esc(x.titel) + '</h2><p class="wr-zeile">' + esc(x.zeile) + '</p><p class="wr-klein">' + esc(x.klein) + '</p>';
+        else if (x.art === "zeichen") g = (x.idx >= 0 ? '<div class="wr-gravur" style="background-image:url(/bilder/zeichen-' + x.idx + '-1600.webp)"></div>' : '') +
+          '<p class="wr-oben">' + esc(x.oben) + '</p><div class="wr-glyph">' + x.glyph + '</div><h2 class="wr-gross">' + esc(x.titel) + '</h2><p class="wr-unter">' + esc(x.unter) + '</p><p class="wr-zeile">' + esc(x.zeile) + '</p>';
+        else if (x.art === "zahl") g = '<p class="wr-oben">' + esc(x.oben) + '</p><div class="wr-zahl">' + esc(x.zahl) + '</div><h2 class="wr-gross">' + esc(x.titel) + '</h2><p class="wr-unter">' + esc(x.unter) + '</p><p class="wr-zeile">' + esc(x.zeile) + '</p>';
+        else if (x.art === "kern") g = '<p class="wr-oben">' + esc(x.oben) + '</p><p class="wr-kern">' + esc(x.zeile) + '</p><p class="wr-name">Denise</p>' +
+          '<div class="wr-knoepfe"><button class="btn wr-teilen" type="button" style="width:auto">Als Story teilen ✦</button><button class="btn btn-ghost wr-lesen" type="button" style="width:auto">Zu deinem Bauplan</button></div>';
+        else g = '<p class="wr-oben">' + esc(x.oben) + '</p><div class="wr-stern" aria-hidden="true">✦</div><h2 class="wr-gross">' + esc(x.titel) + '</h2><p class="wr-unter">' + esc(x.unter) + '</p>';
+        return '<section class="wr-karte wr-' + x.art + '" data-i="' + i + '"><div class="wr-in">' + g + '</div></section>';
+      }).join("") + '</div></div>';
+    document.body.insertAdjacentHTML("beforeend", html);
+    var box = document.getElementById("wrapped"), balken = box.querySelectorAll(".wr-balken span"), kn = box.querySelectorAll(".wr-karte");
+    document.documentElement.classList.add("wr-offen");
+    zaehl("wrapped");
+    function zeige(i) {
+      if (i < 0) i = 0;
+      if (i >= n) { zu(); return; }
+      cur = i;
+      kn.forEach(function (k, j) { k.classList.toggle("an", j === i); });
+      balken.forEach(function (b, j) { b.classList.toggle("voll", j < i); b.classList.toggle("laeuft", j === i); b.querySelector("i").style.animationDuration = DAUER + "ms"; });
+      if (i === n - 1) zaehl("wrapped_ende");
+      clearTimeout(uhr); rest = DAUER; start = Date.now();
+      if (i < n - 1 && !reduce) uhr = setTimeout(function () { zeige(cur + 1); }, DAUER);
+      if (i === n - 1) balken[i].classList.add("voll");
+    }
+    function zu() { clearTimeout(uhr); box.classList.add("weg"); document.documentElement.classList.remove("wr-offen"); setTimeout(function () { box.remove(); }, 450); document.removeEventListener("keydown", taste); }
+    function taste(e) { if (e.key === "Escape") zu(); else if (e.key === "ArrowRight") zeige(cur + 1); else if (e.key === "ArrowLeft") zeige(cur - 1); }
+    document.addEventListener("keydown", taste);
+    box.querySelector(".wr-zu").addEventListener("click", zu);
+    box.querySelector(".wr-lesen").addEventListener("click", zu);
+    box.querySelector(".wr-teilen").addEventListener("click", function (e) { e.stopPropagation(); storyTeilen(d, this); });
+    var gedrueckt = 0;
+    box.addEventListener("pointerdown", function (e) {
+      if (e.target.closest("button")) return;
+      gedrueckt = Date.now(); pause = true; clearTimeout(uhr); rest = Math.max(800, DAUER - (Date.now() - start)); box.classList.add("pausiert");
+    });
+    box.addEventListener("pointerup", function (e) {
+      if (e.target.closest("button")) return;
+      box.classList.remove("pausiert"); pause = false;
+      if (Date.now() - gedrueckt > 350) { start = Date.now() - (DAUER - rest); if (cur < n - 1 && !reduce) uhr = setTimeout(function () { zeige(cur + 1); }, rest); return; }
+      zeige(e.clientX > window.innerWidth * .33 ? cur + 1 : cur - 1);
+    });
+    zeige(0);
+  }
+  function wrappedVorbereiten(d) {
+    var kopf = document.querySelector("#step3 .report-head"); if (!kopf) return;
+    if (!kopf.querySelector(".wr-start")) {
+      kopf.insertAdjacentHTML("beforeend", '<button class="wr-start" type="button"><span aria-hidden="true">▶</span> Dein Bauplan in 60 Sekunden</button>');
+      kopf.querySelector(".wr-start").addEventListener("click", function () { wrappedOeffnen(d); });
+    }
+    var schl = "imh_wrapped_" + bauplanSchluessel(d), gesehen = false;
+    try { gesehen = !!localStorage.getItem(schl); } catch (e) {}
+    if (gesehen) return;
+    // Beim ersten Mal von selbst, sobald der Ruhe-Hinweis geschlossen ist
+    var tries = 0, t = setInterval(function () {
+      var offen = [].some.call(document.querySelectorAll("#calm, #cookie"), function (el) { return el.classList.contains("show"); });
+      if (offen && ++tries < 240) return;
+      clearInterval(t);
+      try { localStorage.setItem(schl, "1"); } catch (e) {}
+      setTimeout(function () { wrappedOeffnen(d); }, 700);
+    }, 500);
+  }
+
   /* ── Bericht: Lesezeichen „Hier anfangen“ an den drei Stellen aus Mail 2, Lesefortschritt der Kapitel ── */
   var ANFANG = ["Entscheidungsweg", "Schwierigkeiten"];
   function lesezeichen(d) {
@@ -694,6 +838,7 @@
       '<a class="wk" href="https://www.instagram.com/intuitionmitherz/" target="_blank" rel="noopener" data-ev="folgen"><span class="wk-titel">Folge mir auf Instagram</span><span class="wk-text">Impulse rund um Intuition, Grenzen und das, was in deinem Bauplan steckt.</span><span class="wk-mehr">@intuitionmitherz ✦</span></a>',
       '<a class="wk" href="https://ig.me/m/intuitionmitherz" target="_blank" rel="noopener" data-ev="frage"><span class="wk-titel">Frag mich direkt</span><span class="wk-text">Schreib mir, welche Stelle in deinem Bauplan dich gerade am meisten beschäftigt.</span><span class="wk-mehr">Nachricht schreiben ✦</span></a>'
     ];
+    var app = alsApp(); if (app) karten.unshift(app);
     karten.push('<a class="wk wk-teilen" href="https://bauplan.intuitionmitherz.de/geschenk" data-ev="empfehlen"><span class="wk-titel">Schenk ihn einer Freundin</span><span class="wk-text">Kennst du eine Frau, die alle anderen spürt, nur sich selbst kaum? Schick ihr ihren eigenen Bauplan.</span><span class="wk-mehr">Link verschicken ✦</span></a>');
     if (!LIEBE_LIVE) karten.push('<div class="wk wk-warte"><span class="wk-titel">Wenn dein Himmel auf einen anderen trifft</span><span class="wk-text">Die Kosmische Liebesanalyse für dich und einen Menschen, der dir nah ist. Sie entsteht gerade. Magst du sie als Erste bekommen?</span>' +
       '<form class="wl-form" novalidate><input class="wl-mail" type="email" placeholder="Deine E-Mail-Adresse" autocomplete="email" hidden aria-label="E-Mail-Adresse"><button class="wk-mehr wl-knopf" type="submit">Auf die Warteliste ✦</button></form><span class="wl-info" aria-live="polite"></span></div>');
@@ -957,6 +1102,9 @@
     kapitelbilder();
     lesezeichen(d);
     heuteImBericht(d);
+    heuteFuerDich(d);
+    zeichenBrief(d);
+    wrappedVorbereiten(d);
     weiter();
     // Intuitionstyp und Elemente: die Element-Gravuren
     elementbilder(f);

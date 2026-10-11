@@ -58,6 +58,9 @@ EXTRA = [
     ("fragebox", "Frage an Denise abgeschickt"),
     ("vollendet", "Alle Kapitel gelesen"),
     ("popup_insta", "Instagram aus dem Pop-up"),
+    ("app_start", "Bericht als App vom Startbildschirm geöffnet"),
+    ("wrapped", "Bauplan in 60 Sekunden gestartet"),
+    ("wrapped_ende", "Bauplan in 60 Sekunden bis zum Ende gesehen"),
 ]
 
 PAGE_CSS = """
