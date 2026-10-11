@@ -2102,3 +2102,15 @@ html.film-cta-da #floatcta { opacity: 0 !important; pointer-events: none !import
 .mit-himmel { display: flex; gap: 9px; align-items: flex-start; padding: 0 4px; text-align: left; font-size: 13px; line-height: 1.5; color: #c4bad8; cursor: pointer; }
 .mit-himmel input { flex: none; width: 17px; height: 17px; margin: 1px 0 0; accent-color: #c9a560; }
 @media (prefers-reduced-motion: reduce) { .atem-ring, .rf-linie, .roter-faden { transition: none; } }
+
+/* Runde 26: "Kennst du das?" bleibt wie vorher, der Film steht nur daneben */
+.film-prolog .film-raster { display: grid; grid-template-columns: 1fr; grid-template-areas: "text" "film"; gap: 34px; justify-items: center; text-align: center; }
+.film-prolog .film-text { grid-area: text; }
+.film-prolog .erklaerfilm { grid-area: film; }
+@media (min-width: 1000px) {
+  .film-prolog .wrap.film-raster { max-width: 1280px; grid-template-columns: minmax(0, .85fr) minmax(0, 1.25fr); grid-template-areas: "text film";
+    column-gap: clamp(40px, 5vw, 80px); align-items: center; text-align: left; justify-items: start; }
+  .film-prolog .erklaerfilm { width: 100%; }
+  .film-prolog .prolog-zier { justify-content: flex-start; }
+  .film-prolog .herolead { margin: 0; }
+}

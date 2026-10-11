@@ -1217,13 +1217,17 @@
 
   <!-- PAIN -->
   <!-- PROLOG: die Worte aus dem Hero, groß und ruhig gesetzt -->
-  <!-- ERKLÄRFILM + KENNST DU DAS (seit 11.10.2026): Desktop links Text, rechts Film; Handy Überschrift, Film, Text.
+  <!-- KENNST DU DAS + ERKLÄRFILM (seit 11.10.2026): Text unverändert, der Film steht daneben (Desktop rechts, Handy darunter).
        Film hochkant bis 699 px Breite, sonst quer; startet stumm mit eingebrannten Untertiteln, sobald er zur Hälfte zu sehen ist -->
-  <section class="night band film-band" id="film" data-sterne>
+  <section class="band intro-band prolog film-prolog" id="film">
     <div class="wrap film-raster">
-      <div class="film-kopf">
-        <div class="script-eyebrow">Kennst du das?</div>
-        <h2>Wie oft hast du heute schon <span class="script">„Gut“</span> gesagt?</h2>
+      <div class="film-text">
+        <div class="prolog-zier" aria-hidden="true"><span></span>✦<span></span></div>
+        <div class="herolead">
+              <p>Kennst du das? Du versuchst schon so lange herauszufinden, warum sich manche Entscheidungen leicht anfühlen und andere dich immer wieder Kraft kosten.</p>
+              <p>Mit dir stimmt alles. Du hattest bisher nur nie die Möglichkeit, deinen eigenen Bauplan wirklich kennenzulernen.</p>
+              <p class="strong">Dein kosmischer Bauplan zeigt dir, wie du wirklich gemeint bist. Klar, verständlich und exakt aus deinen Geburtsdaten berechnet.</p>
+        </div>
       </div>
       <figure class="erklaerfilm" id="erklaerfilm">
         <video id="film-video" muted playsinline preload="none" aria-label="Erklärfilm: So entsteht dein Kosmischer Bauplan"
@@ -1231,15 +1235,6 @@
                data-poster-hoch="/bilder/film/so-entsteht-hoch.webp" data-poster-quer="/bilder/film/so-entsteht-quer.webp"></video>
         <button class="film-ton" type="button"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M4 9h4l5-4v14l-5-4H4z" fill="currentColor"/><path d="M16.5 8.5a5 5 0 0 1 0 7M19 6a8.5 8.5 0 0 1 0 12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg> Mit Ton ansehen</button>
       </figure>
-      <div class="herolead film-lead">
-        <p>Du versuchst schon so lange herauszufinden, warum sich manche Entscheidungen leicht anfühlen und andere dich immer wieder Kraft kosten.</p>
-        <p>Mit dir stimmt alles. Du hattest bisher nur nie die Möglichkeit, deinen eigenen Bauplan wirklich kennenzulernen.</p>
-        <p class="strong">Dein kosmischer Bauplan zeigt dir, wie du wirklich gemeint bist. Klar, verständlich und exakt aus deinen Geburtsdaten berechnet.</p>
-      </div>
-      <div class="film-aktion">
-        <a href="#analyse" class="btn" style="width:auto" data-scroll="analyse" id="film-cta">Meinen Bauplan öffnen ✦</a>
-        <p class="film-unter">Ein Geschenk von mir. Es kostet dich nichts.</p>
-      </div>
     </div>
   </section>
 
