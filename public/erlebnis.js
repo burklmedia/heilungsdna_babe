@@ -1213,34 +1213,45 @@
       if (zi >= 0) localStorage.setItem("imh_zeichen", String(zi));
     } catch (e) {}
     var lock = document.querySelector("#g-preview .preview-seal .lock");
-    if (lock) {
-      lock.classList.add("gebrochen");
-      var st = document.querySelector("#g-preview .seal-text"), ss = document.querySelector("#g-preview .seal-sub");
-      if (st) st.textContent = "Dein Siegel ist gebrochen.";
-      if (ss) ss.textContent = "Bestätige kurz deine E-Mail-Adresse, dann kommt deine vollständige Deutung zu dir.";
+    // Am Handy steht das Siegel über dem Formular und ist beim Absenden aus dem Bild gescrollt.
+    // Dann erst sanft hinscrollen, danach bricht es sichtbar (seit 11.10.2026).
+    var vorlauf = 0, lr = lock && lock.getBoundingClientRect();
+    if (lock && !reduce && lr.height && (lr.top < 70 || lr.bottom > window.innerHeight - 40)) {
+      lock.scrollIntoView({ behavior: "smooth", block: "center" }); vorlauf = 750; knopf = lock;
     }
-    if (reduce || !knopf || !knopf.getBoundingClientRect || !document.body.animate) return 0;
-    var r = knopf.getBoundingClientRect(), x0 = r.left + r.width / 2, y0 = r.top + r.height / 2;
-    var x1 = Math.max(30, x0 - window.innerWidth * .38), y1 = -80, dx = x1 - x0, dy = y1 - y0;
-    var winkel = Math.atan2(dy, dx) * 180 / Math.PI;
-    var el = document.createElement("div"); el.className = "schnuppe";
-    el.style.left = x0 + "px"; el.style.top = y0 + "px";
-    document.body.appendChild(el);
-    var rot = " rotate(" + f1(winkel) + "deg)";
-    el.animate([
-      { transform: "translate(0,0)" + rot + " scaleX(.15)", opacity: 0 },
-      { offset: .12, transform: "translate(" + f1(dx * .06) + "px," + f1(dy * .06) + "px)" + rot + " scaleX(1)", opacity: 1 },
-      { transform: "translate(" + f1(dx) + "px," + f1(dy) + "px)" + rot + " scaleX(.7)", opacity: 0 }
-    ], { duration: 1500, easing: "cubic-bezier(.45,.05,.2,1)", fill: "forwards" }).onfinish = function () { el.remove(); };
-    for (var i = 0; i < 16; i++) {   // Funken am Knopf
-      var fu = document.createElement("div"); fu.className = "funke";
-      fu.style.left = x0 + "px"; fu.style.top = y0 + "px"; document.body.appendChild(fu);
-      var a = Math.random() * Math.PI * 2, w = 30 + Math.random() * 70;
-      fu.animate([{ transform: "translate(0,0) scale(1)", opacity: 1 },
-                  { transform: "translate(" + f1(Math.cos(a) * w) + "px," + f1(Math.sin(a) * w - 20) + "px) scale(.2)", opacity: 0 }],
-                 { duration: 700 + Math.random() * 600, easing: "cubic-bezier(.2,.7,.3,1)", fill: "forwards" }).onfinish = (function (x) { return function () { x.remove(); }; })(fu);
+    function brechen() {
+      if (lock) {
+        lock.classList.add("gebrochen");
+        var st = document.querySelector("#g-preview .seal-text"), ss = document.querySelector("#g-preview .seal-sub");
+        if (st) st.textContent = "Dein Siegel ist gebrochen.";
+        if (ss) ss.textContent = "Bestätige kurz deine E-Mail-Adresse, dann kommt deine vollständige Deutung zu dir.";
+      }
+      if (reduce || !knopf || !knopf.getBoundingClientRect || !document.body.animate) return;
+      try { if (navigator.vibrate) navigator.vibrate(18); } catch (e) {}
+      var r = knopf.getBoundingClientRect(), x0 = r.left + r.width / 2, y0 = r.top + r.height / 2;
+      var x1 = Math.max(30, x0 - window.innerWidth * .38), y1 = -80, dx = x1 - x0, dy = y1 - y0;
+      var winkel = Math.atan2(dy, dx) * 180 / Math.PI;
+      var el = document.createElement("div"); el.className = "schnuppe";
+      el.style.left = x0 + "px"; el.style.top = y0 + "px";
+      document.body.appendChild(el);
+      var rot = " rotate(" + f1(winkel) + "deg)";
+      el.animate([
+        { transform: "translate(0,0)" + rot + " scaleX(.15)", opacity: 0 },
+        { offset: .12, transform: "translate(" + f1(dx * .06) + "px," + f1(dy * .06) + "px)" + rot + " scaleX(1)", opacity: 1 },
+        { transform: "translate(" + f1(dx) + "px," + f1(dy) + "px)" + rot + " scaleX(.7)", opacity: 0 }
+      ], { duration: 1500, easing: "cubic-bezier(.45,.05,.2,1)", fill: "forwards" }).onfinish = function () { el.remove(); };
+      for (var i = 0; i < 16; i++) {   // Funken am Knopf
+        var fu = document.createElement("div"); fu.className = "funke";
+        fu.style.left = x0 + "px"; fu.style.top = y0 + "px"; document.body.appendChild(fu);
+        var a = Math.random() * Math.PI * 2, w = 30 + Math.random() * 70;
+        fu.animate([{ transform: "translate(0,0) scale(1)", opacity: 1 },
+                    { transform: "translate(" + f1(Math.cos(a) * w) + "px," + f1(Math.sin(a) * w - 20) + "px) scale(.2)", opacity: 0 }],
+                   { duration: 700 + Math.random() * 600, easing: "cubic-bezier(.2,.7,.3,1)", fill: "forwards" }).onfinish = (function (x) { return function () { x.remove(); }; })(fu);
+      }
     }
-    return 1500;
+    if (vorlauf) setTimeout(brechen, vorlauf); else brechen();
+    if (reduce || !document.body.animate) return 0;
+    return vorlauf ? vorlauf + 2000 : 1500;
   }
 
   /* ════════ 5. Bericht ════════ */

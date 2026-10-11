@@ -2153,3 +2153,11 @@ html.film-cta-da #floatcta { opacity: 0 !important; pointer-events: none !import
 .mk-datum { font-size: 13px; letter-spacing: .02em; opacity: .75; }
 .mk-satz { font-size: 15px; line-height: 1.5; margin-top: 2px; }
 @media (prefers-reduced-motion: reduce) { .ue-stern, .ue-geschenk { animation: none; } }
+
+/* Aus dem Inhalt: Kapitel antippen schlägt die Seite im Stapel auf (11.10.2026) */
+.cards.inhalt .mcard { cursor: pointer; -webkit-tap-highlight-color: transparent; }
+.cards.inhalt .mcard.aktiv { color: var(--gold-deep); }
+.cards.inhalt .mcard.aktiv .iv-punkte { border-bottom-style: solid; border-bottom-color: var(--gold); }
+.cards.inhalt .mcard.aktiv .iv-stern { transform: scale(1.35); }
+.iv-stern { transition: transform .3s ease; }
+.iv-hinweis { text-align: center; margin: -10px 0 12px !important; font-family: var(--serif); font-style: italic; font-size: 15px; color: var(--ink-mute, #7a6a58); }
