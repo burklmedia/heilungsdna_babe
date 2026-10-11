@@ -231,6 +231,7 @@
   function vorschau(d) {
     var f = d && d.full; if (!f) return;
     letzteVorschau = d;
+    try { mondGeburt(d); spiegel(d); deckImMail(d); duUndSie(d); } catch (e) {}
     tabTitel("Himmel", d);
     kuppelFilm();
     var box = $("greet-sternbild");
@@ -687,6 +688,96 @@
     }, 500);
   }
 
+  /* ── Aha-Momente in der Vorschau (seit 11.10.2026) ── */
+  // Mondphase bei der Geburt, als Ortszeit Mitteleuropas gerechnet (die Grenze zwischen zwei Phasen verschiebt sich um Minuten, nicht um Tage)
+  var MOND_BEI = { "Neumond": "bei Neumond", "zunehmende Mondsichel": "bei zunehmender Mondsichel", "zunehmender Halbmond": "bei zunehmendem Halbmond",
+    "zunehmender Mond": "bei zunehmendem Mond", "Vollmond": "bei Vollmond", "abnehmender Mond": "bei abnehmendem Mond",
+    "abnehmender Halbmond": "bei abnehmendem Halbmond", "abnehmende Mondsichel": "bei abnehmender Mondsichel" };
+  var MOND_SATZ = { "Neumond": "Ein Anfang wohnt in dir. Du spürst oft als Erste, wann etwas Neues beginnen will.",
+    "zunehmende Mondsichel": "Du wächst am liebsten Schritt für Schritt, mit Mut und einer leisen Neugier.",
+    "zunehmender Halbmond": "In dir steckt Tatkraft. Wenn dir etwas wichtig ist, gehst du los, auch gegen Widerstand.",
+    "zunehmender Mond": "Du feilst gern, bis es stimmt, und gibst den Dingen die Zeit, die sie zum Reifen brauchen.",
+    "Vollmond": "Bei dir zeigt sich vieles deutlich. Gefühle, Gedanken, Wahrheiten: Du machst sichtbar, was andere übersehen.",
+    "abnehmender Mond": "Du gibst gern weiter, was du verstanden hast. Andere lernen an deiner Erfahrung.",
+    "abnehmender Halbmond": "Du spürst, wann etwas zu Ende gehen darf, und schaffst damit Platz für Neues.",
+    "abnehmende Mondsichel": "In dir wohnt eine stille Weisheit. Rückzug ist für dich eine Kraftquelle." };
+  function mondGeburt(d) {
+    var b = d.birth || {}, m = String(b.date || "").match(/^(\d{4})-(\d{2})-(\d{2})/), z = String(b.time || "12:00").match(/^(\d{1,2}):(\d{2})/);
+    var lead = $("g-lead"); if (!m || !lead || !H.mondphase) return;
+    var utc = Date.UTC(+m[1], +m[2] - 1, +m[3], z ? +z[1] : 12, z ? +z[2] : 0) - 3600000;
+    var ph = H.mondphase(new Date(utc)), alt = document.querySelector(".g-mond"); if (alt) alt.remove();
+    if (!MOND_BEI[ph.name]) return;
+    lead.insertAdjacentHTML("afterend", '<p class="g-mond"><span class="gm-mond" aria-hidden="true" style="--hell:' + ph.hell.toFixed(2) + '"></span>' +
+      '<span>Du bist <b>' + esc(MOND_BEI[ph.name]) + '</b> geboren. ' + esc(MOND_SATZ[ph.name]) + '</span></p>');
+  }
+  // „Erkennst du dich?“: drei Sätze aus „Deine größten Schwierigkeiten“ („Woran du sie erkennst“), zum Antippen
+  function spiegel(d) {
+    var f = d.full, ziel = document.querySelector("#glimpse .mail-rahmen"); if (!ziel) return;
+    var alt = document.querySelector(".spiegel"); if (alt) alt.remove();
+    var sch = (f.sections || []).filter(function (s) { return /Schwierigkeiten/.test(s.title || "") && s.blocks; })[0];
+    if (!sch) return;
+    var saetze = sch.blocks.slice(0, 3).map(function (b) {
+      var teil = (b.parts || []).filter(function (p) { return /erkennst/.test(p[0] || ""); })[0];
+      return teil ? satzAus(teil[1], 0) : "";
+    }).filter(Boolean);
+    if (saetze.length < 2) return;
+    ziel.insertAdjacentHTML("beforebegin", '<section class="spiegel"><div class="script-eyebrow">Erkennst du dich?</div>' +
+      '<p class="sp-lead">Drei Sätze aus deinem Bauplan. Tippe an, was zu dir passt.</p>' +
+      saetze.map(function (t, i) {
+        return '<div class="sp-satz" data-i="' + i + '"><p>„' + esc(t) + '“</p><div class="sp-knoepfe"><button type="button" data-a="ja">Das bin ich</button><button type="button" data-a="nein">Eher nicht</button></div></div>';
+      }).join("") + '<p class="sp-fazit" aria-live="polite"></p></section>');
+    var box = document.querySelector(".spiegel"), ja = 0, fertig = 0, n = saetze.length;
+    box.addEventListener("click", function (e) {
+      var k = e.target.closest("button[data-a]"); if (!k) return;
+      var satz = k.closest(".sp-satz"); if (satz.classList.contains("beantwortet")) return;
+      satz.classList.add("beantwortet", k.getAttribute("data-a")); k.classList.add("gewaehlt");
+      if (k.getAttribute("data-a") === "ja") { ja++; zaehl("spiegel_ja"); } else zaehl("spiegel_nein");
+      if (++fertig < n) return;
+      zaehl("spiegel_fertig");
+      box.querySelector(".sp-fazit").textContent = ja >= 2 ? "Dein Bauplan hat noch viele solcher Stellen. Er wartet schon auf dich."
+        : ja === 1 ? "Was nicht passt, darfst du liegen lassen. Im ganzen Bauplan findest du noch viel mehr über dich."
+        : "Was nicht passt, darfst du liegen lassen. Der ganze Bauplan zeigt dich aus noch vielen anderen Blickwinkeln.";
+    });
+  }
+  // Das eigene Deckblatt liegt schon im E-Mail-Kasten
+  function deckImMail(d) {
+    var f = d.full, karte = document.querySelector("#glimpse .mailcard"), h = karte && karte.querySelector("h3"); if (!h) return;
+    var alt = karte.querySelector(".mail-deck"); if (alt) alt.remove();
+    var so = (f.positions || []).filter(function (p) { return p.key === "Sonne"; })[0], i = so ? H.ZEICHEN.indexOf(so.sign) : -1;
+    var name = (d.birth && d.birth.name) || "";
+    h.insertAdjacentHTML("beforebegin", '<div class="mail-deck" aria-hidden="true" style="background-image:url(/bilder/deckblatt-' + (i >= 0 ? i : "neutral") + '-480.webp)">' +
+      '<span class="md-titel">Dein kosmischer Bauplan</span>' + (name ? '<span class="md-name">' + esc(name) + '</span>' : '') + '<span class="md-marke">Intuition mit Herz</span></div>' +
+      '<p class="md-text">Dein Deckblatt ist schon fertig.</p>');
+  }
+  // Du und deine Freundin: kam der Besuch über einen geteilten Himmel (?v=), steht hier der Vergleich (ohne Geburtsdaten)
+  var ELEMENT_ZEICHEN = ["Feuer", "Erde", "Luft", "Wasser"];
+  function himmelKurz(d) {
+    var f = d.full || {}, by = {}; (f.positions || []).forEach(function (p) { by[p.key] = p; });
+    function zi(k) { return by[k] ? H.ZEICHEN.indexOf(by[k].sign) : -1; }
+    var el = {}; (f.sections || []).forEach(function (s) { if (/Elemente/.test(s.title || "") && s.facts) s.facts.forEach(function (x) { el[x[0]] = +x[1] || 0; }); });
+    return { n: ((d.birth && d.birth.name) || "").slice(0, 24), s: zi("Sonne"), m: zi("Mond"), a: zi("AC"), e: el, h: (f.hd && (f.hd.type_display || f.hd.type)) || "" };
+  }
+  function staerkstes(e) { var best = "", max = -1; Object.keys(e || {}).forEach(function (k) { if (e[k] > max) { max = e[k]; best = k; } }); return best; }
+  function duUndSie(d) {
+    var roh = ""; try { roh = sessionStorage.getItem("imh_v") || ""; } catch (e) {}
+    var ziel = document.querySelector("#glimpse .spiegel") || document.querySelector("#glimpse .mail-rahmen"); if (!roh || !ziel) return;
+    var sie; try { sie = JSON.parse(decodeURIComponent(escape(atob(roh.replace(/-/g, "+").replace(/_/g, "/"))))); } catch (e) { return; }
+    if (!sie || typeof sie !== "object") return;
+    var ich = himmelKurz(d), name = esc(String(sie.n || "Deine Freundin").slice(0, 24)), zeilen = [];
+    if (sie.s >= 0 && sie.s === ich.s) zeilen.push("Ihr habt beide die Sonne " + H.IM[ich.s] + ". Kein Wunder, dass ihr euch versteht.");
+    else if (sie.s >= 0 && ich.s >= 0) zeilen.push("Deine Sonne steht " + H.IM[ich.s] + ", die von " + name + " " + H.IM[sie.s] + ".");
+    var e1 = staerkstes(ich.e), e2 = staerkstes(sie.e);
+    if (e1 && e2) zeilen.push(e1 === e2 ? "Bei euch beiden ist " + e1 + " am stärksten. In vielem tickt ihr ähnlich." :
+      "Bei dir ist " + e1 + " am stärksten, bei " + name + " " + e2 + ". Ihr ergänzt euch genau dort, wo die andere weniger hat.");
+    if (sie.m >= 0 && sie.m === ich.m) zeilen.push("Auch euer Mond steht im selben Zeichen. Ihr fühlt ähnlich.");
+    if (sie.h && ich.h) zeilen.push(sie.h === ich.h ? "Im Human Design seid ihr beide " + esc(ich.h) + "." : name + " ist im Human Design " + esc(sie.h) + ", du bist " + esc(ich.h) + ".");
+    if (!zeilen.length) return;
+    var alt = document.querySelector(".du-und"); if (alt) alt.remove();
+    ziel.insertAdjacentHTML("beforebegin", '<section class="du-und"><div class="script-eyebrow">Du und ' + name + '</div>' +
+      zeilen.map(function (z) { return "<p>" + z + "</p>"; }).join("") + '</section>');
+    zaehl("du_und");
+  }
+
   /* ── Bericht: Lesezeichen „Hier anfangen“ an den drei Stellen aus Mail 2, Lesefortschritt der Kapitel ── */
   var ANFANG = ["Entscheidungsweg", "Schwierigkeiten"];
   function lesezeichen(d) {
@@ -916,6 +1007,8 @@
     ];
     var app = alsApp(); if (app) karten.unshift(app);
     karten.push('<a class="wk wk-teilen" href="https://bauplan.intuitionmitherz.de/geschenk" data-ev="empfehlen"><span class="wk-titel">Schenk ihn einer Freundin</span><span class="wk-text">Kennst du eine Frau, die alle anderen spürt, nur sich selbst kaum? Schick ihr ihren eigenen Bauplan.</span><span class="wk-mehr">Link verschicken ✦</span></a>');
+    karten[karten.length - 1] = karten[karten.length - 1].replace('</a>', '</a>').replace('<a class="wk wk-teilen"', '<div class="wk-teilen-box"><a class="wk wk-teilen"') +
+      '<label class="mit-himmel"><input type="checkbox" id="mit-himmel"> Meinen Himmel mitschicken, damit sie sieht, wie ihr zusammenpasst (Vorname, Zeichen, Elemente, ohne Geburtsdaten)</label></div>';
     if (!LIEBE_LIVE) karten.push('<div class="wk wk-warte"><span class="wk-titel">Wenn dein Himmel auf einen anderen trifft</span><span class="wk-text">Die Kosmische Liebesanalyse für dich und einen Menschen, der dir nah ist. Sie entsteht gerade. Magst du sie als Erste bekommen?</span>' +
       '<form class="wl-form" novalidate><input class="wl-mail" type="email" placeholder="Deine E-Mail-Adresse" autocomplete="email" hidden aria-label="E-Mail-Adresse"><button class="wk-mehr wl-knopf" type="submit">Auf die Warteliste ✦</button></form><span class="wl-info" aria-live="polite"></span></div>');
     if (LIEBE_LIVE) karten.push('<a class="wk" href="https://liebe.intuitionmitherz.de/?q=bauplan-bericht" data-ev="liebe"><span class="wk-titel">Wenn dein Himmel auf einen anderen trifft</span><span class="wk-text">Die Kosmische Liebesanalyse für dich und einen Menschen, der dir nah ist.</span><span class="wk-mehr">Ansehen ✦</span></a>');
@@ -930,7 +1023,10 @@
     var teilen = document.querySelector(".wk-teilen");
     if (teilen) teilen.addEventListener("click", function (e) {
       e.preventDefault();
-      var url = teilen.href, mehr = teilen.querySelector(".wk-mehr");
+      var url = teilen.href, mehr = teilen.querySelector(".wk-mehr"), mit = document.getElementById("mit-himmel");
+      if (mit && mit.checked && letzterBericht) {
+        try { url += "?v=" + btoa(unescape(encodeURIComponent(JSON.stringify(himmelKurz(letzterBericht))))).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, ""); zaehl("himmel_mit"); } catch (x) {}
+      }
       var text = "Ich habe gerade meinen Kosmischen Bauplan von Denise gelesen. Hol dir deinen auch, er ist ein Geschenk:";
       function fertig(t) { if (mehr) { mehr.textContent = t; setTimeout(function () { mehr.textContent = "Link verschicken ✦"; }, 2600); } }
       if (navigator.share) { navigator.share({ title: "Dein Kosmischer Bauplan", text: text, url: url }).catch(function () {}); return; }
@@ -1066,8 +1162,10 @@
   };
   var ELEMENT_WORT = { Feuer: "Antrieb und Begeisterung", Erde: "Halt und Umsetzung", Luft: "Gedanken und Austausch", Wasser: "Gefühl und Tiefe" };
 
+  var letzterBericht = null;
   function bericht(d) {
     var f = d && d.full; if (!f) return;
+    letzterBericht = d;
     tabTitel("Bauplan", d);
     var by = {}; (f.positions || []).forEach(function (p) { by[p.key] = p; });
     var sonne = by.Sonne, idx = sonne ? H.ZEICHEN.indexOf(sonne.sign) : -1;
@@ -1095,6 +1193,16 @@
         var b = e.target.closest(".siegel"); if (!b) return;
         var t = document.querySelector('.rtab[data-rtab="' + b.getAttribute("data-tab") + '"]'); if (t) t.click();
       };
+    }
+
+    // Dein roter Faden: der Satz aus dem Entscheidungsweg, unter den Siegeln mit einer goldenen Linie verbunden
+    var weg = (f.sections || []).filter(function (x) { return /Entscheidungsweg/.test(x.title || "") && x.takeaway; })[0];
+    var altFaden = document.querySelector(".roter-faden"); if (altFaden) altFaden.remove();
+    if (reihe && weg) {
+      var satz = String(weg.takeaway).replace(/^Dein roter Faden:\s*/, "");
+      reihe.insertAdjacentHTML("afterend", '<div class="roter-faden"><span class="rf-linie" aria-hidden="true"></span><p class="rf-titel">Dein roter Faden</p><p class="rf-text">' + esc(satz) + '</p></div>');
+      var faden = document.querySelector(".roter-faden");
+      if (reduce) faden.classList.add("an"); else sichtbar(faden, function () { faden.classList.add("an"); }, { threshold: .4 });
     }
 
     // Elemente als alchemistische Zeichen mit Säulen (Natalchart-Reiter)

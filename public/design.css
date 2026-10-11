@@ -2044,3 +2044,61 @@ html.film-cta-da #floatcta { opacity: 0 !important; pointer-events: none !import
   .film-band .wrap.film-raster { max-width: 1280px; grid-template-columns: minmax(0, .85fr) minmax(0, 1.35fr); }
   .film-kopf h2 { font-size: clamp(34px, 3.1vw, 48px); line-height: 1.12; }
 }
+
+/* Runde 25: Aha-Momente. Mondphase, Erkennst du dich?, Deckblatt im Mail-Kasten, Du und deine Freundin, Atem im Ritual, roter Faden */
+.g-mond { display: flex; align-items: flex-start; justify-content: center; gap: 12px; max-width: 46ch; margin: 14px auto 0 !important; text-align: left;
+  font-family: var(--serif); font-style: italic; font-size: 17.5px !important; line-height: 1.5 !important; color: #e8dfef !important; }
+.g-mond b { font-style: normal; font-weight: 500; color: #f3dca6; }
+.gm-mond { flex: none; width: 22px; height: 22px; margin-top: 3px; border-radius: 50%; position: relative; overflow: hidden;
+  background: radial-gradient(circle at 50% 50%, #fff3d2 0 60%, #e2c486 100%); box-shadow: 0 0 14px rgba(243,220,166,.7); }
+.gm-mond::after { content: ""; position: absolute; inset: 0; border-radius: 50%; background: #1a1838; transform: translateX(calc(var(--hell) * 105%)); }
+
+.spiegel { margin: 30px auto 26px; max-width: 560px; text-align: center; }
+.spiegel .script-eyebrow { font-size: clamp(30px, 3.4vw, 40px); margin-bottom: 6px; }
+.sp-lead { margin: 0 0 16px !important; color: #c4bad8 !important; font-size: 15px !important; }
+.sp-satz { margin: 0 0 12px; padding: 16px 18px 14px; border-radius: 6px; text-align: left; background: rgba(16,15,36,.72);
+  box-shadow: 0 0 0 1px rgba(226,196,134,.28); transition: box-shadow .35s, background .35s, opacity .35s; }
+.sp-satz p { margin: 0 0 12px !important; font-family: var(--serif); font-size: 19px !important; line-height: 1.45 !important; color: #f6f1e8 !important; }
+.sp-knoepfe { display: flex; gap: 8px; flex-wrap: wrap; }
+.sp-knoepfe button { padding: 9px 14px; border: 0; border-radius: 999px; cursor: pointer; font-family: var(--sans); font-size: 12px; font-weight: 700; letter-spacing: .12em;
+  text-transform: uppercase; color: #f3dca6; background: transparent; box-shadow: inset 0 0 0 1px rgba(226,196,134,.55); transition: background .25s, color .25s; }
+.sp-knoepfe button[data-a="ja"]:hover { background: rgba(226,196,134,.14); }
+.sp-satz.beantwortet button { cursor: default; opacity: .45; }
+.sp-satz.beantwortet button.gewaehlt { opacity: 1; background: linear-gradient(135deg, #ecd29d, #c9a560); color: #1d1733; box-shadow: none; }
+.sp-satz.ja { box-shadow: 0 0 0 1px rgba(243,220,166,.75), 0 0 40px -14px rgba(226,196,134,.7); }
+.sp-satz.nein { opacity: .7; }
+.sp-fazit { margin: 14px 0 0 !important; font-family: var(--serif); font-style: italic; font-size: 18px !important; color: #f3dca6 !important; }
+.sp-fazit:empty { display: none; }
+
+.mail-deck { position: relative; width: 112px; aspect-ratio: 210 / 297; margin: 0 auto 8px; border-radius: 3px; background: #0b0a1a center / cover no-repeat;
+  container-type: inline-size; transform: rotate(-3deg); box-shadow: 0 0 0 1px rgba(226,196,134,.4), 10px 18px 30px -12px rgba(0,0,0,.85), 0 0 40px -12px rgba(226,196,134,.5); }
+.md-titel { position: absolute; left: 0; right: 0; top: 9.4%; font-family: var(--serif); font-size: 5.6cqw; letter-spacing: .1em; text-transform: uppercase; color: #f6f1e8; text-align: center; white-space: nowrap; }
+.md-name { position: absolute; left: 0; right: 0; top: 14.6%; font-family: var(--script); font-size: 15cqw; line-height: 1; color: #e2c486; text-align: center; }
+.md-marke { position: absolute; left: 0; right: 0; bottom: 6%; font-family: var(--script); font-size: 8cqw; color: #e2c486; text-align: center; }
+.md-text { margin: 0 0 12px !important; text-align: center; font-family: var(--serif); font-style: italic; font-size: 15px !important; color: #f3dca6 !important; }
+
+.du-und { margin: 26px auto; max-width: 560px; padding: 22px 22px 16px; border-radius: 6px; text-align: center;
+  background: radial-gradient(90% 100% at 50% 0%, rgba(226,196,134,.14), rgba(16,15,36,.85) 70%); box-shadow: 0 0 0 1px rgba(226,196,134,.4); }
+.du-und .script-eyebrow { font-size: clamp(30px, 3.4vw, 40px); margin-bottom: 8px; }
+.du-und p { margin: 0 0 8px !important; font-family: var(--serif); font-size: 18px !important; line-height: 1.5 !important; color: #f6f1e8 !important; }
+
+.atem { display: flex; flex-direction: column; align-items: center; gap: 12px; margin: 18px auto 0; opacity: 0; transition: opacity .8s ease; }
+.atem.an { opacity: 1; }
+.atem-ring { width: 46px; height: 46px; border-radius: 50%; box-shadow: 0 0 0 1px rgba(243,220,166,.75), 0 0 30px rgba(226,196,134,.35) inset, 0 0 24px rgba(226,196,134,.3);
+  transform: scale(.75); transition: transform 1.7s ease-in-out, box-shadow 1.7s ease-in-out; }
+.atem.ein .atem-ring { transform: scale(1.35); box-shadow: 0 0 0 1px rgba(255,243,210,.95), 0 0 40px rgba(243,220,166,.5) inset, 0 0 46px rgba(226,196,134,.6); }
+.atem-text { font-family: var(--serif); font-style: italic; font-size: 17px; color: #f3dca6; min-height: 1.4em; }
+
+.roter-faden { position: relative; margin: 6px auto 0; max-width: 620px; text-align: center; opacity: 0; transform: translateY(10px); transition: opacity .9s ease .3s, transform .9s ease .3s; }
+.roter-faden.an { opacity: 1; transform: none; }
+.rf-linie { display: block; height: 2px; margin: 0 auto 14px; width: 0; border-radius: 2px; background: linear-gradient(90deg, transparent, #c9a560 15%, #fff3d2 50%, #c9a560 85%, transparent);
+  box-shadow: 0 0 14px rgba(226,196,134,.7); transition: width 1.6s cubic-bezier(.2,.7,.2,1); }
+.roter-faden.an .rf-linie { width: 92%; }
+.rf-titel { margin: 0 0 4px !important; font-family: var(--script); font-size: 34px !important; line-height: 1.1 !important; color: #e2c486 !important; }
+.rf-text { margin: 0 !important; font-family: var(--serif); font-size: 20px !important; line-height: 1.5 !important; color: #f6f1e8 !important; }
+
+.wk-teilen-box { display: flex; flex-direction: column; gap: 10px; }
+.wk-teilen-box .wk { flex: 1; }
+.mit-himmel { display: flex; gap: 9px; align-items: flex-start; padding: 0 4px; text-align: left; font-size: 13px; line-height: 1.5; color: #c4bad8; cursor: pointer; }
+.mit-himmel input { flex: none; width: 17px; height: 17px; margin: 1px 0 0; accent-color: #c9a560; }
+@media (prefers-reduced-motion: reduce) { .atem-ring, .rf-linie, .roter-faden { transition: none; } }

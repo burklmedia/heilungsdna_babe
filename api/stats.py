@@ -66,6 +66,11 @@ EXTRA = [
     ("film_ton", "Erklärfilm mit Ton gestartet"),
     ("film_ende", "Erklärfilm bis zum Ende gesehen"),
     ("film_cta", "Knopf unter dem Erklärfilm"),
+    ("spiegel_ja", "Vorschau: mindestens ein „Das bin ich“"),
+    ("spiegel_nein", "Vorschau: mindestens ein „Eher nicht“"),
+    ("spiegel_fertig", "Vorschau: alle drei Sätze beantwortet"),
+    ("himmel_mit", "Empfehlung mit eigenem Himmel geteilt"),
+    ("du_und", "Freundinnen-Vergleich gesehen"),
 ]
 
 PAGE_CSS = """

@@ -1483,6 +1483,7 @@
     </div>
     <div class="ritual-status" id="ritual-status">Wir öffnen deinen Himmel…</div>
     <div class="ritual-sub" id="ritual-sub">einen Moment</div>
+    <div class="atem" id="atem" aria-live="polite"><span class="atem-ring" aria-hidden="true"></span><span class="atem-text">Leg kurz die Hand aufs Herz.</span></div>
   </div>
 
   <div class="wrap g-wrap" style="padding-top:60px;padding-bottom:80px">
@@ -1819,6 +1820,15 @@
     }
     ['f-day','f-month','f-year'].forEach(function(id){ var e=document.getElementById(id); if(e) e.addEventListener('change',zeigen); });
   })();
+  // Geteilter Himmel einer Freundin (?v=, seit 11.10.2026): nur Vorname, Zeichen, Elemente, Typ. Für die Sitzung merken, aus der Adresszeile nehmen.
+  (function(){
+    try{
+      var u=new URL(location.href), v=u.searchParams.get('v')||'';
+      if(!/^[A-Za-z0-9_-]{10,600}$/.test(v)) return;
+      sessionStorage.setItem('imh_v',v); u.searchParams.delete('v');
+      history.replaceState(history.state,'',u.pathname+(u.search||'')+u.hash);
+    }catch(e){}
+  })();
   // Schlüssel aus Mail 1 (&t=%FEEDBACK_TOKEN%, seit 11.10.2026): für die Warteliste mit einem Klick.
   // Er wird für die Sitzung gemerkt und sofort aus der Adresszeile genommen, damit er beim Teilen nicht mitwandert.
   (function(){
@@ -2031,6 +2041,21 @@
     var rn=document.getElementById('ritual-name'), vn=document.getElementById('f-name');
     if(rn) rn.textContent=((vn&&vn.value)||'').trim().split(/\s+/)[0].slice(0,24);
     seed(); ritualOn=true; if(!reduce) rrender(); void stage.offsetWidth;
+    // Körper zuerst: drei Atemzüge, während gerechnet wird (Ring atmet mit, am Handy eine sanfte Vibration beim Einatmen)
+    (function atmen(){
+      var at=document.getElementById('atem'); if(!at) return;
+      var txt=at.querySelector('.atem-text'), n=0; at.classList.remove('an','ein','aus'); txt.textContent='Leg kurz die Hand aufs Herz.';
+      if(reduce){ at.classList.add('an'); return; }
+      setTimeout(function(){ at.classList.add('an'); },300);
+      function schritt(){
+        if(!ritualOn || n>=6){ txt.textContent='Schön. Dein Himmel ist gleich da.'; at.classList.remove('ein','aus'); return; }
+        var ein=(n%2===0); at.classList.toggle('ein',ein); at.classList.toggle('aus',!ein);
+        txt.textContent=ein?'Atme ein …':'… und wieder aus.';
+        if(ein && navigator.vibrate){ try{ navigator.vibrate(40); }catch(e){} }
+        n++; setTimeout(schritt,1700);
+      }
+      setTimeout(schritt,1500);
+    })();
     setTimeout(function(){ stage.classList.add('go'); }, 60);                      // die Räder zeichnen sich
     setTimeout(function(){ stage.classList.add('merge'); }, reduce ? 0 : 2300);     // und gleiten zusammen
     setTimeout(function(){ stage.classList.add('eins'); }, reduce ? 0 : 6700);      // Lichtring, Herz, Name
