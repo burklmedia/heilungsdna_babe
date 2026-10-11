@@ -414,13 +414,15 @@
       '<div class="pk-text"><div class="script-eyebrow">Dein Bauplan zum Aufheben</div>' +
       '<p>Alle Kapitel in einer PDF, rund 40 Seiten mit deinem Deckblatt. Zum Ausdrucken, Wiederlesen und Weitergeben an dich selbst in ein paar Monaten.</p>' +
       '<div class="pk-knoepfe"><button class="btn pk-pdf" type="button" style="width:auto">Als PDF speichern ↓</button>' +
-      '<button class="btn btn-ghost pk-story" type="button" style="width:auto">Als Story teilen ✦</button></div>' +
-      '<p class="pk-hinweis">Das Story-Bild zeigt deinen Namen, deine Zeichen und deinen Typ. Geburtsdatum, Zeit und Ort bleiben bei dir.</p></div></section>';
+      '<button class="btn btn-ghost pk-story" type="button" style="width:auto">Als Story teilen ✦</button>' +
+      '<button class="btn btn-ghost pk-hintergrund" type="button" style="width:auto">Als Handy-Hintergrund ✦</button></div>' +
+      '<p class="pk-hinweis">Story-Bild und Hintergrund zeigen deinen Namen und deine Zeichen. Geburtsdatum, Zeit und Ort bleiben bei dir.</p></div></section>';
     note.insertAdjacentHTML("beforebegin", html);
     var karte = document.querySelector(".pdf-karte");
     karte.querySelector(".pk-pdf").addEventListener("click", function () { zaehl("deckblatt"); $("pdfbtn").click(); });
     karte.querySelector(".pk-buehne").addEventListener("click", function () { zaehl("deckblatt"); $("pdfbtn").click(); });
     karte.querySelector(".pk-story").addEventListener("click", function () { storyTeilen(d, this); });
+    karte.querySelector(".pk-hintergrund").addEventListener("click", function () { hintergrundTeilen(d, this); });
     if (reduce) karte.classList.add("an"); else sichtbar(karte, function () { karte.classList.add("an"); }, { threshold: .3 });
   }
 
@@ -564,6 +566,96 @@
       g.fillText("@INTUITIONMITHERZ", W / 2, 1790); if ("letterSpacing" in g) g.letterSpacing = "0px";
       return new Promise(function (ok) { c.toBlob(function (b) { ok(b); }, "image/png"); });
     });
+  }
+  /* ── Geburtshimmel als Handy-Hintergrund (1170 × 2532): Sternenfeld, Tierkreis-Rad mit den Planeten an ihrem Ort,
+        Name, Zeichen. Oben bleibt Platz für die Uhr des Sperrbildschirms. Keine Geburtsdaten im Bild. ── */
+  function hintergrundBild(d) {
+    var f = d.full || {}, by = {}; (f.positions || []).forEach(function (p) { by[p.key] = p; });
+    var name = (d.birth && d.birth.name) || "", b = d.birth || {};
+    var schriften = document.fonts && document.fonts.load ? Promise.all([
+      document.fonts.load('150px "Great Vibes"'), document.fonts.load('500 40px "Cormorant Garamond"'), document.fonts.load('600 24px "Mulish"')
+    ]).catch(function () {}) : Promise.resolve();
+    return schriften.then(function () {
+      var W = 1170, Hh = 2532, c = document.createElement("canvas"); c.width = W; c.height = Hh;
+      var g = c.getContext("2d");
+      var bg = g.createRadialGradient(W / 2, 1480, 80, W / 2, 1300, 1700);
+      bg.addColorStop(0, "#1f1d45"); bg.addColorStop(.45, "#121129"); bg.addColorStop(1, "#07060f");
+      g.fillStyle = bg; g.fillRect(0, 0, W, Hh);
+      // Sternenfeld, aus den Geburtsdaten gesät: jedes Bild ist anders, und dasselbe Bild entsteht wieder gleich
+      var saat = 7; String([b.date, b.time, b.place, name].join("|")).split("").forEach(function (ch) { saat = (saat * 31 + ch.charCodeAt(0)) >>> 0; });
+      function zufall() { saat = (saat * 1664525 + 1013904223) >>> 0; return saat / 4294967296; }
+      for (var i = 0; i < 900; i++) {
+        var x = zufall() * W, y = zufall() * Hh, r = zufall() < .06 ? 1.6 + zufall() * 1.6 : .5 + zufall() * .9, a = .25 + zufall() * .6;
+        g.beginPath(); g.arc(x, y, r, 0, Math.PI * 2); g.fillStyle = zufall() < .18 ? "rgba(243,220,166," + a + ")" : "rgba(246,241,232," + a + ")";
+        if (r > 1.6) { g.shadowColor = "rgba(243,220,166,.8)"; g.shadowBlur = 10; }
+        g.fill(); g.shadowBlur = 0;
+      }
+      // Tierkreis-Rad. Mit Geburtszeit liegt der Aszendent links wie in einem Horoskop, sonst die Sonne.
+      var cx = W / 2, cy = 1480, R = 440;
+      var bezug = by.AC ? laengeAus(by.AC) : (by.Sonne ? laengeAus(by.Sonne) : 0);
+      function winkel(lon) { return Math.PI - (lon - bezug) * Math.PI / 180; }
+      function punkt(lon, rr) { var w = winkel(lon); return [cx + Math.cos(w) * rr, cy - Math.sin(w) * rr]; }
+      var schein = g.createRadialGradient(cx, cy, 0, cx, cy, R * 1.25);
+      schein.addColorStop(0, "rgba(226,196,134,.10)"); schein.addColorStop(1, "rgba(226,196,134,0)");
+      g.fillStyle = schein; g.beginPath(); g.arc(cx, cy, R * 1.25, 0, Math.PI * 2); g.fill();
+      g.strokeStyle = "rgba(226,196,134,.85)"; g.lineWidth = 2.2; g.shadowColor = "rgba(226,196,134,.6)"; g.shadowBlur = 18;
+      g.beginPath(); g.arc(cx, cy, R, 0, Math.PI * 2); g.stroke(); g.shadowBlur = 0;
+      g.lineWidth = 1.2; g.strokeStyle = "rgba(226,196,134,.5)";
+      g.beginPath(); g.arc(cx, cy, R - 84, 0, Math.PI * 2); g.stroke();
+      g.beginPath(); g.arc(cx, cy, R - 250, 0, Math.PI * 2); g.setLineDash([2, 9]); g.stroke(); g.setLineDash([]);
+      for (var gr = 0; gr < 360; gr += 5) {   // Gradstriche am äußeren Ring
+        var lang = gr % 30 === 0 ? 84 : (gr % 10 === 0 ? 16 : 9), p1 = punkt(gr, R), p2 = punkt(gr, R - lang);
+        g.beginPath(); g.moveTo(p1[0], p1[1]); g.lineTo(p2[0], p2[1]); g.strokeStyle = gr % 30 === 0 ? "rgba(226,196,134,.55)" : "rgba(226,196,134,.35)"; g.stroke();
+      }
+      function zeichenMitte(txt, x, y) {   // sichtbares Zeichen nach gemessener Box mittig setzen (wie beim Story-Bild)
+        g.textAlign = "left"; g.textBaseline = "alphabetic";
+        var m = g.measureText(txt), li = m.actualBoundingBoxLeft || 0, re = m.actualBoundingBoxRight || m.width, ob = m.actualBoundingBoxAscent || 30, un = m.actualBoundingBoxDescent || 0;
+        g.fillText(txt, x - (re - li) / 2, y + (ob - un) / 2);
+      }
+      var SYMF = '"Apple Symbols", "Segoe UI Symbol", "Noto Sans Symbols 2", serif';
+      g.fillStyle = "rgba(226,196,134,.8)"; g.font = "40px " + SYMF;
+      H.GLYPH.forEach(function (gl, z) { var q = punkt(z * 30 + 15, R - 42); zeichenMitte(gl, q[0], q[1]); });
+      // Planeten: leuchtender Punkt auf dem inneren Ring, Zeichen etwas weiter innen; dicht beieinander wird gestaffelt
+      var pl = []; PLANETEN.forEach(function (n) { var p = by[n]; if (p) { var l = laengeAus(p); if (l != null) pl.push({ n: n, lon: l }); } });
+      pl.sort(function (a, b) { return a.lon - b.lon; });
+      pl.forEach(function (x, k) { var vor = pl[k - 1]; x.stufe = vor && Math.abs(x.lon - vor.lon) < 9 && !vor.stufe ? 1 : 0; });
+      pl.forEach(function (x) {
+        var gross = x.n === "Sonne" || x.n === "Mond", rp = R - 84, q = punkt(x.lon, rp);
+        g.beginPath(); g.arc(q[0], q[1], gross ? 9 : 6, 0, Math.PI * 2); g.fillStyle = "#fff3d2"; g.shadowColor = "rgba(255,240,200,.95)"; g.shadowBlur = gross ? 30 : 18; g.fill(); g.shadowBlur = 0;
+        var t = punkt(x.lon, rp - (x.stufe ? 120 : 62));
+        g.fillStyle = gross ? "#f3dca6" : "rgba(246,241,232,.92)"; g.font = (gross ? "50px " : "40px ") + SYMF;
+        zeichenMitte(tp(PSYM[x.n]).replace(/︎/g, ""), t[0], t[1]);
+      });
+      if (by.AC) {   // Aszendent als kleine goldene Marke links
+        var a1 = punkt(bezug, R + 14), a2 = punkt(bezug, R + 44);
+        g.beginPath(); g.moveTo(a1[0], a1[1]); g.lineTo(a2[0], a2[1]); g.strokeStyle = "#e2c486"; g.lineWidth = 3; g.stroke();
+      }
+      // Mitte: Siegelstern
+      g.fillStyle = "#e2c486"; g.font = "60px " + SYMF; g.shadowColor = "rgba(226,196,134,.8)"; g.shadowBlur = 24; zeichenMitte("✦", cx, cy); g.shadowBlur = 0;
+      // Name und Zeichen
+      g.textAlign = "center"; g.textBaseline = "alphabetic";
+      if (name) { g.font = '150px "Great Vibes", cursive'; g.fillStyle = "#e2c486"; g.shadowColor = "rgba(226,196,134,.5)"; g.shadowBlur = 34; g.fillText(name, cx, 2140, W - 160); g.shadowBlur = 0; }
+      var zeile = [];
+      if (by.Sonne) zeile.push("Sonne " + by.Sonne.sign); if (by.Mond) zeile.push("Mond " + by.Mond.sign); if (by.AC) zeile.push("Aszendent " + by.AC.sign);
+      g.fillStyle = "#f6f1e8"; g.font = '500 38px "Cormorant Garamond", Georgia, serif'; if ("letterSpacing" in g) g.letterSpacing = "3px";
+      g.fillText(zeile.join("  ·  "), cx, 2232, W - 120); if ("letterSpacing" in g) g.letterSpacing = "0px";
+      g.fillStyle = "rgba(226,196,134,.75)"; g.font = '600 22px "Mulish", sans-serif'; if ("letterSpacing" in g) g.letterSpacing = "6px";
+      g.fillText("INTUITION MIT HERZ", cx, 2330); if ("letterSpacing" in g) g.letterSpacing = "0px";
+      return new Promise(function (ok) { c.toBlob(function (bl) { ok(bl); }, "image/png"); });
+    });
+  }
+  function hintergrundTeilen(d, knopf) {
+    var alt = knopf.textContent; knopf.disabled = true; knopf.textContent = "Einen Moment…";
+    hintergrundBild(d).then(function (blob) {
+      knopf.disabled = false; knopf.textContent = alt;
+      if (!blob) return;
+      zaehl("hintergrund");
+      var datei = null; try { datei = new File([blob], "mein-geburtshimmel.png", { type: "image/png" }); } catch (e) {}
+      // Am Handy: Teilen-Menü, darin "Bild sichern", dann in den Fotos als Hintergrund wählen
+      if (datei && navigator.canShare && navigator.canShare({ files: [datei] })) { navigator.share({ files: [datei], title: "Mein Geburtshimmel" }).catch(function () {}); return; }
+      var a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = "mein-geburtshimmel.png";
+      document.body.appendChild(a); a.click(); setTimeout(function () { URL.revokeObjectURL(a.href); a.remove(); }, 1500);
+    }).catch(function () { knopf.disabled = false; knopf.textContent = alt; });
   }
   function storyTeilen(d, knopf) {
     var alt = knopf.textContent; knopf.disabled = true; knopf.textContent = "Einen Moment…";

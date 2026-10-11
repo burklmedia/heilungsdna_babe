@@ -17,6 +17,7 @@ Erlaubte Ereignisse:
   bestaetigt, kontakt              Bestätigungsseite geöffnet, Kontaktkarte geladen
   grusston, grussende              Videogruß im Pop-up: Ton eingeschaltet, bis zum Ende angesehen
   empfehlen                        Bericht: "Schenk ihn einer Freundin" angetippt
+  hintergrund                      Bericht: Geburtshimmel als Handy-Hintergrund geladen
 """
 from http.server import BaseHTTPRequestHandler
 from urllib.parse import urlparse, parse_qs
@@ -42,7 +43,7 @@ ALLOWED = {"visit", "himmel", "teaser", "email", "bauplan", "scroll", "pdf",
            # seit 11.10.2026: Videogruß von Denise im Pop-up nach dem Eintragen
            "grusston", "grussende",
            # seit 11.10.2026: Bauplan an eine Freundin weiterempfohlen (Karte am Berichtsende)
-           "empfehlen"}
+           "empfehlen", "hintergrund"}
 
 
 def _count(event):

@@ -1770,3 +1770,18 @@ header.hero .card { padding-top: 54px; }
 }
 @media (prefers-reduced-motion: reduce) { .karte-denise { animation: none; } }
 header.hero .card h3, header.hero .card > .hint { text-align: center; }
+
+/* Runde 14: Herkunftsgruß an der Formularkarte, Sonnenzeichen leuchtet beim Eintippen auf */
+.herkunft-gruss { margin: 0 0 4px; text-align: center; font-family: var(--serif); font-style: italic; font-size: 15.5px; line-height: 1.35; color: #f3dca6; }
+.zeichen-blick { margin: 10px 0 0; font-family: var(--serif); font-style: italic; font-size: 16.5px; line-height: 1.4; color: #e2c486; text-align: left; }
+.zeichen-blick .zb-glyph { display: inline-block; margin: 0 3px; font-family: var(--symbol); font-style: normal; font-size: 19px; color: #fff3d2;
+  text-shadow: 0 0 10px rgba(243,220,166,.9), 0 0 24px rgba(226,196,134,.6); }
+.zeichen-blick.an { animation: zeichenAuf .9s cubic-bezier(.2,.7,.2,1) both; }
+.zeichen-blick.an .zb-glyph { animation: zeichenGlut 1.6s ease-out both; }
+@keyframes zeichenAuf { from { opacity: 0; transform: translateY(6px); filter: blur(3px); } }
+@keyframes zeichenGlut { 0% { text-shadow: 0 0 0 rgba(243,220,166,0); transform: scale(.6); } 40% { text-shadow: 0 0 22px #fff3d2, 0 0 46px rgba(226,196,134,.9); transform: scale(1.25); } 100% { transform: none; } }
+@media (prefers-reduced-motion: reduce) { .zeichen-blick.an, .zeichen-blick.an .zb-glyph { animation: none; } }
+@media (max-width: 760px) {
+  header.hero .card .row3 { grid-template-columns: .74fr 1.5fr 1fr; gap: 8px; }
+  header.hero .card .row3 select { padding-left: 11px; padding-right: 22px; background-position: right 7px center; font-size: 14.5px; }
+}

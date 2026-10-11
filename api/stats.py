@@ -48,6 +48,7 @@ EXTRA = [
     ("folgen", "Instagram-Link am Berichtsende"),
     ("frage", "Frage an Denise geklickt"),
     ("empfehlen", "Bauplan an eine Freundin weiterempfohlen"),
+    ("hintergrund", "Geburtshimmel als Handy-Hintergrund geladen"),
 ]
 
 PAGE_CSS = """

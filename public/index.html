@@ -1147,6 +1147,7 @@
     <div class="card" id="analyse">
       <span class="karten-siegel" aria-hidden="true"></span>
       <span class="karte-denise"><img src="/bilder/denise-rund-160.webp" srcset="/bilder/denise-rund-160.webp 1x, /bilder/denise-rund-320.webp 2x" alt="Denise" width="80" height="80" decoding="async"></span>
+      <p class="herkunft-gruss" id="herkunft-gruss" hidden></p>
       <p class="kd-zeile">Ein Geschenk von <span>Denise</span></p>
       <h3>Dein Bauplan wartet auf dich</h3>
       <p class="hint">Für die Berechnung brauche ich deinen genauen Geburtsmoment.</p>
@@ -1179,6 +1180,7 @@
             <option value="" disabled selected hidden>Jahr</option>
           </select>
         </div>
+        <p class="zeichen-blick" id="zeichen-blick" aria-live="polite" hidden></p>
       </div>
       <div class="field datewrap">
         <div class="subl">Geburtszeit</div>
@@ -1799,6 +1801,34 @@
     try{ q=(new URLSearchParams(location.search).get('q')||'').toLowerCase(); }catch(e){}
     if(/^[a-z0-9][a-z0-9-]{0,23}$/.test(q)){ try{ sessionStorage.setItem('imh_q',q); }catch(e){} return q; }
     try{ return sessionStorage.getItem('imh_q')||''; }catch(e){ return ''; }
+  })();
+  // Begrüßung je nach Herkunft (seit 11.10.2026): wer über einen Kurzlink oder eine Empfehlung kommt, wird darauf angesprochen
+  (function(){
+    var GRUSS={
+      story:'Schön, dass du aus meiner Story hier bist.',
+      kommentar:'Du hast kommentiert, und hier ist er: dein Bauplan.',
+      dm:'Wie versprochen aus meiner Nachricht: hier ist dein Bauplan.',
+      bio:'Schön, dass du über mein Profil hier bist.',
+      freundin:'Eine Freundin hat dir deinen Bauplan geschenkt.'
+    };
+    var el=document.getElementById('herkunft-gruss');
+    if(el && GRUSS[HERKUNFT]){ el.textContent=GRUSS[HERKUNFT]; el.hidden=false; }
+  })();
+  // Sonnenzeichen leuchtet auf, sobald Tag und Monat gewählt sind (seit 11.10.2026)
+  (function(){
+    var el=document.getElementById('zeichen-blick'), letzt='';
+    function zeigen(){
+      var H=window.Himmel; if(!el||!H||!H.sonnenzeichen) return;
+      var t=+val('f-day'), m=+val('f-month'), j=+val('f-year')||0;
+      if(!t||!m){ el.hidden=true; letzt=''; return; }
+      var r=H.sonnenzeichen(t,m,j), html;
+      function z(i){ return '<span class="zb-glyph">'+H.GLYPH[i]+'\uFE0E</span>'+H.ZEICHEN[i]; }
+      if(r.grenze) html='Deine Sonne steht an der Grenze: '+z(r.grenze[0])+' oder '+z(r.grenze[1])+'. Das entscheidet dein genauer Geburtsmoment.';
+      else html='Deine Sonne steht '+H.IM[r.index]+' '+'<span class="zb-glyph">'+H.GLYPH[r.index]+'\uFE0E</span>';
+      if(html===letzt) return; letzt=html;
+      el.innerHTML=html; el.hidden=false; el.classList.remove('an'); void el.offsetWidth; el.classList.add('an');
+    }
+    ['f-day','f-month','f-year'].forEach(function(id){ var e=document.getElementById(id); if(e) e.addEventListener('change',zeigen); });
   })();
   if(!MAIL_D) track('visit');
   // Scroll-Tiefe: wer mehr als 60% der Startseite liest, gilt als "gelesen"
