@@ -1,6 +1,5 @@
 User-agent: *
 Allow: /
 Disallow: /api/
-Disallow: /feedback
 
 Sitemap: https://bauplan.intuitionmitherz.de/sitemap.xml

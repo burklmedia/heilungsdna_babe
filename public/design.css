@@ -1701,3 +1701,13 @@ footer.fuss-start .foot { border-top: 1px solid var(--line); padding-top: 22px; 
 
 @media (max-width: 760px) { .astrolab-rad .messing { background-image: url("/bilder/messingring-600.webp"); } }
 .cards.inhalt .mcard::before { display: none !important; }
+
+/* Runde 11 (technischer SEO-Block): lesbare Größen auf dem Handy, Goldfolie im Brief kräftiger */
+#step1 .bridge h2 .script { background-image: linear-gradient(100deg, #7a5a22 0%, #8f6b2c 25%, #b38a43 42%, #d9bd82 50%, #b38a43 58%, #8f6b2c 75%, #7a5a22 100%); }
+@media (max-width: 760px) {
+  .hero-systems { white-space: normal; font-size: 11px; line-height: 1.6; letter-spacing: .14em; }
+  .night .field label, .night .datewrap .subl { font-size: 11.5px; }
+  header.hero .microcopy { font-size: 12.5px; }
+  .foot a { display: inline-block; padding: 12px 6px; }
+}
+

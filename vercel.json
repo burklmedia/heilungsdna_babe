@@ -1,35 +1,190 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "builds": [
-    { "src": "api/analyze.py", "use": "@vercel/python", "config": { "includeFiles": "api/**" } },
-    { "src": "api/subscribe.py", "use": "@vercel/python", "config": { "includeFiles": "api/**" } },
-    { "src": "api/pdf.py", "use": "@vercel/python", "config": { "includeFiles": "api/**" } },
-    { "src": "api/track.py", "use": "@vercel/python", "config": { "includeFiles": "api/**" } },
-    { "src": "api/stats.py", "use": "@vercel/python", "config": { "includeFiles": "api/**" } },
-    { "src": "api/feedback.py", "use": "@vercel/python", "config": { "includeFiles": "api/**" } },
-    { "src": "api/topic.py", "use": "@vercel/python", "config": { "includeFiles": "api/**" } },
-    { "src": "api/handoff.py", "use": "@vercel/python", "config": { "includeFiles": "api/**" } },
-    { "src": "api/kurz.py", "use": "@vercel/python", "config": { "includeFiles": "api/**" } },
-    { "src": "public/**", "use": "@vercel/static" }
+    {
+      "src": "api/analyze.py",
+      "use": "@vercel/python",
+      "config": {
+        "includeFiles": "api/**"
+      }
+    },
+    {
+      "src": "api/subscribe.py",
+      "use": "@vercel/python",
+      "config": {
+        "includeFiles": "api/**"
+      }
+    },
+    {
+      "src": "api/pdf.py",
+      "use": "@vercel/python",
+      "config": {
+        "includeFiles": "api/**"
+      }
+    },
+    {
+      "src": "api/track.py",
+      "use": "@vercel/python",
+      "config": {
+        "includeFiles": "api/**"
+      }
+    },
+    {
+      "src": "api/stats.py",
+      "use": "@vercel/python",
+      "config": {
+        "includeFiles": "api/**"
+      }
+    },
+    {
+      "src": "api/feedback.py",
+      "use": "@vercel/python",
+      "config": {
+        "includeFiles": "api/**"
+      }
+    },
+    {
+      "src": "api/topic.py",
+      "use": "@vercel/python",
+      "config": {
+        "includeFiles": "api/**"
+      }
+    },
+    {
+      "src": "api/handoff.py",
+      "use": "@vercel/python",
+      "config": {
+        "includeFiles": "api/**"
+      }
+    },
+    {
+      "src": "api/kurz.py",
+      "use": "@vercel/python",
+      "config": {
+        "includeFiles": "api/**"
+      }
+    },
+    {
+      "src": "public/**",
+      "use": "@vercel/static"
+    }
   ],
   "routes": [
-    { "src": "/api/analyze", "dest": "/api/analyze.py" },
-    { "src": "/api/subscribe", "dest": "/api/subscribe.py" },
-    { "src": "/api/pdf", "dest": "/api/pdf.py" },
-    { "src": "/api/track", "dest": "/api/track.py" },
-    { "src": "/api/stats", "dest": "/api/stats.py" },
-    { "src": "/api/feedback", "dest": "/api/feedback.py" },
-    { "src": "/api/topic", "dest": "/api/topic.py" },
-    { "src": "/api/handoff/claim", "dest": "/api/handoff.py" },
-    { "src": "/api/handoff", "dest": "/api/handoff.py" },
-    { "src": "/api/kurz", "dest": "/api/kurz.py" },
-    { "src": "/(story|kommentar|bio|dm)/?", "dest": "/api/kurz.py?k=$1" },
-    { "src": "/", "dest": "/public/index.html" },
-    { "src": "/feedback", "dest": "/public/feedback.html" },
-    { "src": "/thema", "dest": "/public/thema.html" },
-    { "src": "/bestaetigt/?", "dest": "/public/bestaetigt.html" },
-    { "src": "/mein-bauplan/?", "dest": "/public/index.html" },
-    { "src": "/verbinden", "dest": "/public/verbinden.html" },
-    { "src": "/(.*)", "dest": "/public/$1" }
+    {
+      "src": "/(.*)",
+      "headers": {
+        "X-Content-Type-Options": "nosniff",
+        "Referrer-Policy": "strict-origin-when-cross-origin",
+        "X-Frame-Options": "SAMEORIGIN",
+        "Permissions-Policy": "camera=(), microphone=(), geolocation=(), payment=()"
+      },
+      "continue": true
+    },
+    {
+      "src": "/bilder/(.*)",
+      "headers": {
+        "Cache-Control": "public, max-age=86400, stale-while-revalidate=604800"
+      },
+      "continue": true
+    },
+    {
+      "src": "/fonts/(.*)",
+      "headers": {
+        "Cache-Control": "public, max-age=31536000, immutable"
+      },
+      "continue": true
+    },
+    {
+      "src": "/(greatvibes|greatvibes-ext)\\.woff2",
+      "headers": {
+        "Cache-Control": "public, max-age=31536000, immutable"
+      },
+      "continue": true
+    },
+    {
+      "src": "/api/analyze",
+      "dest": "/api/analyze.py"
+    },
+    {
+      "src": "/api/subscribe",
+      "dest": "/api/subscribe.py"
+    },
+    {
+      "src": "/api/pdf",
+      "dest": "/api/pdf.py"
+    },
+    {
+      "src": "/api/track",
+      "dest": "/api/track.py"
+    },
+    {
+      "src": "/api/stats",
+      "dest": "/api/stats.py"
+    },
+    {
+      "src": "/api/feedback",
+      "dest": "/api/feedback.py"
+    },
+    {
+      "src": "/api/topic",
+      "dest": "/api/topic.py"
+    },
+    {
+      "src": "/api/handoff/claim",
+      "dest": "/api/handoff.py"
+    },
+    {
+      "src": "/api/handoff",
+      "dest": "/api/handoff.py"
+    },
+    {
+      "src": "/api/kurz",
+      "dest": "/api/kurz.py"
+    },
+    {
+      "src": "/(story|kommentar|bio|dm)/?",
+      "dest": "/api/kurz.py?k=$1"
+    },
+    {
+      "src": "/",
+      "dest": "/public/index.html"
+    },
+    {
+      "src": "/feedback",
+      "dest": "/public/feedback.html"
+    },
+    {
+      "src": "/thema",
+      "dest": "/public/thema.html"
+    },
+    {
+      "src": "/bestaetigt/?",
+      "dest": "/public/bestaetigt.html"
+    },
+    {
+      "src": "/mein-bauplan/?",
+      "dest": "/public/index.html",
+      "headers": {
+        "X-Robots-Tag": "noindex, nofollow, noarchive",
+        "Referrer-Policy": "no-referrer",
+        "Cache-Control": "private, no-store"
+      }
+    },
+    {
+      "src": "/verbinden",
+      "dest": "/public/verbinden.html"
+    },
+    {
+      "src": "/impressum/?",
+      "dest": "/public/impressum.html"
+    },
+    {
+      "src": "/datenschutz/?",
+      "dest": "/public/datenschutz.html"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/public/$1"
+    }
   ]
 }

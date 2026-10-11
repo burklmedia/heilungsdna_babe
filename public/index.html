@@ -6,6 +6,7 @@
 <title>Dein Kosmischer Bauplan, Intuition mit Herz</title>
 <meta name="description" content="Entdecke, wer du wirklich bist: Human Design & Natalchart, exakt aus deinem Geburtshimmel berechnet und liebevoll erklärt. Kostenlos.">
 <link rel="canonical" href="https://bauplan.intuitionmitherz.de/">
+<script>if(/^\/mein-bauplan/.test(location.pathname)||/[?&]d=/.test(location.search)){document.write('<meta name="robots" content="noindex, nofollow, noarchive"><meta name="referrer" content="no-referrer">');}</script>
 <link rel="preload" href="/fonts/cormorant-500.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="/greatvibes.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="/fonts/mulish-400.woff2" as="font" type="font/woff2" crossorigin>
@@ -26,6 +27,89 @@
 <meta name="twitter:title" content="Dein kosmischer Bauplan, Intuition mit Herz">
 <meta name="twitter:description" content="Human Design und Natalchart, exakt aus deinem Geburtshimmel. Kostenlos.">
 <meta name="twitter:image" content="https://bauplan.intuitionmitherz.de/og-image.jpg?v=20261010">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebSite",
+      "@id": "https://bauplan.intuitionmitherz.de/#website",
+      "url": "https://bauplan.intuitionmitherz.de/",
+      "name": "Intuition mit Herz",
+      "alternateName": "Dein Kosmischer Bauplan",
+      "inLanguage": "de-DE",
+      "publisher": { "@id": "https://bauplan.intuitionmitherz.de/#organization" }
+    },
+    {
+      "@type": "Organization",
+      "@id": "https://bauplan.intuitionmitherz.de/#organization",
+      "name": "Intuition mit Herz",
+      "url": "https://bauplan.intuitionmitherz.de/",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://bauplan.intuitionmitherz.de/apple-touch-icon.png",
+        "width": 180,
+        "height": 180
+      },
+      "founder": { "@id": "https://bauplan.intuitionmitherz.de/#denise" },
+      "address": {
+        "@type": "PostalAddress",
+        "addressLocality": "Hoyerswerda",
+        "postalCode": "02977",
+        "addressCountry": "DE"
+      },
+      "sameAs": [ "https://www.instagram.com/intuitionmitherz/" ]
+    },
+    {
+      "@type": "Person",
+      "@id": "https://bauplan.intuitionmitherz.de/#denise",
+      "name": "Denise",
+      "jobTitle": "Gründerin von Intuition mit Herz",
+      "image": "https://bauplan.intuitionmitherz.de/denise.jpg",
+      "url": "https://bauplan.intuitionmitherz.de/#denise",
+      "worksFor": { "@id": "https://bauplan.intuitionmitherz.de/#organization" },
+      "sameAs": [ "https://www.instagram.com/intuitionmitherz/" ]
+    },
+    {
+      "@type": "WebPage",
+      "@id": "https://bauplan.intuitionmitherz.de/#webpage",
+      "url": "https://bauplan.intuitionmitherz.de/",
+      "name": "Dein Kosmischer Bauplan, Intuition mit Herz",
+      "description": "Entdecke, wer du wirklich bist: Human Design & Natalchart, exakt aus deinem Geburtshimmel berechnet und liebevoll erklärt. Kostenlos.",
+      "inLanguage": "de-DE",
+      "isPartOf": { "@id": "https://bauplan.intuitionmitherz.de/#website" },
+      "about": { "@id": "https://bauplan.intuitionmitherz.de/#app" },
+      "primaryImageOfPage": {
+        "@type": "ImageObject",
+        "url": "https://bauplan.intuitionmitherz.de/og-image.jpg",
+        "width": 1200,
+        "height": 630
+      }
+    },
+    {
+      "@type": "WebApplication",
+      "@id": "https://bauplan.intuitionmitherz.de/#app",
+      "name": "Dein Kosmischer Bauplan",
+      "url": "https://bauplan.intuitionmitherz.de/",
+      "description": "Kostenlose Berechnung deines persönlichen Bauplans aus Geburtsdatum, Geburtszeit und Geburtsort: Human Design, Natalchart, Intuitionstyp und Numerologie. Symbolische Deutung zur Selbstreflexion, keine Beratung und keine Diagnose.",
+      "applicationCategory": "LifestyleApplication",
+      "operatingSystem": "Alle (Webbrowser)",
+      "inLanguage": "de-DE",
+      "isAccessibleForFree": true,
+      "featureList": [ "Human Design", "Natalchart", "Intuitionstyp", "Numerologie" ],
+      "author": { "@id": "https://bauplan.intuitionmitherz.de/#denise" },
+      "publisher": { "@id": "https://bauplan.intuitionmitherz.de/#organization" },
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "EUR",
+        "availability": "https://schema.org/InStock",
+        "url": "https://bauplan.intuitionmitherz.de/#analyse"
+      }
+    }
+  ]
+}
+</script>
 <style>
   /* Alle Schriften selbst gehostet, kein externer Server (DSGVO: keine Google Fonts) */
   @font-face { font-family: "Great Vibes"; font-style: normal; font-weight: 400; font-display: swap;
@@ -935,7 +1019,6 @@
 <div id="progressbar" aria-hidden="true"></div>
 <div id="aura" aria-hidden="true"></div>
 <div id="orb" aria-hidden="true"></div>
-<canvas id="stars" aria-hidden="true"></canvas>
 
 <!-- ==================== STEP 1: LANDING + FORMULAR ==================== -->
 <section class="step active" id="step1">
@@ -956,7 +1039,7 @@
     </nav>
     <div class="hero-in">
       <div class="hero-copy">
-        <h1 class="hero-title"><span class="s">Dein</span>Kosmischer<br>Bauplan</h1>
+        <h1 class="hero-title"><span class="s">Dein</span> Kosmischer<br> Bauplan</h1>
         <p class="hero-tag">Entdecke, wer du <em>wirklich</em> bist.<br>Exakt aus deinem Geburtshimmel.</p>
         <p class="hero-systems">Human Design · Natalchart · Intuitionstyp · Numerologie</p>
         <a class="hero-heute" id="hero-heute" href="#ebenen" data-scroll="ebenen" hidden></a>
@@ -1206,7 +1289,7 @@
           <img class="denise-signatur" src="/email-signature-gold.png" alt="Von Herzen, Denise" width="188" height="47" loading="lazy">
         </div>
     </div>
-    <div class="pic"><figure class="galerie"><img src="denise.jpg" alt="Denise, Gründerin von Intuition mit Herz" loading="lazy"></figure></div>
+    <div class="pic"><figure class="galerie"><picture><source srcset="/denise.webp" type="image/webp"><img src="/denise.jpg" alt="Denise, Gründerin von Intuition mit Herz" width="1254" height="1254" loading="lazy" decoding="async"></picture></figure></div>
   </section>
 
   <!-- FAQ -->
@@ -1262,7 +1345,7 @@
 </section>
 
 <!-- ==================== STEP 2: MAGISCHER MOMENT + TEASER ==================== -->
-<section class="step night" id="step2" data-sterne="fest">
+<section class="step night" id="step2" data-nosnippet data-sterne="fest">
   <div class="wrap ritual" id="ritualwrap">
     <div class="ritual-bg" aria-hidden="true"></div>
     <div class="stage2" id="stage2" aria-hidden="true">
@@ -1335,7 +1418,7 @@
 </section>
 
 <!-- ============ BAUPLAN AUS DER E-MAIL: Laden / Fehler (/mein-bauplan) ============ -->
-<section class="step night" id="step-open">
+<section class="step night" id="step-open" data-nosnippet>
   <div class="wrap open-wrap">
     <div class="open-card" id="open-loading" role="status">
       <span class="spark">✦</span>
@@ -1352,7 +1435,7 @@
 </section>
 
 <!-- ==================== STEP 3: VOLLANALYSE ==================== -->
-<section class="step night" id="step3" data-sterne="fest">
+<section class="step night" id="step3" data-nosnippet data-sterne="fest">
   <div class="wrap bericht-wrap" style="padding-top:40px">
     <div class="bericht-leiste" style="display:flex;flex-wrap:wrap;justify-content:center;gap:10px;margin-bottom:24px">
       <a class="brand" href="/" aria-label="Intuition mit Herz"><span class="b-script">Intuition</span><span class="b-serif">mit Herz</span></a>
@@ -1401,7 +1484,7 @@
   </footer>
 </section>
 
-<div id="cookie" role="dialog" aria-modal="true" aria-label="Cookie-Hinweis">
+<div id="cookie" data-nosnippet role="dialog" aria-modal="true" aria-label="Cookie-Hinweis">
   <div class="cookie-card">
     <div class="ct">Kurz vorab</div>
     <p>Diese Seite verwendet nur technisch notwendige Cookies, damit alles reibungslos funktioniert. Kein Tracking, keine Werbung, keine Weitergabe an Dritte. Mehr dazu in der <a href="/datenschutz.html">Datenschutzerklärung</a>.</p>
@@ -1413,7 +1496,7 @@
 <button class="floatcta" id="floatcta2" type="button">Meinen Bauplan erhalten ✦</button>
 <button class="scrolltop" id="scrolltop" type="button" aria-label="Nach oben zu den Reitern">↑</button>
 
-<div id="calm" role="dialog" aria-modal="true" aria-label="Nimm dir einen Moment">
+<div id="calm" data-nosnippet role="dialog" aria-modal="true" aria-label="Nimm dir einen Moment">
   <div class="cookie-card">
     <span class="spark">✦</span>
     <div class="ct">Ein Moment für dich</div>
@@ -1422,7 +1505,7 @@
   </div>
 </div>
 
-<div id="sent" role="dialog" aria-modal="true" aria-labelledby="sent-title">
+<div id="sent" data-nosnippet role="dialog" aria-modal="true" aria-labelledby="sent-title">
   <div class="cookie-card">
     <span class="spark">✦</span>
     <div class="st" id="sent-title">Deine komplette Auswertung kommt <em>per E-Mail</em></div>
@@ -2451,15 +2534,6 @@
   if(openReload) openReload.addEventListener('click',function(){ location.reload(); });
   if(MAIL_D) openFromMail(MAIL_D);
 
-  /* ── Hintergrund-Sterne (Canvas, dezentes Funkeln) ── */
-  var cv=document.getElementById('stars'),cx=cv.getContext('2d'),bstars=[],ph=0;
-  function drawStars(){ var w=cv.width=innerWidth,h=cv.height=innerHeight; bstars=[]; var n=Math.round(w*h/9000);
-    for(var i=0;i<n;i++)bstars.push({x:Math.random()*w,y:Math.random()*h,r:Math.random()*1.3+.2,a:Math.random()*.6+.2,tw:Math.random()*.02+.003,c:i%5===0}); render(); }
-  function render(){ var w=cv.width,h=cv.height; cx.clearRect(0,0,w,h);
-    bstars.forEach(function(s,i){ var a=reduce?s.a:s.a*(.6+.4*Math.sin(ph*s.tw*40+i));
-      cx.beginPath(); cx.arc(s.x,s.y,s.r,0,7); cx.fillStyle=(s.c?'rgba(210,190,255,':'rgba(240,236,255,')+a+')'; cx.fill(); });
-    if(!reduce){ ph++; requestAnimationFrame(render); } }
-  addEventListener('resize',drawStars); drawStars();
 })();
 </script>
 <script>
