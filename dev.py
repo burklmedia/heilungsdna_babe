@@ -144,6 +144,17 @@ class Handler(BaseHTTPRequestHandler):
         elif self.path.startswith("/api/bericht"):
             # Lokal nur eine Probe-Antwort: nichts an ActiveCampaign, nichts in die KV, kein Telegram.
             aktion = (body or {}).get("aktion") if isinstance(body, dict) else ""
+            if aktion == "stand":
+                # Stand lokal im Arbeitsspeicher abgleichen (wie live, nur ohne KV)
+                import bericht as _bericht
+                _speicher = Handler.__dict__.get("_stand_speicher") or {}
+                Handler._stand_speicher = _speicher
+                _bericht.kv_get = lambda k: _speicher.get(k)
+                _bericht.kv_set = lambda k, v, ttl=None: _speicher.__setitem__(k, v) or True
+                _bericht.kv_incr_ttl = lambda k, ttl: 1
+                code, payload = _bericht.handle(body, "127.0.0.1")
+                self._json(code, payload)
+                return
             print("  ✦  /api/bericht lokal angenommen:", aktion)
             self._json(200 if aktion in ("warteliste", "frage") else 400, {"ok": aktion in ("warteliste", "frage"), "dry_run": True})
         else:

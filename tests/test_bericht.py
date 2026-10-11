@@ -5,6 +5,7 @@ Laeuft ohne Netzwerk, ohne KV und ohne echte Schluessel:
     python3 tests/test_bericht.py
 """
 import contextlib
+import json
 import os
 import sys
 
@@ -96,8 +97,35 @@ def test_grenzen():
     check("zu viele Aufrufe 429", code == 429)
 
 
+def test_stand():
+    print("Stand: geräteübergreifend frühestes Öffnen, höchste Karte")
+    kv = {}
+    K = "a" * 32
+    with patched(bericht, kv_get=lambda k: kv.get(k), kv_set=lambda k, v, ttl=None: kv.__setitem__(k, v) or True,
+                 kv_incr_ttl=lambda k, ttl: 1):
+        code, res = bericht.handle({"aktion": "stand", "k": K, "erst": 1790000000000, "nr": 0})
+        check("erster Abgleich speichert", code == 200 and res["erst"] == 1790000000000 and res["nr"] == 0)
+        code, res = bericht.handle({"aktion": "stand", "k": K, "erst": 1790500000000, "nr": 3, "tag": 300})
+        check("späteres Öffnen ändert erst nicht", res["erst"] == 1790000000000)
+        check("höhere Karte gewinnt", res["nr"] == 3 and res["tag"] == 300)
+        code, res = bericht.handle({"aktion": "stand", "k": K, "nr": 2, "tag": 301})
+        check("niedrigere Karte ändert nichts", res["nr"] == 3 and res["tag"] == 300)
+        code, res = bericht.handle({"aktion": "stand", "k": K, "erst": 1789000000000})
+        check("früheres Öffnen gewinnt", res["erst"] == 1789000000000)
+        code, res = bericht.handle({"aktion": "stand", "k": "kurz"})
+        check("ungültiger Schlüssel 400", code == 400)
+        code, res = bericht.handle({"aktion": "stand", "k": K, "erst": 99})
+        check("unsinniger Zeitpunkt wird ignoriert", res["erst"] == 1789000000000)
+        bericht.handle({"aktion": "stand", "k": K, "neu": True})
+        check("neu beginnen erst nach 180 Karten", json.loads(kv["imh:stand:" + K])["nr"] == 3)
+        bericht.handle({"aktion": "stand", "k": K, "nr": 180, "tag": 480})
+        code, res = bericht.handle({"aktion": "stand", "k": K, "neu": True})
+        check("nach 180 Karten neu beginnen", res["nr"] == 0 and res["erst"] == 1789000000000)
+        check("im Speicher nur Zeit und Karte", set(json.loads(kv["imh:stand:" + K]).keys()) == {"erst", "nr", "tag"})
+
+
 if __name__ == "__main__":
-    for fn in (test_warteliste, test_frage, test_grenzen):
+    for fn in (test_warteliste, test_frage, test_grenzen, test_stand):
         fn()
     print()
     if FAILS:

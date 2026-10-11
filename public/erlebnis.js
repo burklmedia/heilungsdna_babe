@@ -527,12 +527,16 @@
     var ua = navigator.userAgent || "", standalone = (window.matchMedia && window.matchMedia("(display-mode: standalone)").matches) || navigator.standalone;
     if (standalone) { zaehl("app_start"); return null; }
     if (ersterBesuch) return null;
-    var ios = /iPhone|iPad|iPod/.test(ua), android = /Android/.test(ua), inApp = /Instagram|FBAN|FBAV|FB_IAB/.test(ua);
-    if (!ios && !android) return null;
-    var schritte = inApp ? "Öffne deinen Bauplan zuerst im Browser: oben rechts auf die drei Punkte tippen und „Im Browser öffnen“ wählen. Dann geht es von dort weiter."
+    var ios = /iPhone|iPad|iPod/.test(ua) || (/Macintosh/.test(ua) && navigator.maxTouchPoints > 1), android = /Android/.test(ua), inApp = /Instagram|FBAN|FBAV|FB_IAB/.test(ua);
+    var mac = /Macintosh/.test(ua) && !/Chrome|Edg|Firefox/.test(ua), chromig = /Chrome|Edg/.test(ua) && !ios && !android;
+    if (!ios && !android && !mac && !chromig) return null;
+    var desktop = !ios && !android;
+    var schritte = desktop ? (mac ? "In Safari oben im Menü auf „Ablage“ und dann auf „Zum Dock hinzufügen“ klicken. Dann liegt dein Bauplan als eigene App im Dock."
+        : "Oben rechts auf die drei Punkte klicken, dann „Streamen, speichern und teilen“ und „Verknüpfung erstellen“ wählen. Haken bei „Als Fenster öffnen“ setzen, dann liegt dein Bauplan als eigene App auf deinem Desktop.")
+      : inApp ? "Öffne deinen Bauplan zuerst im Browser: oben rechts auf die drei Punkte tippen und „Im Browser öffnen“ wählen. Dann geht es von dort weiter."
       : ios ? "Tippe unten in Safari auf das Teilen-Symbol (das Quadrat mit dem Pfeil nach oben) und dann auf „Zum Home-Bildschirm“."
       : "Tippe oben rechts auf die drei Punkte und dann auf „Zum Startbildschirm hinzufügen“.";
-    return '<div class="wk wk-app"><span class="wk-titel">Dein Bauplan als App</span><span class="wk-text">Leg ihn dir auf deinen Startbildschirm. Dann ist er mit einem Tippen da, und jeden Tag wartet „Heute für dich“ auf dich.</span>' +
+    return '<div class="wk wk-app"><span class="wk-titel">Dein Bauplan als App</span><span class="wk-text">' + (desktop ? "Leg ihn dir als App auf deinen Desktop oder ins Dock. Dann ist er mit einem Klick da" : "Leg ihn dir auf deinen Startbildschirm. Dann ist er mit einem Tippen da") + ', und jeden Tag wartet etwas Neues auf dich.</span>' +
       '<details class="app-hilfe"><summary class="wk-mehr">So geht’s ✦</summary><p>' + schritte + '</p></details></div>';
   }
 
@@ -743,7 +747,7 @@
         return '<li><span class="mk-mond ' + (e.art === "Neumond" ? "neu" : "voll") + '" aria-hidden="true"></span><span class="mk-inhalt"><b>' + esc(e.art) + " " + esc(H.IM[e.zeichen]) +
           '</b><span class="mk-datum">' + esc(e.datum) + '</span><span class="mk-satz">' + esc(e.satz) + '</span></span></li>';
       }).join("") + '</ol><button class="btn btn-ghost mk-ics" type="button" style="width:auto">In meinen Kalender ✦</button>' +
-      (mkNeu && ueFrei ? '<p class="ue-naechste">Die dritte Überraschung öffnet sich ' + esc(wannText(ueFrei[2])) + '. Ab dann wartet jeden Tag eine Karte aus deinem Bauplan auf dich.</p>' : '') + '</section>');
+      (mkNeu && ueFrei ? '<p class="ue-naechste">Die dritte Überraschung öffnet sich ' + esc(wannText(ueFrei[2])) + '. Ab dann wartet jeden Tag eine Karte aus deinem Bauplan auf dich, 180 Tage lang.</p>' : '') + '</section>');
     if (mkNeu) zaehl("mondkalender");
     document.querySelector(".mk-ics").addEventListener("click", function () {
       var url = location.origin + location.pathname + "?d=" + encodeURIComponent(new URLSearchParams(location.search).get("d") || "");
@@ -767,49 +771,178 @@
   }
 
   /* ── Wiederkommen lohnt sich: beim ersten Lesen der Hinweis auf eine Überraschung, beim zweiten Öffnen die Überraschung selbst ── */
-  /* ── Dritte Überraschung ab 72 h: „Deine Karte für heute“. Eine verdeckte Karte zum Umdrehen, darauf ein Merksatz
-        aus dem eigenen Bauplan und ein Impuls aus „Deine Tools und Impulse“. Jeden Tag eine andere, den ganzen Tag dieselbe. ── */
+  /* ── Dritte Überraschung ab 72 h: „Deine Karte für heute“, eine Reise über 180 Karten in sechs Themen à 30 Tage.
+        Jede Karte verbindet einen Satz aus dem eigenen Bauplan (passend zum Thema) mit einem Tagesimpuls aus karten-impulse.js.
+        Höchstens eine neue Karte pro Tag; wer Tage auslässt, macht dort weiter, wo er aufgehört hat. ── */
+  var KARTEN_GESAMT = 180;
+  function heuteNr() { var j = new Date(); return Math.floor((new Date(j.getFullYear(), j.getMonth(), j.getDate()) - new Date(2026, 0, 1)) / 864e5); }
+  function kartenStand(schl) {
+    try {
+      var roh = localStorage.getItem("imh_karte_" + schl); if (!roh) return { nr: 0, tag: -1 };
+      var o = JSON.parse(roh); return typeof o === "object" && o ? { nr: +o.nr || 0, tag: o.tag == null ? -1 : +o.tag } : { nr: 0, tag: -1 };
+    } catch (e) { return { nr: 0, tag: -1 }; }
+  }
+  // Sätze aus dem eigenen Bauplan, je Thema ein eigener Vorrat
+  function kartenAnker(d) {
+    var f = d.full || {}, by = {}, sec = {}, hd = f.hd || {};
+    (f.positions || []).forEach(function (p) { by[p.key] = p; });
+    (f.sections || []).forEach(function (s) { sec[s.title || ""] = s; });
+    function take(titel) {
+      var s = null; Object.keys(sec).forEach(function (t) { if (!s && t.indexOf(titel) >= 0) s = sec[t]; });
+      var t = String((s && s.takeaway) || "").trim(); if (!t) return null;
+      var m = t.match(/^([^:]{2,32}):\s*(.+)$/); if (m) t = m[2].charAt(0).toUpperCase() + m[2].slice(1);
+      return { quelle: s.title, satz: gendern(t, d) };
+    }
+    function pos(k, ab) {
+      var p = by[k]; if (!p || H.ZEICHEN.indexOf(p.sign) < 0) return null;
+      var name = { Sonne: "Deine Sonne", Mond: "Dein Mond", AC: "Dein Aszendent", Venus: "Deine Venus", Mars: "Dein Mars", Merkur: "Dein Merkur", Neptun: "Dein Neptun", Saturn: "Dein Saturn", Jupiter: "Dein Jupiter" }[k] || p.label;
+      var satz = satzAus(p.desc, ab || 1); return satz ? { quelle: name + " " + H.IM[H.ZEICHEN.indexOf(p.sign)], satz: gendern(satz, d) } : null;
+    }
+    function zentren(def) {
+      return (f.hd_centers || []).filter(function (c) { return !!c.defined === def; }).map(function (c) {
+        var satz = satzAus(c.detail || c.desc, 0); return satz ? { quelle: (def ? "Dein definiertes Zentrum: " : "Dein offenes Zentrum: ") + c.name, satz: gendern(satz, d) } : null;
+      });
+    }
+    function absatz(text, quelle, n) {
+      return saetze(text).filter(function (x) { return !/^(Vielleicht|Manchmal|Stell dir vor)\b/.test(x) && x.length > 30 && x.length < 240; })
+        .slice(0, n || 3).map(function (x) { return { quelle: quelle, satz: gendern(x, d) }; });
+    }
+    var it = f.intuition || {}, num = f.numerology || {};
+    var pools = {
+      ankommen: [take("innerster Kern"), pos("Sonne", 1), pos("Mond", 1), pos("AC", 1), pos("Sonne", 2), pos("Mond", 2), pos("AC", 2)],
+      "ja-nein": [take("innere Autorität"), take("Entscheidungsweg"), take("Schwierigkeiten"), take("Lower Self")].concat(zentren(false)),
+      intuition: absatz(it.text, "Dein Intuitionstyp: " + (it.archetype || ""), 4).concat([pos("Mond", 3), pos("Neptun", 1), take("Intuitionstyp")]),
+      rhythmus: [take("Human-Design-Typ"), take("Profil"), take("Zentren"), pos("Mars", 1)].concat(zentren(true)),
+      miteinander: [pos("Venus", 1), pos("Venus", 2), pos("Merkur", 1), take("Lower Self"), take("Profil")].concat(zentren(false).slice(0, 3)),
+      weg: [take("Lebensaufgabe"), take("Higher Self"), take("Chiron"), take("größten Stärken")].concat(absatz(num.text, "Deine Lebenszahl " + (num.lifepath || ""), 3))
+    };
+    Object.keys(pools).forEach(function (k) { pools[k] = pools[k].filter(function (x) { return x && x.satz; }); });
+    var alle = []; Object.keys(pools).forEach(function (k) { alle = alle.concat(pools[k]); });
+    Object.keys(pools).forEach(function (k) { if (pools[k].length < 2) pools[k] = pools[k].concat(alle.slice(0, 6)); });
+    return pools;
+  }
+  function karteNr(d, n, pools, seed) {
+    var K = window.KARTEN_IMPULSE, th = K.themen[Math.min(5, Math.floor((n - 1) / 30))], pool = pools[th.key] || [];
+    var a = pool.length ? pool[(n - 1 + seed) % pool.length] : null;
+    return { n: n, thema: th, anker: a, impuls: K.impulse[n - 1] || "" };
+  }
+  function karteHtml(k) {
+    return '<span class="tgk-kapitel">' + (k.anker ? esc(k.anker.quelle) : esc(k.thema.titel)) + '</span>' +
+      (k.anker ? '<span class="tgk-satz">' + esc(k.anker.satz) + '</span>' : '') +
+      '<span class="tgk-impuls"><b>Dein Impuls für heute</b>' + esc(k.impuls) + '</span>';
+  }
   function tageskarte(d) {
     var alt = document.querySelector(".tageskarte"); if (alt) alt.remove();
     if (besuchNr < 3) return;
-    var f = d.full || {}, deck = [], impulse = [];
-    (f.sections || []).forEach(function (s) {
-      var t = String(s.takeaway || "").trim(); if (!t) return;
-      var m = t.match(/^([^:]{2,32}):\s*(.+)$/); if (m) t = m[2].charAt(0).toUpperCase() + m[2].slice(1);
-      deck.push({ titel: s.title || "", satz: gendern(t, d) });
-    });
-    (f.sections || []).forEach(function (s) {
-      if (!/Tools/.test(s.title || "")) return;
-      var roh = Array.isArray(s.body) ? s.body.join("\n") : String(s.body || "");
-      roh = roh.replace(/<li[^>]*>/gi, "\n• ").replace(/<[^>]+>/g, "\n");
-      roh.split("•").slice(1).forEach(function (z) { z = z.split(/\n/)[0].trim(); if (z.length > 8) impulse.push(z); });
-    });
-    if (deck.length < 3) return;
-    var schl = bauplanSchluessel(d), seed = 0, jetzt = new Date();
+    if (!window.KARTEN_IMPULSE) {   // Texte erst laden, wenn die Reise wirklich beginnt
+      if (!tageskarte.laedt) {
+        tageskarte.laedt = true;
+        var sc = document.createElement("script"); sc.src = "/karten-impulse.js?v=1"; sc.async = true;
+        sc.onload = function () { if (window.KARTEN_IMPULSE) { tageskarte(d); symmetrie(); } };
+        document.head.appendChild(sc);
+      }
+      return;
+    }
+    var schl = bauplanSchluessel(d), seed = 0, heute = heuteNr(), st = kartenStand(schl);
     for (var i = 0; i < schl.length; i++) seed = (seed * 31 + schl.charCodeAt(i)) >>> 0;
-    var tagNr = Math.floor((new Date(jetzt.getFullYear(), jetzt.getMonth(), jetzt.getDate()) - new Date(2026, 0, 1)) / 864e5);
-    var karte = deck[(tagNr + seed) % deck.length], impuls = impulse.length ? impulse[(tagNr + (seed >>> 3)) % impulse.length] : "";
-    var gezogen = false; try { gezogen = localStorage.getItem("imh_karte_" + schl) === String(tagNr); } catch (e) {}
+    var pools = kartenAnker(d);
+    var offen = st.tag === heute && st.nr >= 1, fertig = !offen && st.nr >= KARTEN_GESAMT;
+    var n = offen ? st.nr : Math.min(st.nr + 1, KARTEN_GESAMT), k = karteNr(d, n, pools, seed);
     var neu = ueNeu && besuchNr === 3, anker = obenAnker(); if (!anker) return;
+    var themenStart = (n - 1) % 30 === 0;
+    var lead = fertig ? "Du hast alle 180 Karten gezogen. Ein halbes Jahr, Tag für Tag ein Stück näher bei dir. Danke, dass du diesen Weg gegangen bist."
+      : neu ? "180 Karten, jeden Tag eine. Jede verbindet einen Satz aus deinem Bauplan mit einem kleinen Impuls für deinen Tag. Dreh die erste um."
+      : themenStart && !offen ? k.thema.intro
+      : "Dreh sie um, lies sie in Ruhe und spür nach, wo sie dich heute berührt.";
+    var archiv = "";
+    var bisher = offen ? st.nr - 1 : st.nr;
+    if (bisher >= 1) {
+      var li = []; for (var a = Math.min(bisher, KARTEN_GESAMT); a >= 1; a--) { var x = karteNr(d, a, pools, seed); li.push('<li><span class="tgk-a-nr">' + a + '</span><span>' + karteHtml(x) + '</span></li>'); }
+      archiv = '<details class="tgk-archiv"><summary>Deine bisherigen Karten (' + bisher + ') ✦</summary><ol>' + li.join("") + '</ol></details>';
+    }
     anker.insertAdjacentHTML("afterend", '<section class="tageskarte' + (neu ? " neu" : "") + '">' +
       (neu ? '<span class="ue-geschenk" aria-hidden="true"></span><p class="mk-neu">Deine dritte Überraschung</p>' : '') +
       '<p class="mk-titel">Deine Karte für heute</p>' +
-      '<p class="tgk-lead">Eine Karte aus deinem eigenen Bauplan. Dreh sie um, lies sie in Ruhe und spür nach, wo sie dich heute berührt.</p>' +
-      '<button class="tgk-karte' + (gezogen ? " offen" : "") + '" type="button" aria-label="Karte umdrehen"><span class="tgk-innen">' +
-        '<span class="tgk-rueck" aria-hidden="true"><span class="tgk-stern">✦</span></span>' +
-        '<span class="tgk-vorn"><span class="tgk-kapitel">' + esc(karte.titel) + '</span><span class="tgk-satz">' + esc(karte.satz) + '</span>' +
-        (impuls ? '<span class="tgk-impuls"><b>Dein Impuls für heute</b>' + esc(impuls) + '</span>' : '') + '</span>' +
-      '</span></button><p class="tgk-morgen"' + (gezogen ? '' : ' hidden') + '>Morgen wartet die nächste Karte auf dich.</p></section>');
+      '<p class="tgk-fortschritt">' + (fertig ? "Alle 180 Karten gezogen" : "Karte " + n + " von " + KARTEN_GESAMT + " · " + esc(k.thema.titel)) + '</p>' +
+      '<div class="tgk-balken" aria-hidden="true"><span style="width:' + Math.round(Math.min(st.nr + (offen ? 0 : 0), KARTEN_GESAMT) / KARTEN_GESAMT * 100) + '%"></span></div>' +
+      '<p class="tgk-lead">' + esc(lead) + '</p>' +
+      (neu || st.nr < 1 ? '<details class="tgk-anleitung"' + (neu ? ' open' : '') + '><summary>So funktioniert’s ✦</summary><ul>' +
+        '<li>Jeden Tag wartet hier eine neue Karte. Tipp sie an, dann dreht sie sich um.</li>' +
+        '<li>Oben steht ein Satz aus deinem Bauplan, darunter dein Impuls für den Tag. Du darfst ihn ausprobieren, ganz ohne Druck.</li>' +
+        '<li>Lässt du Tage aus, geht es einfach mit der nächsten Karte weiter. Nichts geht verloren.</li>' +
+        '<li>Sechs Themen, je 30 Karten: Ankommen bei dir, dein inneres Ja und Nein, deine Intuition, deine Energie, du und die anderen, dein Weg.</li>' +
+        (document.querySelector(".wk-app") ? '<li>Am leichtesten geht es, wenn du deinen Bauplan als App ablegst. <button class="tgk-app" type="button">So geht’s</button></li>' : '') +
+        '</ul></details>' : '') +
+      (fertig ? '<button class="btn btn-ghost tgk-neu" type="button" style="width:auto">Die Reise neu beginnen ✦</button>' :
+      '<button class="tgk-karte' + (offen ? " offen" : "") + '" type="button" aria-label="' + (offen ? "Deine Karte für heute" : "Karte umdrehen") + '"><span class="tgk-innen">' +
+        '<span class="tgk-rueck" aria-hidden="true"><span class="tgk-stern">✦</span><span class="tgk-rnr">' + n + '</span></span>' +
+        '<span class="tgk-vorn">' + karteHtml(k) + '</span></span></button>' +
+      '<p class="tgk-morgen"' + (offen ? '' : ' hidden') + '>' + (n >= KARTEN_GESAMT ? "Das war deine letzte Karte. Schön, dass du bis hierher gegangen bist." : "Morgen wartet Karte " + (n + 1) + " auf dich.") + '</p>') +
+      archiv + '</section>');
     if (neu) zaehl("tageskarte");
-    var k = document.querySelector(".tgk-karte");
-    k.addEventListener("click", function () {
-      if (k.classList.contains("offen")) return;
-      k.classList.add("offen"); k.setAttribute("aria-label", "Deine Karte für heute");
-      try { localStorage.setItem("imh_karte_" + schl, String(tagNr)); } catch (e) {}
-      setTimeout(function () { var mo = document.querySelector(".tgk-morgen"); if (mo) mo.hidden = false; }, reduce ? 0 : 700);
+    var box = document.querySelector(".tageskarte");
+    var ap = box.querySelector(".tgk-app"); if (ap) ap.addEventListener("click", function () {
+      var c = document.querySelector(".wk-app"); if (c) { c.scrollIntoView({ behavior: "smooth", block: "center" }); var det = c.querySelector("details"); if (det) det.open = true; }
+    });
+    var rs = box.querySelector(".tgk-neu"); if (rs) rs.addEventListener("click", function () {
+      try { localStorage.setItem("imh_karte_" + schl, JSON.stringify({ nr: 0, tag: -1 })); } catch (e) {}
+      standSenden({ neu: true });
+      tageskarte(d);
+    });
+    var karte = box.querySelector(".tgk-karte"); if (!karte) return;
+    karte.addEventListener("click", function () {
+      if (karte.classList.contains("offen")) return;
+      karte.classList.add("offen"); karte.setAttribute("aria-label", "Deine Karte für heute");
+      try { localStorage.setItem("imh_karte_" + schl, JSON.stringify({ nr: n, tag: heute })); } catch (e) {}
+      standSenden({ nr: n, tag: heute });
+      var bal = box.querySelector(".tgk-balken span"); if (bal) bal.style.width = Math.round(n / KARTEN_GESAMT * 100) + "%";
+      setTimeout(function () { var mo = box.querySelector(".tgk-morgen"); if (mo) mo.hidden = false; }, reduce ? 0 : 700);
       zaehl("tageskarte_gezogen");
     });
   }
+
+  /* ── Stand geräteübergreifend (seit 11.10.2026): Safari, App auf dem Startbildschirm und Desktop haben je eigenen Speicher.
+        Vor dem Anzeigen gleicht die Seite erstes Öffnen und gezogene Karte mit dem Server ab (/api/bericht, aktion stand).
+        Schlüssel ist ein SHA-256 der Geburtsangaben, gebildet auf dem Gerät; Geburtsdaten gehen dabei nicht mit. ── */
+  var standK = null;
+  function standSchluessel(d) {
+    var b = d.birth || {}, s = ["imh-stand", b.date, b.time, b.place, b.name].join("|");
+    if (!window.crypto || !crypto.subtle || !window.TextEncoder) return Promise.resolve(null);
+    return crypto.subtle.digest("SHA-256", new TextEncoder().encode(s)).then(function (buf) {
+      return [].map.call(new Uint8Array(buf), function (x) { return ("0" + x.toString(16)).slice(-2); }).join("").slice(0, 32);
+    }).catch(function () { return null; });
+  }
+  function standSenden(werte) {
+    if (!standK) return Promise.resolve(null);
+    var body = { aktion: "stand", k: standK }; Object.keys(werte || {}).forEach(function (x) { body[x] = werte[x]; });
+    return fetch("/api/bericht", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body), keepalive: true })
+      .then(function (r) { return r.ok ? r.json() : null; }).catch(function () { return null; });
+  }
+  function standAbgleich(d) {
+    var schl = bauplanSchluessel(d), jetzt = Date.now();
+    try {
+      var erst = +(localStorage.getItem("imh_erst_" + schl) || 0);
+      if (!erst) {
+        var bn = +(localStorage.getItem("imh_besuch_" + schl) || 0), tg = JSON.parse(localStorage.getItem("imh_tage_" + schl) || "null");
+        erst = tg && tg.n >= 1 ? jetzt - (tg.n - 1) * 864e5 : bn >= 1 ? jetzt - 864e5 : jetzt;
+        localStorage.setItem("imh_erst_" + schl, String(erst));
+      }
+    } catch (e) { return Promise.resolve(); }
+    var ks = kartenStand(schl);
+    var zeit = new Promise(function (ok) { setTimeout(ok, 900); });
+    var abgleich = standSchluessel(d).then(function (k) {
+      standK = k; if (!k) return null;
+      return standSenden({ erst: erst, nr: ks.nr, tag: ks.tag >= 0 ? ks.tag : undefined });
+    }).then(function (r) {
+      if (!r || !r.ok) return;
+      try {
+        if (r.erst && r.erst < erst) localStorage.setItem("imh_erst_" + schl, String(r.erst));
+        if ((+r.nr || 0) > ks.nr) localStorage.setItem("imh_karte_" + schl, JSON.stringify({ nr: +r.nr, tag: r.tag == null ? -1 : +r.tag }));
+      } catch (e) {}
+    });
+    return Promise.race([abgleich, zeit]);
+  }
+
 
   // Oben unter der Knopfleiste, damit sie beim Öffnen sofort ins Auge fallen
   function obenAnker() { return document.querySelector("#step3 .hoeren-box") || document.querySelector("#step3 .bericht-leiste"); }
@@ -847,14 +980,16 @@
       return;
     }
     if (!zweiterBesuch) return;
-    var app = !!document.querySelector(".wk-app");
+    var app = !!document.querySelector(".wk-app"), mobil = /iPhone|iPad|iPod|Android/.test(navigator.userAgent || "") || navigator.maxTouchPoints > 1;
     anker.insertAdjacentHTML("afterend",
       '<section class="ue-karte' + (ueNeu ? " neu" : "") + '"><span class="ue-geschenk" aria-hidden="true"></span><p class="ue-titel">Deine Überraschung</p>' +
-      '<p class="ue-text">' + (app ? "Dein Geburtshimmel als Hintergrund für dein Handy und dein Bauplan als App auf deinem Startbildschirm. Beides wartet ab jetzt auf dich."
+      '<p class="ue-text">' + (app ? "Dein Geburtshimmel als Hintergrund für dein Handy und dein Bauplan als App " + (mobil ? "auf deinem Startbildschirm" : "auf deinem Desktop") + ". Beides wartet ab jetzt auf dich."
         : "Dein Geburtshimmel als Hintergrund für dein Handy. Der Himmel über dir in der Minute deiner Geburt, jeden Tag in deiner Hand.") + '</p>' +
       '<div class="ue-knoepfe"><button class="btn ue-himmel" type="button" style="width:auto">Mein Geburtshimmel ✦</button>' +
       (app ? '<button class="btn btn-ghost ue-app" type="button" style="width:auto">Als App speichern</button>' : '') + '</div>' +
-      '<p class="ue-naechste">Die nächste Überraschung, dein persönlicher Mondkalender, öffnet sich ' + esc(ueFrei ? wannText(ueFrei[1]) : "beim nächsten Mal") + '.</p></section>');
+      '<p class="ue-naechste">' + (app ? (mobil ? "Leg ihn dir am besten jetzt schon aufs Handy, es lohnt sich. " : "Leg ihn dir am besten jetzt schon als App ab, es lohnt sich. ") : "") +
+        "Ab " + esc(ueFrei ? wannText(ueFrei[1]).replace(/ ab /, ", ") + "," : "dem nächsten Mal") + " wartet hier dein persönlicher Mondkalender, und ab " +
+        esc(ueFrei ? wannText(ueFrei[2]).replace(/ ab /, ", ") + "," : "dem Tag danach") + " jeden Tag eine neue Karte aus deinem Bauplan, ein halbes Jahr lang.</p></section>");
     if (ueNeu) zaehl("ueberraschung");
     var k = document.querySelector(".ue-karte");
     var h = k.querySelector(".ue-himmel"); if (h) h.addEventListener("click", function () { var b = document.querySelector(".pk-hintergrund"); if (b) { b.scrollIntoView({ behavior: "smooth", block: "center" }); setTimeout(function () { b.click(); }, 500); } });
@@ -1265,12 +1400,7 @@
     /* Überraschungen nach Stunden seit dem ersten Öffnen auf diesem Gerät: ab 24 h die erste, ab 48 h die zweite (seit 11.10.2026).
        Ältere Zählung (imh_tage, imh_besuch) wird übernommen, damit niemand zurückfällt. */
     try {
-      var schl0 = bauplanSchluessel(d), jetzt = Date.now(), erst = +(localStorage.getItem("imh_erst_" + schl0) || 0);
-      if (!erst) {
-        var bn = +(localStorage.getItem("imh_besuch_" + schl0) || 0), tg = JSON.parse(localStorage.getItem("imh_tage_" + schl0) || "null");
-        erst = tg && tg.n >= 1 ? jetzt - (tg.n - 1) * 864e5 : bn >= 1 ? jetzt - 864e5 : jetzt;
-        localStorage.setItem("imh_erst_" + schl0, String(erst));
-      }
+      var schl0 = bauplanSchluessel(d), jetzt = Date.now(), erst = +(localStorage.getItem("imh_erst_" + schl0) || 0) || jetzt;
       var std = (jetzt - erst) / 36e5, gesehen = +(localStorage.getItem("imh_ue_" + schl0) || 0);
       besuchNr = std >= 72 ? 3 : std >= 48 ? 2 : std >= 24 ? 1 : 0;
       ueNeu = besuchNr > gesehen; if (ueNeu) localStorage.setItem("imh_ue_" + schl0, String(besuchNr));
@@ -1787,7 +1917,7 @@
 
   window.Erlebnis = {
     vorschau: function (d) { var r = vorschau(d); symmetrieGleichUndSpaeter(); return r; },
-    bericht: function (d) { var r = bericht(d); symmetrieGleichUndSpaeter(); return r; },
+    bericht: function (d) { return standAbgleich(d).then(function () { bericht(d); symmetrieGleichUndSpaeter(); }); },
     gesendet: function (k) { var r = gesendet(k); setTimeout(symmetrie, 900); return r; }
   };
   // Falls der Bericht schon vor diesem Skript fertig war

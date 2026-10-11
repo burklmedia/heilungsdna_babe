@@ -2178,3 +2178,29 @@ p, li, figcaption, summary, blockquote, dd, .mail-sub, .seal-sub, .seal-text, .w
 .tgk-morgen { margin: 16px 0 0 !important; font-family: var(--serif); font-style: italic; color: #f3dca6; font-size: 15px; }
 @media (min-width: 901px) { #step3 > .bericht-wrap > .tageskarte { margin-top: 116px; margin-bottom: 0; } }
 @media (prefers-reduced-motion: reduce) { .tgk-innen { transition: none; } .tgk-stern { animation: none; } }
+/* Karte für heute als Reise über 180 Karten: Fortschritt, Kartennummer, Archiv; Karte wächst mit dem Text */
+.tgk-fortschritt { margin: -6px 0 8px !important; font-family: var(--serif); font-style: italic; font-size: 15px; color: #e2c486; }
+.tgk-balken { width: min(260px, 70%); height: 3px; margin: 0 auto 16px; border-radius: 3px; background: rgba(226,196,134,.18); overflow: hidden; }
+.tgk-balken span { display: block; height: 100%; background: linear-gradient(90deg, #c9a560, #f3dca6); transition: width .8s ease; }
+.tgk-karte { aspect-ratio: auto; }
+.tgk-innen { display: grid; height: auto; }
+.tgk-rueck, .tgk-vorn { position: relative; inset: auto; grid-area: 1 / 1; min-height: 400px; }
+.tgk-rueck { align-content: center; justify-items: center; gap: 14px; }
+.tgk-rnr { font-family: "Bodoni 72", Didot, "Bodoni MT", "Times New Roman", serif; font-size: 15px; letter-spacing: .1em; color: rgba(243,220,166,.75); }
+.tgk-archiv { margin: 22px auto 0; max-width: 520px; text-align: left; }
+.tgk-archiv summary { cursor: pointer; list-style: none; text-align: center; font-family: var(--serif); font-style: italic; color: #e2c486; font-size: 15.5px; }
+.tgk-archiv summary::-webkit-details-marker { display: none; }
+.tgk-archiv ol { list-style: none; margin: 14px 0 0; padding: 0; max-height: 420px; overflow-y: auto; }
+.tgk-archiv li { display: flex; gap: 12px; padding: 12px 4px; border-top: 1px solid rgba(226,196,134,.16); }
+.tgk-archiv li > span:last-child { display: flex; flex-direction: column; gap: 6px; }
+.tgk-a-nr { flex: 0 0 34px; font-family: "Bodoni 72", Didot, "Bodoni MT", "Times New Roman", serif; color: #e2c486; font-size: 15px; }
+.tgk-archiv .tgk-satz { font-size: 16px; }
+.tgk-archiv .tgk-impuls { font-size: 13.5px; }
+.tgk-neu { margin-top: 6px; }
+.tgk-anleitung { max-width: 460px; margin: 0 auto 18px; text-align: left; }
+.tgk-anleitung summary { cursor: pointer; list-style: none; text-align: center; font-family: var(--serif); font-style: italic; color: #e2c486; font-size: 15.5px; }
+.tgk-anleitung summary::-webkit-details-marker { display: none; }
+.tgk-anleitung ul { margin: 10px 0 0; padding: 0 0 0 18px; }
+.tgk-anleitung li { margin: 6px 0; font-size: 14.5px; line-height: 1.55; color: #d3cde0; }
+.tgk-anleitung li::marker { content: "✦  "; color: #e2c486; font-size: 11px; }
+.tgk-app { padding: 0; border: 0; background: none; color: #f3dca6; font: inherit; text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }

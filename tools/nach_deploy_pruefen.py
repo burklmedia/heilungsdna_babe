@@ -74,6 +74,10 @@ def main():
 
     code, _, _ = abruf("/api/bericht", "POST", {"aktion": "unbekannt"})
     pruefe("Warteliste und Frage starten (POST /api/bericht)", code == 400, str(code))
+    code, _, _ = abruf("/api/bericht", "POST", {"aktion": "stand", "k": "x"})
+    pruefe("Stand-Abgleich startet (POST /api/bericht, stand)", code == 400, str(code))
+    code, _, _ = abruf("/karten-impulse.js", "HEAD")
+    pruefe("Karten für heute (karten-impulse.js)", code == 200, str(code))
     code, _, _ = abruf("/api/hoeren", "POST", {"d": "x"})
     pruefe("Vorlesen startet (POST /api/hoeren)", code == 400, str(code))
     code, _, _ = abruf("/api/feedback", "POST", {})
