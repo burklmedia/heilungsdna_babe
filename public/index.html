@@ -13,6 +13,7 @@
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<script>if('IntersectionObserver' in window)document.documentElement.classList.add('bilder-spaet');</script>
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Mein Bauplan">
@@ -1616,7 +1617,7 @@
 <div id="sent" data-nosnippet role="dialog" aria-modal="true" aria-labelledby="sent-title">
   <div class="cookie-card">
     <figure class="gruss-pop" id="gruss-pop">
-      <video id="gruss-video" src="/bilder/denise-gruss.mp4" poster="/bilder/denise-gruss.jpg" muted playsinline preload="none" aria-label="Videogruß von Denise"></video>
+      <video id="gruss-video" src="/bilder/denise-gruss.mp4" data-poster="/bilder/denise-gruss.jpg" muted playsinline preload="none" aria-label="Videogruß von Denise"></video>
       <p class="gruss-zeile" id="gruss-zeile" aria-hidden="true"></p>
       <button class="gruss-ton" id="gruss-ton" type="button"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M4 9h4l5-4v14l-5-4H4z" fill="currentColor"/><path d="M16.5 8.5a5 5 0 0 1 0 7M19 6a8.5 8.5 0 0 1 0 12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg> Ton an</button>
     </figure>
@@ -1917,6 +1918,12 @@
     wheel('wheel-a', 72, SIGNS, 0); wheel('wheel-b', 64, null, .3);
   })();
   /* Bauplan-Vorschau verdoppeln, damit die Scroll-Animation nahtlos läuft */
+  /* Tempo: große Hintergrundbilder der Abschnitte erst laden, wenn der Abschnitt bis auf etwa einen Bildschirm nah ist */
+  (function(){
+    if(!('IntersectionObserver' in window)) return;
+    var io=new IntersectionObserver(function(e){ e.forEach(function(x){ if(x.isIntersecting){ x.target.classList.add('nah'); io.unobserve(x.target); } }); },{rootMargin:'900px 0px'});
+    [].forEach.call(document.querySelectorAll('#step1 > section'),function(x){ io.observe(x); });
+  })();
   /* Beispiel: echte Seiten zum Blättern. Antippen, Pfeile oder Wischen; blättert von selbst, solange der Stapel zu sehen ist. */
   (function(){
     var box=document.getElementById('blaetter'); if(!box) return;
@@ -2246,7 +2253,7 @@
     b.addEventListener('click',function(e){ e.stopPropagation(); mitTon(); });
     v.addEventListener('click',tippen);
     return {
-      start:function(){ v.preload='auto'; v.muted=true; an=false; knopf(ICO_TON+' Ton an');
+      start:function(){ if(!v.poster && v.dataset.poster) v.poster=v.dataset.poster; v.preload='auto'; v.muted=true; an=false; knopf(ICO_TON+' Ton an');
         if(reduce) return;   // bei reduzierter Bewegung erst auf Antippen
         try{ v.currentTime=0; }catch(e){} var p=v.play(); if(p&&p.catch) p.catch(function(){}); },
       stop:function(){ v.pause(); }
