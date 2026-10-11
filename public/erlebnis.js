@@ -483,6 +483,23 @@
     "Du denkst anders, und das weißt du. Oft fühlst du dich deshalb ein bisschen fremd unter den anderen. Dein Bauplan zeigt dir, dass genau diese Eigenart zu dir gehört. Hier gibt es keine Schublade für dich. Lies frei, spring hin und her, wie es dir gefällt. Dein Weg ist eigen. Er darf es bleiben.",
     "Du fühlst so viel. Stimmungen, Zwischentöne, das, was ungesagt im Raum liegt. Oft weißt du kaum noch, was davon deins ist. Dein Bauplan hilft dir, dich selbst wieder herauszuhören. Lies ihn langsam, vielleicht abends, wenn es ruhig wird. Deine Feinfühligkeit ist eine Gabe. Hier darf sie einfach sein."
     ];
+  // Geschlecht aus dem Formular (wie in der PDF): m, f oder n (divers / keine Angabe)
+  function geschlecht(d) {
+    var g = String((d && d.birth && d.birth.gender) || "").toLowerCase();
+    return /^(m|männlich|maennlich|male)$/.test(g) ? "m" : /^(f|w|weiblich|female)$/.test(g) ? "f" : "n";
+  }
+  function anrede(d) { var g = geschlecht(d); return g === "m" ? "Lieber " : g === "f" ? "Liebe " : "Hallo "; }
+  // Die Texte sind für Frauen geschrieben; für Männer und neutral werden die wenigen weiblichen Stellen getauscht
+  var GENDERN = {
+    m: [["die Erste, die losgeht. Die, die anpackt", "der Erste, der losgeht. Der, der anpackt"], ["als Erste,", "als Erster,"]],
+    n: [["Du bist oft die Erste, die losgeht. Die, die anpackt, wenn", "Du gehst oft als Erstes los und packst an, wenn"],
+        ["Du spürst oft als Erste, wann", "Du spürst oft früher als andere, wann"]]
+  };
+  function gendern(text, d) {
+    var g = geschlecht(d), t = String(text || "");
+    (GENDERN[g] || []).forEach(function (x) { t = t.split(x[0]).join(x[1]); });
+    return t;
+  }
   function zeichenBrief(d) {
     var f = d.full, kopf = document.querySelector("#step3 .report-head"); if (!kopf || !f) return;
     var alt = document.querySelector(".zeichen-brief"); if (alt) alt.remove();
@@ -490,7 +507,7 @@
     if (i < 0) return;
     var name = (d.birth && d.birth.name) || "";
     kopf.insertAdjacentHTML("afterend", '<section class="zeichen-brief"><span class="zb-zeichen" aria-hidden="true">' + tp(H.GLYPH[i]) + '</span>' +
-      '<p class="zb-anrede">' + (name ? "Liebe " + esc(name) + "," : "Für dich,") + '</p><p class="zb-text">' + esc(BRIEF_ZEICHEN[i]) + '</p>' +
+      '<p class="zb-anrede">' + (name ? anrede(d) + esc(name) + "," : "Für dich,") + '</p><p class="zb-text">' + esc(gendern(BRIEF_ZEICHEN[i], d)) + '</p>' +
       '<p class="zb-gruss">Von Herzen, <span>Denise</span></p></section>');
   }
 
@@ -594,7 +611,7 @@
     var ph = H.mondphase(new Date(utc)), alt = document.querySelector(".g-mond"); if (alt) alt.remove();
     if (!MOND_BEI[ph.name]) return;
     lead.insertAdjacentHTML("afterend", '<p class="g-mond"><span class="gm-mond" aria-hidden="true" style="--hell:' + ph.hell.toFixed(2) + '"></span>' +
-      '<span>Du bist <b>' + esc(MOND_BEI[ph.name]) + '</b> geboren. ' + esc(MOND_SATZ[ph.name]) + '</span></p>');
+      '<span>Du bist <b>' + esc(MOND_BEI[ph.name]) + '</b> geboren. ' + esc(gendern(MOND_SATZ[ph.name], d)) + '</span></p>');
   }
   // „Erkennst du dich?“: drei Sätze aus „Deine größten Schwierigkeiten“ („Woran du sie erkennst“), zum Antippen
   function spiegel(d) {
