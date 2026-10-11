@@ -543,13 +543,23 @@
   }
   function wrappedOeffnen(d) {
     if (document.getElementById("wrapped")) return;
-    var karten = wrappedKarten(d), n = karten.length, cur = -1, uhr = 0, pause = false, DAUER = 7000, start = 0, rest = DAUER;
+    // Im Takt: Der Track (bilder/wrapped-klang.mp3) läuft mit 128 BPM, jede Karte dauert genau vier Takte = 7,5 s, acht Karten = 60 s.
+    var karten = wrappedKarten(d), n = karten.length, cur = -1, uhr = 0, DAUER = 7500, start = 0, rest = DAUER, los = false;
+    var ton = true; try { ton = localStorage.getItem("imh_wr_ton") !== "0"; } catch (e) {}
+    // Track einmal komplett laden (als Blob), dann ist jede Stelle anspringbar, auch ohne Range-Abrufe beim Server
+    var musik = null, MUSIK = "/bilder/wrapped-klang.mp3";
+    try { musik = new Audio(); musik.preload = "auto"; musik.muted = !ton; } catch (e) {}
+    if (musik) fetch(MUSIK).then(function (r) { return r.ok ? r.blob() : null; }).then(function (b) {
+      if (b && !los) musik.src = URL.createObjectURL(b);
+    }).catch(function () {});
     var html = '<div id="wrapped" role="dialog" aria-modal="true" aria-label="Dein Bauplan in 60 Sekunden"><div class="wr-himmel" aria-hidden="true"></div>' +
       '<div class="wr-balken">' + karten.map(function () { return "<span><i></i></span>"; }).join("") + '</div>' +
+      '<button class="wr-ton' + (ton ? "" : " aus") + '" type="button" aria-label="Musik an oder aus"><span class="an-z" aria-hidden="true">♪</span><span class="aus-z" aria-hidden="true">♪̸</span></button>' +
       '<button class="wr-zu" type="button" aria-label="Schließen">×</button><div class="wr-buehne">' +
       karten.map(function (x, i) {
         var g = "";
-        if (x.art === "auftakt") g = '<div class="wr-siegel" aria-hidden="true"></div><h2 class="wr-gross wr-script">' + esc(x.titel) + '</h2><p class="wr-zeile">' + esc(x.zeile) + '</p><p class="wr-klein">' + esc(x.klein) + '</p>';
+        if (x.art === "auftakt") g = '<div class="wr-siegel" aria-hidden="true"></div><h2 class="wr-gross wr-script">' + esc(x.titel) + '</h2><p class="wr-zeile">' + esc(x.zeile) + '</p>' +
+          '<button class="wr-los" type="button">Los geht’s <span aria-hidden="true">♪</span></button><p class="wr-klein">Mit Musik. Rechts tippen für weiter, links für zurück.</p>';
         else if (x.art === "zeichen") g = (x.idx >= 0 ? '<div class="wr-gravur" style="background-image:url(/bilder/zeichen-' + x.idx + '-1600.webp)"></div>' : '') +
           '<p class="wr-oben">' + esc(x.oben) + '</p><div class="wr-glyph">' + x.glyph + '</div><h2 class="wr-gross">' + esc(x.titel) + '</h2><p class="wr-unter">' + esc(x.unter) + '</p><p class="wr-zeile">' + esc(x.zeile) + '</p>';
         else if (x.art === "zahl") g = '<p class="wr-oben">' + esc(x.oben) + '</p><div class="wr-zahl">' + esc(x.zahl) + '</div><h2 class="wr-gross">' + esc(x.titel) + '</h2><p class="wr-unter">' + esc(x.unter) + '</p><p class="wr-zeile">' + esc(x.zeile) + '</p>';
@@ -562,31 +572,55 @@
     var box = document.getElementById("wrapped"), balken = box.querySelectorAll(".wr-balken span"), kn = box.querySelectorAll(".wr-karte");
     document.documentElement.classList.add("wr-offen");
     zaehl("wrapped");
+    function musikSpielen() { if (!musik || !los) return; if (!musik.src) musik.src = MUSIK; var p = musik.play(); if (p && p.catch) p.catch(function () {}); }
+    function takt(i) {   // Musik an die Karte binden, damit Vor- und Zurückspringen im Takt bleibt
+      if (!musik || !los) return;
+      var soll = i * DAUER / 1000;
+      var kann = musik.seekable && musik.seekable.length && musik.seekable.end(0) >= soll;
+      if (kann && Math.abs((musik.currentTime || 0) - soll) > .35) { try { musik.currentTime = soll; } catch (e) {} }
+    }
     function zeige(i) {
       if (i < 0) i = 0;
       if (i >= n) { zu(); return; }
       cur = i;
       kn.forEach(function (k, j) { k.classList.toggle("an", j === i); });
-      balken.forEach(function (b, j) { b.classList.toggle("voll", j < i); b.classList.toggle("laeuft", j === i); b.querySelector("i").style.animationDuration = DAUER + "ms"; });
+      balken.forEach(function (b, j) { b.classList.toggle("voll", j < i); b.classList.toggle("laeuft", los && j === i); b.querySelector("i").style.animationDuration = DAUER + "ms"; });
       if (i === n - 1) zaehl("wrapped_ende");
       clearTimeout(uhr); rest = DAUER; start = Date.now();
-      if (i < n - 1 && !reduce) uhr = setTimeout(function () { zeige(cur + 1); }, DAUER);
+      takt(i);
+      if (los && i < n - 1 && !reduce) uhr = setTimeout(function () { zeige(cur + 1); }, DAUER);
       if (i === n - 1) balken[i].classList.add("voll");
     }
-    function zu() { clearTimeout(uhr); box.classList.add("weg"); document.documentElement.classList.remove("wr-offen"); setTimeout(function () { box.remove(); }, 450); document.removeEventListener("keydown", taste); }
-    function taste(e) { if (e.key === "Escape") zu(); else if (e.key === "ArrowRight") zeige(cur + 1); else if (e.key === "ArrowLeft") zeige(cur - 1); }
+    function starten() { if (los) return; los = true; box.classList.add("laeuft"); if (musik) { try { musik.currentTime = 0; } catch (e) {} } musikSpielen(); zeige(0); }
+    function zu() {
+      clearTimeout(uhr); if (musik) { musik.pause(); if (/^blob:/.test(musik.src)) setTimeout(function () { URL.revokeObjectURL(musik.src); }, 600); }
+      box.classList.add("weg"); document.documentElement.classList.remove("wr-offen");
+      setTimeout(function () { box.remove(); }, 450); document.removeEventListener("keydown", taste);
+    }
+    function taste(e) {
+      if (e.key === "Escape") zu();
+      else if (e.key === "ArrowRight") { if (!los) starten(); else zeige(cur + 1); }
+      else if (e.key === "ArrowLeft" && los) zeige(cur - 1);
+    }
     document.addEventListener("keydown", taste);
     box.querySelector(".wr-zu").addEventListener("click", zu);
     box.querySelector(".wr-lesen").addEventListener("click", zu);
+    box.querySelector(".wr-los").addEventListener("click", function (e) { e.stopPropagation(); starten(); });
     box.querySelector(".wr-teilen").addEventListener("click", function (e) { e.stopPropagation(); storyTeilen(d, this); });
+    box.querySelector(".wr-ton").addEventListener("click", function (e) {
+      e.stopPropagation(); ton = !ton; this.classList.toggle("aus", !ton);
+      try { localStorage.setItem("imh_wr_ton", ton ? "1" : "0"); } catch (x) {}
+      if (musik) { musik.muted = !ton; if (ton && los && musik.paused) { takt(cur); musikSpielen(); } }
+    });
     var gedrueckt = 0;
     box.addEventListener("pointerdown", function (e) {
-      if (e.target.closest("button")) return;
-      gedrueckt = Date.now(); pause = true; clearTimeout(uhr); rest = Math.max(800, DAUER - (Date.now() - start)); box.classList.add("pausiert");
+      if (e.target.closest("button") || !los) return;
+      gedrueckt = Date.now(); clearTimeout(uhr); rest = Math.max(800, DAUER - (Date.now() - start)); box.classList.add("pausiert"); if (musik) musik.pause();
     });
     box.addEventListener("pointerup", function (e) {
       if (e.target.closest("button")) return;
-      box.classList.remove("pausiert"); pause = false;
+      if (!los) { starten(); return; }
+      box.classList.remove("pausiert"); musikSpielen();
       if (Date.now() - gedrueckt > 350) { start = Date.now() - (DAUER - rest); if (cur < n - 1 && !reduce) uhr = setTimeout(function () { zeige(cur + 1); }, rest); return; }
       zeige(e.clientX > window.innerWidth * .33 ? cur + 1 : cur - 1);
     });

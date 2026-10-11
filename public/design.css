@@ -1985,3 +1985,20 @@ html.bilder-spaet #step1 > section.brueckenband:not(.nah)::after { background-im
 .hoeren-box audio[hidden] { display: none; }
 .hb-info { margin: 8px 0 0 !important; font-family: var(--serif); font-style: italic; font-size: 15.5px !important; color: #f3dca6 !important; }
 .hb-info:empty { display: none; }
+
+/* Runde 22: Musik zur Story (128 BPM, Kartenwechsel im Takt) */
+.wr-los { display: inline-flex; align-items: center; gap: 10px; margin: 28px auto 0; padding: 15px 30px; border: 0; border-radius: 999px; cursor: pointer;
+  font-family: var(--sans); font-size: 13px; font-weight: 700; letter-spacing: .18em; text-transform: uppercase; color: #1d1733;
+  background: linear-gradient(135deg, #fff3d2, #e2c486 45%, #c9a560); box-shadow: 0 0 0 6px rgba(226,196,134,.14), 0 0 50px -6px rgba(243,220,166,.7);
+  animation: wrPuls 0.9375s ease-in-out infinite; }
+.wr-los span { font-size: 16px; letter-spacing: 0; }
+@keyframes wrPuls { 0%, 100% { box-shadow: 0 0 0 6px rgba(226,196,134,.14), 0 0 40px -8px rgba(243,220,166,.6); } 50% { box-shadow: 0 0 0 12px rgba(226,196,134,.06), 0 0 70px -2px rgba(243,220,166,.85); } }
+#wrapped.laeuft .wr-los, #wrapped.laeuft .wr-auftakt .wr-klein { display: none; }
+.wr-ton { position: absolute; top: max(4px, calc(env(safe-area-inset-top) - 8px)); right: 48px; z-index: 4; width: 44px; height: 44px; border: 0; background: none; cursor: pointer;
+  color: #f3dca6; font: 22px/1 var(--serif); opacity: .85; }
+.wr-ton .aus-z { display: none; } .wr-ton.aus .an-z { display: none; } .wr-ton.aus .aus-z { display: inline; opacity: .55; }
+.wr-balken { right: 100px; }
+/* im Takt: das Zeichen pulst leicht mit dem Beat, sobald die Musik läuft */
+#wrapped.laeuft .wr-karte.an .wr-glyph, #wrapped.laeuft .wr-karte.an .wr-zahl, #wrapped.laeuft .wr-karte.an .wr-stern { animation: wrGlyph 1.6s cubic-bezier(.2,.7,.2,1) both, wrBeat .46875s ease-out 1.875s infinite !important; }
+@keyframes wrBeat { 0% { transform: scale(1.045); } 100% { transform: scale(1); } }
+@media (prefers-reduced-motion: reduce) { .wr-los, #wrapped.laeuft .wr-karte.an .wr-glyph { animation: none !important; } }
