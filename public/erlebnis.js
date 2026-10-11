@@ -587,21 +587,6 @@
     document.querySelector(".weiter").addEventListener("click", function (e) { var a = e.target.closest("[data-ev]"); if (a) zaehl(a.getAttribute("data-ev")); });
   }
 
-  /* ── Echte Stimmen: nur freigegebene Zitate mit Vorname und Sonnenzeichen (0 = Widder … 11 = Fische).
-     Solange die Liste leer ist, bleibt der Abschnitt unsichtbar. Beispiel:
-     { text: "…", name: "Lena", zeichen: 2 } ── */
-  var STIMMEN = [];
-  function stimmenZeigen(liste) {
-    var sec = $("stimmen"), r = $("stimmen-reihe"); if (!sec || !r || !liste || !liste.length) return;
-    r.innerHTML = liste.map(function (x, i) {
-      var z = (x.zeichen >= 0 && x.zeichen < 12) ? x.zeichen : -1;
-      return '<figure class="stimme" style="--i:' + i + '"><span class="st-zeichen" aria-hidden="true"' + (z >= 0 ? ' style="background-image:url(/bilder/zeichen-' + z + '-800.webp)"' : '') + '></span>' +
-        '<blockquote>' + esc(x.text) + '</blockquote><figcaption><span class="st-name">' + esc(x.name) + '</span>' + (z >= 0 ? '<span class="st-sign">' + esc(H.ZEICHEN[z]) + '</span>' : '') + '</figcaption></figure>';
-    }).join("");
-    sec.hidden = false;
-  }
-  stimmenZeigen(STIMMEN);
-
   /* ── Startseite: Goldfolie auf den Schmuckwörtern glänzt einmal auf, wenn sie ins Bild kommen ── */
   (function goldfolie() {
     var w = [].slice.call(document.querySelectorAll("#step1 h2 .script, .ebenen-pointe .script"));
@@ -1168,7 +1153,7 @@
     el.forEach(function (x) { if (x.classList.contains("auf")) return; x.classList.add("einblenden"); x.style.setProperty("--k", Math.min(n++, 10)); io.observe(x); });
   }
 
-  window.Erlebnis = { vorschau: vorschau, bericht: bericht, gesendet: gesendet, stimmen: stimmenZeigen };
+  window.Erlebnis = { vorschau: vorschau, bericht: bericht, gesendet: gesendet };
   // Falls der Bericht schon vor diesem Skript fertig war
   if (window.__bauplan) bericht(window.__bauplan);
 })();
