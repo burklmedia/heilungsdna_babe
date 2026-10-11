@@ -598,7 +598,8 @@
   }
   // „Erkennst du dich?“: drei Sätze aus „Deine größten Schwierigkeiten“ („Woran du sie erkennst“), zum Antippen
   function spiegel(d) {
-    var f = d.full, ziel = document.querySelector("#glimpse .mail-rahmen"); if (!ziel) return;
+    // Unter den Symbolen, vor Vorschau und Mailkarte (nicht im Raster, sonst rutscht die Mailkarte nach unten)
+    var f = d.full, ziel = document.querySelector("#glimpse .glimpse-cols"); if (!ziel) return;
     var alt = document.querySelector(".spiegel"); if (alt) alt.remove();
     var sch = (f.sections || []).filter(function (s) { return /Schwierigkeiten/.test(s.title || "") && s.blocks; })[0];
     if (!sch) return;
@@ -608,16 +609,22 @@
     }).filter(Boolean);
     if (saetze.length < 2) return;
     ziel.insertAdjacentHTML("beforebegin", '<section class="spiegel"><div class="script-eyebrow">Erkennst du dich?</div>' +
-      '<p class="sp-lead">Drei Sätze aus deinem Bauplan. Tippe an, was zu dir passt.</p>' +
+      '<p class="sp-lead">Drei Sätze aus deinem Bauplan. Tippe an, was zu dir passt.</p><div class="sp-reihe">' +
       saetze.map(function (t, i) {
-        return '<div class="sp-satz" data-i="' + i + '"><p>„' + esc(t) + '“</p><div class="sp-knoepfe"><button type="button" data-a="ja">Das bin ich</button><button type="button" data-a="nein">Eher nicht</button></div></div>';
-      }).join("") + '<p class="sp-fazit" aria-live="polite"></p></section>');
+        return '<div class="sp-satz" data-i="' + i + '"><span class="sp-nr" aria-hidden="true">' + ["I", "II", "III"][i] + '</span><p>„' + esc(t) + '“</p>' +
+          '<div class="sp-knoepfe"><button type="button" data-a="ja">Das bin ich</button><button type="button" data-a="nein">Eher nicht</button></div></div>';
+      }).join("") + '</div><p class="sp-fazit" aria-live="polite"></p></section>');
     var box = document.querySelector(".spiegel"), ja = 0, fertig = 0, n = saetze.length;
     box.addEventListener("click", function (e) {
       var k = e.target.closest("button[data-a]"); if (!k) return;
       var satz = k.closest(".sp-satz"); if (satz.classList.contains("beantwortet")) return;
       satz.classList.add("beantwortet", k.getAttribute("data-a")); k.classList.add("gewaehlt");
       if (k.getAttribute("data-a") === "ja") { ja++; zaehl("spiegel_ja"); } else zaehl("spiegel_nein");
+      // Am Handy liegen die Karten nebeneinander zum Wischen: nach der Antwort rückt die nächste ins Bild
+      var reihe = box.querySelector(".sp-reihe"), naechste = satz.nextElementSibling;
+      if (naechste && reihe && reihe.scrollWidth > reihe.clientWidth + 4) setTimeout(function () {
+        reihe.scrollTo({ left: naechste.offsetLeft - (reihe.clientWidth - naechste.offsetWidth) / 2, behavior: reduce ? "auto" : "smooth" });
+      }, 450);
       if (++fertig < n) return;
       zaehl("spiegel_fertig");
       box.querySelector(".sp-fazit").textContent = ja >= 2 ? "Dein Bauplan hat noch viele solcher Stellen. Er wartet schon auf dich."
@@ -646,7 +653,7 @@
   function staerkstes(e) { var best = "", max = -1; Object.keys(e || {}).forEach(function (k) { if (e[k] > max) { max = e[k]; best = k; } }); return best; }
   function duUndSie(d) {
     var roh = ""; try { roh = sessionStorage.getItem("imh_v") || ""; } catch (e) {}
-    var ziel = document.querySelector("#glimpse .spiegel") || document.querySelector("#glimpse .mail-rahmen"); if (!roh || !ziel) return;
+    var ziel = document.querySelector("#glimpse .spiegel") || document.querySelector("#glimpse .glimpse-cols"); if (!roh || !ziel) return;
     var sie; try { sie = JSON.parse(decodeURIComponent(escape(atob(roh.replace(/-/g, "+").replace(/_/g, "/"))))); } catch (e) { return; }
     if (!sie || typeof sie !== "object") return;
     var ich = himmelKurz(d), name = esc(String(sie.n || "Deine Freundin").slice(0, 24)), zeilen = [];

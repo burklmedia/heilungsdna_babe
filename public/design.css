@@ -2097,5 +2097,33 @@ html.film-cta-da #floatcta { opacity: 0 !important; pointer-events: none !import
 .zb-gruss span { color: #e2c486; }
 
 /* Kein einzelnes Wort allein in der letzten Zeile (zentrierte Texte gleicht erlebnis.js aus) */
-p, li, figcaption, summary, blockquote, dd { text-wrap: pretty; }
+p, li, figcaption, summary, blockquote, dd, .mail-sub, .seal-sub, .seal-text, .wk-text { text-wrap: pretty; }
 @media (max-width: 620px) { .bericht-leiste .btn { width: min(300px, 100%) !important; justify-content: center; } }
+
+/* „Erkennst du dich?“ unter den Symbolen, Vorschau und Mailkarte wieder nebeneinander (11.10.2026) */
+.spiegel { max-width: 1060px; margin: 34px auto 44px; }
+.sp-reihe { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; text-align: left; }
+.sp-satz { position: relative; display: flex; flex-direction: column; margin: 0; padding: 30px 22px 20px; border-radius: 10px;
+  background: radial-gradient(120% 80% at 50% 0%, rgba(226,196,134,.12), rgba(226,196,134,0) 62%), linear-gradient(180deg, rgba(28,26,58,.86), rgba(14,13,32,.9));
+  box-shadow: 0 0 0 1px rgba(226,196,134,.32), 0 24px 50px -30px rgba(0,0,0,.9); transition: box-shadow .35s, transform .35s, opacity .35s; }
+.sp-satz:hover { transform: translateY(-3px); }
+.sp-nr { position: absolute; top: -13px; left: 50%; transform: translateX(-50%); min-width: 26px; padding: 0 10px; line-height: 26px; border-radius: 999px; text-align: center;
+  font-family: "Bodoni 72", Didot, "Bodoni MT", "Times New Roman", serif; font-size: 13px; color: #1d1733; background: linear-gradient(135deg, #ecd29d, #c9a560); }
+.sp-satz p { flex: 1; text-align: center; font-style: italic; }
+.sp-knoepfe { justify-content: center; }
+.sp-satz.ja { box-shadow: 0 0 0 1px rgba(243,220,166,.85), 0 0 46px -12px rgba(226,196,134,.75); }
+.sp-fazit { text-align: center; }
+@media (max-width: 780px) {
+  .spiegel { margin: 26px -16px 30px; }
+  .spiegel .script-eyebrow, .sp-lead, .sp-fazit { padding: 0 16px; }
+  .sp-reihe { display: flex; gap: 14px; overflow-x: auto; scroll-snap-type: x mandatory; padding: 16px 16px 10px; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
+  .sp-reihe::-webkit-scrollbar { display: none; }
+  .sp-satz { flex: 0 0 82%; scroll-snap-align: center; }
+  .sp-satz:hover { transform: none; }
+}
+/* Am Handy zuerst die Mailkarte, dann die lange Vorschau mit dem Siegel */
+@media (max-width: 780px) {
+  .glimpse-cols .mail-rahmen { order: -1; margin-top: 0; }
+  .glimpse-cols .mail-rahmen .mailcard { margin-top: 0; }
+  .glimpse-cols .g-left { margin-top: 26px; }
+}
