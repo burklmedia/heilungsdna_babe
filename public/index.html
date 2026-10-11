@@ -1968,9 +1968,8 @@
     } else laden();
     knopf.addEventListener('click',function(){ an=true; laden(); v.muted=false; try{ v.currentTime=0; }catch(e){} v.controls=true; knopf.hidden=true; fig.classList.add('mit-ton'); spiel(); track('film_ton'); });
     v.addEventListener('ended',function(){ track('film_ende'); });
-    var cta=document.getElementById('film-cta'); if(cta) cta.addEventListener('click',function(){ track('film_cta'); });
-    // Solange der Knopf unter dem Film zu sehen ist, braucht es die schwebende Knopfleiste nicht doppelt
-    if(cta && 'IntersectionObserver' in window) new IntersectionObserver(function(e){ document.documentElement.classList.toggle('film-cta-da', e[0].isIntersecting); }).observe(cta);
+    // Solange der Film gut zu sehen ist, verdeckt die schwebende Knopfleiste sonst seine Untertitel
+    if('IntersectionObserver' in window) new IntersectionObserver(function(e){ document.documentElement.classList.toggle('film-cta-da', e[0].isIntersecting && e[0].intersectionRatio>=.35); },{threshold:[0,.35]}).observe(fig);
   })();
 
   /* Beispiel: echte Seiten zum Blättern. Antippen, Pfeile oder Wischen; blättert von selbst, solange der Stapel zu sehen ist. */
