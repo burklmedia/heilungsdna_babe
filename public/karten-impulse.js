@@ -1,4 +1,4 @@
-/* Deine Karte für heute: 180 Tagesimpulse in sechs Themen (Entwurf 11.10.2026, von Denise freizugeben) */
+/* Deine Karte für heute: 180 Tagesimpulse in sechs Themen (geschrieben 11.10.2026, von Denise freigegeben am 12.10.2026) */
 window.KARTEN_IMPULSE = {
   themen: [
     { key: "ankommen", titel: "Ankommen bei dir", intro: "Die nächsten 30 Tage gehören etwas ganz Einfachem: bei dir anzukommen, in deinem Körper, in diesem Moment." },
