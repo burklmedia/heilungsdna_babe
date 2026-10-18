@@ -1763,7 +1763,9 @@ header.hero .card { padding-top: 54px; }
   .hero-in { row-gap: 60px; }
 }
 @media (max-width: 760px) {
-  .hero-copy { min-height: calc(100svh - 96px); }   /* erster Bildschirm nur Titel und Kuppel, die Formularkarte kommt beim Scrollen */
+  /* VORGABE VON DENISE, BITTE NICHT ÄNDERN: Am Handy zeigt der erste Bildschirm nur Titel und Kuppel,
+     die Formularkarte kommt erst beim Scrollen. Wurde schon zweimal versehentlich wieder nach oben geholt. */
+  .hero-copy { min-height: calc(100svh - 96px); }
   header.hero .card { padding-top: 50px; }
   .hero-heute { display: none !important; }   /* am Handy läge die Zeile über der Armillarsphäre; der Himmel heute steht auch im Bericht */
   .karte-denise { width: 76px; height: 76px; top: -38px; margin-left: -38px; }

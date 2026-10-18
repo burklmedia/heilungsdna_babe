@@ -1,5 +1,10 @@
 # Session-Notizen — Stand & nächste Schritte
 
+> **Feste Vorgabe von Denise (Handy-Startseite):** Der erste Bildschirm zeigt nur Titel und Kuppel
+> mit Armillarsphäre. Die Formularkarte („Dein Bauplan wartet auf dich“) kommt erst beim Scrollen.
+> Nicht wieder nach oben holen (`.hero-copy` in `public/design.css`, Abschnitt `max-width: 760px`).
+> Vor jedem Deploy bitte den Branch `claude/astrology-analysis-tool-4c2brg` einmergen, sonst fehlt das.
+
 _Zuletzt aktualisiert: 2026-07-18_
 
 ## Was in dieser Session gebaut wurde (Step 1)
