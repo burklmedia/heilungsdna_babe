@@ -64,6 +64,8 @@ class Handler(BaseHTTPRequestHandler):
         path = self.path.split("?")[0]
         if path in ("/", ""):
             path = "/index.html"
+        elif "." not in path.rsplit("/", 1)[-1] and os.path.isfile(os.path.join(PUBLIC, path.strip("/") + ".html")):
+            path = path.rstrip("/") + ".html"   # wie die Vercel-Routen /lebenszahl, /impressum …
         fp = os.path.normpath(os.path.join(PUBLIC, path.lstrip("/")))
         if not fp.startswith(PUBLIC) or not os.path.isfile(fp):
             return self._json(404, {"error": "not found"})

@@ -9,6 +9,7 @@ Die Auswertung ist kostenlos. Direkt nach der Berechnung erscheint eine Vorschau
 - [Kosmischer Bauplan](https://bauplan.intuitionmitherz.de/): Startseite mit Eingabeformular, Beschreibung der Inhalte, fiktivem Beispiel, Rechenweg und häufigen Fragen.
 - [So wird der Bauplan berechnet](https://bauplan.intuitionmitherz.de/#berechnung)
 - [Häufige Fragen](https://bauplan.intuitionmitherz.de/#fragen)
+- [Lebenszahl berechnen](https://bauplan.intuitionmitherz.de/lebenszahl): kostenloser Rechner ohne Anmeldung, rechnet im Browser. Mit Rechenweg, Meisterzahlen 11, 22 und 33 und der Bedeutung aller zwölf Lebenszahlen.
 
 ## Inhalte des Bauplans
 
@@ -23,7 +24,7 @@ Die Auswertung ist kostenlos. Direkt nach der Berechnung erscheint eine Vorschau
 - Human Design aus zwei Zeitpunkten: Geburt und der Moment, in dem die Sonne 88 Grad vor ihrer Geburtsposition stand.
 - Häuser in Ganzzeichen und Placidus; die Deutung folgt den Ganzzeichen-Häusern.
 - Die Geburtszeit ist Pflicht, weil Aszendent, Häuser und das Human-Design-Chart davon abhängen. Der Aszendent wechselt etwa alle zwei Stunden das Zeichen.
-- Beispiel Lebenszahl: 14.06.1994 ergibt 7.
+- Beispiel Lebenszahl: 14.06.1994 ergibt 1 + 4 + 0 + 6 + 1 + 9 + 9 + 4 = 34 und daraus 7. Alle Ziffern werden auf einmal addiert; wer Tag, Monat und Jahr erst einzeln reduziert, kommt bei 1 bis 9 zum selben Ergebnis, nur Meisterzahlen können abweichen.
 - Geburtsdaten werden für die Berechnung nicht in einer Datenbank gespeichert; bei Eintragung stecken sie kodiert im persönlichen Bauplan-Link.
 
 ## Über

@@ -202,6 +202,10 @@
       "dest": "/public/verbinden.html"
     },
     {
+      "src": "/lebenszahl/?",
+      "dest": "/public/lebenszahl.html"
+    },
+    {
       "src": "/impressum/?",
       "dest": "/public/impressum.html"
     },

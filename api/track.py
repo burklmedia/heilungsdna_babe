@@ -24,6 +24,7 @@ Erlaubte Ereignisse:
   wrapped, wrapped_ende             Bauplan in 60 Sekunden: gestartet, bis zur letzten Karte gesehen
   hoeren                           Bericht: von Lea vorlesen lassen
   film_start, film_ton, film_ende, film_cta   Erklärfilm: angelaufen, mit Ton, zu Ende gesehen, Knopf darunter
+  lz_besuch, lz_rechnen, lz_cta    Unterseite /lebenszahl: geöffnet, Lebenszahl berechnet, weiter zum Bauplan
 """
 from http.server import BaseHTTPRequestHandler
 from urllib.parse import urlparse, parse_qs
@@ -53,7 +54,9 @@ ALLOWED = {"visit", "himmel", "teaser", "email", "bauplan", "scroll", "pdf",
            # seit 11.10.2026: Erklärfilm auf der Startseite
            "film_start", "film_ton", "film_ende", "film_cta",
            # Aha-Momente in der Vorschau
-           "spiegel_ja", "spiegel_nein", "spiegel_fertig", "du_und", "himmel_mit", "bestaetigt_insta", "ueberraschung", "mondkalender", "mondkalender_ics", "inhalt_seite", "link_speichern", "tageskarte", "tageskarte_gezogen"}
+           "spiegel_ja", "spiegel_nein", "spiegel_fertig", "du_und", "himmel_mit", "bestaetigt_insta", "ueberraschung", "mondkalender", "mondkalender_ics", "inhalt_seite", "link_speichern", "tageskarte", "tageskarte_gezogen",
+           # seit 19.10.2026: Unterseite /lebenszahl
+           "lz_besuch", "lz_rechnen", "lz_cta"}
 
 
 def _count(event):

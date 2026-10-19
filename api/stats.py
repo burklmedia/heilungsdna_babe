@@ -77,6 +77,9 @@ EXTRA = [
     ("link_speichern", "Bericht: Link für die Überraschung gespeichert"),
     ("tageskarte", "Dritte Überraschung: Karte für heute freigeschaltet"),
     ("tageskarte_gezogen", "Karte für heute umgedreht"),
+    ("lz_besuch", "Unterseite Lebenszahl geöffnet"),
+    ("lz_rechnen", "Lebenszahl berechnet"),
+    ("lz_cta", "Von der Lebenszahl weiter zum Bauplan"),
 ]
 
 PAGE_CSS = """
