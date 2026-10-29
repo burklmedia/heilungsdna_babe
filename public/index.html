@@ -2639,7 +2639,7 @@
 
     document.getElementById('note').textContent='✦ '+f.note;
     setRTab('ov');
-    window.__bauplan=d; if(window.Erlebnis) Erlebnis.bericht(d);
+    window.__bauplan=d; if(window.Erlebnis) Erlebnis.bericht(d); if(window.Rueckmeldung) Rueckmeldung.start(d);
   }
   /* ── Intuitionstyp-Skizzen (eine pro Element) ── */
   function intuSketch(key){
@@ -2869,6 +2869,7 @@
 <script src="/sterne.js" defer></script>
 <script src="/himmel.js" defer></script>
 <script src="/erlebnis.js" defer></script>
+<script src="/rueckmeldung.js" defer></script>
 <script src="/sternwarte.js" defer></script>
 </body>
 </html>

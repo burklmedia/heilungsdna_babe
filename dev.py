@@ -57,6 +57,8 @@ class Handler(BaseHTTPRequestHandler):
     def do_GET(self):
         if self.path.startswith("/api/track"):
             self.send_response(204); self.end_headers(); return
+        if self.path.startswith("/api/feedback"):
+            return self._feedback_ansicht()
         if self.path.startswith("/api/stats"):
             return self._stats()
         if self.path.startswith("/api/pdf"):
@@ -112,6 +114,29 @@ class Handler(BaseHTTPRequestHandler):
         except Exception as e:  # noqa
             self._json(500, {"error": str(e)})
 
+    def _feedback_modul(self):
+        # Lokal: alles nur im Arbeitsspeicher, nichts an ActiveCampaign, keine KV, kein Telegram.
+        import feedback as _fb
+        sp = Handler.__dict__.get("_fb_speicher") or {"kv": {}, "listen": {}, "zaehler": {}}
+        Handler._fb_speicher = sp
+        _fb.kv_get = lambda k: sp["kv"].get(k)
+        _fb.kv_setnx = lambda k, v, ttl=None: (k not in sp["kv"]) and (sp["kv"].__setitem__(k, v) or True)
+        _fb.kv_del = lambda k: sp["kv"].pop(k, None) or True
+        _fb.kv_incr_ttl = lambda k, ttl: 1
+        _fb.incr = lambda keys: [sp["zaehler"].__setitem__(k, sp["zaehler"].get(k, 0) + 1) for k in keys]
+        _fb.mget = lambda keys: [sp["zaehler"].get(k, 0) for k in keys]
+        _fb.push_feedback = lambda r, key="imh:feedback": sp["listen"].setdefault(key, []).append(r) or True
+        _fb.list_feedback = lambda key="imh:feedback": list(sp["listen"].get(key, []))
+        _fb.configured = lambda: True
+        _fb.update_contact = lambda email, fields: (False, "lokal")
+        _fb.telegram = None
+        return _fb
+
+    def _feedback_ansicht(self):
+        html = self._feedback_modul()._viewer().encode("utf-8")
+        self.send_response(200); self.send_header("Content-Type", "text/html; charset=utf-8")
+        self.send_header("Content-Length", str(len(html))); self.end_headers(); self.wfile.write(html)
+
     def do_OPTIONS(self):
         self._json(204, {})
 
@@ -143,6 +168,17 @@ class Handler(BaseHTTPRequestHandler):
             import hoeren as _hoeren
             code, art, daten = _hoeren.handle(body if isinstance(body, dict) else {}, "127.0.0.1")
             self.send_response(code); self.send_header("Content-Type", art); self.send_header("Content-Length", str(len(daten))); self.end_headers(); self.wfile.write(daten)
+        elif self.path.startswith("/api/feedback"):
+            _fb = self._feedback_modul()
+            art = body.get("art") if isinstance(body, dict) else ""
+            if art == "kapitel":
+                code, payload = _fb.handle_kapitel(body, "127.0.0.1", False)
+            elif art == "bauplan":
+                code, payload = _fb.handle_rueckmeldung(body, "127.0.0.1", False)
+            else:
+                code, payload = _fb.handle_feedback(body if isinstance(body, dict) else {})
+            print("  ✦  /api/feedback lokal:", art or "mail3", code)
+            self._json(code, payload)
         elif self.path.startswith("/api/bericht"):
             # Lokal nur eine Probe-Antwort: nichts an ActiveCampaign, nichts in die KV, kein Telegram.
             aktion = (body or {}).get("aktion") if isinstance(body, dict) else ""

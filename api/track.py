@@ -56,7 +56,9 @@ ALLOWED = {"visit", "himmel", "teaser", "email", "bauplan", "scroll", "pdf",
            # Aha-Momente in der Vorschau
            "spiegel_ja", "spiegel_nein", "spiegel_fertig", "du_und", "himmel_mit", "bestaetigt_insta", "ueberraschung", "mondkalender", "mondkalender_ics", "inhalt_seite", "link_speichern", "tageskarte", "tageskarte_gezogen",
            # seit 19.10.2026: Unterseite /lebenszahl
-           "lz_besuch", "lz_rechnen", "lz_cta"}
+           "lz_besuch", "lz_rechnen", "lz_cta",
+           # seit 29.10.2026: Feedback direkt im Bauplan (rueckmeldung.js)
+           "rm_gesperrt", "rm_frei", "rm_kapitel", "rm_sterne", "rm_offen", "rm_start", "rm_gesendet"}
 
 
 def _count(event):
