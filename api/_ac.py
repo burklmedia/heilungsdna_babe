@@ -159,6 +159,13 @@ def restart_automation(email, automation_id, list_id):
                     for m in (lists.get("contactLists") or []) if isinstance(m, dict))
         if not aktiv:
             return False, "abgemeldet"
+        # Laeuft die Serie noch, wuerde ein zweiter Durchgang daneben starten und
+        # jede weitere Mail doppelt schicken. Deshalb den laufenden erst beenden.
+        runs = _call(base, key, "GET", "/contacts/" + cid + "/contactAutomations")
+        for run in (runs.get("contactAutomations") or []):
+            if (isinstance(run, dict) and run.get("id") and str(run.get("status")) == "1"
+                    and str(run.get("seriesid") or run.get("automation")) == str(automation_id)):
+                _call(base, key, "DELETE", "/contactAutomations/" + str(run["id"]))
         _call(base, key, "POST", "/contactAutomations",
               {"contactAutomation": {"contact": cid, "automation": str(automation_id)}})
         return True, "gestartet"

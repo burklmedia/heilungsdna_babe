@@ -229,7 +229,8 @@ def test_subscribe_bekannte_adresse():
     gemerkt = []
     zaehlt = lambda *a, **k: gemerkt.append(a)
 
-    with env(**keys), form(), net(weiter, kontakt, aktiv, {"contactAutomation": {}}) as fake, \
+    keine_runs = {"contactAutomations": []}
+    with env(**keys), form(), net(weiter, kontakt, aktiv, keine_runs, {"contactAutomation": {}}) as fake, \
             patched(subscribe, kv_set=lambda *a, **k: True, kv_incr_ttl=lambda *a: 1, telegram=tg, herkunft_merken=zaehlt):
         (code, res), log = quiet(subscribe.handle_subscribe, {"email": TEST_MAIL, "name": "Lena", "d": D_OK})
     post = fake.calls[-1]
@@ -239,6 +240,19 @@ def test_subscribe_bekannte_adresse():
     check("eigene Telegram-Meldung, ohne Adresse", len(meldungen) == 1 and "Bekannte" in meldungen[0] and TEST_MAIL not in meldungen[0])
     check("zaehlt nicht als neue Anmeldung", gemerkt == [])
     check("keine E-Mail im Log", TEST_MAIL not in log)
+
+    runs = {"contactAutomations": [
+        {"id": "118", "seriesid": "7", "status": "1"},
+        {"id": "44", "seriesid": "7", "status": "2"},
+        {"id": "90", "seriesid": "8", "status": "1"},
+    ]}
+    with env(**keys), form(), net(weiter, kontakt, aktiv, runs, {}, {"contactAutomation": {}}) as fake, \
+            patched(subscribe, kv_set=lambda *a, **k: True, kv_incr_ttl=lambda *a: 1, telegram=tg):
+        (code, res), _ = quiet(subscribe.handle_subscribe, {"email": TEST_MAIL, "name": "Lena"})
+    geloescht = [c["url"] for c in fake.calls if c["method"] == "DELETE"]
+    check("laufende Serie wird beendet, fertige und fremde bleiben",
+          code == 200 and len(geloescht) == 1 and geloescht[0].endswith("/contactAutomations/118"))
+    check("danach genau ein neuer Start", fake.calls[-1]["method"] == "POST" and fake.calls[-1]["url"].endswith("/contactAutomations"))
 
     with env(**keys), form(), net(weiter, kontakt, {"contactLists": [{"list": "6", "status": "2"}]}) as fake, \
             patched(subscribe, kv_set=lambda *a, **k: True, kv_incr_ttl=lambda *a: 1, telegram=tg):
@@ -257,7 +271,7 @@ def test_subscribe_bekannte_adresse():
         (code, res), log = quiet(subscribe.handle_subscribe, {"email": TEST_MAIL, "name": "Lena"})
     check("Grenze pro Stunde: keine weitere Mailserie", code == 200 and len(fake.calls) == 1)
 
-    with env(**keys), form(), net(weiter, kontakt, aktiv, http_error(422)), \
+    with env(**keys), form(), net(weiter, kontakt, aktiv, keine_runs, http_error(422)), \
             patched(subscribe, kv_set=lambda *a, **k: True, kv_incr_ttl=lambda *a: 1, telegram=tg):
         (code, res), log = quiet(subscribe.handle_subscribe, {"email": TEST_MAIL, "name": "Lena"})
     check("Neustart abgelehnt: Fehler auf der Seite", code == 502 and res.get("stored") is False)
