@@ -218,6 +218,52 @@ def test_subscribe_optional_fields():
     check("ohne KV kein Token (waere nicht aufloesbar)", code == 200 and "field[5]" not in sent)
 
 
+def test_subscribe_bekannte_adresse():
+    print("Anmeldung: bekannte Adresse bekommt den Bauplan noch einmal")
+    weiter = 'window.top.location.href = "https://bauplan.intuitionmitherz.de/bestaetigt";'
+    kontakt = {"contacts": [{"id": "28", "email": TEST_MAIL}]}
+    aktiv = {"contactLists": [{"list": "6", "status": "1"}]}
+    meldungen = []
+    tg = type("T", (), {"melden": staticmethod(meldungen.append), "configured": staticmethod(lambda: True)})
+    keys = dict(AC_API_URL="https://burkl-media.api-us1.com", AC_API_KEY=TEST_KEY)
+    gemerkt = []
+    zaehlt = lambda *a, **k: gemerkt.append(a)
+
+    with env(**keys), form(), net(weiter, kontakt, aktiv, {"contactAutomation": {}}) as fake, \
+            patched(subscribe, kv_set=lambda *a, **k: True, kv_incr_ttl=lambda *a: 1, telegram=tg, herkunft_merken=zaehlt):
+        (code, res), log = quiet(subscribe.handle_subscribe, {"email": TEST_MAIL, "name": "Lena", "d": D_OK})
+    post = fake.calls[-1]
+    check("200 und bekannt=true", code == 200 and res.get("bekannt") is True and res.get("stored") is True)
+    check("Kontakt geht in Automation 7", post["method"] == "POST" and post["url"].endswith("/api/3/contactAutomations")
+          and json.loads(post["body"])["contactAutomation"] == {"contact": "28", "automation": "7"})
+    check("eigene Telegram-Meldung, ohne Adresse", len(meldungen) == 1 and "Bekannte" in meldungen[0] and TEST_MAIL not in meldungen[0])
+    check("zaehlt nicht als neue Anmeldung", gemerkt == [])
+    check("keine E-Mail im Log", TEST_MAIL not in log)
+
+    with env(**keys), form(), net(weiter, kontakt, {"contactLists": [{"list": "6", "status": "2"}]}) as fake, \
+            patched(subscribe, kv_set=lambda *a, **k: True, kv_incr_ttl=lambda *a: 1, telegram=tg):
+        (code, res), _ = quiet(subscribe.handle_subscribe, {"email": TEST_MAIL, "name": "Lena"})
+    check("abgemeldet: kein Start, Hinweis auf der Seite", code == 409 and res.get("error") == "abgemeldet"
+          and not any(c["method"] == "POST" and "contactAutomations" in c["url"] for c in fake.calls))
+
+    with env(**keys), form(), net(weiter, kontakt, {"contactLists": [{"list": "5", "status": "1"}]}) as fake, \
+            patched(subscribe, kv_set=lambda *a, **k: True, kv_incr_ttl=lambda *a: 1, telegram=tg):
+        (code, res), _ = quiet(subscribe.handle_subscribe, {"email": TEST_MAIL, "name": "Lena"})
+    check("nur auf einer anderen Liste: kein Start", code == 409
+          and not any(c["method"] == "POST" and "contactAutomations" in c["url"] for c in fake.calls))
+
+    with env(**keys), form(), net(weiter) as fake, \
+            patched(subscribe, kv_set=lambda *a, **k: True, kv_incr_ttl=lambda *a: 4, telegram=tg):
+        (code, res), log = quiet(subscribe.handle_subscribe, {"email": TEST_MAIL, "name": "Lena"})
+    check("Grenze pro Stunde: keine weitere Mailserie", code == 200 and len(fake.calls) == 1)
+
+    with env(**keys), form(), net(weiter, kontakt, aktiv, http_error(422)), \
+            patched(subscribe, kv_set=lambda *a, **k: True, kv_incr_ttl=lambda *a: 1, telegram=tg):
+        (code, res), log = quiet(subscribe.handle_subscribe, {"email": TEST_MAIL, "name": "Lena"})
+    check("Neustart abgelehnt: Fehler auf der Seite", code == 502 and res.get("stored") is False)
+    check("dabei keine E-Mail im Log", TEST_MAIL not in log)
+
+
 def test_subscribe_errors():
     print("Anmeldung: Fehler von ActiveCampaign landen als Fehler auf der Seite")
     cases = (
@@ -384,6 +430,7 @@ if __name__ == "__main__":
         test_set_fields_existing_contact,
         test_set_fields_never_creates,
         test_set_fields_errors,
+        test_subscribe_bekannte_adresse,
         test_update_contact_transition,
         test_topic_requires_contact_write,
         test_feedback_best_effort,

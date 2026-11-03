@@ -129,6 +129,50 @@ def set_fields(email, values):
         return False, "timeout" if timeout else "netz"
 
 
+def restart_automation(email, automation_id, list_id):
+    """Schickt einen bestaetigten Kontakt erneut in eine Automation. Noetig, weil
+    der Ausloeser "Abonniert eine Liste" bei schon Abonnierten nicht greift.
+    Wer die Liste verlassen hat, wird nie gestartet.
+    Rueckgabe (ok, grund), nie eine Ausnahme. grund: gestartet | abgemeldet |
+    kein_kontakt | nicht_konfiguriert | ungueltige_adresse | http_<status> | timeout | netz"""
+    key = os.environ.get("AC_API_KEY", "").strip()
+    address = os.environ.get("AC_API_URL", "").strip()
+    if not key or not address:
+        _log("AC_API_URL oder AC_API_KEY fehlt")
+        return False, "nicht_konfiguriert"
+    base = api_base(address)
+    if not base:
+        _log("AC_API_URL ist keine ActiveCampaign-API-Adresse")
+        return False, "ungueltige_adresse"
+    wanted = email.strip().lower() if isinstance(email, str) else ""
+    try:
+        found = _call(base, key, "GET",
+                      "/contacts?email=" + urllib.parse.quote(wanted, safe=""))
+        contact = next((c for c in (found.get("contacts") or [])
+                        if isinstance(c, dict) and c.get("id")
+                        and str(c.get("email") or "").strip().lower() == wanted), None)
+        if not contact:
+            return False, "kein_kontakt"
+        cid = str(contact["id"])
+        lists = _call(base, key, "GET", "/contacts/" + cid + "/contactLists")
+        aktiv = any(str(m.get("list")) == str(list_id) and str(m.get("status")) == "1"
+                    for m in (lists.get("contactLists") or []) if isinstance(m, dict))
+        if not aktiv:
+            return False, "abgemeldet"
+        _call(base, key, "POST", "/contactAutomations",
+              {"contactAutomation": {"contact": cid, "automation": str(automation_id)}})
+        return True, "gestartet"
+    except urllib.error.HTTPError as e:
+        _log("ActiveCampaign lehnt den Neustart ab", "http_%d" % e.code)
+        return False, "http_%d" % e.code
+    except Exception as e:  # noqa
+        reason = getattr(e, "reason", e)
+        timeout = (isinstance(reason, (socket.timeout, TimeoutError))
+                   or "timed out" in str(reason).lower())
+        _log("ActiveCampaign nicht erreichbar", "timeout" if timeout else type(e).__name__)
+        return False, "timeout" if timeout else "netz"
+
+
 def _mailerlite_existing(email, fields):
     """Uebergang: nur bei einem Abonnenten, den MailerLite schon kennt.
     Rueckgabe (ok, grund) wie set_fields."""

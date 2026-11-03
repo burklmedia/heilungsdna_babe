@@ -32,13 +32,17 @@ import urllib.request
 # Damit die Sibling-Imports (_store, _ac) auf Vercel und lokal funktionieren.
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 try:
-    from _store import kv_set
+    from _store import kv_incr_ttl, kv_set
 except Exception:  # noqa
     def kv_set(*a, **k):
         return False
-from _ac import FIELD_BAUPLAN_PDF, FIELD_FEEDBACK_TOKEN, FIELD_SONNENZEICHEN, USER_AGENT, configured as ac_api_configured, set_fields  # noqa: E402
+
+    def kv_incr_ttl(*a, **k):
+        return None
+from _ac import FIELD_BAUPLAN_PDF, FIELD_FEEDBACK_TOKEN, FIELD_SONNENZEICHEN, USER_AGENT, configured as ac_api_configured, restart_automation, set_fields  # noqa: E402
 from _herkunft import FIELD_HERKUNFT, ist_intern, kanal as herkunft_kanal, merken as herkunft_merken  # noqa: E402
 import _telegram as telegram  # noqa: E402
+import hashlib  # noqa: E402
 import time  # noqa: E402
 
 AC_ENDPOINT = "https://burkl-media.activehosted.com/proc.php"
@@ -61,6 +65,16 @@ FELD_FEEDBACK_TOKEN = "field[%s]" % FIELD_FEEDBACK_TOKEN
 # dev.py setzt das auf True: lokal geht nichts an ActiveCampaign, solange
 # BAUPLAN_AC_LIVE nicht gesetzt ist.
 DRY_RUN = False
+
+# Automation "Bauplan Sequenz" und Liste "Kosmischer Bauplan". Bekannte Adressen
+# werden hier neu gestartet, weil der Ausloeser "Abonniert eine Liste" nur beim
+# ersten Abonnieren greift.
+AUTOMATION_BAUPLAN = "7"
+LISTE_BAUPLAN = "6"
+
+# Hoechstens so viele neue Mailserien pro Adresse und Stunde, damit niemand ein
+# fremdes Postfach durch wiederholtes Abschicken fluten kann.
+ERNEUT_PRO_STUNDE = 3
 
 # So lange gilt die Zuordnung Feedback-Token -> E-Mail (in der KV).
 _FB_TOKEN_TTL = 120 * 24 * 3600
@@ -88,7 +102,8 @@ def _feedback_token_for(email):
 
 
 def _submit(fields):
-    """Schickt die Felder an proc.php. Rueckgabe (ok, fehlercode)."""
+    """Schickt die Felder an proc.php. Rueckgabe (ok, code). code ist bei Erfolg
+    None oder "bekannt", sonst der Fehlercode."""
     data = urllib.parse.urlencode(fields).encode("utf-8")
     # Ohne eigene Kennung sperrt Cloudflare die Anfrage (403, Fehler 1010).
     req = urllib.request.Request(
@@ -111,8 +126,36 @@ def _submit(fields):
         print("[activecampaign] Formular lehnt ab:", re.sub(r"\S+@\S+", "<email>", text)[:200])
         return False, "upstream_rejected"
     if "_show_thank_you" not in text:
+        # Eine schon bestaetigte Adresse bekommt keine Danke-Antwort, sondern nur die
+        # Weiterleitung auf die Bestaetigungsseite. Felder sind dann schon aktualisiert,
+        # eine Mail geht aber nicht raus.
+        if "location.href" in text:
+            return True, "bekannt"
         print("[activecampaign] unerwartete Antwort ohne _show_thank_you")
     return True, None
+
+
+def _bauplan_erneut(email, z, intern):
+    """Bekannte Adresse: Bauplan erneut zuschicken. Rueckgabe wie handle_subscribe.
+    Die Herkunft bleibt die der ersten Anmeldung, gezaehlt wird keine neue."""
+    extra = _zeichen_feld(z)
+    if extra and ac_api_configured():
+        set_fields(email, extra)
+    schluessel = hashlib.sha256(email.strip().lower().encode("utf-8")).hexdigest()
+    anzahl = kv_incr_ttl("imh:erneut:" + schluessel, 3600)
+    if anzahl is not None and anzahl > ERNEUT_PRO_STUNDE:
+        print("[activecampaign] Neustart begrenzt")
+        return 200, {"ok": True, "stored": True, "bekannt": True}
+    ok, grund = restart_automation(email, AUTOMATION_BAUPLAN, LISTE_BAUPLAN)
+    if grund == "abgemeldet":
+        return 409, {"ok": False, "stored": False, "error": "abgemeldet",
+                     "message": "Diese Adresse ist von meinen Mails abgemeldet. Schreib mir kurz an hallo@intuitionmitherz.de, dann schicke ich dir deinen Bauplan."}
+    if not ok:
+        return 502, {"ok": False, "stored": False, "error": "neustart_" + grund,
+                     "message": "Das hat gerade nicht geklappt. Bitte versuche es noch einmal."}
+    if not intern:
+        telegram.melden("Bekannte Adresse holt sich den Kosmischen Bauplan noch einmal ✦")
+    return 200, {"ok": True, "stored": True, "bekannt": True}
 
 
 def handle_subscribe(body, intern=False):
@@ -163,6 +206,8 @@ def handle_subscribe(body, intern=False):
     if not ok:
         return 502, {"ok": False, "stored": False, "error": error,
                      "message": "Das hat gerade nicht geklappt. Bitte versuche es noch einmal."}
+    if error == "bekannt":
+        return _bauplan_erneut(email, body.get("z"), intern)
     # Kontakt liegt jetzt als "unbestaetigt" in AC, die Opt-in-Mail ist raus.
     _herkunft_setzen(email, "intern" if intern else body.get("q"), zaehlen=not intern, extra=_zeichen_feld(body.get("z")))
     # Meldung in die Telegram-Gruppe von Tobias und Denise, ohne Daten der Person.
