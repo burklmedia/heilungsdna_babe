@@ -1708,7 +1708,6 @@ footer.fuss-start .foot { border-top: 1px solid var(--line); padding-top: 22px; 
 .stimme blockquote { margin: 0; font-family: var(--serif); font-style: italic; font-size: 20px; line-height: 1.6; color: var(--ink); }
 .stimme figcaption { margin-top: 20px; }
 .st-name { font-family: var(--script); font-size: 32px; color: var(--gold); line-height: 1; }
-.st-herkunft { max-width: 520px; margin: 22px auto 0; font-size: 13px; line-height: 1.55; text-align: center; color: var(--ink-mute); }
 @media (max-width: 620px) { .stimme { padding: 36px 24px 24px; } .stimme blockquote { font-size: 18px; } }
 
 @media (max-width: 760px) { .astrolab-rad .messing { background-image: url("/bilder/messingring-600.webp"); } }
