@@ -1699,6 +1699,18 @@ footer.fuss-start .foot { border-top: 1px solid var(--line); padding-top: 22px; 
 #fragen .faq-item:last-child { border-bottom: 0; }
 @media (max-width: 620px) { .cards.inhalt { padding: 26px 20px 22px; } .cards.inhalt .mcard { font-size: 17px; } .iv-nr { width: 30px; } #fragen .faq { padding: 22px 20px 18px; margin-inline: 4px; } }
 
+/* Echte Stimmen: wörtliche Zitate mit Freigabe aus dem Fragebogen */
+.stimmen { background: var(--paper-3) var(--plaster); }
+.stimmen-reihe { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 26px; max-width: 760px; margin: 0 auto; }
+.stimme { position: relative; margin: 0; padding: 44px 40px 30px; background: var(--white); text-align: center;
+  box-shadow: 0 0 0 1px rgba(156,118,51,.4), inset 0 0 0 8px var(--white), inset 0 0 0 9px rgba(156,118,51,.2), 0 40px 70px -46px rgba(60,40,20,.55); }
+.st-sterne { margin-bottom: 16px; font-size: 16px; letter-spacing: .22em; color: var(--gold); line-height: 1; }
+.stimme blockquote { margin: 0; font-family: var(--serif); font-style: italic; font-size: 20px; line-height: 1.6; color: var(--ink); }
+.stimme figcaption { margin-top: 20px; }
+.st-name { font-family: var(--script); font-size: 32px; color: var(--gold); line-height: 1; }
+.st-herkunft { max-width: 520px; margin: 22px auto 0; font-size: 13px; line-height: 1.55; text-align: center; color: var(--ink-mute); }
+@media (max-width: 620px) { .stimme { padding: 36px 24px 24px; } .stimme blockquote { font-size: 18px; } }
+
 @media (max-width: 760px) { .astrolab-rad .messing { background-image: url("/bilder/messingring-600.webp"); } }
 .cards.inhalt .mcard::before { display: none !important; }
 
