@@ -1394,13 +1394,23 @@
   <section class="band stimmen" id="stimmen">
     <div class="wrap">
       <div class="sec-head center">
-        <h2>Was Lena beim Lesen <span class="script">erlebt hat</span></h2>
+        <h2>Was andere beim Lesen <span class="script">erlebt haben</span></h2>
       </div>
       <div class="stimmen-reihe">
         <figure class="stimme">
           <div class="st-sterne" role="img" aria-label="5 von 5 Sternen">★★★★★</div>
           <blockquote>An manchen Stellen dachte ich sofort: „Ja, genau so ist das bei mir.“ Andere haben mir geholfen, Dinge an mir besser zu verstehen, über die ich vorher nie so nachgedacht hatte. […] Ich habe meinen Bauplan zwei-, dreimal gelesen und jedes Mal ist mir etwas anderes aufgefallen. […] Ich habe mich beim Lesen wirklich wiedererkannt und verstanden gefühlt.</blockquote>
           <figcaption><span class="st-name">Lena</span></figcaption>
+        </figure>
+        <figure class="stimme">
+          <div class="st-sterne" role="img" aria-label="5 von 5 Sternen">★★★★★</div>
+          <blockquote>Ich habe eben deine Seite ausprobiert und finde sie wirklich super. Vor allem, in wie vielen Aussagen ich mich wiedergesehen habe. Aufgefallen war mir nur, dass […] so kleine Sätze immer wieder wechselnd eingeblendet werden. Die waren mir persönlich ein bisschen schnell. […] Aber sonst fand ich es echt super. Krass, was du da aufgebaut hast.</blockquote>
+          <figcaption><span class="st-name">Johanna</span></figcaption>
+          <div class="st-antwort">
+            <p class="st-antwort-von">Antwort von Denise</p>
+            <p>Hallo liebe Johanna, danke für dein Feedback. Ich bin auf deine Anregung sofort eingegangen und habe es angepasst. Ich freue mich immer über solche Feedbacks.</p>
+            <p class="st-antwort-gruss">In Liebe, Denise</p>
+          </div>
         </figure>
       </div>
     </div>
@@ -2060,9 +2070,10 @@
   }
   // Jede Botschaft bleibt gut lesbar stehen und blendet vollständig aus,
   // bevor die nächste erscheint (kein Überschneiden mehr).
-  var HOLD = reduce ? 400 : 1200;   // ← wie lange eine Botschaft ruhig stehen bleibt
+  // Seit 15.11.2026 länger (vorher 1200 ms): Feedback, die Sätze seien zu schnell weg, um sie ganz zu lesen
+  var HOLD = reduce ? 400 : 2200;   // ← wie lange eine Botschaft ruhig stehen bleibt
   var FADE = 520;                   // ← muss >= CSS-Transition (0.5s) sein
-  // endet kurz nachdem die letzte Botschaft erschienen ist (gut lesbar, ~10 s)
+  // endet kurz nachdem die letzte Botschaft erschienen ist (gut lesbar, ~16 s)
   var MIN_RITUAL = reduce ? 700 : ((STATUS.length - 1) * (HOLD + FADE) + HOLD + 400);
   function runRitual(){
     var stage=document.getElementById('stage2'),st=document.getElementById('ritual-status'),

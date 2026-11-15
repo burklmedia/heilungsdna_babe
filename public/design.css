@@ -1721,6 +1721,11 @@ footer.fuss-start .foot { border-top: 1px solid var(--line); padding-top: 22px; 
 .stimme figcaption { margin-top: 20px; }
 .st-name { font-family: var(--script); font-size: 32px; color: var(--gold); line-height: 1; }
 @media (max-width: 620px) { .stimme { padding: 36px 24px 24px; } .stimme blockquote { font-size: 18px; } }
+/* Antwort von Denise unter einer Stimme */
+.st-antwort { margin-top: 24px; padding-top: 20px; border-top: 1px solid rgba(156,118,51,.3); text-align: left; }
+.st-antwort p { margin: 0; font-size: 15px; line-height: 1.6; color: var(--ink-soft); }
+.st-antwort .st-antwort-von { margin-bottom: 8px; font-size: 11px; letter-spacing: .16em; text-transform: uppercase; color: var(--gold); }
+.st-antwort .st-antwort-gruss { margin-top: 10px; font-family: var(--script); font-size: 24px; color: var(--gold); line-height: 1.1; }
 
 @media (max-width: 760px) { .astrolab-rad .messing { background-image: url("/bilder/messingring-600.webp"); } }
 .cards.inhalt .mcard::before { display: none !important; }
