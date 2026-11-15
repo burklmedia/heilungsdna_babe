@@ -1718,9 +1718,16 @@ footer.fuss-start .foot { border-top: 1px solid var(--line); padding-top: 22px; 
   box-shadow: 0 0 0 1px rgba(156,118,51,.4), inset 0 0 0 8px var(--white), inset 0 0 0 9px rgba(156,118,51,.2), 0 40px 70px -46px rgba(60,40,20,.55); }
 .st-sterne { margin-bottom: 16px; font-size: 16px; letter-spacing: .22em; color: var(--gold); line-height: 1; }
 .stimme blockquote { margin: 0; font-family: var(--serif); font-style: italic; font-size: 20px; line-height: 1.6; color: var(--ink); }
+/* Lange Rückmeldungen ungekürzt: das Zitatfeld scrollt, ein Verlauf unten zeigt, dass es weitergeht */
+.stimme blockquote { max-height: 320px; overflow-y: auto; overscroll-behavior: contain; padding-right: 8px;
+  scrollbar-width: thin; scrollbar-color: rgba(156,118,51,.5) transparent;
+  -webkit-mask-image: linear-gradient(to bottom, #000 calc(100% - 28px), transparent); mask-image: linear-gradient(to bottom, #000 calc(100% - 28px), transparent); }
+.stimme blockquote p { margin: 0 0 14px; }
+.stimme blockquote p:last-child { margin-bottom: 24px; }
+.stimme blockquote:focus-visible { outline: 1px solid rgba(156,118,51,.5); outline-offset: 6px; }
 .stimme figcaption { margin-top: 20px; }
 .st-name { font-family: var(--script); font-size: 32px; color: var(--gold); line-height: 1; }
-@media (max-width: 620px) { .stimme { padding: 36px 24px 24px; } .stimme blockquote { font-size: 18px; } }
+@media (max-width: 620px) { .stimme { padding: 36px 24px 24px; } .stimme blockquote { font-size: 18px; max-height: 300px; } }
 /* Antwort von Denise unter einer Stimme */
 .st-antwort { margin-top: 24px; padding-top: 20px; border-top: 1px solid rgba(156,118,51,.3); text-align: left; }
 .st-antwort p { margin: 0; font-size: 15px; line-height: 1.6; color: var(--ink-soft); }
