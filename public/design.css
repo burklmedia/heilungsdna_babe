@@ -1728,6 +1728,23 @@ footer.fuss-start .foot { border-top: 1px solid var(--line); padding-top: 22px; 
 .stimme figcaption { margin-top: 20px; }
 .st-name { font-family: var(--script); font-size: 32px; color: var(--gold); line-height: 1; }
 .st-herkunft { display: block; margin-top: 8px; font-size: 12px; letter-spacing: .08em; color: var(--ink-mute); }
+/* Stimmen als Kartenstapel zum Durchblättern (stimmen.js) */
+.stimmen { overflow-x: hidden; overflow-x: clip; }
+.st-stapel { display: grid; width: min(480px, 100%); margin: 0 auto; padding-bottom: 30px; outline: none; touch-action: pan-y; }
+.st-stapel:focus-visible { outline: 2px solid var(--gold); outline-offset: 12px; }
+.st-stapel > .stimme { grid-area: 1 / 1; transition: transform .7s cubic-bezier(.2,.7,.2,1), opacity .5s ease; }
+.st-stapel.an > .stimme:not(.vorn) { filter: brightness(.975); }
+.st-stapel.an > .stimme:not(.vorn) * { visibility: hidden; }
+.st-stapel.einzeln { padding-bottom: 0; }
+.st-nav { display: flex; align-items: center; justify-content: center; gap: 18px; margin-top: 22px; }
+.st-nav[hidden] { display: none; }
+.st-pfeil { width: 42px; height: 42px; border-radius: 50%; border: 1px solid rgba(156,118,51,.55); background: var(--white); cursor: pointer;
+  display: inline-flex; align-items: center; justify-content: center; transition: background .2s ease, transform .2s ease; }
+.st-pfeil:hover { background: #f6eedd; transform: translateY(-1px); }
+.st-pfeil svg { width: 14px; height: 14px; fill: none; stroke: var(--gold); stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
+.st-zahl { min-width: 70px; text-align: center; font-family: var(--serif); font-style: italic; font-size: 17px; color: var(--ink-soft); }
+.st-hinweis { margin-top: 8px; text-align: center; font-size: 13px; color: var(--ink-mute); }
+@media (prefers-reduced-motion: reduce) { .st-stapel > .stimme { transition: none; } }
 @media (max-width: 620px) { .stimme { padding: 36px 24px 24px; } .stimme blockquote { font-size: 18px; max-height: 300px; } }
 /* Antwort von Denise unter einer Stimme */
 .st-antwort { margin-top: 24px; padding-top: 20px; border-top: 1px solid rgba(156,118,51,.3); text-align: left; }

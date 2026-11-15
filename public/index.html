@@ -1396,7 +1396,7 @@
       <div class="sec-head center">
         <h2>Was andere beim Lesen <span class="script">erlebt haben</span></h2>
       </div>
-      <div class="stimmen-reihe">
+      <div class="st-stapel" tabindex="0" role="group" aria-roledescription="Karten zum Blättern" aria-label="Rückmeldungen">
         <figure class="stimme">
           <div class="st-sterne" role="img" aria-label="5 von 5 Sternen">★★★★★</div>
           <blockquote tabindex="0">
@@ -1442,6 +1442,12 @@
           </div>
         </figure>
       </div>
+      <div class="st-nav" hidden>
+        <button type="button" class="st-pfeil st-zurueck" aria-label="Vorherige Rückmeldung"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M10 3L5 8l5 5"/></svg></button>
+        <span class="st-zahl" aria-live="polite"></span>
+        <button type="button" class="st-pfeil st-weiter" aria-label="Nächste Rückmeldung"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3l5 5-5 5"/></svg></button>
+      </div>
+      <p class="st-hinweis" hidden>Blättere mit den Pfeilen oder wische zur Seite. Längere Texte kannst du in der Karte nach unten scrollen.</p>
     </div>
   </section>
 
@@ -2934,5 +2940,6 @@
 <script src="/erlebnis.js" defer></script>
 <script src="/rueckmeldung.js" defer></script>
 <script src="/sternwarte.js" defer></script>
+<script src="/stimmen.js" defer></script>
 </body>
 </html>
