@@ -40,6 +40,17 @@ FRAGEN = [
      "Einige Rechner zählen Tag, Monat und Jahr erst einzeln zusammen. Bei den Zahlen 1 bis 9 ändert das nichts. Bei den "
      "Meisterzahlen kann es abweichen: Auf dem einen Weg erscheint die 11, auf dem anderen gleich die 2. Hier und im "
      "Kosmischen Bauplan werden alle Ziffern auf einmal zusammengezählt."),
+    ("Gibt es die Lebenszahl 10?",
+     "Als Ergebnis nicht. Kommt beim Zusammenzählen 10 heraus, rechnest du weiter: 1 + 0 = 1. Deine Lebenszahl ist dann "
+     "die 1. Einige Bücher schreiben das als 10/1, um den Zwischenschritt sichtbar zu lassen. Dasselbe gilt für 19 und "
+     "28: Beide führen über die 10 zur 1."),
+    ("Ist die Lebensaufgabenzahl dasselbe wie die Lebenszahl?",
+     "Ja. Lebenszahl, Lebensweg-Zahl, Lebensaufgabenzahl und Lebensnummer sind verschiedene Namen für dieselbe Zahl, "
+     "die Quersumme deines ganzen Geburtsdatums."),
+    ("Ist die Lebenszahl dasselbe wie die Geburtszahl?",
+     "Das Wort Geburtszahl wird unterschiedlich benutzt. Mal ist die Quersumme des ganzen Geburtsdatums gemeint, also "
+     "deine Lebenszahl. Mal nur die Quersumme deines Geburtstags, aus dem 14.06. wird dann 1 + 4 = 5. Schau deshalb "
+     "immer, womit gerechnet wird."),
     ("Brauche ich für die Lebenszahl meine Geburtszeit?",
      "Für die Lebenszahl reicht dein Geburtsdatum. Für deinen ganzen Kosmischen Bauplan brauchst du auch die Geburtszeit, "
      "weil Aszendent, Häuser und dein Human-Design-Chart davon abhängen."),
